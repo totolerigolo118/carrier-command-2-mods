@@ -1,0 +1,17 @@
+journal : 380 instantanes, de 10 a 1330 s de jeu ; navire = id 2
+
+avion 9 : toucher vers 690 s de jeu ; attente de 210 s a 680 s (48 points)
+  z (avant) pendant l'attente : de -2940 a -153 m ; x (tribord) : de -2142 a -3 m   (ovale d'origine : z monterait vers +1800)
+  cercle ajuste sur 46 points : centre (-987, -1817) m, rayon 958 m (ecart moyen 53 m) ; 4.6 tours en 450 s -> 98 s par tour
+
+avion 10 : toucher vers 360 s de jeu ; attente de 260 s a 350 s (10 points)
+  z (avant) pendant l'attente : de -2903 a -108 m ; x (tribord) : de -1942 a -2 m   (ovale d'origine : z monterait vers +1800)
+  cercle ajuste sur 8 points : centre (-1155, -1626) m, rayon 1246 m (ecart moyen 72 m) ; 0.5 tours en 70 s -> 152 s par tour
+
+avion 17 : toucher vers 880 s de jeu ; attente de 280 s a 870 s (60 points)
+  z (avant) pendant l'attente : de -2673 a -187 m ; x (tribord) : de -1799 a -13 m   (ovale d'origine : z monterait vers +1800)
+  cercle ajuste sur 58 points : centre (-977, -1786) m, rayon 808 m (ecart moyen 34 m) ; 9.5 tours en 570 s -> 60 s par tour
+
+avion 18 : toucher vers 510 s de jeu ; attente de 320 s a 500 s (19 points)
+  z (avant) pendant l'attente : de -2663 a -291 m ; x (tribord) : de -1798 a -24 m   (ovale d'origine : z monterait vers +1800)
+  cercle ajuste sur 17 points : centre (-977, -1781) m, rayon 840 m (ecart moyen 63 m) ; 2.5 tours en 160 s -> 64 s par tour

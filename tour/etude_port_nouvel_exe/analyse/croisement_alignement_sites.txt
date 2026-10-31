@@ -1,0 +1,44 @@
+Croisement recherche-par-contexte / alignement du code entier (ancien -> nouveau)
+
+ascenseur_x2           0x006ea0a1 -> 0x006ea1b1  alignement: egal MEME adresse ; plus proche bloc different : -0x6b3 octets avant / +0x58df octets apres
+ascenseur_x2           0x006f9811 -> 0x006f9921  alignement: egal MEME adresse ; plus proche bloc different : -0x7791 octets avant / +0x8797 octets apres
+ascenseur_x2           0x006f9845 -> 0x006f9955  alignement: egal MEME adresse ; plus proche bloc different : -0x77c5 octets avant / +0x8763 octets apres
+ascenseur_x2           0x006fb2ce -> 0x006fb3de  alignement: egal MEME adresse ; plus proche bloc different : -0x924e octets avant / +0x6cda octets apres
+ascenseur_x2           0x006fb2e9 -> 0x006fb3f9  alignement: egal MEME adresse ; plus proche bloc different : -0x9269 octets avant / +0x6cbf octets apres
+ascenseur_x2           0x006fcbaa -> 0x006fccba  alignement: egal MEME adresse ; plus proche bloc different : -0xab2a octets avant / +0x53fe octets apres
+ascenseur_x2           0x006fcbb2 -> 0x006fccc2  alignement: egal MEME adresse ; plus proche bloc different : -0xab32 octets avant / +0x53f6 octets apres
+ascenseur_x2           0x006fce4e -> 0x006fcf5e  alignement: egal MEME adresse ; plus proche bloc different : -0xadce octets avant / +0x515a octets apres
+ascenseur_x2           0x006fce56 -> 0x006fcf66  alignement: egal MEME adresse ; plus proche bloc different : -0xadd6 octets avant / +0x5152 octets apres
+ascenseur_x2           0x006fd8d5 -> 0x006fd9e5  alignement: egal MEME adresse ; plus proche bloc different : -0xb855 octets avant / +0x46d3 octets apres
+ascenseur_x2           0x006fd8f0 -> 0x006fda00  alignement: egal MEME adresse ; plus proche bloc different : -0xb870 octets avant / +0x46b8 octets apres
+ascenseur_x2           0x006fddb5 -> 0x006fdec5  alignement: egal MEME adresse ; plus proche bloc different : -0xbd35 octets avant / +0x41f3 octets apres
+ascenseur_x2           0x006fddbd -> 0x006fdecd  alignement: egal MEME adresse ; plus proche bloc different : -0xbd3d octets avant / +0x41eb octets apres
+ascenseur_x2           0x006ffa68 -> 0x006ffb78  alignement: egal MEME adresse ; plus proche bloc different : -0xd9e8 octets avant / +0x2540 octets apres
+ascenseur_x2           0x006ffaef -> 0x006ffbff  alignement: egal MEME adresse ; plus proche bloc different : -0xda6f octets avant / +0x24b9 octets apres
+ascenseur_x2           0x00700f26 -> 0x00701036  alignement: egal MEME adresse ; plus proche bloc different : -0xeea6 octets avant / +0x1082 octets apres
+ascenseur_x2           0x00700f31 -> 0x00701041  alignement: egal MEME adresse ; plus proche bloc different : -0xeeb1 octets avant / +0x1077 octets apres
+ascenseur_x2           0x00700f82 -> 0x00701092  alignement: egal MEME adresse ; plus proche bloc different : -0xef02 octets avant / +0x1026 octets apres
+ascenseur_x2           0x00700f9a -> 0x007010aa  alignement: egal MEME adresse ; plus proche bloc different : -0xef1a octets avant / +0x100e octets apres
+ascenseur_x2           0x00701035 -> 0x00701145  alignement: egal MEME adresse ; plus proche bloc different : -0xefb5 octets avant / +0xf73 octets apres
+ascenseur_x2           0x00701040 -> 0x00701150  alignement: egal MEME adresse ; plus proche bloc different : -0xefc0 octets avant / +0xf68 octets apres
+ascenseur_x2           0x00701083 -> 0x00701193  alignement: egal MEME adresse ; plus proche bloc different : -0xf003 octets avant / +0xf25 octets apres
+ascenseur_x2           0x007010a6 -> 0x007011b6  alignement: egal MEME adresse ; plus proche bloc different : -0xf026 octets avant / +0xf02 octets apres
+ascenseur_x2           0x00701124 -> 0x00701234  alignement: egal MEME adresse ; plus proche bloc different : -0xf0a4 octets avant / +0xe84 octets apres
+ascenseur_x2           0x0070112c -> 0x0070123c  alignement: egal MEME adresse ; plus proche bloc different : -0xf0ac octets avant / +0xe7c octets apres
+ascenseur_x2           0x007011b6 -> 0x007012c6  alignement: egal MEME adresse ; plus proche bloc different : -0xf136 octets avant / +0xdf2 octets apres
+ascenseur_x2           0x007011be -> 0x007012ce  alignement: egal MEME adresse ; plus proche bloc different : -0xf13e octets avant / +0xdea octets apres
+ascenseur_x2           0x00701219 -> 0x00701329  alignement: egal MEME adresse ; plus proche bloc different : -0xf199 octets avant / +0xd8f octets apres
+ascenseur_x2           0x00701225 -> 0x00701335  alignement: egal MEME adresse ; plus proche bloc different : -0xf1a5 octets avant / +0xd83 octets apres
+ascenseur_x2           0x00705c14 -> 0x00705d24  alignement: egal MEME adresse ; plus proche bloc different : -0x1dec octets avant / +0xf58 octets apres
+ascenseur_x2           0x00705c3e -> 0x00705d4e  alignement: egal MEME adresse ; plus proche bloc different : -0x1e16 octets avant / +0xf2e octets apres
+atterrissage_cercle    0x0070137f -> 0x0070148f  alignement: egal MEME adresse ; plus proche bloc different : -0xf2ff octets avant / +0xc29 octets apres
+atterrissage_cercle    0x00701d5e -> 0x00701e6e  alignement: egal MEME adresse ; plus proche bloc different : -0xfcde octets avant / +0x24a octets apres
+atterrissage_cercle    0x00701f52 -> 0x00702062  alignement: egal MEME adresse ; plus proche bloc different : -0xfed2 octets avant / +0x56 octets apres
+atterrissage_creneau   0x007019fc -> 0x00701b0c  alignement: egal MEME adresse ; plus proche bloc different : -0xf97c octets avant / +0x5ac octets apres
+atterrissage_creneau   0x00701d35 -> 0x00701e45  alignement: egal MEME adresse ; plus proche bloc different : -0xfcb5 octets avant / +0x273 octets apres
+atterrissage_creneau   0x00701d4f -> 0x00701e5f  alignement: egal MEME adresse ; plus proche bloc different : -0xfccf octets avant / +0x259 octets apres
+helicos_approche_x2    0x006fe1b7 -> 0x006fe2c7  alignement: egal MEME adresse ; plus proche bloc different : -0xc137 octets avant / +0x3df1 octets apres
+pont_retour_x2         0x006fddad -> 0x006fdebd  alignement: egal MEME adresse ; plus proche bloc different : -0xbd2d octets avant / +0x41fb octets apres
+temps_x2               0x00835ccb -> 0x00835dfb  alignement: egal MEME adresse ; plus proche bloc different : -0x13ab octets avant / +0x33e75 octets apres
+
+40 sites de code croises, 0 desaccord(s)

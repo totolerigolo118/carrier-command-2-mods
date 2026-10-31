@@ -1,0 +1,20 @@
+--- cases de table serveur (SDK attend 0x772fd0, 0x77ee10, 0x77eea0)
+0xd34bc4 ancien 00772fd0 nouveau 6d69745f
+0xd34bc8 ancien 0077ee10 nouveau 00000065
+0xd34bcc ancien 0077eea0 nouveau 6d657469
+--- site Lua 0x4465ec (SDK attend 6a20 8985 64ffffff)
+ancien 6a20898564ffffff nouveau 6a20898564ffffff
+--- 6 debuts de fonctions Lua (8 octets)
+0x8cda70 ancien 8b411485d27e0dc1 nouveau ff358035e400ff15
+0x8ce200 ancien 558bec83ec085356 nouveau 46108b4828e8266c
+0x8ff6b0 ancien 558bec83e4f883ec nouveau 5dc38b4df833c05f
+0x908220 ancien 558bec83ec08538b nouveau f383ee0472118b0a
+0x904a50 ancien 568b711033d26a20 nouveau 747b8b40108bd6c1
+0x904050 ancien 538bd956578b7b10 nouveau 40c6473d02e826f9
+--- nilobject 0xd03518 (rdata)
+ancien 00000000000000000000000000000000 nouveau 00000000000000000000000000000000
+--- 0x71dbbf
+ancien f30f1187140300008b0883e1 nouveau 030000f30f118714030000c7
+server_init 0x772fd0 prologue 558bec6aff684d7ecb0064a100000000 -> trouve dans nouveau a offsets [] (VA [] )
+server_tick 0x77ee10 prologue 558bec83e4f8515356578bf1bb210000 -> trouve dans nouveau a offsets ['0x37e300'] (VA ['0x77ef00'] )
+server_end 0x77eea0 prologue 558bec83e4f8515356578bf98d874801 -> trouve dans nouveau a offsets ['0x37e390'] (VA ['0x77ef90'] )

@@ -1,0 +1,65 @@
+; Reglages de cc2x_frein.dll -> a copier en %APPDATA%\Carrier Command 2\cc2x\frein.ini
+; Relu toutes les 3 secondes : on peut changer une valeur pendant que le jeu tourne.
+; TOUT EST ETEINT PAR DEFAUT : sans ce fichier, ou avec brake_enabled=0, rien n'est freine
+; (le plugin observe seulement et ecrit ce qu'il voit dans cc2x.log : phase 1).
+[frein]
+; 0 = observation seulement, 1 = frein actif (phase 2)
+brake_enabled=0
+; force du frein et adherence envoyees au jeu, 0 a 1 (bornees dans le plugin)
+brake=1.0
+grip=1.0
+; distance maximale au centre du porte-avions (metres) pour etre freine
+zone_m=150
+; 0 = n'importe quel avion eligible ; un numero = ne freiner QUE cet avion (le plus sur pour l'essai)
+only_id=0
+; 1 = ne freine qu'un avion qui a vole puis s'est pose (jamais un decollage) ; 0 = freine un avion deja au sol
+need_airborne=1
+; etat de vol exige du jeu : 1 = au sol (conforme a la note du Mac), -1 = ignorer
+flight_state=1
+; nombre minimal de roues au contact pour freiner : 0 = toutes (comportement d'origine) ; 2 = les deux roues
+; principales (atterrissage normal : la roue avant est encore en l'air)
+min_wheels=0
+; delai de grace en secondes (0 a 5) : apres un rebond, le frein reste serre ce temps avant d'etre relache ;
+; 0 = relache tout de suite (comportement d'origine)
+grace_s=0
+; demi-hauteur de la zone autour du centre du porte-avions, en metres (5 a 100). Le pont est a environ +19,8 m :
+; avec 20 (valeur d'origine) un petit rebond sort de la zone et relache le frein ; 40 est recommande
+height_m=20
+; vitesse maximale (m/s, par rapport au porte-avions) au-dela de laquelle on NE freine PAS (un freinage a
+; 50 m/s est tres violent : 9 m/s perdus en 0,1 s, mesure) ; 0 = pas de limite (comportement d'origine) ; 30 est recommande
+max_speed=0
+; frein de maintien (0 a 1, 0 = pas de frein de maintien) : une fois l'avion arrete (vitesse relative < 1 m/s), le
+; frein monte a cette valeur et y reste jusqu'a ce que le jeu reprenne l'avion ou qu'il decolle ; sert a ce que
+; l'avion ne derive pas sur le pont mobile et ne decolle pas tout seul. Sans effet s'il est <= brake. 0,6 conseille a l'essai
+hold_brake=0
+; v5 - moteur au ralenti sur l'avion tenu (0 = non, 1 = oui). Mesure du 28/10 : meme avec le frein de maintien a 1,0,
+; l'avion rouleur de l'IA avance (poussee a 1,0) des que le pilote le quitte. Avec hold_idle=1, un avion TENU (hold_brake > brake)
+; dont le pilote est parti (mode de controle 0 = l'IA) recoit CONTROL_POWER = 0 a chaque tick ; la valeur qu'avait le jeu est
+; remise des que cela s'arrete (pilote de retour, ordre de retour = etat d'accostage 5, decollage, avion detruit)
+; v6 : a l ordre de retour (etat d accostage != 0) le plugin ne remet RIEN (le jeu garde la main sur le moteur) ; un avion tenu le reste meme si une roue decolle (tant qu il est dans la zone et sous max_speed) ; a la fin de la partie le moteur est rendu
+hold_idle=0
+; v7 - DIAGNOSTIC du rappel (0 = non, 1 = oui). Essai du 29/10 : a l'ordre de retour (etat d'accostage 5, pas accroche) le frein
+; etait lache et l'avion a recule tout droit hors du pont, car le jeu ne prend pas en charge un avion pose a la main. Avec
+; recall_hold=1 un avion TENU (hold_brake) n'est PAS lache au rappel : le frein de maintien et le moteur a 0 (hold_idle) sont gardes
+; pendant recall_hold_s secondes (5 a 600, defaut 40) et une ligne "RECALL" par seconde (puis toutes les 5 s) note ce que le jeu
+; demande a l'avion (mode, vitesse et point vises, taxi, etat d'accostage, accroche a, etat de vol, waypoints, vitesse relative,
+; distance au centre, roues). recall_release=1 : tout est lache apres recall_hold_s (comme la v6) ; 0 (defaut) : reste tenu.
+; Le pilote qui revient, une prise en charge par le jeu (etat d'accostage autre que 5, accroche) ou la sortie de la zone arretent la tenue.
+recall_hold=0
+recall_hold_s=40
+recall_release=0
+; v8 - PRISE EN CHARGE AU SOL (experimental, 0 = non, 1 = oui). A 1 AU DEMARRAGE DU JEU, le plugin pose deux petits crochets dans le
+; code d'atterrissage du porte-avions ; a 0 (defaut) RIEN du jeu n'est modifie. Le crochet n'agit que pour UN avion a la fois : celui
+; que la tenue du rappel (recall_hold=1) garde immobile (< 1 m/s) depuis au moins 1 s avec le rappel en cours (etat d'accostage 5).
+; Il fait croire au jeu que l'avion vient de passer le portillon d'entree : le jeu lui donne alors LUI-MEME la piste, valide le toucher et
+; fait la prise en charge (baie, recul sur les rails, ascenseur, hangar). Pour couper en cours de partie : recall_force=0 (relu en 3 s).
+; Passer de 0 a 1 demande de relancer le jeu (les crochets ne se posent qu'au demarrage).
+; v11 (abandonnee, jamais posee) : le crochet H4 faisait evaluer l'engagement ; il est retire de la v12.
+; v12 : le crochet H5 envoie l'avion signale, arrete sur le pont, au TEST DE TOUCHER du jeu (le chemin des helicopteres) ; s'il passe,
+; le jeu fait lui-meme la prise en charge (recul vers l'ascenseur, hangar). Au plus 30 essais (1 s) par fenetre, une fenetre par rappel.
+; Voir RISQUES_v12.md et PROCEDURE_partie_v12.md. Pour l'essai : max_speed=35 (pas 50).
+recall_force=0
+; nombre maximum de fois que le crochet donne la piste (v9 : compte DANS le crochet ; le jeu remet l'avion en file s'il juge l'approche ratee), 1 a 10
+force_tries=3
+; duree maximale de la fenetre d'essai en secondes (5 a 120) ; ensuite l'avion reste tenu comme en v7
+force_timeout_s=20

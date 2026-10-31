@@ -1,0 +1,41 @@
+Profil du SDK pour le nouvel exe (PE 0x6ae228f3, taille d'image 0x00af7000 ; ancien : PE 0x6a36c177, taille 0x00af7000)
+
+nom                ancien     nouveau    alignem.  corps ident. octets controles (ancien | nouveau, jokers a 0)
+--- cc2x.c : fonctions du jeu
+server_init        0x00772fd0 0x007730c0 egal      1974 instr. identiques, 1er ret a l'instr. 477 558bec6aff684d7e | 558bec6aff68ed7f 
+server_tick        0x0077ee10 0x0077ef00 egal      3991 instr. identiques, 1er ret a l'instr. 43 558bec83e4f85153 | 558bec83e4f85153 
+server_end         0x0077eea0 0x0077ef90 egal      3939 instr. identiques, 1er ret a l'instr. 148 558bec83e4f85153 | 558bec83e4f85153 
+f_index2addr       0x008cda70 0x008cdbc0 egal      475 instr. identiques, 1er ret a l'instr. 9 8b411485d27e0dc1 | 8b411485d27e0dc1  [signature du source OK]
+f_auxsetstr        0x008ce200 0x008ce350 egal      806 instr. identiques, 1er ret a l'instr. 45 558bec83ec085356 | 558bec83ec085356  [signature du source OK]
+f_finishset        0x008ff6b0 0x008ff820 egal      952 instr. identiques, 1er ret a l'instr. 121 558bec83e4f883ec | 558bec83e4f883ec  [signature du source OK]
+f_luaS_new         0x00908220 0x009083a0 egal      642 instr. identiques, 1er ret a l'instr. 72 558bec83ec08538b | 558bec83ec08538b  [signature du source OK]
+f_luaH_new         0x00904a50 0x00904bc0 egal      451 instr. identiques, 1er ret a l'instr. 22 568b711033d26a20 | 568b711033d26a20  [signature du source OK]
+f_luaC_step        0x00904050 0x009041c0 signature+voisin 284 instr. identiques, 1er ret a l'instr. 42 538bd956578b7b10 | 538bd956578b7b10  [signature du source OK] entree dans une table de sauts du .text : trouvee par ses 8 octets (une seule occurrence a +-0x400 de la suite egale voisine, decalage 0x170)
+--- cc2x.c : site du crochet Lua (8 octets controles)
+lua_site           0x004465ec 0x004465ec egal                   6a20898564ffffff | 6a20898564ffffff  [signature du source OK]
+--- cc2x.c : table virtuelle du serveur (3 pointeurs init, tick, end)
+ancien : 0x00d34bc4 contient (init, tick, end) = OUI ; nouveau : triplet trouve en ['0xd34bfc'] (relocations: True)
+   pointeur juste avant : ancien 0x00dc3144, nouveau 0x00dc3194
+--- donnees lues par le code (retrouvees par TOUTES leurs references dans le code)
+nilobject          ancien 0x00d03518 -> nouveau 0xd03530 : 178 references dans l'ancien code, 0 dans des blocs qui different (ignorees), valeurs vues dans le nouveau : {'0xd03530': 178} ; section .rdata -> .rdata ; 16 octets identiques : True
+vt_rigid_dynamic   ancien 0x00cdd478 -> nouveau 0xcdd478 : 2 references dans l'ancien code, 0 dans des blocs qui different (ignorees), valeurs vues dans le nouveau : {'0xcdd478': 2} ; section .rdata -> .rdata ; 16 octets identiques : False
+--- world.c : fonctions du jeu
+f_vehicle_by_id    0x005ee6a0 0x005ee7e0 egal      3559 instr. identiques, 1er ret a l'instr. 34 558bec51538bd933 | 558bec51538bd933 
+f_tile_by_id       0x00631240 0x00631350 egal      4000 instr. identiques, 1er ret a l'instr. 34 558bec51538bd933 | 558bec51538bd933 
+f_tile_at          0x00631040 0x00631150 egal      4000 instr. identiques, 1er ret a l'instr. 71 558bec83e4f883ec | 558bec83e4f883ec 
+f_request_landing  0x0062b4a0 0x0062b5b0 egal      2744 instr. identiques, 1er ret a l'instr. 101 558bec83ec188b41 | 558bec83ec188b41 
+f_waypoints_clear  0x00854870 0x008549a0 egal      4000 instr. identiques, 1er ret a l'instr. 60 558bec6aff6870b0 | 558bec6aff6810b2 
+f_deque_grow       0x00860c90 0x00860dc0 egal      4000 instr. identiques, 1er ret a l'instr. 71 558bec83ec0c538b | 558bec83ec0c538b 
+f_spawn            0x0062ca30 0x0062cb40 egal      949 instr. identiques, 1er ret a l'instr. 946 538bdc83ec0883e4 | 538bdc83ec0883e4 
+f_af_tick          0x00628600 0x00628710 egal      4000 instr. identiques, 1er ret a l'instr. 2266 538bdc83ec0883e4 | 538bdc83ec0883e4 
+--- world.c : sites de crochets (octets controles comme dans le source)
+h_waypoints        0x007781d4 0x007782c4 egal                   ffb050010000 | ffb050010000  [signature du source OK]
+h_hangar           0x0062ae8d 0x0062af9d egal                   8b576c33c0 | 8b576c33c0  [signature du source OK]
+h_hangar_found     0x0062aefc 0x0062b00c egal                   8b8db4feffffffb5 | 8b8db4feffffffb5 
+h_hangar_none      0x0062aead 0x0062afbd egal                   8b85b4feffff8db7 | 8b85b4feffff8db7 
+h_controller[0]    0x0063014f 0x0063025f egal                   8b018b4010ffd0 | 8b018b4010ffd0  [signature du source OK]
+h_controller[1]    0x00634981 0x00634a91 egal                   8b078b4010ffd0 | 8b078b4010ffd0  [signature du source OK]
+h_spawn            0x00634f3d 0x0063504d egal                   e8ee7affff80bbd0 | e8ee7affff80bbd0 
+h_af_tick          0x0062b8f3 0x0062ba03 egal                   e808cdffff463b77 | e808cdffff463b77 
+
+Aucun probleme : toutes les valeurs sont retrouvees.

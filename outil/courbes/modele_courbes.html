@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courbes du lag CC2</title>
+<!-- Modele de la page des courbes (presentation n° 1 de maquette_courbes_cc2.html, choisie par le moddeur le 24/10/2026).
+     Rempli par outil/courbes/faire_courbes.py : __TITRE__ et __DATA__. -->
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10); --wash: rgba(11,11,11,0.06);
+  --moi: #2a78d6; --adv: #eb6834; --iles: #1baf7a; --mis: #6250d6; --obu: #eda100;
+  --pont: #c3c2b7; --pil: #e87ba4; --carte: #008300; --pause: #898781; --autre: #898781;
+  --vfill: rgba(11,11,11,0.05);
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06);
+    --moi: #3987e5; --adv: #d95926; --iles: #199e70; --mis: #9085e9; --obu: #c98500;
+    --pont: #52514e; --pil: #d55181; --carte: #008300; --pause: #898781; --autre: #898781;
+    --vfill: rgba(255,255,255,0.05);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06);
+  --moi: #3987e5; --adv: #d95926; --iles: #199e70; --mis: #9085e9; --obu: #c98500;
+  --pont: #52514e; --pil: #d55181; --carte: #008300; --pause: #898781; --autre: #898781;
+  --vfill: rgba(255,255,255,0.05);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.45; }
+main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+.carte-v { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: 16px; }
+h1 { font-size: 20px; margin: 0 0 2px; }
+.sous-titre { color: var(--ink2); margin: 0 0 10px; font-size: 13px; }
+.lecture { position: sticky; top: 0; z-index: 2; background: var(--surface); border-bottom: 1px solid var(--grid); padding: 6px 0; margin-bottom: 6px; font-size: 12.5px; color: var(--ink2); min-height: 2.6em; font-variant-numeric: tabular-nums; }
+.lecture b { color: var(--ink); font-weight: 600; }
+.lecture .vide { color: var(--muted); }
+.bloc { margin: 12px 0 2px; }
+.bloc .titre { font-size: 12.5px; font-weight: 600; color: var(--ink); display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.bloc .titre .sous { font-weight: 400; color: var(--muted); }
+.legende { display: inline-flex; gap: 12px; flex-wrap: wrap; font-weight: 400; color: var(--ink2); font-size: 12px; }
+.legende i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.legende i.ligne { height: 2px; border-radius: 1px; vertical-align: 3px; width: 14px; }
+svg { display: block; width: 100%; overflow: visible; }
+svg text { font-family: var(--font); font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.tuiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 4px 0 8px; }
+.tuile { border: 1px solid var(--grid); border-radius: 8px; padding: 8px 10px; }
+.tuile .v { font-size: 22px; font-weight: 650; color: var(--ink); }
+.tuile .l { font-size: 12px; color: var(--ink2); }
+@media (max-width: 520px) { .tuiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.bilan { font-size: 13.5px; color: var(--ink); margin: 6px 0 4px; }
+.bilan p { margin: 3px 0; }
+.bascule { font: inherit; font-size: 12.5px; border: 1px solid var(--axis); color: var(--ink2); border-radius: 999px; padding: 4px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.bascule input { margin: 0; }
+.absent { color: var(--muted); font-size: 12.5px; margin: 4px 0 0; }
+footer { color: var(--muted); font-size: 12px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <section class="carte-v" id="v1">
+    <h1>Courbes du lag</h1>
+    <p class="sous-titre">__TITRE__</p>
+    <div class="lecture"></div>
+    <div class="tuiles"></div>
+    <div class="bilan"></div>
+    <label class="bascule" hidden><input type="checkbox" class="comparer" checked> <span class="nom-autre"></span></label>
+    <div class="corps"></div>
+    <footer>Temps réel en bas (minutes depuis le début). Vitesse du jeu = temps de jeu ÷ temps réel, sur 5 secondes. Unités : celles qui sont dehors (hors hangar), y compris celles que le brouillard te cache. Mac : moniteur de température.</footer>
+  </section>
+</main>
+<script>
+const D = __DATA__;
+const PAS = D.pas;
+const NOMS_ACT = ['Sur le pont', 'Aux commandes', 'Sur la carte', 'En pause'];
+const VAR_ACT = ['--pont', '--pil', '--carte', '--pause'];
+const TYPES = [['porte-avions', 'porte-avions'], ['terrestre', 'terrestres'], ['avion', 'avions'], ['hélico', 'hélicos'], ['navire', 'navires'], ['tourelle', 'tourelles']];
+const PILOTES = { 2: 'véhicule terrestre', 4: 'véhicule terrestre', 6: 'véhicule terrestre', 8: 'avion', 10: 'avion', 12: 'hélico', 14: 'hélico', 58: 'robot-chien' };
+
+function preparer(points) {
+  const t0 = points[0].t;
+  return points.map((p, i) => Object.assign({}, p, { i, min: (p.t - t0) / 60, vp: p.v == null ? null : p.v * 100 }));
+}
+const P = preparer(D.partie.points);
+const Q = D.autre ? preparer(D.autre.points) : null;
+const MMAX = Math.max((P.length - 1) * PAS / 60, Q ? (Q.length - 1) * PAS / 60 : 0);
+
+// ---------- outils ----------
+const NS = 'http://www.w3.org/2000/svg';
+function S(tag, at, parent) { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; }
+function H(tag, cls, parent, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.appendChild(e); return e; }
+function couleur(host, v) { return getComputedStyle(host).getPropertyValue(v).trim(); }
+function heure(p) { return new Date(p.t * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
+function duree(min) { const s = Math.round(min * 60), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ' h ' + String(m).padStart(2, '0') + ' min ' : m + ' min ') + String(s % 60).padStart(2, '0') + ' s'; }
+function horloge(ticks) { const s = Math.floor(ticks / 30), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); }
+function niceMax(v) { if (!(v > 0)) return 1; const e = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 2.5, 5, 10]) if (m * e >= v) return m * e; return 10 * e; }
+function nbTicks(ymax, compact) { const m = Math.round(ymax / Math.pow(10, Math.floor(Math.log10(ymax))) * 10) / 10; const n = (m === 2.5 || m === 5) ? 5 : 4; return compact ? (n === 4 ? 2 : 1) : n; }
+function pasAxe(mmax) { for (const s of [1, 2, 5, 10, 15, 30, 60, 120]) if (mmax / s <= 8) return s; return 240; }
+function etiquetteMin(m) { return m >= 60 && m % 60 === 0 ? (m / 60) + ' h' : m >= 60 ? Math.floor(m / 60) + ' h ' + String(m % 60).padStart(2, '0') : m + ' min'; }
+function lissee(points, k) { return points.map((p, i) => { const w = points.slice(Math.max(0, i - k), i + k + 1).filter(q => q.vp != null && q.act !== 3); return w.length ? w.reduce((s, q) => s + q.vp, 0) / w.length : null; }); }
+function runs(points, f) { const r = []; for (const p of points) { const k = f(p); if (!r.length || r[r.length - 1].k !== k) r.push({ k, a: p.i, b: p.i }); else r[r.length - 1].b = p.i; } return r; }
+const pct = v => Math.round(v) + ' %';
+function suivreLargeur(box, chart) {
+  g.charts.push(chart);
+  let largeur = -1;
+  const peut = () => { const w = box.clientWidth; if (w > 0 && w !== largeur) { largeur = w; chart.draw(); } };
+  chart.redessiner = () => { largeur = -1; peut(); };
+  new ResizeObserver(peut).observe(box);
+  peut();
+}
+const val = (x, f) => x == null ? '–' : (f ? f(x) : x);
+
+// ---------- curseur partage et ligne de lecture ----------
+function groupe(section, contenu) {
+  const g = { charts: [], lecture: section.querySelector('.lecture') };
+  g.set = i => {
+    for (const c of g.charts) c.curseur(i);
+    g.lecture.innerHTML = i == null ? '<span class="vide">Passe la souris sur une courbe pour lire les chiffres à cet instant.</span>' : contenu(P[i]);
+  };
+  g.set(null);
+  return g;
+}
+function detail(det) { if (!det) return ''; const t = det.map((n, k) => n ? n + ' ' + TYPES[k][n > 1 ? 1 : 0] : null).filter(Boolean); return t.length ? ' : ' + t.join(', ') : ''; }
+function lecture(p) {
+  const v = p.vp == null ? 'inconnue' : (p.act === 3 ? 'pause' : pct(p.vp));
+  let quoi = NOMS_ACT[p.act];
+  if (p.act === 1 && PILOTES[p.pil]) quoi = 'Aux commandes : ' + PILOTES[p.pil];
+  if (p.act === 0 && p.focus) quoi += ' (écran ' + p.focus + ')';
+  return `<b>${heure(p)}</b> (${duree(p.min)} après le début${p.jeu != null ? ', horloge du jeu ' + horloge(p.jeu) : ''}) · Vitesse <b>${v}</b>`
+    + (p.ips != null ? ` · Images/s <b>${p.ips}</b>` : '')
+    + (p.tot != null ? ` · Unités <b>${p.tot}</b> (toi ${p.moi}${detail(p.det_moi)} ; adverse ${p.adv}${detail(p.det_adv)} ; îles ${p.iles}${detail(p.det_iles)}${p.hangar ? ' ; ' + p.hangar + ' au hangar' : ''})` : ' · Unités –')
+    + ` · Missiles <b>${val(p.mis)}</b> · Obus <b>${val(p.obu)}</b> · Écrans allumés <b>${val(p.ecr)}</b> · <b>${quoi}</b>`
+    + ` · Mac <b>${val(p.temp, x => Math.round(x) + ' °C')}</b>, processeur <b>${val(p.cpu, pct)}</b>`;
+}
+
+// ---------- graphique a courbes ----------
+function courbes(host, g, opts) {
+  const box = H('div', '', host);
+  const chart = { curseur: () => {} };
+  chart.draw = () => {
+    box.innerHTML = '';
+    const W = Math.max(280, box.clientWidth), Hh = opts.h, xaxe = opts.xaxe !== false;
+    const pl = 38, pr = 72, pt = 8, pb = xaxe ? 20 : 4;
+    const svg = S('svg', { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
+    const x = m => pl + m / MMAX * (W - pl - pr);
+    const series = opts.series.map(s => Object.assign({ pts: P }, s));
+    const vals = series.map(s => s.pts.map(p => { const v = s.f(p); return v == null || Number.isNaN(v) ? null : v; }));
+    if (opts.stack) for (let k = 1; k < vals.length; k++) vals[k] = vals[k].map((v, i) => v == null || vals[k - 1][i] == null ? null : v + vals[k - 1][i]);
+    const all = vals.flat().filter(v => v != null);
+    const ymax = opts.ymax != null ? opts.ymax : niceMax(Math.max(1, ...all) * 1.08);
+    const y = v => pt + (1 - v / ymax) * (Hh - pt - pb);
+    if (opts.lents) { const L = lissee(P, 6); for (const r of runs(P, p => L[p.i] != null && L[p.i] < 60)) if (r.k)
+      S('rect', { x: x(P[r.a].min), y: pt, width: Math.max(2, x(P[r.b].min) - x(P[r.a].min)), height: Hh - pt - pb, fill: couleur(host, '--wash') }, svg); }
+    const nt = nbTicks(ymax, opts.compact);
+    for (let k = 0; k <= nt; k++) {
+      const v = ymax * k / nt, yy = y(v);
+      S('line', { x1: pl, x2: W - pr, y1: yy, y2: yy, stroke: couleur(host, k === 0 ? '--axis' : '--grid'), 'stroke-width': 1 }, svg);
+      const t = S('text', { x: pl - 6, y: yy + 3.5, 'text-anchor': 'end' }, svg); t.textContent = (opts.yfmt || (v => Math.round(v)))(v);
+    }
+    if (xaxe) { const st = pasAxe(MMAX); for (let m = 0; m <= MMAX + 1e-9; m += st) { const t = S('text', { x: x(m), y: Hh - 5, 'text-anchor': 'middle' }, svg); t.textContent = etiquetteMin(m); } }
+    if (opts.ref) {
+      const yy = y(opts.ref.y);
+      S('line', { x1: pl, x2: W - pr, y1: yy, y2: yy, stroke: couleur(host, '--axis'), 'stroke-width': 1 }, svg);
+      const t = S('text', { x: W - pr + 4, y: yy + 3.5 }, svg); t.textContent = opts.ref.label;
+    }
+    for (let k = series.length - 1; k >= 0; k--) {
+      const s = series[k], c = couleur(host, s.var);
+      let d = '', started = false;
+      s.pts.forEach((p, i) => {
+        const v = vals[k][i]; if (v == null) { started = false; return; }
+        const X = x(p.min), Y = y(v);
+        if (!started) { d += `M${X},${Y}`; started = true; }
+        else if (s.step) d += `H${X}V${Y}`;
+        else d += `L${X},${Y}`;
+      });
+      if (s.area || opts.stack) {
+        // une aire par morceau continu
+        let morceau = [];
+        const fermer = () => {
+          if (morceau.length > 1) {
+            const bas = opts.stack && k > 0 ? vals[k - 1] : null;
+            const a = 'M' + morceau.map(i => `${x(s.pts[i].min)},${y(vals[k][i])}`).join('L') + 'L'
+              + morceau.slice().reverse().map(i => `${x(s.pts[i].min)},${y(bas ? bas[i] : 0)}`).join('L') + 'Z';
+            S('path', { d: a, fill: opts.stack ? c : couleur(host, '--vfill'), 'fill-opacity': opts.stack ? 0.32 : 1, stroke: 'none' }, svg);
+          }
+          morceau = [];
+        };
+        s.pts.forEach((p, i) => { if (vals[k][i] == null) fermer(); else morceau.push(i); });
+        fermer();
+      }
+      S('path', { d, fill: 'none', stroke: c, 'stroke-width': opts.stack ? 1.5 : (s.w || 2), 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+    }
+    // etiquettes en bout de courbe (derniere valeur connue)
+    const lab = series.map((s, k) => {
+      let i = s.pts.length - 1; while (i > 0 && vals[k][i] == null) i--;
+      const v = vals[k][i]; if (v == null || !s.label) return null;
+      const base = opts.stack && k > 0 ? vals[k - 1][i] : 0;
+      return { yv: opts.stack ? y((v + base) / 2) : y(v), txt: s.label + ' ' + (opts.lfmt || (z => Math.round(z)))(s.f(s.pts[i])) };
+    }).filter(Boolean).sort((a, b) => a.yv - b.yv);
+    for (let k = 1; k < lab.length; k++) if (lab[k].yv - lab[k - 1].yv < 12) lab[k].yv = lab[k - 1].yv + 12;
+    for (const o of lab) { const t = S('text', { x: W - pr + 6, y: o.yv + 3.5 }, svg); t.textContent = o.txt; t.style.fill = couleur(host, '--ink2'); }
+    const cur = S('line', { y1: pt, y2: Hh - pb, stroke: couleur(host, '--ink'), 'stroke-width': 1, visibility: 'hidden' }, svg);
+    const dots = series.map(s => S('circle', { r: 4, fill: couleur(host, s.var), stroke: couleur(host, '--surface'), 'stroke-width': 2, visibility: 'hidden' }, svg));
+    chart.curseur = i => {
+      if (i == null) { cur.setAttribute('visibility', 'hidden'); dots.forEach(d => d.setAttribute('visibility', 'hidden')); return; }
+      const X = x(P[i].min); cur.setAttribute('x1', X); cur.setAttribute('x2', X); cur.setAttribute('visibility', 'visible');
+      series.forEach((s, k) => { const v = i < s.pts.length ? vals[k][i] : null; if (v == null) { dots[k].setAttribute('visibility', 'hidden'); return; } dots[k].setAttribute('cx', x(s.pts[i].min)); dots[k].setAttribute('cy', y(v)); dots[k].setAttribute('visibility', 'visible'); });
+    };
+    const zone = S('rect', { x: pl, y: 0, width: W - pl - pr, height: Hh, fill: 'transparent' }, svg);
+    zone.addEventListener('mousemove', e => { const r = svg.getBoundingClientRect(); const m = ((e.clientX - r.left) * W / r.width - pl) / (W - pl - pr) * MMAX; g.set(Math.max(0, Math.min(P.length - 1, Math.round(m * 60 / PAS)))); });
+    zone.addEventListener('mouseleave', () => g.set(null));
+  };
+  suivreLargeur(box, chart);
+  return chart;
+}
+
+// ---------- bande (ce que tu faisais) ----------
+function bande(host, g, cat) {
+  const box = H('div', '', host);
+  const chart = { curseur: () => {} };
+  chart.draw = () => {
+    box.innerHTML = '';
+    const W = Math.max(280, box.clientWidth), Hh = 20, pl = 38, pr = 72;
+    const svg = S('svg', { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
+    const x = m => pl + m / MMAX * (W - pl - pr);
+    const dx = (W - pl - pr) / Math.max(1, MMAX * 60 / PAS);
+    for (const r of runs(P, cat)) {
+      if (r.k == null) continue;
+      const x0 = Math.max(pl, x(P[r.a].min) - dx / 2), x1 = Math.min(W - pr, x(P[r.b].min) + dx / 2);
+      S('rect', { x: x0 + 1, y: 2, width: Math.max(1, x1 - x0 - 2), height: Hh - 4, rx: 3, fill: couleur(host, VAR_ACT[r.k]) }, svg);
+    }
+    const cur = S('line', { y1: 0, y2: Hh, stroke: couleur(host, '--ink'), 'stroke-width': 1, visibility: 'hidden' }, svg);
+    chart.curseur = i => { if (i == null) return cur.setAttribute('visibility', 'hidden'); const X = x(P[i].min); cur.setAttribute('x1', X); cur.setAttribute('x2', X); cur.setAttribute('visibility', 'visible'); };
+    const zone = S('rect', { x: pl, y: 0, width: W - pl - pr, height: Hh, fill: 'transparent' }, svg);
+    zone.addEventListener('mousemove', e => { const r = svg.getBoundingClientRect(); const m = ((e.clientX - r.left) * W / r.width - pl) / (W - pl - pr) * MMAX; g.set(Math.max(0, Math.min(P.length - 1, Math.round(m * 60 / PAS)))); });
+    zone.addEventListener('mouseleave', () => g.set(null));
+  };
+  suivreLargeur(box, chart);
+  return chart;
+}
+
+function bloc(parent, titre, sous, legende) {
+  const b = H('div', 'bloc', parent);
+  const t = H('div', 'titre', b, titre + (sous ? ` <span class="sous">${sous}</span>` : ''));
+  if (legende) { const l = H('span', 'legende', t); for (const [v, n, ligne] of legende) l.insertAdjacentHTML('beforeend', `<span><i class="${ligne ? 'ligne' : ''}" style="background:var(${v})"></i>${n}</span>`); }
+  return b;
+}
+const a_des = (pts, k) => pts.some(p => p[k] != null);
+
+// ================= la page =================
+const sec = document.getElementById('v1'), corps = sec.querySelector('.corps');
+const g = groupe(sec, lecture);
+sec.querySelector('.tuiles').innerHTML = D.partie.tuiles.map(([v, l]) => `<div class="tuile"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+sec.querySelector('.bilan').innerHTML = D.partie.bilan.map(s => `<p>${s}</p>`).join('');
+const cmp = sec.querySelector('.comparer');
+if (Q) { sec.querySelector('.bascule').hidden = false; sec.querySelector('.nom-autre').textContent = 'Comparer avec : ' + D.autre.nom; }
+
+function rendre() {
+  corps.innerHTML = ''; g.charts.length = 0;
+  const avec = Q && cmp.checked;
+  const sv = [{ f: p => p.act === 3 ? null : p.vp, var: '--ink', area: !avec, label: avec ? 'Celle-ci' : null }];
+  if (avec) sv.push({ f: p => p.act === 3 ? null : p.vp, var: '--autre', pts: Q, label: 'Autre' });
+  courbes(bloc(corps, 'Vitesse du jeu', '100 % = vitesse normale ; zones grisées = moins de 60 % pendant une minute', avec ? [['--ink', 'Cette partie', 1], ['--autre', 'Autre partie', 1]] : null), g,
+    { h: 160, series: sv, ymax: 100, yfmt: pct, ref: avec ? null : { y: 100, label: 'normal' }, xaxe: false, lfmt: pct, lents: !avec });
+  if (a_des(P, 'ips')) courbes(bloc(corps, 'Images par seconde', 'environ : comptées sur les écrans du porte-avions (ou l\'affichage de pilotage)'), g,
+    { h: 80, series: [{ f: p => p.ips, var: '--ink2' }], xaxe: false, compact: true });
+  if (a_des(P, 'tot')) {
+    if (avec) courbes(bloc(corps, 'Unités dehors (total)', '', [['--ink', 'Cette partie', 1], ['--autre', 'Autre partie', 1]]), g,
+      { h: 100, series: [{ f: p => p.tot, var: '--ink', label: 'Celle-ci' }, { f: p => p.tot, var: '--autre', pts: Q, label: 'Autre' }], xaxe: false });
+    else courbes(bloc(corps, 'Unités dehors', 'empilées par camp', [['--moi', 'Toi'], ['--adv', 'Porte-avions adverse'], ['--iles', 'Îles']]), g,
+      { h: 120, stack: true, series: [{ f: p => p.moi, var: '--moi', label: 'Toi' }, { f: p => p.adv, var: '--adv', label: 'Adverse' }, { f: p => p.iles, var: '--iles', label: 'Îles' }], xaxe: false });
+    courbes(bloc(corps, 'En vol', '', [['--mis', 'Missiles', 1], ['--obu', 'Obus', 1]]), g,
+      { h: 90, series: [{ f: p => p.mis, var: '--mis', label: 'Missiles' }, { f: p => p.obu, var: '--obu', label: 'Obus' }], xaxe: false });
+  } else H('p', 'absent', corps, 'Unités, missiles, obus : pas de données pour cette partie (aucun écran de données n\'a tourné).');
+  if (a_des(P, 'ecr')) courbes(bloc(corps, 'Écrans du porte-avions allumés'), g, { h: 70, series: [{ f: p => p.ecr, var: '--ink2', step: true }], xaxe: false, compact: true });
+  bande(bloc(corps, 'Ce que tu faisais', '', NOMS_ACT.map((n, k) => [VAR_ACT[k], n])), g, p => p.act);
+  if (a_des(P, 'temp')) {
+    courbes(bloc(corps, 'Mac : température', 'moniteur'), g, { h: 80, series: [{ f: p => p.temp, var: '--ink2' }], ymax: 100, yfmt: v => Math.round(v) + '°', xaxe: false, compact: true });
+    courbes(bloc(corps, 'Mac : processeur', 'moniteur'), g, { h: 90, series: [{ f: p => p.cpu, var: '--ink2' }], ymax: 100, yfmt: pct, compact: true });
+  } else {
+    H('p', 'absent', corps, 'Mac : le moniteur de température ne tournait pas pendant cette partie.');
+  }
+}
+if (cmp) cmp.addEventListener('change', rendre);
+rendre();
+let attente = null;
+const redessiner = () => { clearTimeout(attente); attente = setTimeout(() => g.charts.forEach(c => c.redessiner()), 120); };
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redessiner);
+new MutationObserver(redessiner).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+Comparaison AVANT / APRES (taille + sha256), 28/10/2026
+
+FICHIERS DONT LE CONTENU A CHANGE (sha256 different) :
+  (4 fichiers)
+  carrier_command.exe
+     avant : 11353600 octets  0C5DFE52DFDF1AE002B0CF8B25C6B32CC1EEC953A80E856D37E4016CF2FE120B
+     apres : 11354112 octets  461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A
+  carrier_command_vr.exe
+     avant : 11411456 octets  0D6A026986323AE623D7BCD491220CEFA0778C7F8D320503EA5CD3ECC1E21EA1
+     apres : 11411456 octets  A49D6426CFD2B877F3A309249E7614C59E764BED15DE056D2F33156DD3B1AABB
+  dedicated_server.exe
+     avant : 6497792 octets  99489671E4508CC05F1B7278BF7CE25CACB269532CBAC8E1A0CC32D0BBA78081
+     apres : 6497792 octets  718FABF6623C65C38593DF1BCB4362A61CC96D967C80F18A5DE5EA74A6217ABB
+  mod_dev_kit\bin\build_content.exe
+     avant : 5237248 octets  8120C2CC136B788D5824F6D441DE470E75B516145C299A7C597B6A9222AEA32E
+     apres : 5237248 octets  43C28E8629141E9B4FB3AC25B891D4F78765B4BA4748E6418D3E201AEB317111
+
+FICHIERS REECRITS PAR STEAM A 21:30:04-05 (date de modification nouvelle) : 791
+  dont 4 executables (ci-dessus) et 787 fichiers rom_0\audio\*.ogg, taille et sha256 identiques avant/apres (voir NOTE_instantane.md : fiabilite limitee du "avant" pour ces fichiers).
+  Somme des tailles des fichiers reecrits = 94 619 123 octets = BytesToStage du manifeste.
+
+FICHIERS NON TOUCHES : 5525 (date de modification inchangee), dont tout rom_0\scripts, rom_0\game_objects, XML, constants.txt, localisation, mod_dev_kit (sauf build_content.exe), steam_api.dll, openvr_api.dll.
+
+FICHIERS NOUS (hors Steam) : dinput8.dll, cc2x_frein.dll, cc2x.log, carrier_command_test_cercle*.exe : inchanges.

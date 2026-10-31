@@ -1,0 +1,34 @@
+{
+ "nom": "helicos_approche_x2",
+ "description": "approche des helicos x2 : le point vise est 100 m devant l'helico au lieu de 50 m (1 lecture redirigee) [PORTE sur le build Steam du 28/10/2026 (461E1262...), horodatage 0x6ae228f3]",
+ "statut_portage": "SECONDAIRE, JAMAIS VU EN JEU (valide sur le Mac seulement). Sur le nouvel exe : octets et desassemblage seulement.",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11354112,
+  "horodatage_pe": "0x6ae228f3",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A",
+ "sha256_patche": "0DF816F7D5E73B964A4150E907AD5A863999C83ED2131D1AD28899EADEAFD727",
+ "nb_changements": 1,
+ "changements": [
+  {
+   "va": 7332551,
+   "offset": 3135175,
+   "avant": "f079db00",
+   "apres": "187adb00",
+   "role": "[NOUVEL EXE ; les adresses citees dans ce texte sont celles de l'ANCIEN exe] partie helico de l'etat 3 (apres `call [vtable+0x4c]` / `test al,al` / `je 0x6fe436`) : `addss xmm2,[50.0]` (z vise = z + 50) -> `[100.0]`",
+   "reglage": "HELI_APPROACH_AIM_AHEAD_M",
+   "constante_va": 14383640,
+   "va_ancien": 7332279,
+   "offset_ancien": 3134903,
+   "avant_ancien": "b879db00",
+   "apres_ancien": "e079db00",
+   "type": "abs",
+   "retrouve_par": "contexte unique de 64+64 instructions ; identique sur 12192 avant / 3347 apres",
+   "preuve": "premiere copie en lecture seule de 100.0 (.rdata), voisins identiques a l'ancien 0x00db79e0"
+  }
+ ],
+ "avertissement": "Les helicos qui reviennent s'approchent environ 2 fois plus vite (visee a 100 m au lieu de 50 m). Les avions ne sont pas touches (la partie est reservee aux helicos, apres le test get_is_rotor). Valide sur le Mac avec le toucher pres de l'ascenseur ; SEUL, jamais vu. Jamais vu en jeu sur Windows avant la premiere mesure."
+}

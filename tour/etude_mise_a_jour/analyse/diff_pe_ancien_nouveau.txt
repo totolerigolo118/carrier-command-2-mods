@@ -1,0 +1,56 @@
+A C:/Users/UTILISATEUR/Documents/cc2-patchs/tour/sauvegardes/carrier_command_1.5.18_original.exe 11353600 1c9a01c3007cb2bec2a04d716812cf9f24c87efa11056395c89ddd7d2c341026
+B exe_new/carrier_command_NEW.exe 11354112 461e12623bacb7de29ca27b4614425c87e8df2c8327a5e958a957c850effe42a
+ts 0x6a36c177 0x6ae228f3
+entry 0x83fef2 0x840082
+imgbase 0x400000 0x400000
+sizeimg 0xaf7000 0xaf7000
+sizehdr 0x400 0x400
+chk 0x0 0x0
+sections A
+  .text vs=8d4adb va=1000 rawsz=8d4c00 rawoff=400
+  .rdata vs=146968 va=8d6000 rawsz=146a00 rawoff=8d5000
+  .data vs=3b87c va=a1d000 rawsz=1be00 rawoff=a1ba00
+  _RDATA vs=2608 va=a59000 rawsz=2800 rawoff=a37800
+  .rsrc vs=4aae0 va=a5c000 rawsz=4ac00 rawoff=a3a000
+  .reloc vs=4f1c4 va=aa7000 rawsz=4f200 rawoff=a84c00
+sections B
+  .text vs=8d4c7b va=1000 rawsz=8d4e00 rawoff=400
+  .rdata vs=146998 va=8d6000 rawsz=146a00 rawoff=8d5200
+  .data vs=3b87c va=a1d000 rawsz=1be00 rawoff=a1bc00
+  _RDATA vs=2608 va=a59000 rawsz=2800 rawoff=a37a00
+  .rsrc vs=4aae0 va=a5c000 rawsz=4ac00 rawoff=a3a200
+  .reloc vs=4f1ec va=aa7000 rawsz=4f200 rawoff=a84e00
+header diffs (first 0x400):
+  off 130  77 -> f3
+  off 131  c1 -> 28
+  off 132  36 -> e2
+  off 145  4c -> 4e
+  off 150  f2 -> 82
+  off 151  fe -> 00
+  off 152  83 -> 84
+  off 1a0  10 -> 40
+  off 1a8  94 -> c4
+  off 1cc  c4 -> ec
+  off 1d0  a8 -> d8
+  off 1e8  00 -> 40
+  off 1f0  18 -> 48
+  off 228  db -> 7b
+  off 229  4a -> 4c
+  off 231  4c -> 4e
+  off 250  68 -> 98
+  off 25d  50 -> 52
+  off 285  ba -> bc
+  off 2ad  78 -> 7a
+  off 2d5  a0 -> a2
+  off 2f0  c4 -> ec
+  off 2fd  4c -> 4e
+section .text tailles 9260032 9260544 runs differents (meme offset): 315353
+   ... 315353 runs au total
+section .rdata tailles 1337856 1337856 runs differents (meme offset): 113461
+   ... 113461 runs au total
+section .data tailles 114176 114176 runs differents (meme offset): 402
+   ... 402 runs au total
+section _RDATA identique
+section .rsrc identique
+section .reloc tailles 324096 324096 runs differents (meme offset): 30531
+   ... 30531 runs au total

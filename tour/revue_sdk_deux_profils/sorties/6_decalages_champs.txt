@@ -1,0 +1,40 @@
+relocations ancien (DllCharacteristics, cases 0xd34bc4/8/c) : (33088, {'0xd34bc4': True, '0xd34bc8': True, '0xd34bcc': True})
+relocations nouveau (DllCharacteristics, cases 0xd34bfc/0xd34c00/0xd34c04) : (33088, {'0xd34bfc': True, '0xd34c00': True, '0xd34c04': True})
+
+champ              décal.   ancien  nouveau écart
+v_id               0x80       4435     4435 +0
+v_definition       0x84       1673     1673 +0
+v_bodies           0x8c       1958     1958 +0
+v_wheels           0xac       1019     1019 +0
+v_team             0x108      1380     1380 +0
+v_attached         0x10c      1090     1090 +0
+v_dock_vehicle     0x114       789      789 +0
+v_dock_tile        0x118       898      898 +0
+v_dock_airfield    0x11c       685      685 +0
+v_fuel             0x120      1683     1683 +0
+v_waypoints        0x140      1398     1398 +0
+v_sync_count       0x150      1243     1243 +0
+v_attachments      0x15c       768      768 +0
+v_flight_state     0x170       988      988 +0
+v_dock_state       0x174       467      467 +0
+v_hp               0x180       992      992 +0
+v_team_object      0x1a8       593      593 +0
+v_control_mode     0x1d0       627      627 +0
+v_control_target   0x1d8       359      359 +0
+v_control_speed    0x1f8       331      331 +0
+v_control_power    0x1fc       200      200 +0
+v_control_taxi     0x200       544      544 +0
+v_sync_data        0x230       521      521 +0
+s_vehicle_map      0x344       116      116 +0
+s_vehicles         0x37c        64       64 +0
+s_tile_map         0x42c        67       67 +0
+s_tiles            0x440        79       79 +0
+s_broadcast        0x514        48       48 +0
+i_airfields        0x154       561      561 +0
+env_nodes          0x180       992      992 +0
+a_dock_queue       0xcc       1109     1109 +0
+a_undock_queue     0xdc        883      883 +0
+a_tile             0xf0       1891     1891 +0
+a_end_node         0xb4       1053     1053 +0
+a_start_node       0xb8       1527     1527 +0
+a_path             0xbc       1084     1084 +0

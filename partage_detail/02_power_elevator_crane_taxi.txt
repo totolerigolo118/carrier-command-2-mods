@@ -1,0 +1,168 @@
+CARRIER: ENERGY, ELEVATOR, HANGAR CRANE, DECK TAXI
+===================================================
+
+All of this is the SERVER side of the carrier (the simulation). Names and addresses: Mac build (see 00_README).
+Result in game [GAME]: launching 4 aircraft takes 3:50 stock and 2:15 with the x2 patch set (x1.70, -41 %, game time,
+same save, same place).
+
+WHY XML MODS NEVER WORKED: the lift speed is NOT read from `lift_constraint` (`drive_max_delta_velocity`, `drive_*`) in
+rom_0/game_objects/vehicle_chassis_carrier.xml. The CODE advances the setpoint of the platform by a fixed step per tick and
+then places the physical piece itself. The same goes for the crane and for taxi speeds. `vel_a` / `vel_b` of the
+`graph_link` entries are very probably the TANGENTS of the path curves, not speeds, which is why "taxi speed" mods fail
+too. constants.txt contains none of these values. Hence byte patches.
+
+
+1. ENERGY SHARING
+-----------------
+c_vehicle_carrier_server_power_manager::build (0x10019eeb8) and ::tick (0x1001b3fdc).
+
+Five systems, laid out from this+0x90 with a stride of 0x28 bytes. Each has a maximum "share" (at +0x10 inside the
+system) and sub-systems { demand, weight, allocated } (three floats):
+
+    system              offset   share   sub-systems (weights)
+    repair              0x90     0.8     8   (4, then 1 x 7)
+    propulsion          0xb8     0.8     1
+    weapons             0xe0     0.6     10  (1 each)
+    ELEVATOR / CRANE    0x108    0.4     2   (1 and 1): #0 = elevator platform, #1 = hangar crane
+    radar               0x130    0.2     1
+
+Rule: desire of a system = SUM(demand x weight) / SUM(weight) x share. If the sum of all desires exceeds 1 everything is scaled
+down proportionally. allocated(sub-system) = demand x (allocated / desire). Platform and crane move by
+"step x allocated". Deck taxiing does NOT depend on energy.
+
+Build immediates (in ::build): movl $0x3f4ccccd (0.8), $0x3e4ccccd (0.2), $0x3f4ccccd (0.8), $0x3f19999a (0.6) and then
+`movl $0x3ecccccd, 0x118(%r15)` (0.4 = the elevator/crane share, at 0x10019f0ad). The "x2 energy" patch is that one
+immediate: 0x3ECCCCCD -> 0x3F4CCCCD.
+
+
+2. ELEVATOR PLATFORM
+--------------------
+c_vehicle_server_carrier::tick_server_type (the function starts at 0x1001944d2; the platform code is at 0x100194523 ... 0x100194641):
+
+    target = levels[target_index]                (0 = up, -9 = down)
+    delta  = clamp(target - position, -0.025, +0.025)      <- step per tick (0.75 m/s)
+    demand = clamp(|delta| / 0.025, 0, 1) if |delta| > 0.001 else 0
+    sub-system[0].demand = demand
+    alloc  = clamp(sub-system[0].allocated, 0, 1)
+    if alloc > 0: position += delta x alloc
+    then set_attachment_transform_b puts the physical platform at `position`.
+
+Machine code: `maxss [-0.025]`, `minss [0.025]`, `ucomiss [0.001]`, `divss [0.025]` in a row. Patch: the three reads of
++-0.025 -> +-0.05 (0.001 untouched). 9 m: 12 s -> 6 s with full power.
+The pose is done by the code, so a 2nd elevator would need new code (see 04_helicopters.txt, "second elevator").
+Platform geometry: collision = ONE box (x 21..33, y 19..20, z -45.5..-18.2: 12 x 27 m), course -9..0 m.
+
+
+3. HANGAR CRANE
+---------------
+Inside c_vehicle_server_carrier::docking_manager_air::update (0x1001accd8 -> 0x1001b2618, ~5,000 instructions).
+Crane state: carrier+0x153c/0x1544 (x, z), 0x1540 (hook height: 12 up, 11 down), 0x1548 (rotation, 0 or pi).
+A ring of `e_crane_state` values ("crane_instructions") is executed one by one; a jump table at 0x1001b25ec has the five
+"moves" (the first of the list runs, then is removed):
+
+    n  address      move
+    1  0x1001ae858  go above the bay 0x88 (z first, then x)
+    2  0x1001ae9a1  return to rest above the elevator (node 0x98; x first, then z)
+    3  0x1001aea82  rotate: towards pi if (mode == 2) == "holding an aircraft", else towards 0
+    4  0x1001aea99  if holding nothing: go down to 11 and grab (0x20 = 1), then up to 12
+    5  0x1001ae949  if holding: go down to 11 and release (0x20 = 0), then up to 12
+
+Per axis and per tick: d = clamp(target - pos, -max, +max); pos += d x allocated(sub-system 1). Demand =
+max(|dxz| / (1/6), |dy| / (1/30)) through a `divps` by the vector (1/6, 1/30, 0, 0). Stock steps: 1/6 m horizontal
+(5 m/s), 1/30 m vertical (1 m/s), rotation 0.04 rad per tick; arrival when |d| < 0.01 (< 0.04 for rotation).
+Heights 11.0 (0x41300000) and 12.0 (0x41400000). With the x2 patch: 1/3, 1/15, 0.08 (the divps was left as is: the demand
+saturates at 1, no visible effect).
+
+LAUNCH (mode 2; blocks 0x1001acea1 -> 0x1001ad84d -> 0x1001b0eb1): if the undocking queue is not empty and the crane is
+free (0x78 == -1), the crane takes the first aircraft: 0x78 = id, removed from the queue, instruction list =
+[1, 4, 2, 5], or [1, 4, 2, 3, 5, 3] for bays where the aircraft must be turned (the right-hand bays, x = +13:
+probably 2, 4, 6, 8). A `load_lift_lower` path is created, the brake is applied, vehicle +0x21c = 1,
+dock_state = 3. If the aircraft is not ready (get_is_undock_ready) it goes back to the end of the queue.
+During the whole carrying the aircraft STAYS stored in its bay slot (carrier + 0x1f0 + 0x70 x bay): while the crane holds
+it (0x20 == 1) the game only moves the transform of that slot to follow the hook (0x1001aec07 -> set_attachment_transform).
+So the aircraft cannot get "lost".
+End of crane (0x1001ad9ad): list empty, elevator free and down (< -8.5): the aircraft taxis on `load_lift_lower`
+(0x1001ae272 -> 0x1001b10ce), then onto the elevator (0x1001b15bb: 0x7c = id, 0x78 = -1); the elevator rises; at the top:
+runway, or "hold at launch" (dock_state 7).
+RETURNS (mode 1, 0x1001b1164): the crane takes the aircraft from the elevator; list [4, 1, 5, 2] or [3, 4, 3, 1, 5, 2];
+dock_state = 4 from the pick-up; list empty -> 0x78 = -1 (0x1001ad769).
+The mode only changes when the four slots (0x78..0x84) are empty (back to 0 at 0x1001ae780): a carrier is EITHER in
+returns mode OR in launch mode, never both; returns have priority. The crane runs its list in every mode (0x1001ae787).
+"Preparing the next aircraft while the elevator is busy" is already done by the game (separate slots 0x78 and 0x7c).
+
+
+4. DECK TAXI (aircraft on paths)
+--------------------------------
+7 blocks of the same model in docking_manager_air::update (launch and return legs):
+
+    remaining = (1 - t) x L          (L = length of the leg)
+    v = min(v + 0.05, 2.5)           acceleration 1.5 m/s^2, cap 2.5 m/s
+        (last leg only: v = min(v, remaining) -> braking)
+    if remaining < 0.1 (or 0.01): next leg
+    else t += v / (L x 30)
+
+The speed carries over from one leg to the next; braking only on the last leg. Final braking is exponential (time constant
+1 s, ~3.2 s per leg), which is why doubling both acceleration and cap gives x1.7 and not x2.
+Doubling: the 7 `addss [0.05]` -> 0.1 (0x1028697b0) and the 7 reads of 2.5 -> 5.0 (0x10286976c).
+NOT touched on purpose: the take-off run (an `addss 0.5` without cap, 0x1001b02c8), the arrival thresholds 0.1/0.01 (making
+them bigger makes aircraft "jump").
+Path graph (rom_0/game_objects/vehicle_chassis_carrier.xml): 47 nodes, 48 links. The code only uses 6 links by name:
+`runway`, `runway_lift`, `runway_reverse_a`, `runway_reverse_b`, `lift_top_reverse`, `load_lift_lower` (`runway_reverse` is
+never read), and the nodes `hanger_center`, `lift_lower`, `lift_upper`, `runway_start`, `runway_end`
+(read by name in docking_manager_air::build, 0x1001a02ca). Stock launch path lengths: hangar -> elevator 27.5 m, elevator
+exit 15.5 m, turn 17 m, to runway start 24 m = ~84 m ~ 42 s per aircraft.
+Deck plan (ship frame, metres): runway on the axis x = 0 from `runway_start` (z -68, aft) to `runway_end` (z 82, bow);
+`taxi_a` (0, -44) is ON the runway; `lift_upper_wait` (12, -32); elevator platform `lift_upper` (27.5, -32), box x 21..33.
+Flight deck y = 20; the 8 aircraft bays air1..air8 are in the hangar at y 13.5; there is no parking place on the deck.
+Take-off roll then ~56 m from elevator to the runway end.
+
+Return taxi after touchdown ("deck taxi x2" patch): the progress of each of the 3 return legs (states 5, 6, 7) advances by
+v/(L x 30) per tick; the three `mulss [30.0]` at 0x1001b0824, 0x1001ae07c, 0x1001b0831 were redirected to 15.0 (0x1028699cc).
+See 03_docking_states_runway_landing.txt.
+
+
+5. CANCEL A LAUNCH ALREADY TAKEN BY THE CRANE (module grue_annulation)
+----------------------------------------------------------------------
+Demand n. 20652 on the game's public issue tracker. Status: written, tested off game, installed; in-game check pending [ASM, host test].
+How the bay button works (stock): physical button `vehicle_control_air_bay_N` (help text veh_con_button_deploy_air).
+c_vehicle_carrier_server_vehicle_control::tick (0x1001b2e18): on the rising edge on an occupied bay it calls virtual 0x108 =
+c_vehicle_server_carrier::undock (0x100193eaa), WITHOUT looking at the aircraft state, which hands over to
+docking_manager_air::undock (0x1001a8bd4). That function is a TOGGLE:
+  - aircraft in the crane (0x78), elevator (0x7c), runway (0x80) or rotor take-off (0x84): if dock_state == 7 (hold at launch)
+    -> 0x28 = id ("go"); otherwise NOTHING;
+  - aircraft in the landing queue (0x48): nothing;
+  - aircraft already in the undocking queue (0x60): cancel_undocking (0x1001a8dfa);
+  - otherwise: appended to the undocking queue, dock_state = 2.
+cancel_undocking only works if the aircraft is still in the undocking queue: it removes it, dock_state = 4, clears its
+waypoints (mm_vector<c_vehicle_waypoint_data>::clear on +0x1d0, reset_waypoint_path) and tells the map (virtual 0 of the map
+with id, +0x300, +0x1d0, +0x1e8). As soon as the crane takes the aircraft it is no longer in the queue, so cancel finds nothing.
+The AI carrier only calls undock on aircraft whose dock_state is 4 (checks at 0x100109ef5 and 0x10010dfb0): never concerned.
+The patch (module grue_annulation): hook A at 0x1001a8c01 (13 bytes `cmpl $7,0x220(%r14) / jne / movl %ebx,0x28(%rdi)`, no
+jump in the middle) -> jmp cave. The cave replays the original if dock_state == 7, else calls
+annuler_grue(manager rdi, aircraft r14, map rcx). It only acts if mode == 2, 0x78 == this aircraft and dock_state == 3:
+  - not yet hooked (0x20 == 0 and a 4 left in the list): list = [5, 2] (a 5 without aircraft = simple lift-up),
+    0x78 = 0x88 = -1; the aircraft never moved;
+  - held (0x20 == 1) and not turned (|0x1548| < 0.01): list = [4, 1, 5, 2] (4 while holding = go up, 1 = go to the bay,
+    5 = put down, 2 = back to rest), 0x78 kept until the end;
+  - otherwise (already turning, released above the elevator, taxiing, on the elevator): NOTHING, as in the stock game.
+  In the first two cases: dock_state = 4, +0x21c = 0, waypoints cleared and the map told (same calls as cancel_undocking).
+  The list is rewritten with start = count = 0 then mm_vector<e_crane_state>::push_back (0x10019a450).
+Hook B at 0x1001ad9ad (5 bytes `cmpl $0,0x18(%r14)`; 4 jumps arrive there, none in the middle; launch mode only): pure assembly
+(no C call: the live xmm registers are unknown): if the list is empty, 0x78 != -1 and the aircraft in 0x78 has dock_state == 4
+-> 0x78 = 0x88 = -1. Then replay the cmpl and return to 0x1001ad9b2. That case does not exist in the stock game (in mode 2 the
+only "dock_state = 4" written in the function is the storing one, in mode 1), so the test relies on a SAVED state: a return
+interrupted by a save resumes after loading.
+Window with the x2 elevator: ~13 s for near bays, ~18 s for far bays (double without the x2 patch).
+Risks listed, with their parades: (1) crane stuck (worst case: hook B never fires -> 0x78 stays taken: no launch, and the
+hangar stays in mode 2 so no landing either): condition kept simple, tested on a fake manager; removing the module is enough
+(the stock code then passes the aircraft to the elevator and launches it); (2) aircraft released in the air: B waits for the
+empty list; (3) aircraft lost: impossible (it never leaves its bay slot); (4) upside-down: cancel refused once |rotation| > 0.01;
+(5) triple press: nothing; (6) game update: the tool refuses. An extension to cancel on the elevator is 8/10 difficulty (needs the
+lift to go down in mode 2, taxi BACKWARDS, which does not exist, and a crane re-take; deadlock risk): not done.
+
+
+6. MEASUREMENTS AND WHAT THEY MEAN
+----------------------------------
+[GAME] 4 aircraft launched (A1, A2, A5, A6; same save, ship stopped), game time: stock 3:50, x2 patch 2:15 (34 s per
+aircraft instead of 57.5 s). Simulated before the test: x1.5-1.8.
+[EST] ship stopped matters: energy is shared with propulsion and weapons.

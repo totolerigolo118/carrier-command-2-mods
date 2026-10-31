@@ -1,0 +1,97 @@
+Acces du code aux decalages suivis (ancien exe 1C9A01C3... / nouvel exe 461E1262...), LECTURE SEULE
+
+decalage | nom | acces ancien | dont dans du code IDENTIQUE au nouvel | acces nouveau
+---|---|---|---|---
++0x10 | vt_rules_is_ai | 20211 | 20209 | 20210
++0x344 | s_vehicle_map | 103 | 103 | 103
++0x37c | s_vehicles | 47 | 47 | 47
++0x42c | s_tile_map | 52 | 52 | 52
++0x440 | s_tiles | 37 | 37 | 37
++0x514 | s_broadcast | 47 | 47 | 47
++0x80 | v_id | 1906 | 1906 | 1906
++0x84 | v_definition | 691 | 691 | 691
++0x8c | v_bodies | 1067 | 1067 | 1067
++0xac | v_wheels | 377 | 377 | 377
++0x108 | v_team | 901 | 901 | 901
++0x10c | v_attached | 734 | 734 | 734
++0x114 | v_dock_vehicle | 466 | 466 | 466
++0x118 | v_dock_tile | 434 | 434 | 434
++0x11c | v_dock_airfield | 379 | 379 | 379
++0x120 | v_fuel | 659 | 659 | 659
++0x140 | v_waypoints | 587 | 587 | 587
++0x150 | v_sync_count | 493 | 493 | 493
++0x15c | v_attachments | 611 | 611 | 611
++0x170 | v_flight_state | 342 | 342 | 342
++0x174 | v_dock_state | 311 | 311 | 311
++0x180 | v_hp | 369 | 369 | 369
++0x1a8 | v_team_object | 367 | 367 | 367
++0x1d0 | v_control_mode | 207 | 207 | 207
++0x1d8 | v_control_target | 225 | 225 | 225
++0x1f8 | v_control_speed | 221 | 221 | 221
++0x1fc | v_control_power | 158 | 158 | 158
++0x200 | v_control_taxi | 180 | 180 | 180
++0x230 | v_sync_data | 266 | 266 | 266
++0x44 | vt_is_air | 2511 | 2510 | 2516
++0x48 | vt_is_wing | 4057 | 4049 | 4050
++0x4c | vt_is_rotor | 1968 | 1960 | 1964
++0x94 | vt_brakes | 1237 | 1237 | 1237
++0x98 | vt_gear | 1135 | 1135 | 1135
++0xf0 | body_actor | 729 | 729 | 729
++0x48 | body_pos | 4057 | 4049 | 4050
++0x19 | team_is_ai | 156 | 153 | 154
++0x70 | wheel_size | 1679 | 1676 | 1684
++0xc0 | attachment_flying | 814 | 814 | 814
++0x40 | waypoint_size | 5070 | 5068 | 5073
++0x4 | wp_type | 0 | 0 | 0
++0x20 | wp_param | 10987 | 10986 | 10992
++0x0 | t_id | 0 | 0 | 0
++0x48 | t_pos | 4057 | 4049 | 4050
++0x60 | t_team | 2360 | 2356 | 2358
++0xcc | t_saved_count | 600 | 600 | 600
++0xd0 | t_saved_set | 649 | 649 | 649
++0x100 | t_island | 815 | 815 | 815
++0x154 | i_airfields | 365 | 365 | 365
++0x0 | a_env | 0 | 0 | 0
++0x8 | a_xform | 0 | 0 | 0
++0x68 | a_hangars | 1939 | 1934 | 1937
++0x6c | a_hangar_count | 1021 | 1020 | 1021
++0x74 | a_mode | 1032 | 1023 | 1024
++0x78 | a_state | 1290 | 1284 | 1294
++0x7c | a_runway_vehicle | 868 | 860 | 866
++0xb4 | a_end_node | 458 | 458 | 458
++0xb8 | a_start_node | 709 | 709 | 709
++0xbc | a_path | 542 | 542 | 542
++0xcc | a_dock_queue | 600 | 600 | 600
++0xdc | a_undock_queue | 504 | 504 | 504
++0xf0 | a_tile | 729 | 729 | 729
++0x180 | env_nodes | 369 | 369 | 369
++0x40 | node_size | 5070 | 5068 | 5073
++0x34 | node_pos | 4559 | 4556 | 4557
++0x308 | gaz +0x308 | 119 | 119 | 119
++0x30c | gaz +0x30c | 91 | 91 | 91
++0x310 | gaz +0x310 | 92 | 92 | 92
++0x314 | gaz THR_OFFSET +0x314 | 77 | 77 | 77
++0x1c | gestionnaire piste: etat +0x1c | 8574 | 8572 | 8575
++0x5c | gestionnaire piste: proprietaire +0x5c | 1238 | 1237 | 1248
++0xd4 | gestionnaire piste: compteur +0xd4 | 504 | 504 | 504
+
+Cases de pile des crochets du frein (base ebp), comptees dans la grande fonction de piste seulement :
+
+case | acces ancien (0x6fc730..0x701fa8) | dont dans du code identique | acces nouveau (meme fonction, +0x110)
+---|---|---|---
+pile [ebp-0x1fc] avion | 62 | 62 | 62
+pile [ebp-0x204] gestionnaire | 41 | 41 | 41
+pile [ebp-0x205] octet zone finale | 8 | 8 | 8
+pile [ebp-0x224] drapeau d'echec | 43 | 43 | 43
+pile [ebp-0x278] decalage z | 17 | 17 | 17
+pile [ebp-0x2cc] decalage x | 8 | 8 | 8
+pile [ebp-0x270] decalage y | 20 | 20 | 20
+pile [ebp-0x25c] distance | 23 | 23 | 23
+pile [ebp-0x294] vecteur A/B (1) | 12 | 12 | 12
+pile [ebp-0x244] vecteur A/B (2) | 25 | 25 | 25
+pile [ebp-0x284] vecteur A/B (3) | 12 | 12 | 12
+pile [ebp-0x24c] porte C | 19 | 19 | 19
+pile [ebp-0x2d8] H2 lea | 5 | 5 | 5
+
+La grande fonction de piste (ancien 0x6fc730..0x701fa8, 4846 instructions) est entierement dans UNE suite d'instructions identiques au nouvel exe : OUI
+(sa version dans le nouvel exe commence en 0x6fc840 ; premiere instruction nouvelle de la suite : 0x6fc840)

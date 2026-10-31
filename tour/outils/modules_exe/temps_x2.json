@@ -1,0 +1,26 @@
+{
+ "nom": "temps_x2",
+ "description": "simulation 2x plus vite (facteur de vitesse du serveur 1.0 -> 2.0) : MODE TEST, jamais en multijoueur",
+ "avertissement": "Le serveur dicte la vitesse : les autres joueurs d'une partie hebergee verraient le jeu 2x plus vite. Toute la partie accelere (ennemis, animations). A retirer pour jouer normalement.",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11353600,
+  "horodatage_pe": "0x6a36c177",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "1C9A01C3007CB2BEC2A04D716812CF9F24C87EFA11056395C89DDD7D2C341026",
+ "sha256_patche": "CFE824405FA59EF2419D9E44D81AF09E9D0D7BA587901535AF6AB348C0E8055A",
+ "nb_changements": 1,
+ "changements": [
+  {
+   "va": 8608971,
+   "offset": 4411595,
+   "avant": "0000803f",
+   "apres": "00000040",
+   "role": "constructeur du serveur 0x00835b50 : [edi+0x140] (facteur de vitesse) 1.0 -> 2.0",
+   "reglage": "SERVER_SPEED_FACTOR",
+   "constante_va": 0
+  }
+ ]
+}

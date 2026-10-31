@@ -1,0 +1,40 @@
+; modes.ini (v3.1) : reglages du plugin cc2x_modes.dll (a copier dans %APPDATA%\Carrier Command 2\cc2x\modes.ini)
+; Relu toutes les 3 secondes (de jeu) : on peut le changer pendant que le jeu tourne. Sans fichier : OBSERVATION SEULE (rien n'est ecrit).
+; LECTURE STRICTE (v3.1) : une valeur absente garde sa valeur par defaut ; une valeur ILLISIBLE (vide, nan, "1 500", des lettres...) est
+; ignoree, la valeur par defaut est utilisee et le plugin ecrit UNE ligne « modes.ini: ... » dans cc2x.log. Un nombre lisible mais hors
+; limites est ramene a la limite la plus proche (avec la meme ligne). Un commentaire en fin de ligne (apres ; ou #) est ignore.
+; Nombres : point ou virgule decimale (0.65 ou 0,65), jamais d'espace (« 1500 », pas « 1 500 »).
+; Valeurs mesurees le 28/10 (gaz appliques = gaz ecrit + environ 0,07 pour un plafond) :
+;   Albatros : 0,72 -> 80 m/s ; 0,93 -> 119 (croisiere IA) ; 1,00 -> 131
+;   Manta    : 0,47 -> 122 (croisiere IA) ; 0,77 -> 220 ; 1,00 -> 290
+; Par kilometre, aller plus vite consomme MOINS : ECO = plus de temps en l'air, pas plus de portee ; FLANK = vitesse et portee.
+[modes]
+; 0 = observer seulement (le plugin ne modifie rien) ; 1 = appliquer les modes ci-dessous. Mots acceptes : 0 1 true false yes no on off.
+; Toute autre valeur (2, maybe, vide...) = 0 avec une ligne d'avertissement. (ancien nom : eco_enabled)
+enabled=0
+
+; ---- ECO : plafond de la commande de gaz ----
+; numeros des avions en ECO : chiffres separes par des virgules ou des espaces (les numeros affiches dans les lignes [modes] / CC2MODES).
+; Au plus 16 numeros (les suivants sont ignores, avec un avertissement). Autre chose que des chiffres = TOUTE la liste est ignoree (avertissement).
+eco_ids=
+; 1 = TOUS les avions des equipes humaines (essai) ; ne mets JAMAIS en mode l'avion que tu pilotes a la main
+eco_all=0
+; plafond Albatros (0,55 a 1,0 ; 0,65 ecrit = environ 0,72 applique = environ 80 m/s)
+eco_cap_light=0.65
+; plafond Manta (0,30 a 1,0 ; sa croisiere n'utilise que 0,47 : en dessous de 0,40 ecrit il ralentit)
+eco_cap_heavy=0.35
+; pas de plafond a moins de ... metres du porte-avions de l'equipe (decollage, approche, circuit d'atterrissage). 1500 a 20000 : on ne peut PAS descendre sous 1500.
+eco_free_zone_m=1500
+
+; ---- FLANK : plancher de la commande de gaz ----
+flank_ids=
+flank_all=0
+; plancher Albatros / Manta (0,50 a 1,0). 1,0 ecrit = environ 0,93 applique pour l'Albatros (deja sa croisiere !), davantage pour le Manta
+flank_floor_light=1.0
+flank_floor_heavy=1.0
+; pas de plancher a moins de ... metres du bateau : un avion rapide a besoin de place pour ralentir. 6000 a 30000 : on ne peut PAS descendre sous 6000.
+; Un ordre de retour arrete FLANK tout de suite.
+flank_free_zone_m=6000
+
+; une ligne d'observation par avion en vol toutes les ... secondes de jeu (0 a 600 ; 0 = aucune)
+observe_s=5

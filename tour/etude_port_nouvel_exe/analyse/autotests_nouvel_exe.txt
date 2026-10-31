@@ -1,0 +1,17 @@
+
+== 0. les JSON du profil : somme epinglee, champs disjoints, octets d'origine, relocations
+
+== 1. cycle normal de CHAQUE module (etat, a blanc, activer, deja actif, retirer)
+
+== 2. relecture au desassembleur des 6 modules actifs : valeurs finales voulues (ecrites ici a la main)
+
+== 3. combinaisons : les 63 combinaisons (en memoire, avec les fonctions de l'outil) + 8 par la ligne de commande
+
+== 4. refus sur le profil Steam : octets abimes, melange, mauvaises sauvegardes, options
+
+== 5. melange de profils : le profil se choisit par l'horodatage ET les octets doivent suivre ; aucun autre fichier accepte
+
+== 6. LECTURE SEULE du dossier du jeu (aucune ecriture) : le vrai exe est reconnu, les autres exe sont refuses
+
+207 verifications, 0 echec(s)
+RESULTAT : TOUT PASSE

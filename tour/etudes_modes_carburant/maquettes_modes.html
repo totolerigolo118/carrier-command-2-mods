@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modes ÉCO / NORMAL / FLANK : 3 maquettes</title>
+<style>
+:root { --fond: #07090a; --carte: #0e1213; --bord: #1f2a2b; --texte: #d8e4e4; --doux: #8fa3a3; --vert: #10ff7f; --cyan: #10ffff; --jaune: #ffb020; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fond); color: var(--texte); font: 15px/1.45 -apple-system, "Segoe UI", "Helvetica Neue", sans-serif; padding: 24px 16px 40px; }
+.page { max-width: 1240px; margin: 0 auto; }
+h1 { color: var(--cyan); font-size: 26px; margin: 0 0 6px; font-weight: 600; }
+.intro { color: var(--doux); max-width: 880px; margin: 0 0 8px; }
+.modes { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 12px 0 22px; font-size: 14px; }
+.modes b { font-size: 16px; margin-right: 4px; }
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px; }
+.var { background: var(--carte); border: 1px solid var(--bord); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.tete { display: flex; align-items: baseline; gap: 10px; }
+.num { font-size: 32px; color: var(--cyan); line-height: 1; min-width: 26px; font-weight: 700; }
+.nom { font-size: 17px; font-weight: 600; }
+svg { width: 100%; max-width: 512px; height: auto; display: block; margin: 0 auto; background: #000; border-radius: 4px; user-select: none;
+      font-family: ui-monospace, "Cascadia Mono", "Courier New", monospace; font-weight: 700; }
+svg .b { cursor: pointer; }
+svg .b:hover rect { stroke: #fff; }
+svg .b:hover path { stroke: #fff; stroke-width: .8; }
+.conseil { font-size: 13.5px; color: var(--doux); }
+.conseil div { margin: 3px 0; }
+.plus { color: #7fe0a8; } .moins { color: #ff9a8a; }
+.note { margin-top: 22px; font-size: 13.5px; color: var(--doux); max-width: 880px; }
+.note b { color: var(--texte); }
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Modes de vitesse par avion : 3 maquettes</h1>
+<p class="intro">Voici à quoi ressemblerait chaque idée sur un écran de contrôle des véhicules du porte-avions (l'écran du jeu fait 256 points de large,
+la maquette l'agrandit). <b>Clique dans les écrans</b> : sur un avion de la carte, sur les boutons, sur le fond pour fermer.
+Rien ne commande un vrai avion ici : c'est seulement pour juger la place, la taille et la lisibilité.</p>
+<div class="modes">
+  <span><b style="color:var(--vert)">ECO</b> économise le carburant (moins vite)</span>
+  <span><b style="color:var(--cyan)">NORMAL</b> comme le jeu d'aujourd'hui</span>
+  <span><b style="color:var(--jaune)">FLANK</b> pleine vitesse (brûle plus)</span>
+</div>
+
+<div class="grille">
+  <section class="var">
+    <div class="tete"><span class="num">1</span><span class="nom">L'onglet de l'avion</span></div>
+    <svg id="s1" viewBox="0 0 256 256" aria-label="Maquette 1"></svg>
+    <div class="conseil">
+      <div>Clique sur un avion de la carte : l'onglet <b>SPEED</b> s'ouvre sous l'armement. Les petits points de couleur sous les avions disent leur mode (pas de point = NORMAL).</div>
+      <div class="plus">+ gros boutons faciles à viser, look du jeu, manette utilisable</div>
+      <div class="moins">− un avion à la fois : un clic de plus pour régler tout l'escadron</div>
+    </div>
+  </section>
+
+  <section class="var">
+    <div class="tete"><span class="num">2</span><span class="nom">Trois cases par avion</span></div>
+    <svg id="s2" viewBox="0 0 256 256" aria-label="Maquette 2"></svg>
+    <div class="conseil">
+      <div>Un tableau en bas à droite : une ligne par avion en l'air, trois cases E (ECO) / N (NORMAL) / F (FLANK).</div>
+      <div class="plus">+ on voit et on change tous les avions d'un coup d'œil</div>
+      <div class="moins">− cases petites (dures à viser) ; avec 8 avions le tableau couvre la carte et l'échelle (en bas à droite)</div>
+    </div>
+  </section>
+
+  <section class="var">
+    <div class="tete"><span class="num">3</span><span class="nom">Barre de l'escadron + exception</span></div>
+    <svg id="s3" viewBox="0 0 256 256" aria-label="Maquette 3"></svg>
+    <div class="conseil">
+      <div>La barre en bas règle <b>tous</b> les avions. Un clic sur un avion ouvre un onglet avec un bouton « SUIT L'ESCADRON » pour faire une exception (marquée d'une étoile sur la carte).</div>
+      <div class="plus">+ rapide pour tout le monde, précis pour un avion</div>
+      <div class="moins">− deux niveaux à comprendre, plus de travail</div>
+    </div>
+  </section>
+</div>
+
+<p class="note"><b>Réponds par un numéro</b> (1, 2 ou 3) ou un mélange (« le 1 avec la barre du 3 »). Les chiffres d'autonomie de la maquette 1
+sont des <b>exemples inventés</b> pour voir où ils s'afficheraient : les vrais viendront des mesures de l'étape 0.
+Une fois la famille choisie, je fais une page de 4 à 6 variantes (couleurs, tailles, textes).</p>
+</div>
+
+<script>
+const C = { bg: '#0a1416', grid: '#13262a', ami: '#10ffff', txt: '#d8e4e4', doux: '#7f9a9a', win: '#050b0c', winB: '#2a4a4a', head: '#0d3a3a' };
+const MODES = [ { n: 'ECO', c: '#10ff7f' }, { n: 'NORMAL', c: '#10ffff' }, { n: 'FLANK', c: '#ffb020' } ];
+const AUTONOMIE = { Albatros: [38, 21, 14], Manta: [24, 13, 9] };   // exemples inventés
+
+function t(x, y, s, fill, anchor, size, extra) {
+  return `<text x="${x}" y="${y}" fill="${fill || C.txt}" text-anchor="${anchor || 'start'}" font-size="${size || 7}" ${extra || ''}>${s}</text>`;
+}
+function r(x, y, w, h, fill, stroke, extra) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${stroke ? `stroke="${stroke}" stroke-width="1"` : ''} ${extra || ''}/>`;
+}
+function fenetre(x, y, w, h, titre) {
+  return r(x, y, w, h, C.win, C.winB) + r(x, y, w, 11, C.head) + t(x + 4, y + 8, titre, '#8fe0e0', 'start', 7);
+}
+function bouton(x, y, w, h, texte, actif, couleur, act) {
+  return `<g class="b" data-a="${act}">` +
+    (actif ? r(x, y, w, h, couleur) : r(x, y, w, h, '#040c0c', '#3f3f3f')) +
+    t(x + w / 2, y + h / 2 + 2.6, texte, actif ? '#000' : '#bccccc', 'middle', 7) + `</g>`;
+}
+
+const AVIONS = () => [
+  { id: 9,  type: 'Albatros', x: 62,  y: 122, wx: 150, wy: 66,  fuel: 63, mode: 1 },
+  { id: 10, type: 'Albatros', x: 96,  y: 186, wx: 40,  wy: 218, fuel: 41, mode: 0 },
+  { id: 11, type: 'Manta',    x: 150, y: 150, wx: 218, wy: 96,  fuel: 88, mode: 2 },
+  { id: 12, type: 'Manta',    x: 40,  y: 62,  wx: 104, wy: 28,  fuel: 75, mode: 1 },
+];
+const nom = a => a.type + ' ' + a.id;
+
+function fond(avions, selId, marque) {
+  let s = r(0, 0, 256, 256, C.bg);
+  for (let i = 32; i < 256; i += 32) s += `<path d="M${i},0V256M0,${i}H256" stroke="${C.grid}" stroke-width="1" fill="none"/>`;
+  s += `<path d="M20,40L55,30L75,55L50,80L25,70Z M150,120L200,110L215,150L170,165Z M190,30L235,40L230,75L195,70Z" fill="#123a33" stroke="#1d5a4b"/>`;
+  s += r(190, 208, 32, 8, '#3a6a6a', '#7fb') + t(206, 226, 'CARRIER', C.doux, 'middle', 6);
+  for (const a of avions) {
+    const ang = Math.atan2(a.wx - a.x, -(a.wy - a.y)) * 180 / Math.PI;
+    s += `<path d="M${a.x},${a.y}L${a.wx},${a.wy}" stroke="#2c6a6a" stroke-dasharray="3 3" fill="none"/>`;
+    s += `<circle cx="${a.wx}" cy="${a.wy}" r="2.5" fill="none" stroke="#2c8a8a"/>`;
+    const sel = a.id === selId;
+    s += `<g class="b" data-a="avion:${a.id}"><circle cx="${a.x}" cy="${a.y}" r="9" fill="transparent"/>` +
+         `<path transform="translate(${a.x},${a.y}) rotate(${ang.toFixed(1)})" d="M0,-6L3.2,4L0,2L-3.2,4Z" fill="${sel ? '#fff' : C.ami}"/></g>`;
+    s += t(a.x + 6, a.y - 4, a.id, C.doux, 'start', 6);
+    const m = a.eff === undefined ? a.mode : a.eff;
+    if (m !== 1) s += r(a.x - 1.5, a.y + 6, 3, 3, MODES[m].c);
+    if (marque && marque(a)) s += t(a.x + 5, a.y + 9, '*', '#fff', 'start', 8);
+  }
+  return s;
+}
+
+/* ---------- maquette 1 : l'onglet de l'avion ---------- */
+const S1 = { av: AVIONS(), sel: 9 };
+function m1() {
+  const el = document.getElementById('s1');
+  let s = fond(S1.av, S1.sel);
+  const a = S1.av.find(v => v.id === S1.sel);
+  if (a) {
+    s += `<g class="b" data-a="fermer">${r(0, 0, 256, 256, 'rgba(0,0,0,.5)')}</g>`;
+    s += fenetre(10, 10, 157, 128, 'STATUS');
+    const ligne = (y, k, v, col) => t(16, y, k, C.doux) + t(161, y, v, col || C.txt, 'end');
+    s += ligne(30, 'HP', '40/40') + ligne(42, 'FUEL', a.fuel + '%', a.fuel < 50 ? '#ffd040' : '#10ff7f') + ligne(54, 'AMMO', '100%', '#10ff7f');
+    s += r(12, 60, 153, 9, '#0a2a2a') + t(16, 67, 'ACTIONS', '#8fe0e0', 'start', 6);
+    s += t(16, 82, '[x] Hold fire') + t(16, 94, '[ ] Low light') + t(16, 106, '> Center to vehicle') + t(16, 118, '> Camera') + t(16, 130, '> Self destruct', '#ff7060');
+    s += fenetre(172, 10, 74, 84, 'LOADOUT');
+    for (const [x, y] of [[182, 28], [210, 28], [182, 54], [210, 54]]) s += r(x, y, 18, 18, '#08181a', '#2a4a4a');
+    // l'onglet NOUVEAU
+    s += fenetre(172, 98, 74, 104, 'SPEED');
+    s += `<rect x="172" y="98" width="74" height="104" fill="none" stroke="#fff" stroke-dasharray="2 2"/>`;
+    MODES.forEach((m, i) => { s += bouton(177, 113 + i * 19, 64, 16, m.n, a.mode === i, m.c, 'mode:' + i); });
+    s += t(209, 180, 'AUTONOMIE', C.doux, 'middle', 5.5) + t(209, 191, '≈ ' + AUTONOMIE[a.type][a.mode] + ' min*', MODES[a.mode].c, 'middle', 8) +
+         t(209, 198, '*exemple inventé', C.doux, 'middle', 4.5);
+  } else {
+    s += t(128, 246, 'Clique sur un avion', C.doux, 'middle', 7);
+  }
+  el.innerHTML = s;
+}
+document.getElementById('s1').addEventListener('click', e => {
+  const g = e.target.closest('[data-a]'); if (!g) return;
+  const [k, v] = g.dataset.a.split(':');
+  if (k === 'avion') S1.sel = +v;
+  else if (k === 'fermer') S1.sel = null;
+  else if (k === 'mode') S1.av.find(x => x.id === S1.sel).mode = +v;
+  m1();
+});
+
+/* ---------- maquette 2 : trois cases par avion ---------- */
+const S2 = { av: AVIONS() };
+function m2() {
+  const el = document.getElementById('s2');
+  let s = fond(S2.av, null);
+  s += `<path d="M190,236H246M190,233V239M246,233V239" stroke="#9cc" fill="none"/>` + t(218, 231, '5 km', C.doux, 'middle', 6);
+  s += fenetre(104, 172, 146, 72, 'SPEED');
+  ['E', 'N', 'F'].forEach((l, i) => { s += t(190 + i * 24, 191, l, MODES[i].c, 'middle', 7); });
+  S2.av.forEach((a, k) => {
+    const y = 195 + k * 12;
+    s += t(109, y + 7, nom(a), C.txt, 'start', 6.5);
+    for (let i = 0; i < 3; i++) {
+      const x = 180 + i * 24, act = a.mode === i;
+      s += `<g class="b" data-a="set:${a.id}:${i}">` + (act ? r(x, y, 20, 9, MODES[i].c) : r(x, y, 20, 9, '#040c0c', '#3f3f3f')) + `</g>`;
+    }
+  });
+  el.innerHTML = s;
+}
+document.getElementById('s2').addEventListener('click', e => {
+  const g = e.target.closest('[data-a]'); if (!g) return;
+  const p = g.dataset.a.split(':');
+  if (p[0] === 'set') S2.av.find(x => x.id === +p[1]).mode = +p[2];
+  m2();
+});
+
+/* ---------- maquette 3 : barre de l'escadron + exception ---------- */
+const S3 = { av: AVIONS().map(a => ({ ...a, mode: null })), squad: 1, sel: 11 };
+S3.av.find(a => a.id === 11).mode = 2;
+const eff3 = a => (a.mode === null ? S3.squad : a.mode);
+function m3() {
+  const el = document.getElementById('s3');
+  S3.av.forEach(a => { a.eff = eff3(a); });
+  let s = fond(S3.av, S3.sel, a => a.mode !== null);
+  const a = S3.av.find(v => v.id === S3.sel);
+  if (a) {
+    s += `<g class="b" data-a="fermer">${r(0, 0, 256, 256, 'rgba(0,0,0,.5)')}</g>`;
+    s += fenetre(150, 92, 96, 116, nom(a).toUpperCase());
+    s += t(154, 112, 'SPEED', '#8fe0e0', 'start', 6);
+    MODES.forEach((m, i) => { s += bouton(155, 116 + i * 18, 86, 15, m.n, a.mode === i, m.c, 'mode:' + i); });
+    const suit = a.mode === null;
+    s += `<g class="b" data-a="suit">` + (suit ? r(155, 172, 86, 15, '#7fa0ff') : r(155, 172, 86, 15, '#040c0c', '#3f3f3f')) +
+         t(198, 182.6, "SUIT L'ESCADRON", suit ? '#000' : '#bccccc', 'middle', 6.3) + `</g>`;
+    s += t(198, 198, suit ? 'mode = celui de la barre' : 'exception (étoile *)', C.doux, 'middle', 5.2);
+  }
+  // barre de l'escadron (dessinée par-dessus, comme sur le Mac)
+  s += r(52, 230, 198, 20, 'rgba(0,0,0,.85)');
+  s += t(58, 243, 'SQUADRON', '#9cc', 'start', 6.5);
+  const xs = [[131, 30], [163, 44], [209, 38]];
+  MODES.forEach((m, i) => { s += bouton(xs[i][0], 233, xs[i][1], 14, m.n, S3.squad === i, m.c, 'squad:' + i); });
+  el.innerHTML = s;
+}
+document.getElementById('s3').addEventListener('click', e => {
+  const g = e.target.closest('[data-a]'); if (!g) return;
+  const [k, v] = g.dataset.a.split(':');
+  if (k === 'avion') S3.sel = +v;
+  else if (k === 'fermer') S3.sel = null;
+  else if (k === 'mode') S3.av.find(x => x.id === S3.sel).mode = +v;
+  else if (k === 'suit') S3.av.find(x => x.id === S3.sel).mode = null;
+  else if (k === 'squad') S3.squad = +v;
+  m3();
+});
+
+m1(); m2(); m3();
+</script>
+</body>
+</html>

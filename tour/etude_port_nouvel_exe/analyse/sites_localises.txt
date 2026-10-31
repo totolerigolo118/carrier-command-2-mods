@@ -1,0 +1,136 @@
+Localisation des sites par le contexte desassemble (capstone). LECTURE SEULE.
+ancien : C:/Users/UTILISATEUR/Documents/cc2-port-travail/carrier_command_ancien_original_1C9A01C3.exe  sha 1C9A01C3007CB2BEC2A04D716812CF9F24C87EFA11056395C89DDD7D2C341026
+nouveau: C:/Users/UTILISATEUR/Documents/cc2-port-travail/carrier_command_nouveau_steam_461E1262.exe  sha 461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A
+zone balayee : tout .text ; instructions ancien 2569512, nouveau 2569837
+
+ascenseur_x2           0x00400310 en-tete (hors code) -> 0x00400310 sur : bourrage nul de l'en-tete : 0x310-0x400 dans les deux exe, octets du champ = 00000000
+ascenseur_x2           0x006ea0a1 -> 0x006ea1b1 (+0x110) imm   ctx 64+64, identique 523/6348 instr., sur
+        ancien  0x006ea09e mov dword ptr [edi + 8], 0x3ecccccd
+        nouveau 0x006ea1ae mov dword ptr [edi + 8], 0x3ecccccd
+ascenseur_x2           0x006f9811 -> 0x006f9921 (+0x110) abs   ctx 64+64, identique 7672/7867 instr., sur
+        ancien  0x006f980d movss xmm2, dword ptr [0xdb76c8]
+        nouveau 0x006f991d movss xmm2, dword ptr [0xdb7700]
+ascenseur_x2           0x006f9845 -> 0x006f9955 (+0x110) abs   ctx 64+64, identique 7684/7855 instr., sur
+        ancien  0x006f9841 addss xmm0, dword ptr [0xdb71d0]
+        nouveau 0x006f9951 addss xmm0, dword ptr [0xdb7208]
+ascenseur_x2           0x006fb2ce -> 0x006fb3de (+0x110) abs   ctx 64+64, identique 9227/6312 instr., sur
+        ancien  0x006fb2ca addss xmm0, dword ptr [0xdb71d0]
+        nouveau 0x006fb3da addss xmm0, dword ptr [0xdb7208]
+ascenseur_x2           0x006fb2e9 -> 0x006fb3f9 (+0x110) abs   ctx 64+64, identique 9232/6307 instr., sur
+        ancien  0x006fb2e5 movss xmm1, dword ptr [0xdb76c8]
+        nouveau 0x006fb3f5 movss xmm1, dword ptr [0xdb7700]
+ascenseur_x2           0x006fcbaa -> 0x006fccba (+0x110) abs   ctx 64+64, identique 10977/4562 instr., sur
+        ancien  0x006fcba6 addss xmm0, dword ptr [0xdb71d0]
+        nouveau 0x006fccb6 addss xmm0, dword ptr [0xdb7208]
+ascenseur_x2           0x006fcbb2 -> 0x006fccc2 (+0x110) abs   ctx 64+64, identique 10978/4561 instr., sur
+        ancien  0x006fcbae movss xmm1, dword ptr [0xdb76c8]
+        nouveau 0x006fccbe movss xmm1, dword ptr [0xdb7700]
+ascenseur_x2           0x006fce4e -> 0x006fcf5e (+0x110) abs   ctx 64+64, identique 11115/4424 instr., sur
+        ancien  0x006fce4a addss xmm0, dword ptr [0xdb71d0]
+        nouveau 0x006fcf5a addss xmm0, dword ptr [0xdb7208]
+ascenseur_x2           0x006fce56 -> 0x006fcf66 (+0x110) abs   ctx 64+64, identique 11116/4423 instr., sur
+        ancien  0x006fce52 movss xmm3, dword ptr [0xdb76c8]
+        nouveau 0x006fcf62 movss xmm3, dword ptr [0xdb7700]
+ascenseur_x2           0x006fd8d5 -> 0x006fd9e5 (+0x110) abs   ctx 64+64, identique 11698/3841 instr., sur
+        ancien  0x006fd8d1 addss xmm0, dword ptr [0xdb71d0]
+        nouveau 0x006fd9e1 addss xmm0, dword ptr [0xdb7208]
+ascenseur_x2           0x006fd8f0 -> 0x006fda00 (+0x110) abs   ctx 64+64, identique 11702/3837 instr., sur
+        ancien  0x006fd8ec movss xmm3, dword ptr [0xdb76c8]
+        nouveau 0x006fd9fc movss xmm3, dword ptr [0xdb7700]
+ascenseur_x2           0x006fddb5 -> 0x006fdec5 (+0x110) abs   ctx 64+64, identique 11969/3570 instr., sur
+        ancien  0x006fddb1 movss xmm2, dword ptr [0xdb71d0]
+        nouveau 0x006fdec1 movss xmm2, dword ptr [0xdb7208]
+ascenseur_x2           0x006fddbd -> 0x006fdecd (+0x110) abs   ctx 64+64, identique 11970/3569 instr., sur
+        ancien  0x006fddb9 movss xmm5, dword ptr [0xdb76c8]
+        nouveau 0x006fdec9 movss xmm5, dword ptr [0xdb7700]
+ascenseur_x2           0x006ffa68 -> 0x006ffb78 (+0x110) abs   ctx 64+64, identique 13521/2018 instr., sur
+        ancien  0x006ffa64 movss xmm5, dword ptr [0xdb76c8]
+        nouveau 0x006ffb74 movss xmm5, dword ptr [0xdb7700]
+ascenseur_x2           0x006ffaef -> 0x006ffbff (+0x110) abs   ctx 64+64, identique 13546/1993 instr., sur
+        ancien  0x006ffaeb addss xmm0, dword ptr [0xdb71d0]
+        nouveau 0x006ffbfb addss xmm0, dword ptr [0xdb7208]
+ascenseur_x2           0x00700f26 -> 0x00701036 (+0x110) abs   ctx 64+64, identique 14668/871 instr., sur
+        ancien  0x00700f22 movss xmm2, dword ptr [0xdb7224]
+        nouveau 0x00701032 movss xmm2, dword ptr [0xdb725c]
+ascenseur_x2           0x00700f31 -> 0x00701041 (+0x110) abs   ctx 64+64, identique 14670/869 instr., sur
+        ancien  0x00700f2d movss xmm1, dword ptr [0xdb7c14]
+        nouveau 0x0070103d movss xmm1, dword ptr [0xdb7c4c]
+ascenseur_x2           0x00700f82 -> 0x00701092 (+0x110) abs   ctx 64+64, identique 14686/853 instr., sur
+        ancien  0x00700f7e movss xmm1, dword ptr [0xdb7be4]
+        nouveau 0x0070108e movss xmm1, dword ptr [0xdb7c1c]
+ascenseur_x2           0x00700f9a -> 0x007010aa (+0x110) abs   ctx 64+64, identique 14690/849 instr., sur
+        ancien  0x00700f96 movss xmm2, dword ptr [0xdb71bc]
+        nouveau 0x007010a6 movss xmm2, dword ptr [0xdb71f4]
+ascenseur_x2           0x00701035 -> 0x00701145 (+0x110) abs   ctx 64+64, identique 14720/819 instr., sur
+        ancien  0x00701031 movss xmm2, dword ptr [0xdb7224]
+        nouveau 0x00701141 movss xmm2, dword ptr [0xdb725c]
+ascenseur_x2           0x00701040 -> 0x00701150 (+0x110) abs   ctx 64+64, identique 14722/817 instr., sur
+        ancien  0x0070103c movss xmm1, dword ptr [0xdb7c14]
+        nouveau 0x0070114c movss xmm1, dword ptr [0xdb7c4c]
+ascenseur_x2           0x00701083 -> 0x00701193 (+0x110) abs   ctx 64+64, identique 14735/804 instr., sur
+        ancien  0x0070107f movss xmm1, dword ptr [0xdb7be4]
+        nouveau 0x0070118f movss xmm1, dword ptr [0xdb7c1c]
+ascenseur_x2           0x007010a6 -> 0x007011b6 (+0x110) abs   ctx 64+64, identique 14741/798 instr., sur
+        ancien  0x007010a2 movss xmm2, dword ptr [0xdb71bc]
+        nouveau 0x007011b2 movss xmm2, dword ptr [0xdb71f4]
+ascenseur_x2           0x00701124 -> 0x00701234 (+0x110) abs   ctx 64+64, identique 14764/775 instr., sur
+        ancien  0x00701120 movss xmm2, dword ptr [0xdb71bc]
+        nouveau 0x00701230 movss xmm2, dword ptr [0xdb71f4]
+ascenseur_x2           0x0070112c -> 0x0070123c (+0x110) abs   ctx 64+64, identique 14765/774 instr., sur
+        ancien  0x00701128 movss xmm1, dword ptr [0xdb7be4]
+        nouveau 0x00701238 movss xmm1, dword ptr [0xdb7c1c]
+ascenseur_x2           0x007011b6 -> 0x007012c6 (+0x110) abs   ctx 64+64, identique 14794/745 instr., sur
+        ancien  0x007011b2 movss xmm2, dword ptr [0xdb71bc]
+        nouveau 0x007012c2 movss xmm2, dword ptr [0xdb71f4]
+ascenseur_x2           0x007011be -> 0x007012ce (+0x110) abs   ctx 64+64, identique 14795/744 instr., sur
+        ancien  0x007011ba movss xmm1, dword ptr [0xdb7be4]
+        nouveau 0x007012ca movss xmm1, dword ptr [0xdb7c1c]
+ascenseur_x2           0x00701219 -> 0x00701329 (+0x110) abs   ctx 64+64, identique 14815/724 instr., sur
+        ancien  0x00701215 movss xmm2, dword ptr [0xdb71c4]
+        nouveau 0x00701325 movss xmm2, dword ptr [0xdb71fc]
+ascenseur_x2           0x00701225 -> 0x00701335 (+0x110) abs   ctx 64+64, identique 14817/722 instr., sur
+        ancien  0x00701221 movss xmm1, dword ptr [0xdb7bec]
+        nouveau 0x00701331 movss xmm1, dword ptr [0xdb7c24]
+ascenseur_x2           0x00705c14 -> 0x00705d24 (+0x110) abs   ctx 64+64, identique 2224/954 instr., sur
+        ancien  0x00705c10 movss xmm3, dword ptr [0xdb71b0]
+        nouveau 0x00705d20 movss xmm3, dword ptr [0xdb71e8]
+ascenseur_x2           0x00705c3e -> 0x00705d4e (+0x110) abs   ctx 64+64, identique 2232/946 instr., sur
+        ancien  0x00705c3a maxss xmm1, dword ptr [0xdb7be0]
+        nouveau 0x00705d4a maxss xmm1, dword ptr [0xdb7c18]
+atterrissage_cercle    0x0070137f -> 0x0070148f (+0x110) imm   ctx 64+64, identique 14888/651 instr., sur
+        ancien  0x00701379 mov dword ptr [ebp - 0x2a4], 0x44160000
+        nouveau 0x00701489 mov dword ptr [ebp - 0x2a4], 0x44160000
+atterrissage_cercle    0x00701d5e -> 0x00701e6e (+0x110) abs   ctx 64+64, identique 15420/119 instr., sur
+        ancien  0x00701d5b comiss xmm0, dword ptr [0xdb7a70]
+        nouveau 0x00701e6b comiss xmm0, dword ptr [0xdb7aa8]
+atterrissage_cercle    0x00701f52 -> 0x00702062 (+0x110) abs   ctx 20+20, identique 15516/23 instr., sur
+        ancien  0x00701f4e movss xmm0, dword ptr [0xdb7a70]
+        nouveau 0x0070205e movss xmm0, dword ptr [0xdb7aa8]
+atterrissage_creneau   0x007019fc -> 0x00701b0c (+0x110) rel32 ctx 64+64, identique 15251/288 instr., sur
+        ancien  0x007019fa jbe 0x701b04
+        nouveau 0x00701b0a jbe 0x701c14
+atterrissage_creneau   0x00701d35 -> 0x00701e45 (+0x110) rel32 ctx 64+64, identique 15413/126 instr., sur
+        ancien  0x00701d33 jbe 0x701b04
+        nouveau 0x00701e43 jbe 0x701c14
+atterrissage_creneau   0x00701d4f -> 0x00701e5f (+0x110) rel32 ctx 64+64, identique 15418/121 instr., sur
+        ancien  0x00701d4e jmp 0x701b04
+        nouveau 0x00701e5e jmp 0x701c14
+helicos_approche_x2    0x006fe1b7 -> 0x006fe2c7 (+0x110) abs   ctx 64+64, identique 12192/3347 instr., sur
+        ancien  0x006fe1b3 addss xmm2, dword ptr [0xdb79b8]
+        nouveau 0x006fe2c3 addss xmm2, dword ptr [0xdb79f0]
+pont_retour_x2         0x006fddad -> 0x006fdebd (+0x110) abs   ctx 64+64, identique 11968/3571 instr., sur
+        ancien  0x006fdda9 movss xmm7, dword ptr [0xdb798c]
+        nouveau 0x006fdeb9 movss xmm7, dword ptr [0xdb79c4]
+temps_x2               0x00835ccb -> 0x00835dfb (+0x130) imm   ctx 64+64, identique 1445/67242 instr., sur
+        ancien  0x00835cc5 mov dword ptr [edi + 0x140], 0x3f800000
+        nouveau 0x00835df5 mov dword ptr [edi + 0x140], 0x3f800000
+
+--- Coherence globale
+references absolues vues dans les fenetres : 58 anciennes adresses ; correspondances multiples : 0
+cibles relatives (call/jmp/jcc) vues : 114 ; correspondances multiples : 0
+ordre conserve : oui ; doublons de nouvelle adresse : non
+
+--- Resume
+statuts : sur=41
+
+decalages observes : +0x110 (x39), +0x130 (x1)

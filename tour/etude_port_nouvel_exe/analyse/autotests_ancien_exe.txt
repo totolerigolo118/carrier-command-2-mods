@@ -1,0 +1,15 @@
+
+== 1. cycle normal : etat, a blanc, activer, deja actif, retirer
+
+== 2. le fichier patche relu au desassembleur (capstone) : 31 sites
+
+== 3. refus : fichier abime, etat melange, mauvaise sauvegarde, vrai jeu, options inconnues
+
+== 4. second module temps_x2, combinaison des deux modules, verification globale
+
+== 5. modules atterrissage_creneau / atterrissage_cercle : octets recalcules a part, relecture, combinaisons, retour
+
+== 6. securite : jamais d'ecrasement du fichier entier sur un exe INCONNU ou d'un autre build ; drapeau explicite pour la restauration
+
+182 verifications, 0 echec(s)
+RESULTAT : TOUT PASSE

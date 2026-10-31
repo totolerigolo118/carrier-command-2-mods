@@ -1,0 +1,4679 @@
+Alignement du code (.text) ancien 1C9A01C3... / nouveau 461E1262... (jokers : adresses absolues et deplacements relatifs)
+instructions : ancien 2569512, nouveau 2569837
+suites egales : 598, couvrant 2560297 instructions de l'ancien
+blocs qui different : 597 (9215 instructions de l'ancien, 9540 du nouveau)
+
+--- chaque bloc : ancien i0-i1 (adresse) | nouveau j0-j1 (adresse) | type | decalage des adresses avant/apres
+0x00449b27 (+18 instr.) | 0x00449b27 (+21 instr.) | remplacement | decalage +0x0
+      - 00449b27 mov ebx, ecx
+      - 00449b29 push esi
+      - 00449b2a lea esi, [ebx - 0x10]
+      - 00449b2d mov dword ptr [ebp - 0xc], ebx
+      + 00449b27 mov ebx, dword ptr [ebp + 8]
+      + 00449b2a mov dword ptr [ebp - 0xc], ecx
+      + 00449b2d mov eax, dword ptr [ebx]
+      + 00449b2f cmp eax, dword ptr [ecx - 0x14]
+0x00449b7e (+6 instr.) | 0x00449b81 (+6 instr.) | remplacement | decalage +0x3
+      - 00449b7e mov ecx, dword ptr [esi + 4]
+      - 00449b81 and edi, 0xf
+      - 00449b84 mov eax, dword ptr [esi]
+      - 00449b86 mov byte ptr [ecx + eax - 1], bl
+      + 00449b81 mov ecx, dword ptr [esi]
+      + 00449b83 and edi, 0xf
+      + 00449b86 mov eax, dword ptr [esi + 4]
+      + 00449b89 mov byte ptr [ecx + eax - 1], bl
+0x00449bba (+28 instr.) | 0x00449bbd (+15 instr.) | remplacement | decalage +0x3
+      - 00449bba mov ecx, dword ptr [ebp + 8]
+      - 00449bbd mov eax, dword ptr [ebp - 4]
+      - 00449bc0 inc eax
+      - 00449bc1 mov dword ptr [ebp - 4], eax
+      + 00449bbd mov eax, dword ptr [ebp + 8]
+      + 00449bc0 mov ecx, dword ptr [ebp - 4]
+      + 00449bc3 inc ecx
+      + 00449bc4 mov dword ptr [ebp - 4], ecx
+0x0044afc0 (+0 instr.) | 0x0044afb0 (+16 instr.) | insertion | decalage -0x10
+      + 0044afb0 int3 
+      + 0044afb1 int3 
+      + 0044afb2 int3 
+      + 0044afb3 int3 
+0x0044bb23 (+0 instr.) | 0x0044bb23 (+64 instr.) | insertion | decalage +0x0
+      + 0044bb23 and esp, 0xfffffff8
+      + 0044bb26 push ecx
+      + 0044bb27 push ebx
+      + 0044bb28 push esi
+0x00450c00 (+3 instr.) | 0x00450cd0 (+3 instr.) | remplacement | decalage +0xd0
+      - 00450c00 sbb dword ptr [ecx], eax
+      - 00450c02 inc ebp
+      - 00450c03 add byte ptr [ecx + eax + 0x4a40045], bh
+      + 00450cd0 jmp 0x8c4551d6
+      + 00450cd5 add al, byte ptr [ebp]
+      + 00450cd8 je 0x450cdf
+0x00455e40 (+16 instr.) | 0x00455f10 (+0 instr.) | suppression | decalage +0xd0
+      - 00455e40 int3 
+      - 00455e41 int3 
+      - 00455e42 int3 
+      - 00455e43 int3 
+0x00456dd8 (+12 instr.) | 0x00456e98 (+13 instr.) | remplacement | decalage +0xc0
+      - 00456dd8 push edi
+      - 00456dd9 insd dword ptr es:[edi], dx
+      - 00456dda inc ebp
+      - 00456ddb add byte ptr [ebp + ebp*2 + 0x45], ch
+      + 00456e98 pop ss
+      + 00456e99 outsb dx, byte ptr [esi]
+      + 00456e9a inc ebp
+      + 00456e9b add byte ptr [esi + ebp*2], ch
+0x00457c40 (+6 instr.) | 0x00457d00 (+8 instr.) | remplacement | decalage +0xc0
+      - 00457c40 popfd 
+      - 00457c41 jnp 0x457c88
+      - 00457c43 add byte ptr [ebp + 0x5200457b], bl
+      - 00457c49 jnp 0x457c90
+      + 00457d00 pop ebp
+      + 00457d01 jl 0x457d48
+      + 00457d03 add byte ptr [ebp + 0x7c], bl
+      + 00457d06 inc ebp
+0x0045bff0 (+16 instr.) | 0x0045c0b0 (+0 instr.) | suppression | decalage +0xc0
+      - 0045bff0 int3 
+      - 0045bff1 int3 
+      - 0045bff2 int3 
+      - 0045bff3 int3 
+0x00461ff0 (+16 instr.) | 0x004620a0 (+0 instr.) | suppression | decalage +0xb0
+      - 00461ff0 int3 
+      - 00461ff1 int3 
+      - 00461ff2 int3 
+      - 00461ff3 int3 
+0x0046b244 (+32 instr.) | 0x0046b2e4 (+32 instr.) | remplacement | decalage +0xa0
+      - 0046b244 mov al, byte ptr [0x46]
+      - 0046b248 xor al, 0xa1
+      - 0046b24a inc esi
+      - 0046b24b add byte ptr [ecx], ah
+      + 0046b2e4 pop es
+      + 0046b2e5 mov eax, dword ptr [0xa1d40046]
+      + 0046b2ea inc esi
+      + 0046b2eb add cl, al
+0x0046b2b8 (+6 instr.) | 0x0046b358 (+4 instr.) | remplacement | decalage +0xa0
+      - 0046b2b8 xchg ebp, eax
+      - 0046b2b9 lodsb al, byte ptr [esi]
+      - 0046b2ba inc esi
+      - 0046b2bb add byte ptr [eax - 0x53], bl
+      + 0046b358 xor eax, 0xf80046ad
+      + 0046b35d lodsd eax, dword ptr [esi]
+      + 0046b35e inc esi
+      + 0046b35f add dh, cl
+0x0046dcb0 (+8 instr.) | 0x0046dd50 (+8 instr.) | remplacement | decalage +0xa0
+      - 0046dcb0 xchg ebp, eax
+      - 0046dcb1 fld dword ptr [esi]
+      - 0046dcb4 jmp 0xfd472392
+      - 0046dcb9 fld dword ptr [esi]
+      + 0046dd50 xor eax, 0x890046da
+      + 0046dd55 fiadd dword ptr [esi]
+      + 0046dd58 popfd 
+      + 0046dd59 fiadd dword ptr [esi]
+0x0046e10c (+5 instr.) | 0x0046e1ac (+7 instr.) | remplacement | decalage +0xa0
+      - 0046e10c cmp ebx, edi
+      - 0046e10e inc esi
+      - 0046e10f add byte ptr [edi - 0x2affb921], al
+      - 0046e115 fild word ptr [esi]
+      + 0046e1ac fcmovnu st(0), st(7)
+      + 0046e1ae inc esi
+      + 0046e1af add byte ptr [edi], ah
+      + 0046e1b1 loopne 0x46e1f9
+0x0046e350 (+8 instr.) | 0x0046e3f0 (+6 instr.) | remplacement | decalage +0xa0
+      - 0046e350 test cl, ah
+      - 0046e352 inc esi
+      - 0046e353 add dh, cl
+      - 0046e355 loope 0x46e39d
+      + 0046e3f0 and al, 0xe2
+      + 0046e3f2 inc esi
+      + 0046e3f3 add byte ptr [esi - 0x1e], ch
+      + 0046e3f6 inc esi
+0x00471e00 (+0 instr.) | 0x00471ea0 (+16 instr.) | insertion | decalage +0xa0
+      + 00471ea0 int3 
+      + 00471ea1 int3 
+      + 00471ea2 int3 
+      + 00471ea3 int3 
+0x0047a054 (+16 instr.) | 0x0047a104 (+14 instr.) | remplacement | decalage +0xb0
+      - 0047a054 dec ecx
+      - 0047a055 lcall 0x47, 0x9aff0047
+      - 0047a05c ja 0x479ff9
+      - 0047a05e inc edi
+      + 0047a104 stc 
+      + 0047a105 lcall 0x47, 0x9baf0047
+      + 0047a10c daa 
+      + 0047a10d pushfd 
+0x0047a88c (+20 instr.) | 0x0047a93c (+17 instr.) | remplacement | decalage +0xb0
+      - 0047a88c sub eax, 0x8c0047a5
+      - 0047a891 movsd dword ptr es:[edi], dword ptr [esi]
+      - 0047a892 inc edi
+      - 0047a893 add bh, dl
+      + 0047a93c frstor dword ptr [ebp - 0x59c3ffb9]
+      + 0047a942 inc edi
+      + 0047a943 add byte ptr [edi - 0xfffb85a], al
+      + 0047a949 cmpsb byte ptr [esi], byte ptr es:[edi]
+0x0047b034 (+19 instr.) | 0x0047b0e4 (+22 instr.) | remplacement | decalage +0xb0
+      - 0047b034 call 0x3147f7e6
+      - 0047b039 scasb al, byte ptr es:[edi]
+      - 0047b03a inc edi
+      - 0047b03b add byte ptr [eax - 0x52], ch
+      + 0047b0e4 cwde 
+      + 0047b0e5 scasb al, byte ptr es:[edi]
+      + 0047b0e6 inc edi
+      + 0047b0e7 add cl, ah
+0x0047be74 (+16 instr.) | 0x0047bf24 (+14 instr.) | remplacement | decalage +0xb0
+      - 0047be74 out dx, al
+      - 0047be75 mov edx, 0xbb310047
+      - 0047be7a inc edi
+      - 0047be7b add byte ptr [edi - 0x45], cl
+      + 0047bf24 sahf 
+      + 0047bf25 mov ebx, 0xbbe10047
+      + 0047bf2a inc edi
+      + 0047bf2b add bh, bh
+0x0047d350 (+41 instr.) | 0x0047d400 (+51 instr.) | remplacement | decalage +0xb0
+      - 0047d350 xor cl, cl
+      - 0047d352 inc edi
+      - 0047d353 add byte ptr [edx - 0x37], dl
+      - 0047d356 inc edi
+      + 0047d400 loopne 0x47d3cb
+      + 0047d402 inc edi
+      + 0047d403 add byte ptr [edx], al
+      + 0047d405 retf 0x47
+0x00481670 (+16 instr.) | 0x00481720 (+0 instr.) | suppression | decalage +0xb0
+      - 00481670 int3 
+      - 00481671 int3 
+      - 00481672 int3 
+      - 00481673 int3 
+0x0048a590 (+0 instr.) | 0x0048a630 (+16 instr.) | insertion | decalage +0xa0
+      + 0048a630 int3 
+      + 0048a631 int3 
+      + 0048a632 int3 
+      + 0048a633 int3 
+0x004913f4 (+23 instr.) | 0x004914a4 (+16 instr.) | remplacement | decalage +0xb0
+      - 004913f4 mov dh, 0x13
+      - 004913f6 dec ecx
+      - 004913f7 add cl, ch
+      - 004913f9 adc ecx, dword ptr [ecx]
+      + 004914a4 adc al, 0x49
+      + 004914a7 add byte ptr [ecx + 0x69004914], bl
+      + 004914ad adc al, 0x49
+      + 004914af add byte ptr [ebp + 0x6f004914], cl
+0x00491708 (+14 instr.) | 0x004917b8 (+11 instr.) | remplacement | decalage +0xb0
+      - 00491708 push ss
+      - 0049170a dec ecx
+      - 0049170b add byte ptr [ebx + 0x16], bh
+      - 0049170e dec ecx
+      + 004917b8 adc eax, 0x2b004917
+      + 004917bd pop ss
+      + 004917be dec ecx
+      + 004917bf add byte ptr [ecx + 0x17], al
+0x00491f10 (+30 instr.) | 0x00491fc0 (+29 instr.) | remplacement | decalage +0xb0
+      - 00491f10 mov ah, 0x1d
+      - 00491f12 dec ecx
+      - 00491f13 add byte ptr [edx + 0x1c00491d], bh
+      - 00491f19 push ds
+      + 00491fc0 push ds
+      + 00491fc2 dec ecx
+      + 00491fc3 add byte ptr [edx + 0x1e], ch
+      + 00491fc6 dec ecx
+0x00491f63 (+1 instr.) | 0x00492014 (+1 instr.) | remplacement | decalage +0xb1
+      - 00491f63 or al, byte ptr [eax]
+      + 00492014 add byte ptr [edx], cl
+0x00491f77 (+1 instr.) | 0x00492028 (+1 instr.) | remplacement | decalage +0xb1
+      - 00491f77 or al, byte ptr [eax]
+      + 00492028 add byte ptr [edx], cl
+0x00491f95 (+1 instr.) | 0x00492046 (+1 instr.) | remplacement | decalage +0xb1
+      - 00491f95 or al, byte ptr [ecx]
+      + 00492046 add dword ptr [edx], ecx
+0x00491fa9 (+6 instr.) | 0x0049205a (+6 instr.) | remplacement | decalage +0xb1
+      - 00491fa9 or al, byte ptr [edx]
+      - 00491fab or cl, byte ptr [edx]
+      - 00491fad or cl, byte ptr [edx]
+      - 00491faf or cl, byte ptr [edx]
+      + 0049205a add cl, byte ptr [edx]
+      + 0049205c or cl, byte ptr [edx]
+      + 0049205e or cl, byte ptr [edx]
+      + 00492060 or cl, byte ptr [edx]
+0x00491fc7 (+1 instr.) | 0x00492078 (+1 instr.) | remplacement | decalage +0xb1
+      - 00491fc7 or al, byte ptr [edx + ecx]
+      + 00492078 add al, 0xa
+0x00492010 (+29 instr.) | 0x004920c0 (+29 instr.) | remplacement | decalage +0xb0
+      - 00492010 xchg ebp, eax
+      - 00492011 push ds
+      - 00492012 dec ecx
+      - 00492013 add byte ptr [esi + ebx], bl
+      + 004920c0 inc ebp
+      + 004920c1 pop ds
+      + 004920c2 dec ecx
+      + 004920c3 add ah, cl
+0x00493bec (+9 instr.) | 0x00493c9c (+7 instr.) | remplacement | decalage +0xb0
+      - 00493bec cmp dword ptr [ebx], edi
+      - 00493bee dec ecx
+      - 00493bef add ch, al
+      - 00493bf1 cmp cl, byte ptr [ecx]
+      + 00493c9c jmp 0x754985dc
+      + 00493ca1 cmp ecx, dword ptr [ecx]
+      + 00493ca4 fdiv dword ptr [edi]
+      + 00493ca6 dec ecx
+0x00494738 (+45 instr.) | 0x004947e8 (+31 instr.) | remplacement | decalage +0xb0
+      - 00494738 movsd dword ptr es:[edi], dword ptr [esi]
+      - 00494739 inc esi
+      - 0049473a dec ecx
+      - 0049473b add byte ptr [esi + eax*2 + 0x46b30049], ch
+      + 004947e8 push ebp
+      + 004947e9 inc edi
+      + 004947ea dec ecx
+      + 004947eb add byte ptr [edi + eax*2 + 0x49], bl
+0x00494900 (+32 instr.) | 0x004949b0 (+27 instr.) | remplacement | decalage +0xb0
+      - 00494900 xor ecx, dword ptr [eax + 0x49]
+      - 00494903 add byte ptr [edx], bh
+      - 00494905 dec eax
+      - 00494906 dec ecx
+      + 004949b0 jecxz 0x4949fa
+      + 004949b2 dec ecx
+      + 004949b3 add dl, ch
+      + 004949b5 dec eax
+0x00499274 (+21 instr.) | 0x00499324 (+15 instr.) | remplacement | decalage +0xb0
+      - 00499274 and edx, dword ptr [eax - 0x7002ffb7]
+      - 0049927a dec ecx
+      - 0049927b add byte ptr [eax], cl
+      - 0049927d nop 
+      + 00499324 rcl dword ptr [eax - 0x6f52ffb7], cl
+      + 0049932a dec ecx
+      + 0049932b add byte ptr [eax - 0x2cffb670], bh
+      + 00499331 nop 
+0x00499448 (+7 instr.) | 0x004994f8 (+9 instr.) | remplacement | decalage +0xb0
+      - 00499448 arpl word ptr [ebx - 0x6c9cffb7], dx
+      - 0049944e dec ecx
+      - 0049944f add byte ptr [ebx - 0x6d], ah
+      - 00499452 dec ecx
+      + 004994f8 adc edx, dword ptr [ecx + ecx*2 + 0x49941300]
+      + 004994ff add byte ptr [ebx], dl
+      + 00499501 xchg esp, eax
+      + 00499502 dec ecx
+0x00499db4 (+8 instr.) | 0x00499e64 (+12 instr.) | remplacement | decalage +0xb0
+      - 00499db4 push ss
+      - 00499db5 lcall 0x49, 0x9a200049
+      - 00499dbc sub eax, 0x1600499a
+      - 00499dc1 lcall 0x49, 0x9a3a0049
+      + 00499e64 .byte 0xc6
+      + 00499e65 lcall 0x49, 0x9ad00049
+      + 00499e6c fstp qword ptr [edx - 0x6539ffb7]
+      + 00499e72 dec ecx
+0x0049aff0 (+16 instr.) | 0x0049b0a0 (+0 instr.) | suppression | decalage +0xb0
+      - 0049aff0 int3 
+      - 0049aff1 int3 
+      - 0049aff2 int3 
+      - 0049aff3 int3 
+0x0049b02c (+9 instr.) | 0x0049b0cc (+9 instr.) | remplacement | decalage +0xa0
+      - 0049b02c adc esi, dword ptr [eax - 0x4fd7ffb7]
+      - 0049b032 dec ecx
+      - 0049b033 add byte ptr [eax + esi*4], bl
+      - 0049b036 dec ecx
+      + 0049b0cc mov bl, 0xb0
+      + 0049b0ce dec ecx
+      + 0049b0cf add al, cl
+      + 0049b0d1 mov al, 0x49
+0x0049c464 (+53 instr.) | 0x0049c504 (+53 instr.) | remplacement | decalage +0xa0
+      - 0049c464 pop edx
+      - 0049c465 les ecx, ptr [ecx]
+      - 0049c468 and eax, esp
+      - 0049c46a dec ecx
+      + 0049c504 cli 
+      + 0049c505 les ecx, ptr [ecx]
+      + 0049c508 ret 
+      + 0049c509 les ecx, ptr [ecx]
+0x0049fec4 (+14 instr.) | 0x0049ff64 (+14 instr.) | remplacement | decalage +0xa0
+      - 0049fec4 and ah, bh
+      - 0049fec6 dec ecx
+      - 0049fec7 add byte ptr [eax], ch
+      - 0049fec9 cld 
+      + 0049ff64 sar ah, 0x49
+      + 0049ff67 add al, cl
+      + 0049ff69 cld 
+      + 0049ff6a dec ecx
+0x004a1cac (+12 instr.) | 0x004a1d4c (+9 instr.) | remplacement | decalage +0xa0
+      - 004a1cac out dx, al
+      - 004a1cad sbb ecx, dword ptr [edx]
+      - 004a1cb0 adc al, 0x1c
+      - 004a1cb2 dec edx
+      + 004a1d4c mov ds, word ptr [edx + ecx*2]
+      + 004a1d4f add byte ptr [esp + ebx + 0x1cda004a], dh
+      + 004a1d56 dec edx
+      + 004a1d57 add byte ptr [eax], al
+0x004a39b8 (+45 instr.) | 0x004a3a58 (+41 instr.) | remplacement | decalage +0xa0
+      - 004a39b8 mov gs, word ptr [ecx]
+      - 004a39ba dec edx
+      - 004a39bb add byte ptr [esi], bh
+      - 004a39bd sub ecx, dword ptr [edx]
+      + 004a3a58 sub cl, byte ptr cs:[edx]
+      + 004a3a5c fisubr word ptr [ebx]
+      + 004a3a5e dec edx
+      + 004a3a5f add byte ptr [esi + ebp + 0x4a], ch
+0x004a60d4 (+3 instr.) | 0x004a6174 (+5 instr.) | remplacement | decalage +0xa0
+      - 004a60d4 and byte ptr [eax + 0x4a], 0
+      - 004a60d8 lea esp, [eax + 0x4a]
+      - 004a60db add byte ptr [ecx + 0x4a60], bl
+      + 004a6174 and byte ptr [ecx + 0x4a], ah
+      + 004a6177 add byte ptr [0x39004a61], ch
+      + 004a617d popal 
+      + 004a617e dec edx
+0x004a6454 (+9 instr.) | 0x004a64f4 (+8 instr.) | remplacement | decalage +0xa0
+      - 004a6454 cmp eax, 0xd0004a61
+      - 004a6459 popal 
+      - 004a645a dec edx
+      - 004a645b add byte ptr [ecx + 0x62], ah
+      + 004a64f4 frstor dword ptr [ecx + 0x4a]
+      + 004a64f7 add byte ptr [eax + 0x62], dh
+      + 004a64fa dec edx
+      + 004a64fb add byte ptr [ecx], al
+0x004a70fc (+12 instr.) | 0x004a719c (+13 instr.) | remplacement | decalage +0xa0
+      - 004a70fc rep insd dword ptr es:[edi], dx
+      - 004a70fe dec edx
+      - 004a70ff add byte ptr [ecx + 0x6e], ah
+      - 004a7102 dec edx
+      + 004a719c xchg ebx, eax
+      + 004a719d outsb dx, byte ptr [esi]
+      + 004a719e dec edx
+      + 004a719f add byte ptr [ecx], al
+0x004a7684 (+8 instr.) | 0x004a7724 (+8 instr.) | remplacement | decalage +0xa0
+      - 004a7684 xor dh, byte ptr [ecx + 0x4a]
+      - 004a7687 add byte ptr [eax], bh
+      - 004a7689 jb 0x4a76d5
+      - 004a768b add byte ptr [eax], bl
+      + 004a7724 sal byte ptr [ecx + 0x4a], cl
+      + 004a7727 add al, bl
+      + 004a7729 jb 0x4a7775
+      + 004a772b add byte ptr [eax - 0x26ffb58d], bh
+0x004a7c9c (+11 instr.) | 0x004a7d3c (+9 instr.) | remplacement | decalage +0xa0
+      - 004a7c9c outsd dx, dword ptr [esi]
+      - 004a7c9d ja 0x4a7ce9
+      - 004a7c9f add byte ptr [eax + edi*2 + 0x4a], ah
+      - 004a7ca3 add byte ptr [esi], dh
+      + 004a7d3c vmread dword ptr [edx], ecx
+      + 004a7d40 add al, 0x79
+      + 004a7d42 dec edx
+      + 004a7d43 add dh, dl
+0x004a7ef8 (+8 instr.) | 0x004a7f98 (+10 instr.) | remplacement | decalage +0xa0
+      - 004a7ef8 movsb byte ptr es:[edi], byte ptr [esi]
+      - 004a7ef9 jge 0x4a7f45
+      - 004a7efb add byte ptr [ebp + 0x7e], cl
+      - 004a7efe dec edx
+      + 004a7f98 inc esp
+      + 004a7f99 jle 0x4a7fe5
+      + 004a7f9b add ch, ch
+      + 004a7f9d jle 0x4a7fe9
+0x004aa1ec (+9 instr.) | 0x004aa28c (+10 instr.) | remplacement | decalage +0xa0
+      - 004aa1ec stc 
+      - 004aa1ed popfd 
+      - 004aa1ee dec edx
+      - 004aa1ef add byte ptr [edi + ebx*4 - 0x5f14ffb6], ch
+      + 004aa28c cdq 
+      + 004aa28d sahf 
+      + 004aa28e dec edx
+      + 004aa28f add byte ptr [eax + 0x4a], cl
+0x004aa4e4 (+337 instr.) | 0x004aa584 (+378 instr.) | remplacement | decalage +0xa0
+      - 004aa4e4 mov byte ptr [edx + ecx*2 + 0x4aa23600], ah
+      - 004aa4eb add bl, bl
+      - 004aa4ed mov byte ptr [0xa31b004a], al
+      - 004aa4f2 dec edx
+      + 004aa584 sub byte ptr [ebp - 0x5d29ffb6], ah
+      + 004aa58a dec edx
+      + 004aa58b add byte ptr [ebx - 0x5d], bh
+      + 004aa58e dec edx
+0x004aac58 (+37 instr.) | 0x004aacf8 (+10 instr.) | remplacement | decalage +0xa0
+      - 004aac58 imul dword ptr [ecx - 0x55feffb6]
+      - 004aac5e dec edx
+      - 004aac5f add byte ptr [ebx], cl
+      - 004aac61 stosb byte ptr es:[edi], al
+      + 004aacf8 xchg edi, eax
+      + 004aacf9 stosb byte ptr es:[edi], al
+      + 004aacfa dec edx
+      + 004aacfb add byte ptr [ecx - 0x54ffb556], ah
+0x004aace7 (+24 instr.) | 0x004aad47 (+73 instr.) | remplacement | decalage +0x60
+      - 004aace7 add byte ptr [ebx + ebp*4 + 0x4a], bl
+      - 004aaceb add byte ptr [ebx - 0x55], ah
+      - 004aacee dec edx
+      - 004aacef add byte ptr [edx - 0x55], ch
+      + 004aad47 add byte ptr [edi - 0x55], bl
+      + 004aad4a dec edx
+      + 004aad4b add byte ptr [ecx - 0x55], ch
+      + 004aad4e dec edx
+0x004ab788 (+25 instr.) | 0x004ab828 (+19 instr.) | remplacement | decalage +0xa0
+      - 004ab788 das 
+      - 004ab789 mov dh, 0x4a
+      - 004ab78b add byte ptr [ecx], ch
+      - 004ab78d mov dh, 0x4a
+      + 004ab828 iretd 
+      + 004ab829 mov dh, 0x4a
+      + 004ab82b add cl, cl
+      + 004ab82d mov dh, 0x4a
+0x004ab823 (+0 instr.) | 0x004ab8be (+1 instr.) | insertion | decalage +0x9b
+      + 004ab8be or eax, 0xd0d0d0d
+0x004ab88b (+87 instr.) | 0x004ab92b (+88 instr.) | remplacement | decalage +0xa0
+      - 004ab88b or al, 0x7a
+      - 004ab88d mov bh, 0x4a
+      - 004ab88f add byte ptr [edi + esi*4 + 0x4a], dh
+      - 004ab893 add byte ptr [esi - 0x49], ch
+      + 004ab92b or al, 0x1a
+      + 004ab92d mov eax, 0xb814004a
+      + 004ab932 dec edx
+      + 004ab933 add byte ptr [esi], cl
+0x004ab998 (+10 instr.) | 0x004aba38 (+10 instr.) | remplacement | decalage +0xa0
+      - 004ab998 insb byte ptr es:[edi], dx
+      - 004ab999 mov ecx, 0xb972004a
+      - 004ab99e dec edx
+      - 004ab99f add byte ptr [eax - 0x47], bh
+      + 004aba38 or al, 0xba
+      + 004aba3a dec edx
+      + 004aba3b add byte ptr [edx], dl
+      + 004aba3d mov edx, 0xba18004a
+0x004adba0 (+8 instr.) | 0x004adc40 (+12 instr.) | remplacement | decalage +0xa0
+      - 004adba0 pop ebx
+      - 004adba1 fisttp dword ptr [edx]
+      - 004adba4 fisttp dword ptr [bp + si]
+      - 004adba8 cmp eax, 0x67004adb
+      + 004adc40 sti 
+      + 004adc41 fisttp dword ptr [edx]
+      + 004adc44 pop es
+      + 004adc45 fmul qword ptr [edx]
+0x004ae450 (+10 instr.) | 0x004ae4f0 (+8 instr.) | remplacement | decalage +0xa0
+      - 004ae450 inc esp
+      - 004ae451 in al, 0x4a
+      - 004ae453 add byte ptr [esp + 0x4a], al
+      - 004ae457 add ch, bh
+      + 004ae4f0 in al, 0xe4
+      + 004ae4f2 dec edx
+      + 004ae4f3 add ah, ah
+      + 004ae4f5 in al, 0x4a
+0x004aeba8 (+8 instr.) | 0x004aec48 (+15 instr.) | remplacement | decalage +0xa0
+      - 004aeba8 wait 
+      - 004aeba9 jmp 0x4aebf5
+      - 004aebab add byte ptr [ebx + 0x4f004aeb], bl
+      - 004aebb1 jmp 0x4aebfd
+      + 004aec48 cmp ebp, esp
+      + 004aec4a dec edx
+      + 004aec4b add byte ptr [ebx], bh
+      + 004aec4d in al, dx
+0x004b2370 (+10 instr.) | 0x004b2410 (+7 instr.) | remplacement | decalage +0xa0
+      - 004b2370 arpl word ptr [ebx], sp
+      - 004b2372 dec ebx
+      - 004b2373 add byte ptr [ecx], dl
+      - 004b2375 and dword ptr [ebx], ecx
+      + 004b2410 add esp, dword ptr [ebx + ecx*2]
+      + 004b2413 add byte ptr [ecx + 0x28004b21], dh
+      + 004b2419 and cl, byte ptr [ebx]
+      + 004b241c mov bl, 0x22
+0x004b29bc (+7 instr.) | 0x004b2a5c (+9 instr.) | remplacement | decalage +0xa0
+      - 004b29bc jle 0x4b29e7
+      - 004b29be dec ebx
+      - 004b29bf add byte ptr [esi + 0x29], bh
+      - 004b29c2 dec ebx
+      + 004b2a5c push ds
+      + 004b2a5d sub cl, byte ptr [ebx]
+      + 004b2a60 push ds
+      + 004b2a61 sub cl, byte ptr [ebx]
+0x004b2c9c (+5 instr.) | 0x004b2d3c (+6 instr.) | remplacement | decalage +0xa0
+      - 004b2c9c test byte ptr [ebx + ecx*2], ch
+      - 004b2c9f add byte ptr [esi], bh
+      - 004b2ca1 sub al, 0x4b
+      - 004b2ca3 add byte ptr [eax + 0x2c], cl
+      + 004b2d3c and al, 0x2d
+      + 004b2d3e dec ebx
+      + 004b2d3f add dh, bl
+      + 004b2d41 sub al, 0x4b
+0x004b6ae0 (+11 instr.) | 0x004b6b80 (+15 instr.) | remplacement | decalage +0xa0
+      - 004b6ae0 .byte 0xc7
+      - 004b6ae1 bound ecx, qword ptr [ebx]
+      - 004b6ae4 and bl, byte ptr [edx + 0x4b]
+      - 004b6ae7 add al, bl
+      + 004b6b80 arpl word ptr [bp + di], cx
+      + 004b6b84 ret 0x4b5a
+      + 004b6b87 add byte ptr [eax + 0x5d], bh
+      + 004b6b8a dec ebx
+0x004b758c (+12 instr.) | 0x004b762c (+10 instr.) | remplacement | decalage +0xa0
+      - 004b758c xchg byte ptr [ebx + ecx*2], dh
+      - 004b7590 xlatb 
+      - 004b7591 je 0x4b75de
+      - 004b7593 add byte ptr [ecx + 0x74], bh
+      + 004b762c jne 0x4b767a
+      + 004b762f add byte ptr [edi + 0x75], dh
+      + 004b7632 dec ebx
+      + 004b7633 add byte ptr [ecx], bl
+0x004bbc28 (+4 instr.) | 0x004bbcc8 (+6 instr.) | remplacement | decalage +0xa0
+      - 004bbc28 aad 0xba
+      - 004bbc2a dec ebx
+      - 004bbc2b add byte ptr [edi - 0x66ffb446], dh
+      - 004bbc31 mov edx, 0xba7f004b
+      + 004bbcc8 jne 0x4bbc85
+      + 004bbcca dec ebx
+      + 004bbccb add byte ptr [edi - 0x45], dl
+      + 004bbcce dec ebx
+0x004bc73c (+16 instr.) | 0x004bc7dc (+13 instr.) | remplacement | decalage +0xa0
+      - 004bc73c test eax, 0x87004bc4
+      - 004bc741 les ecx, ptr [ebx]
+      - 004bc744 les ecx, ptr gs:[ebx]
+      - 004bc748 inc edi
+      + 004bc7dc dec ecx
+      + 004bc7dd lds ecx, ptr [ebx]
+      + 004bc7e0 daa 
+      + 004bc7e1 lds ecx, ptr [ebx]
+0x004c08e0 (+419 instr.) | 0x004c0980 (+387 instr.) | remplacement | decalage +0xa0
+      - 004c08e0 jp 0x4c08ab
+      - 004c08e2 dec ebx
+      - 004c08e3 add byte ptr [eax - 0x37], bl
+      - 004c08e6 dec ebx
+      + 004c0980 sbb cl, dl
+      + 004c0982 dec ebx
+      + 004c0983 add al, bh
+      + 004c0985 leave 
+0x004c2a28 (+88 instr.) | 0x004c2ac8 (+101 instr.) | remplacement | decalage +0xa0
+      - 004c2a28 salc 
+      - 004c2a29 adc dword ptr [eax + eax - 0x4c], ecx
+      - 004c2a2d adc dword ptr [eax + eax - 0x6e], ecx
+      - 004c2a31 adc dword ptr [eax + eax + 0x74], ecx
+      + 004c2ac8 jbe 0x4c2adc
+      + 004c2aca dec esp
+      + 004c2acb add byte ptr [edx + edx + 0x4c], dl
+      + 004c2acf add byte ptr [edx], dh
+0x004c478c (+81 instr.) | 0x004c482c (+86 instr.) | remplacement | decalage +0xa0
+      - 004c478c cdq 
+      - 004c478d xor byte ptr [eax + eax + 0x77], cl
+      - 004c4791 xor byte ptr [eax + eax + 0x55], cl
+      - 004c4795 xor byte ptr [eax + eax + 0x37], cl
+      + 004c482c cmp dword ptr [ecx], esi
+      + 004c482e dec esp
+      + 004c482f add byte ptr [edi], dl
+      + 004c4831 xor dword ptr [eax + eax - 0xb], ecx
+0x004c4c2c (+14 instr.) | 0x004c4ccc (+21 instr.) | remplacement | decalage +0xa0
+      - 004c4c2c iretd 
+      - 004c4c2d dec ecx
+      - 004c4c2e dec esp
+      - 004c4c2f add byte ptr [ecx - 0x6cffb3b7], dh
+      + 004c4ccc outsd dx, dword ptr [esi]
+      + 004c4ccd dec edx
+      + 004c4cce dec esp
+      + 004c4ccf add byte ptr [ecx + 0x4a], dl
+0x004c51c8 (+68 instr.) | 0x004c5268 (+74 instr.) | remplacement | decalage +0xa0
+      - 004c51c8 xchg esp, eax
+      - 004c51c9 push ecx
+      - 004c51ca dec esp
+      - 004c51cb add byte ptr [ebx - 0x7dffb3af], cl
+      + 004c5268 xor al, 0x52
+      + 004c526a dec esp
+      + 004c526b add byte ptr [ebx], ch
+      + 004c526d push edx
+0x004c619c (+6 instr.) | 0x004c623c (+10 instr.) | remplacement | decalage +0xa0
+      - 004c619c adc dword ptr [edi + 0x4c], ebx
+      - 004c619f add byte ptr [ebp + 0x5f], ah
+      - 004c61a2 dec esp
+      - 004c61a3 add byte ptr [edi + ebx*2 + 0x6029004c], bh
+      + 004c623c mov cl, 0x5f
+      + 004c623e dec esp
+      + 004c623f add byte ptr [0x5c004c60], al
+      + 004c6245 pushal 
+0x004c6304 (+5 instr.) | 0x004c63a4 (+4 instr.) | remplacement | decalage +0xa0
+      - 004c6304 dec ecx
+      - 004c6305 bound ecx, qword ptr [eax + eax + 0x61]
+      - 004c6309 bound ecx, qword ptr [eax + eax + 0x6a]
+      - 004c630d bound ecx, qword ptr [eax + eax - 0x6f]
+      + 004c63a4 jmp 0x14cb00b
+      + 004c63a9 arpl word ptr [eax + eax + 0xa], cx
+      + 004c63ad arpl word ptr [eax + eax + 0x31], cx
+      + 004c63b1 arpl word ptr [eax + eax - 6], cx
+0x004c6654 (+11 instr.) | 0x004c66f4 (+14 instr.) | remplacement | decalage +0xa0
+      - 004c6654 adc byte ptr [ebp + 0x4c], ah
+      - 004c6657 add dl, dh
+      - 004c6659 dec esp
+      - 004c665b add ah, dl
+      + 004c66f4 mov al, 0x65
+      + 004c66f6 dec esp
+      + 004c66f7 add byte ptr [edx + 0x74004c65], dl
+      + 004c66fd dec esp
+0x004c6930 (+15 instr.) | 0x004c69d0 (+10 instr.) | remplacement | decalage +0xa0
+      - 004c6930 pop ss
+      - 004c6931 push 0x67f9004c
+      - 004c6936 dec esp
+      - 004c6937 add bl, bl
+      + 004c69d0 mov bh, 0x68
+      + 004c69d2 dec esp
+      + 004c69d3 add byte ptr [ecx + 0x7b004c68], bl
+      + 004c69d9 push 0x6861004c
+0x004c7868 (+12 instr.) | 0x004c7908 (+14 instr.) | remplacement | decalage +0xa0
+      - 004c7868 xlatb 
+      - 004c7869 ja 0x4c78b7
+      - 004c786b add byte ptr [edi - 0x52ffb389], bl
+      - 004c7871 ja 0x4c78bf
+      + 004c7908 ja 0x4c7982
+      + 004c790a dec esp
+      + 004c790b add byte ptr [edi], bh
+      + 004c790d js 0x4c795b
+0x004ca128 (+10 instr.) | 0x004ca1c8 (+11 instr.) | remplacement | decalage +0xa0
+      - 004ca128 mov esi, 0xde004c9d
+      - 004ca12d xchg ecx, eax
+      - 004ca12e dec esp
+      - 004ca12f add byte ptr [edx], bl
+      + 004ca1c8 pop esi
+      + 004ca1c9 sahf 
+      + 004ca1ca dec esp
+      + 004ca1cb add byte ptr [esi - 0x6e], bh
+0x004cb42c (+10 instr.) | 0x004cb4cc (+7 instr.) | remplacement | decalage +0xa0
+      - 004cb42c repe scasd eax, dword ptr es:[edi]
+      - 004cb42e dec esp
+      - 004cb42f add byte ptr [eax - 0x2cffb35e], bl
+      - 004cb435 movsd dword ptr es:[edi], dword ptr [esi]
+      + 004cb4cc xchg ebx, eax
+      + 004cb4cd mov al, 0x4c
+      + 004cb4cf add byte ptr [eax], bh
+      + 004cb4d1 mov dword ptr [0xa673004c], eax
+0x004cc900 (+5 instr.) | 0x004cc9a0 (+7 instr.) | remplacement | decalage +0xa0
+      - 004cc900 scasd eax, dword ptr es:[edi]
+      - 004cc901 les ecx, ptr [eax + eax - 0x4d]
+      - 004cc905 mov ch, 0x4c
+      - 004cc907 add byte ptr [edx + 0x4d004cb9], dh
+      + 004cc9a0 dec edi
+      + 004cc9a1 lds ecx, ptr [eax + eax + 0x53]
+      + 004cc9a5 mov dh, 0x4c
+      + 004cc9a7 add byte ptr [edx - 0x46], dl
+0x004cdbd0 (+0 instr.) | 0x004cdc70 (+16 instr.) | insertion | decalage +0xa0
+      + 004cdc70 int3 
+      + 004cdc71 int3 
+      + 004cdc72 int3 
+      + 004cdc73 int3 
+0x004cf430 (+0 instr.) | 0x004cf4e0 (+16 instr.) | insertion | decalage +0xb0
+      + 004cf4e0 int3 
+      + 004cf4e1 int3 
+      + 004cf4e2 int3 
+      + 004cf4e3 int3 
+0x004d6b10 (+11 instr.) | 0x004d6bd0 (+14 instr.) | remplacement | decalage +0xc0
+      - 004d6b10 jmp dword ptr [esi + 0x4d]
+      - 004d6b13 add byte ptr [ecx], bl
+      - 004d6b15 dec ebp
+      - 004d6b17 add byte ptr [ebx], dh
+      + 004d6bd0 mov edi, 0xd9004d67
+      + 004d6bd5 dec ebp
+      + 004d6bd7 add bl, dh
+      + 004d6bd9 dec ebp
+0x004d6d10 (+0 instr.) | 0x004d6dd0 (+16 instr.) | insertion | decalage +0xc0
+      + 004d6dd0 int3 
+      + 004d6dd1 int3 
+      + 004d6dd2 int3 
+      + 004d6dd3 int3 
+0x004e436c (+9 instr.) | 0x004e443c (+7 instr.) | remplacement | decalage +0xd0
+      - 004e436c xor edi, dword ptr [ecx]
+      - 004e436e dec esi
+      - 004e436f add byte ptr [eax + 0x39], dl
+      - 004e4372 dec esi
+      + 004e443c add edi, dword ptr [edx]
+      + 004e443e dec esi
+      + 004e443f add byte ptr [eax], ah
+      + 004e4441 cmp cl, byte ptr [esi]
+0x004ef9a0 (+0 instr.) | 0x004efa70 (+32 instr.) | insertion | decalage +0xd0
+      + 004efa70 int3 
+      + 004efa71 int3 
+      + 004efa72 int3 
+      + 004efa73 int3 
+0x004f94e8 (+13 instr.) | 0x004f95d8 (+12 instr.) | remplacement | decalage +0xf0
+      - 004f94e8 .byte 0xc6
+      - 004f94e9 xchg ebx, eax
+      - 004f94ea dec edi
+      - 004f94eb add byte ptr [eax], bh
+      + 004f95d8 mov dh, 0x94
+      + 004f95da dec edi
+      + 004f95db add byte ptr [eax], ch
+      + 004f95dd xchg esp, eax
+0x005446d0 (+126 instr.) | 0x005447c0 (+126 instr.) | remplacement | decalage +0xf0
+      - 005446d0 mov dh, 0x44
+      - 005446d2 push esp
+      - 005446d3 add al, al
+      - 005446d5 inc esp
+      + 005447c0 cmpsb byte ptr [esi], byte ptr es:[edi]
+      + 005447c1 inc ebp
+      + 005447c2 push esp
+      + 005447c3 add byte ptr [eax - 0x45ffabbb], dh
+0x00544eb8 (+39 instr.) | 0x00544fa8 (+13 instr.) | remplacement | decalage +0xf0
+      - 00544eb8 out 0x4c, eax
+      - 00544eba push esp
+      - 00544ebb add bh, dh
+      - 00544ebd dec esp
+      + 00544fa8 xlatb 
+      + 00544fa9 dec ebp
+      + 00544faa push esp
+      + 00544fab add bh, ah
+0x00544f13 (+22 instr.) | 0x00544fcf (+13 instr.) | remplacement | decalage +0xbc
+      - 00544f13 add byte ptr [edi - 0x48ffabb3], ah
+      - 00544f19 dec ebp
+      - 00544f1a push esp
+      - 00544f1b add bh, al
+      + 00544fcf add byte ptr [edi + 0x3700544d], ah
+      + 00544fd5 dec esi
+      + 00544fd6 push esp
+      + 00544fd7 add byte ptr [edi - 0x38ffabb3], dh
+0x00544f43 (+2 instr.) | 0x00544ffb (+36 instr.) | remplacement | decalage +0xb8
+      - 00544f43 add byte ptr [edi + 0x7700544e], al
+      - 00544f49 dec esi
+      + 00544ffb add byte ptr [edi + 0x4e], dh
+      + 00544ffe push esp
+      + 00544fff add byte ptr [edi - 0x68ffabb2], al
+      + 00545005 dec esi
+0x005459a0 (+1 instr.) | 0x00545a90 (+1 instr.) | remplacement | decalage +0xf0
+      - 005459a0 cmp al, 0x59
+      + 00545a90 sub al, 0x5a
+0x00545c10 (+135 instr.) | 0x00545d00 (+119 instr.) | remplacement | decalage +0xf0
+      - 00545c10 and bl, byte ptr [ebx + 0x54]
+      - 00545c13 add bl, ch
+      - 00545c15 pop ebx
+      - 00545c16 push esp
+      + 00545d00 adc bl, byte ptr [esp + edx*2]
+      + 00545d04 fistp dword ptr [esp + edx*2]
+      + 00545d08 fistp dword ptr [esp + edx*2]
+      + 00545d0c fistp dword ptr [esp + edx*2]
+0x00545e64 (+4 instr.) | 0x00545f54 (+3 instr.) | remplacement | decalage +0xf0
+      - 00545e64 dec edx
+      - 00545e65 pop esi
+      - 00545e66 push esp
+      - 00545e67 add byte ptr [edi + 0x5e], cl
+      + 00545f54 cmp bl, byte ptr [edi + 0x54]
+      + 00545f57 add byte ptr [edi], bh
+      + 00545f59 pop edi
+0x00545ed8 (+1 instr.) | 0x00545fc8 (+2 instr.) | remplacement | decalage +0xf0
+      - 00545ed8 mov bh, 0x5e
+      + 00545fc8 cmpsd dword ptr [esi], dword ptr es:[edi]
+      + 00545fc9 pop edi
+0x00546fa8 (+3 instr.) | 0x00547098 (+2 instr.) | remplacement | decalage +0xf0
+      - 00546fa8 push edx
+      - 00546fa9 outsd dx, dword ptr [esi]
+      - 00546faa push esp
+      + 00547098 inc edx
+      + 00547099 jo 0x5470ef
+0x00546fe4 (+36 instr.) | 0x005470d4 (+39 instr.) | remplacement | decalage +0xf0
+      - 00546fe4 push edx
+      - 00546fe5 outsd dx, dword ptr [esi]
+      - 00546fe6 push esp
+      - 00546fe7 add dl, ah
+      + 005470d4 inc edx
+      + 005470d5 jo 0x54712b
+      + 005470d7 add dl, dl
+      + 005470d9 insb byte ptr es:[edi], dx
+0x00547048 (+3 instr.) | 0x00547138 (+3 instr.) | remplacement | decalage +0xf0
+      - 00547048 jp 0x5470b7
+      - 0054704a push esp
+      - 0054704b add byte ptr [edx + 0x6f], dl
+      + 00547138 push 0x6e
+      + 0054713a push esp
+      + 0054713b add byte ptr [edx + 0x70], al
+0x00547068 (+4 instr.) | 0x00547158 (+6 instr.) | remplacement | decalage +0xf0
+      - 00547068 lodsb al, byte ptr [esi]
+      - 00547069 insd dword ptr es:[edi], dx
+      - 0054706a push esp
+      - 0054706b add byte ptr [ebx + 0x546e], cl
+      + 00547158 pushfd 
+      + 00547159 outsb dx, byte ptr [esi]
+      + 0054715a push esp
+      + 0054715b add byte ptr [ebx + 0x6f], bh
+0x00547088 (+4 instr.) | 0x00547178 (+3 instr.) | remplacement | decalage +0xf0
+      - 00547088 aas 
+      - 00547089 outsd dx, dword ptr [esi]
+      - 0054708a push esp
+      - 0054708b add byte ptr [edx + 0x6f], dl
+      + 00547178 das 
+      + 00547179 jo 0x5471cf
+      + 0054717b add byte ptr [edx + 0x70], al
+0x005474a0 (+3 instr.) | 0x00547590 (+3 instr.) | remplacement | decalage +0xf0
+      - 005474a0 hlt 
+      - 005474a1 jb 0x5474f7
+      - 005474a3 add byte ptr [eax], cl
+      + 00547590 in al, 0x73
+      + 00547592 push esp
+      + 00547593 add al, bh
+0x005474dc (+4 instr.) | 0x005475cc (+4 instr.) | remplacement | decalage +0xf0
+      - 005474dc mov bh, 0x73
+      - 005474de push esp
+      - 005474df add byte ptr [edx], bh
+      - 005474e1 je 0x547537
+      + 005475cc cmpsd dword ptr [esi], dword ptr es:[edi]
+      + 005475cd je 0x547623
+      + 005475cf add byte ptr [edx], ch
+      + 005475d1 jne 0x547627
+0x00547520 (+4 instr.) | 0x00547610 (+2 instr.) | remplacement | decalage +0xf0
+      - 00547520 int 0x73
+      - 00547522 push esp
+      - 00547523 add cl, dl
+      - 00547525 jae 0x54757b
+      + 00547610 mov ebp, 0xc1005474
+      + 00547615 je 0x54766b
+0x00548fa0 (+16 instr.) | 0x00549090 (+0 instr.) | suppression | decalage +0xf0
+      - 00548fa0 int3 
+      - 00548fa1 int3 
+      - 00548fa2 int3 
+      - 00548fa3 int3 
+0x00549048 (+1 instr.) | 0x00549128 (+5 instr.) | remplacement | decalage +0xe0
+      - 00549048 sbb byte ptr [eax - 0x6fe3ffac], dl
+      + 00549128 clc 
+      + 00549129 nop 
+      + 0054912a push esp
+      + 0054912b add ah, bh
+0x0054912c (+5 instr.) | 0x0054920c (+1 instr.) | remplacement | decalage +0xe0
+      - 0054912c sti 
+      - 0054912d nop 
+      - 0054912e push esp
+      - 0054912f add bh, bh
+      + 0054920c fist dword ptr [ecx - 0x6e20ffac]
+0x0054932c (+5 instr.) | 0x0054940c (+1 instr.) | remplacement | decalage +0xe0
+      - 0054932c sti 
+      - 0054932d xchg edx, eax
+      - 0054932e push esp
+      - 0054932f add bh, bh
+      + 0054940c fist dword ptr [ebx - 0x6c20ffac]
+0x00549394 (+4 instr.) | 0x00549474 (+4 instr.) | remplacement | decalage +0xe0
+      - 00549394 nop 
+      - 00549395 xchg ebx, eax
+      - 00549396 push esp
+      - 00549397 add byte ptr [ecx + 0x5493], cl
+      + 00549474 jo 0x54940a
+      + 00549476 push esp
+      + 00549477 add byte ptr [ecx - 0x6c], ch
+      + 0054947a push esp
+0x005493ad (+0 instr.) | 0x0054948b (+1 instr.) | insertion | decalage +0xde
+      + 0054948b add byte ptr [eax], al
+0x00549cec (+4 instr.) | 0x00549dcc (+4 instr.) | remplacement | decalage +0xe0
+      - 00549cec cmp al, 0x9c
+      - 00549cee push esp
+      - 00549cef add byte ptr [eax], dh
+      - 00549cf1 pushfd 
+      + 00549dcc sbb al, 0x9d
+      + 00549dce push esp
+      + 00549dcf add byte ptr [eax], dl
+      + 00549dd1 popfd 
+0x00549e6c (+4 instr.) | 0x00549f4c (+4 instr.) | remplacement | decalage +0xe0
+      - 00549e6c mov edi, 0xb000549d
+      - 00549e71 popfd 
+      - 00549e72 push esp
+      - 00549e73 add byte ptr [eax], al
+      + 00549f4c lahf 
+      + 00549f4d sahf 
+      + 00549f4e push esp
+      + 00549f4f add byte ptr [eax + 0x549e], dl
+0x0054a078 (+2 instr.) | 0x0054a158 (+2 instr.) | remplacement | decalage +0xe0
+      - 0054a078 mov edi, 0x4700549f
+      - 0054a07d lahf 
+      + 0054a158 lahf 
+      + 0054a159 mov al, byte ptr [0xa0270054]
+0x0054a514 (+4 instr.) | 0x0054a5f4 (+4 instr.) | remplacement | decalage +0xe0
+      - 0054a514 dec edi
+      - 0054a515 movsb byte ptr es:[edi], byte ptr [esi]
+      - 0054a516 push esp
+      - 0054a517 add byte ptr [ebp - 0x5d], dh
+      + 0054a5f4 das 
+      + 0054a5f5 movsd dword ptr es:[edi], dword ptr [esi]
+      + 0054a5f6 push esp
+      + 0054a5f7 add byte ptr [ebp - 0x5c], dl
+0x0054ce30 (+0 instr.) | 0x0054cf10 (+16 instr.) | insertion | decalage +0xe0
+      + 0054cf10 int3 
+      + 0054cf11 int3 
+      + 0054cf12 int3 
+      + 0054cf13 int3 
+0x0054ee60 (+0 instr.) | 0x0054ef50 (+16 instr.) | insertion | decalage +0xf0
+      + 0054ef50 int3 
+      + 0054ef51 int3 
+      + 0054ef52 int3 
+      + 0054ef53 int3 
+0x00550df0 (+0 instr.) | 0x00550ef0 (+32 instr.) | insertion | decalage +0x100
+      + 00550ef0 int3 
+      + 00550ef1 int3 
+      + 00550ef2 int3 
+      + 00550ef3 int3 
+0x0055b534 (+13 instr.) | 0x0055b654 (+13 instr.) | remplacement | decalage +0x120
+      - 0055b534 xchg edx, eax
+      - 0055b535 mov bl, 0x55
+      - 0055b537 add dh, al
+      - 0055b539 mov bl, 0x55
+      + 0055b654 mov dl, 0xb4
+      + 0055b656 push ebp
+      + 0055b657 add dh, ah
+      + 0055b659 mov ah, 0x55
+0x0055b584 (+15 instr.) | 0x0055b6a4 (+9 instr.) | remplacement | decalage +0x120
+      - 0055b584 jle 0x55b53b
+      - 0055b586 push ebp
+      - 0055b587 add byte ptr [ebp + esi*4 + 0x55], ch
+      - 0055b58b add byte ptr [esi - 0x4b], bh
+      + 0055b6a4 sahf 
+      + 0055b6a5 mov dh, 0x55
+      + 0055b6a7 add byte ptr [esi + esi*4 - 0x4961ffab], cl
+      + 0055b6ae push ebp
+0x0055fc54 (+9 instr.) | 0x0055fd74 (+8 instr.) | remplacement | decalage +0x120
+      - 0055fc54 adc ebp, ebp
+      - 0055fc56 push ebp
+      - 0055fc57 add al, al
+      - 0055fc59 in al, dx
+      + 0055fd74 xor ebp, esi
+      + 0055fd76 push ebp
+      + 0055fd77 add al, ah
+      + 0055fd79 in eax, dx
+0x005604cc (+12 instr.) | 0x005605ec (+13 instr.) | remplacement | decalage +0x120
+      - 005604cc hlt 
+      - 005604cd add edx, dword ptr [esi]
+      - 005604d0 and dword ptr [esi + edx*2], eax
+      - 005604d3 add byte ptr [ecx + 4], dl
+      + 005605ec adc al, 5
+      + 005605ee push esi
+      + 005605ef add byte ptr [ecx + 5], al
+      + 005605f2 push esi
+0x00564df8 (+171 instr.) | 0x00564f18 (+168 instr.) | remplacement | decalage +0x120
+      - 00564df8 mov byte ptr [esi + edx*2], bh
+      - 00564dfb add dl, ch
+      - 00564dfd cmp al, 0x56
+      - 00564dff add byte ptr [ecx], dl
+      + 00564f18 test al, 0x3d
+      + 00564f1a push esi
+      + 00564f1b add byte ptr [edx], cl
+      + 00564f1d push esi
+0x005693c0 (+0 instr.) | 0x005694e0 (+32 instr.) | insertion | decalage +0x120
+      + 005694e0 int3 
+      + 005694e1 int3 
+      + 005694e2 int3 
+      + 005694e3 int3 
+0x0056bd20 (+0 instr.) | 0x0056be60 (+16 instr.) | insertion | decalage +0x140
+      + 0056be60 int3 
+      + 0056be61 int3 
+      + 0056be62 int3 
+      + 0056be63 int3 
+0x0056c884 (+79 instr.) | 0x0056c9d4 (+75 instr.) | remplacement | decalage +0x150
+      - 0056c884 pop edx
+      - 0056c885 mov ebp, 0xbda20056
+      - 0056c88a push esi
+      - 0056c88b add ch, bl
+      + 0056c9d4 stosb byte ptr es:[edi], al
+      + 0056c9d5 mov esi, 0xbef20056
+      + 0056c9da push esi
+      + 0056c9db add byte ptr [0x4d0056bf], ch
+0x0056d994 (+15 instr.) | 0x0056dae4 (+13 instr.) | remplacement | decalage +0x150
+      - 0056d994 or edi, edx
+      - 0056d996 push esi
+      - 0056d997 add byte ptr [edi + edx*8 + 0x56], al
+      - 0056d99b add byte ptr [eax - 0x13ffa929], bh
+      + 0056dae4 pop ecx
+      + 0056dae5 fcom dword ptr [esi]
+      + 0056dae8 xchg esp, eax
+      + 0056dae9 fcom dword ptr [esi]
+0x0058bde0 (+11 instr.) | 0x0058bf30 (+11 instr.) | remplacement | decalage +0x150
+      - 0058bde0 jmp 0x58bd9c
+      - 0058bde2 pop eax
+      - 0058bde3 add byte ptr [edi - 0x1fffa749], cl
+      - 0058bde9 mov bh, 0x58
+      + 0058bf30 cmp edi, dword ptr [eax + ebx*2 + 0x58b8df00]
+      + 0058bf37 add byte ptr [eax], dh
+      + 0058bf39 mov ecx, 0xb9b50058
+      + 0058bf3e pop eax
+0x00590a8c (+6 instr.) | 0x00590bdc (+5 instr.) | remplacement | decalage +0x150
+      - 00590a8c or bl, byte ptr ss:[ecx]
+      - 00590a90 inc esp
+      - 00590a91 or bl, byte ptr [ecx]
+      - 00590a94 dec ebx
+      + 00590bdc xchg byte ptr [ebx], cl
+      + 00590bde pop ecx
+      + 00590bdf add byte ptr [ebx + ecx + 0xb9b0059], dl
+      + 00590be6 pop ecx
+0x00590b34 (+14 instr.) | 0x00590c84 (+12 instr.) | remplacement | decalage +0x150
+      - 00590b34 enter 0x590a, 0
+      - 00590b38 salc 
+      - 00590b39 or bl, byte ptr [ecx]
+      - 00590b3c fisttp qword ptr [edx]
+      + 00590c84 sbb byte ptr [ecx + ebx*2], cl
+      + 00590c87 add byte ptr [esi], ah
+      + 00590c89 or al, 0x59
+      + 00590c8b add byte ptr [0x1f00590c], ch
+0x00590b60 (+0 instr.) | 0x00590caf (+1 instr.) | insertion | decalage +0x14f
+      + 00590caf int3 
+0x005910f4 (+16 instr.) | 0x00591244 (+12 instr.) | remplacement | decalage +0x150
+      - 005910f4 popfd 
+      - 005910f5 or ebx, dword ptr [ecx]
+      - 005910f8 jle 0x591106
+      - 005910fa pop ecx
+      + 00591244 in eax, dx
+      + 00591245 or al, 0x59
+      + 00591247 add dh, cl
+      + 00591249 or eax, 0xeaf0059
+0x00591190 (+21 instr.) | 0x005912e0 (+18 instr.) | remplacement | decalage +0x150
+      - 00591190 xor eax, 0x3e005911
+      - 00591195 adc dword ptr [ecx], ebx
+      - 00591198 inc edi
+      - 00591199 adc dword ptr [ecx], ebx
+      + 005912e0 test dword ptr [edx], edx
+      + 005912e2 pop ecx
+      + 005912e3 add byte ptr [esi - 0x68ffa6ee], cl
+      + 005912e9 adc bl, byte ptr [ecx]
+0x005911d0 (+0 instr.) | 0x0059131f (+1 instr.) | insertion | decalage +0x14f
+      + 0059131f int3 
+0x00591358 (+15 instr.) | 0x005914a8 (+13 instr.) | remplacement | decalage +0x150
+      - 00591358 salc 
+      - 00591359 adc bl, byte ptr [ecx]
+      - 0059135c or dl, byte ptr [ebx]
+      - 0059135e pop ecx
+      + 005914a8 adc al, 0x59
+      + 005914ab add byte ptr [edx + 0x14], bl
+      + 005914ae pop ecx
+      + 005914af add byte ptr [esp + edx + 0x59], dh
+0x00591380 (+0 instr.) | 0x005914cf (+1 instr.) | insertion | decalage +0x14f
+      + 005914cf int3 
+0x00591d30 (+21 instr.) | 0x00591e80 (+24 instr.) | remplacement | decalage +0x150
+      - 00591d30 .byte 0xc6
+      - 00591d31 adc al, 0x59
+      - 00591d33 add bh, bl
+      - 00591d35 adc eax, 0x59
+      + 00591e80 push ss
+      + 00591e81 push ss
+      + 00591e82 pop ecx
+      + 00591e83 add byte ptr [edi], ch
+0x00591ed0 (+7 instr.) | 0x00592020 (+12 instr.) | remplacement | decalage +0x150
+      - 00591ed0 xchg edx, eax
+      - 00591ed1 push ds
+      - 00591ed2 pop ecx
+      - 00591ed3 add byte ptr [eax - 0x58ffa6e2], ah
+      + 00592020 loop 0x592041
+      + 00592022 pop ecx
+      + 00592023 add al, dh
+      + 00592025 pop ds
+0x00593ad0 (+16 instr.) | 0x00593c20 (+0 instr.) | suppression | decalage +0x150
+      - 00593ad0 int3 
+      - 00593ad1 int3 
+      - 00593ad2 int3 
+      - 00593ad3 int3 
+0x00596580 (+15 instr.) | 0x005966c0 (+16 instr.) | remplacement | decalage +0x140
+      - 00596580 pop ecx
+      - 00596581 bound ebx, qword ptr [ecx]
+      - 00596584 pop ecx
+      - 00596585 bound ebx, qword ptr [ecx]
+      + 005966c0 cdq 
+      + 005966c1 arpl word ptr [ecx], bx
+      + 005966c4 cdq 
+      + 005966c5 arpl word ptr [ecx], bx
+0x00596910 (+12 instr.) | 0x00596a50 (+13 instr.) | remplacement | decalage +0x140
+      - 00596910 jmp 0xe959c27a
+      - 00596915 pop ecx
+      - 00596917 add byte ptr [edi + 0x66], al
+      - 0059691a pop ecx
+      + 00596a50 sub dword ptr [edi + 0x59], esp
+      + 00596a53 add byte ptr [ecx], ch
+      + 00596a55 pop ecx
+      + 00596a57 add byte ptr [edi - 0x1affa699], al
+0x00596940 (+0 instr.) | 0x00596a7f (+1 instr.) | insertion | decalage +0x13f
+      + 00596a7f int3 
+0x00596a54 (+12 instr.) | 0x00596b94 (+9 instr.) | remplacement | decalage +0x140
+      - 00596a54 jg 0x596abf
+      - 00596a56 pop ecx
+      - 00596a57 add ch, al
+      - 00596a59 imul ebx, dword ptr [ecx], 0x5969cc
+      + 00596b94 mov edi, 0x500596a
+      + 00596b99 imul ebx, dword ptr [ecx], 0xc
+      + 00596b9d imul ebx, dword ptr [ecx], 0x13
+      + 00596ba1 imul ebx, dword ptr [ecx], 0x1a
+0x00596c8c (+11 instr.) | 0x00596dcc (+18 instr.) | remplacement | decalage +0x140
+      - 00596c8c ret 0x596a
+      - 00596c8f add dh, dh
+      - 00596c91 push 0x59
+      - 00596c93 add byte ptr [eax], ah
+      + 00596dcc add ch, byte ptr [ecx + ebx*2]
+      + 00596dd0 insb byte ptr es:[edi], dx
+      + 00596dd2 pop ecx
+      + 00596dd3 add byte ptr [eax + 0x6c], ah
+0x00596fb4 (+19 instr.) | 0x005970f4 (+23 instr.) | remplacement | decalage +0x140
+      - 00596fb4 cmpsd dword ptr [esi], dword ptr es:[edi]
+      - 00596fb5 outsb dx, byte ptr [esi]
+      - 00596fb6 pop ecx
+      - 00596fb7 add byte ptr [edi - 0x58ffa692], ah
+      + 005970f4 out 0x6f, eax
+      + 005970f6 pop ecx
+      + 005970f7 add bh, ah
+      + 005970f9 outsd dx, dword ptr [esi]
+0x0059786c (+12 instr.) | 0x005979ac (+16 instr.) | remplacement | decalage +0x140
+      - 0059786c sbb eax, 0x1d005970
+      - 00597871 jo 0x5978cc
+      - 00597873 add byte ptr [esi + 0x71], dh
+      - 00597876 pop ecx
+      + 005979ac pop ebp
+      + 005979ad jno 0x597a08
+      + 005979af add byte ptr [ebp + 0x71], bl
+      + 005979b2 pop ecx
+0x00597d30 (+28 instr.) | 0x00597e70 (+30 instr.) | remplacement | decalage +0x140
+      - 00597d30 and byte ptr [edx + 0x59], bh
+      - 00597d33 add byte ptr [edx + 0x7a], cl
+      - 00597d36 pop ecx
+      - 00597d37 add byte ptr [edx + edi*2 + 0x59], dh
+      + 00597e70 pushal 
+      + 00597e71 jnp 0x597ecc
+      + 00597e73 add byte ptr [edx - 0x4bffa685], cl
+      + 00597e79 jnp 0x597ed4
+0x005981c4 (+19 instr.) | 0x00598304 (+13 instr.) | remplacement | decalage +0x140
+      - 005981c4 pop eax
+      - 005981c5 sbb byte ptr [ecx], 0xe7
+      - 005981c9 jge 0x598224
+      - 005981cb add ah, dl
+      + 00598304 cwde 
+      + 00598305 sbb dword ptr [ecx], 0x597f27
+      + 0059830c adc al, 0x7f
+      + 0059830e pop ecx
+0x00598324 (+4 instr.) | 0x00598464 (+5 instr.) | remplacement | decalage +0x140
+      - 00598324 sbb byte ptr [bx + di], 0x6e
+      - 00598329 sbb byte ptr [ecx], 0x95
+      - 0059832d sbb byte ptr [ecx], 0x33
+      - 00598331 sbb byte ptr [ecx], 0xcc
+      + 00598464 cmpsd dword ptr [esi], dword ptr es:[edi]
+      + 00598465 sbb dword ptr [ecx], -0x52
+      + 00598469 sbb dword ptr [ecx], -0x2b
+      + 0059846d sbb dword ptr [ecx], 0x73
+0x005987d8 (+8 instr.) | 0x00598918 (+6 instr.) | remplacement | decalage +0x140
+      - 005987d8 xchg ebx, eax
+      - 005987d9 xchg byte ptr [ecx], bl
+      - 005987dc loopne 0x598764
+      - 005987de pop ecx
+      + 00598918 rol dword ptr [edi - 0x77dfffa7], cl
+      + 0059891e pop ecx
+      + 0059891f add byte ptr [ebp - 0x78], ch
+      + 00598922 pop ecx
+0x00598b00 (+5 instr.) | 0x00598c40 (+11 instr.) | remplacement | decalage +0x140
+      - 00598b00 cmp eax, 0x3d005988
+      - 00598b05 mov byte ptr [ecx], bl
+      - 00598b08 cmp eax, 0x96005988
+      - 00598b0d mov dword ptr [ecx], ebx
+      + 00598c40 jge 0x598bcb
+      + 00598c42 pop ecx
+      + 00598c43 add byte ptr [ebp - 0x77], bh
+      + 00598c46 pop ecx
+0x00598c30 (+12 instr.) | 0x00598d70 (+10 instr.) | remplacement | decalage +0x140
+      - 00598c30 pop edi
+      - 00598c31 mov ebx, dword ptr [ecx]
+      - 00598c34 movsd dword ptr es:[edi], dword ptr [esi]
+      - 00598c35 mov ebx, dword ptr [ecx]
+      + 00598d70 lahf 
+      + 00598d71 mov word ptr [ecx], ds
+      + 00598d74 in eax, 0x8c
+      + 00598d76 pop ecx
+0x00598f40 (+8 instr.) | 0x00599080 (+7 instr.) | remplacement | decalage +0x140
+      - 00598f40 mov dword ptr [ecx + ebx*2 + 0x598ce500], ecx
+      - 00598f47 add byte ptr [ecx - 0x73], al
+      - 00598f4a pop ecx
+      - 00598f4b add byte ptr [ebp - 0x6ffa673], bl
+      + 00599080 leave 
+      + 00599081 lea ebx, [ecx]
+      + 00599084 and eax, 0x8100598e
+      + 00599089 mov ds, word ptr [ecx]
+0x00599578 (+10 instr.) | 0x005996b8 (+7 instr.) | remplacement | decalage +0x140
+      - 00599578 xchg ebp, eax
+      - 0059957a pop ecx
+      - 0059957b add byte ptr [ebp - 0x6b], ah
+      - 0059957e pop ecx
+      + 005996b8 movsd dword ptr es:[edi], dword ptr [esi]
+      + 005996b9 xchg esi, eax
+      + 005996ba pop ecx
+      + 005996bb add byte ptr [ebp + 0x16005996], ah
+0x005995fc (+9 instr.) | 0x0059973c (+14 instr.) | remplacement | decalage +0x140
+      - 005995fc in al, dx
+      - 005995fd xchg ebp, eax
+      - 005995fe pop ecx
+      - 005995ff add byte ptr [ebp + edx*4 - 0x6a53ffa7], bl
+      + 0059973c sub al, 0x97
+      + 0059973e pop ecx
+      + 0059973f add ah, bl
+      + 00599741 xchg esi, eax
+0x00599d20 (+18 instr.) | 0x00599e60 (+24 instr.) | remplacement | decalage +0x140
+      - 00599d20 mov ebx, 0x1300599c
+      - 00599d25 pushfd 
+      - 00599d26 pop ecx
+      - 00599d27 add byte ptr [esp + ebx*4 + 0x59], bl
+      + 00599e60 sti 
+      + 00599e61 popfd 
+      + 00599e62 pop ecx
+      + 00599e63 add byte ptr [ebx - 0x63], dl
+0x0059a2cc (+20 instr.) | 0x0059a40c (+24 instr.) | remplacement | decalage +0x140
+      - 0059a2cc bound esp, qword ptr [ecx - 0x5e9dffa7]
+      - 0059a2d2 pop ecx
+      - 0059a2d3 add byte ptr [ebp - 0x62ffa663], bl
+      - 0059a2d9 popfd 
+      + 0059a40c mov byte ptr [0xa20059a2], al
+      + 0059a411 mov byte ptr [0x9edd0059], al
+      + 0059a416 pop ecx
+      + 0059a417 add ch, bl
+0x0059aa2c (+19 instr.) | 0x0059ab6c (+19 instr.) | remplacement | decalage +0x140
+      - 0059aa2c shr byte ptr [eax - 0x573fffa7], 0x59
+      - 0059aa33 add byte ptr [ebp - 0x5d], cl
+      - 0059aa36 pop ecx
+      - 0059aa37 add byte ptr [esi - 0x41ffa65c], ah
+      + 0059ab6c add byte ptr [edx - 0x55ffffa7], ch
+      + 0059ab72 pop ecx
+      + 0059ab73 add byte ptr [ebp - 0x19ffa65c], cl
+      + 0059ab79 movsd dword ptr es:[edi], dword ptr [esi]
+0x0059abb4 (+4 instr.) | 0x0059acf4 (+7 instr.) | remplacement | decalage +0x140
+      - 0059abb4 scasb al, byte ptr es:[edi]
+      - 0059abb5 stosd dword ptr es:[edi], eax
+      - 0059abb6 pop ecx
+      - 0059abb7 add byte ptr [ebx + 0x59ab], ch
+      + 0059acf4 out dx, al
+      + 0059acf5 lodsb al, byte ptr [esi]
+      + 0059acf6 pop ecx
+      + 0059acf7 add bl, ch
+0x0059abec (+4 instr.) | 0x0059ad2c (+4 instr.) | remplacement | decalage +0x140
+      - 0059abec out 0xab, al
+      - 0059abee pop ecx
+      - 0059abef add cl, ch
+      - 0059abf1 stosd dword ptr es:[edi], eax
+      + 0059ad2c lodsd eax, dword ptr es:[esi]
+      + 0059ad2e pop ecx
+      + 0059ad2f add byte ptr [ecx], ch
+      + 0059ad31 lodsd eax, dword ptr [esi]
+0x0059bb34 (+15 instr.) | 0x0059bc74 (+12 instr.) | remplacement | decalage +0x140
+      - 0059bb34 aam 0xb0
+      - 0059bb36 pop ecx
+      - 0059bb37 add bh, dh
+      - 0059bb39 mov dl, 0x59
+      + 0059bc74 adc al, 0xb2
+      + 0059bc76 pop ecx
+      + 0059bc77 add byte ptr [edi], dh
+      + 0059bc79 mov ah, 0x59
+0x0059bbc4 (+17 instr.) | 0x0059bd04 (+19 instr.) | remplacement | decalage +0x140
+      - 0059bbc4 lodsb al, byte ptr [esi]
+      - 0059bbc5 mov ebx, 0xbba30059
+      - 0059bbca pop ecx
+      - 0059bbcb add byte ptr [edx - 0x77ffa645], bl
+      + 0059bd04 in al, dx
+      + 0059bd05 mov esp, 0xbce30059
+      + 0059bd0a pop ecx
+      + 0059bd0b add dl, bl
+0x0059bc21 (+0 instr.) | 0x0059bd5d (+2 instr.) | insertion | decalage +0x13c
+      + 0059bd5d or byte ptr [eax], cl
+      + 0059bd5f or byte ptr [eax], cl
+0x0059bcb8 (+22 instr.) | 0x0059bdf8 (+23 instr.) | remplacement | decalage +0x140
+      - 0059bcb8 jp 0x59bc76
+      - 0059bcba pop ecx
+      - 0059bcbb add byte ptr [eax + 0x6e0059bc], al
+      - 0059bcc1 mov esp, 0xbc680059
+      + 0059bdf8 mov edx, 0xc00059bd
+      + 0059bdfd mov ebp, 0xbdae0059
+      + 0059be02 pop ecx
+      + 0059be03 add byte ptr [eax - 0x4bffa643], ch
+0x0059bdcc (+20 instr.) | 0x0059bf0c (+20 instr.) | remplacement | decalage +0x140
+      - 0059bdcc cmp byte ptr [ebp - 0x4274ffa7], 0x59
+      - 0059bdd3 add byte ptr [eax - 0x43], dh
+      - 0059bdd6 pop ecx
+      - 0059bdd7 add byte ptr [edi - 0x43], ah
+      + 0059bf0c ret 0x59be
+      + 0059bf0f add bl, cl
+      + 0059bf11 mov esi, 0xbeb00059
+      + 0059bf16 pop ecx
+0x0059be68 (+15 instr.) | 0x0059bfa8 (+11 instr.) | remplacement | decalage +0x140
+      - 0059be68 mov esi, 0xbe580059
+      - 0059be6e pop ecx
+      - 0059be6f add byte ptr [edx - 0x42], dl
+      - 0059be72 pop ecx
+      + 0059bfa8 movsb byte ptr es:[edi], byte ptr [esi]
+      + 0059bfa9 mov edi, 0xbf980059
+      + 0059bfae pop ecx
+      + 0059bfaf add byte ptr [edx - 0x73ffa641], dl
+0x0059bf24 (+21 instr.) | 0x0059c064 (+17 instr.) | remplacement | decalage +0x140
+      - 0059bf24 mov edi, 0xd10059be
+      - 0059bf29 mov esi, 0xbec80059
+      - 0059bf2e pop ecx
+      - 0059bf2f add dh, bh
+      + 0059c064 .byte 0xff
+      + 0059c065 mov edi, 0xc0110059
+      + 0059c06a pop ecx
+      + 0059c06b add byte ptr [eax], cl
+0x0059bff4 (+16 instr.) | 0x0059c134 (+13 instr.) | remplacement | decalage +0x140
+      - 0059bff4 .byte 0x8f
+      - 0059bff5 mov edi, 0xbfa10059
+      - 0059bffa pop ecx
+      - 0059bffb add byte ptr [eax - 0x31ffa641], bl
+      + 0059c134 iretd 
+      + 0059c135 rcr byte ptr [ecx], 0xe1
+      + 0059c139 rcr byte ptr [ecx], 0xd8
+      + 0059c13d rcr byte ptr [ecx], 0xe
+0x0059cf20 (+16 instr.) | 0x0059d060 (+0 instr.) | suppression | decalage +0x140
+      - 0059cf20 int3 
+      - 0059cf21 int3 
+      - 0059cf22 int3 
+      - 0059cf23 int3 
+0x0059d640 (+11 instr.) | 0x0059d770 (+11 instr.) | remplacement | decalage +0x130
+      - 0059d640 and edx, esi
+      - 0059d642 pop ecx
+      - 0059d643 add dl, dl
+      - 0059d645 aad 0x59
+      + 0059d770 push ebx
+      + 0059d771 xlatb 
+      + 0059d772 pop ecx
+      + 0059d773 add byte ptr [edx], al
+0x005a61dc (+85 instr.) | 0x005a630c (+74 instr.) | remplacement | decalage +0x130
+      - 005a61dc fsub dword ptr [ecx + 0x5a]
+      - 005a61df add byte ptr [edi + 0x60], ah
+      - 005a61e2 pop edx
+      - 005a61e3 add byte ptr [eax + 0x60], dh
+      + 005a630c or byte ptr [ebx + 0x5a], ah
+      + 005a630f add byte ptr [edi - 0x5fffa59f], dl
+      + 005a6315 popal 
+      + 005a6316 pop edx
+0x005a9738 (+31 instr.) | 0x005a9868 (+31 instr.) | remplacement | decalage +0x130
+      - 005a9738 sub edx, dword ptr [edi - 0x6942ffa6]
+      - 005a973e pop edx
+      - 005a973f add bh, al
+      - 005a9741 xchg esi, eax
+      + 005a9868 pop ebx
+      + 005a9869 cwde 
+      + 005a986a pop edx
+      + 005a986b add ch, ch
+0x005a9b28 (+22 instr.) | 0x005a9c58 (+19 instr.) | remplacement | decalage +0x130
+      - 005a9b28 mov bl, 0x97
+      - 005a9b2a pop edx
+      - 005a9b2b add ah, bh
+      - 005a9b2d xchg edi, eax
+      + 005a9c58 jecxz 0x5a9bf2
+      + 005a9c5a pop edx
+      + 005a9c5b add byte ptr [ecx + ebx*4], ch
+      + 005a9c5e pop edx
+0x005a9b60 (+0 instr.) | 0x005a9c8d (+3 instr.) | insertion | decalage +0x12d
+      + 005a9c8d int3 
+      + 005a9c8e int3 
+      + 005a9c8f int3 
+0x005adf9c (+21 instr.) | 0x005ae0cc (+19 instr.) | remplacement | decalage +0x130
+      - 005adf9c leave 
+      - 005adf9d fistp dword ptr [edx]
+      - 005adfa0 into 
+      - 005adfa1 fistp dword ptr [edx]
+      + 005ae0cc stc 
+      + 005ae0cd fcomp qword ptr [edx]
+      + 005ae0d0 .byte 0xfe
+      + 005ae0d1 fcomp qword ptr [edx]
+0x005adfcf (+1 instr.) | 0x005ae100 (+0 instr.) | suppression | decalage +0x131
+      - 005adfcf int3 
+0x005b3484 (+8 instr.) | 0x005b35b4 (+9 instr.) | remplacement | decalage +0x130
+      - 005b3484 push ss
+      - 005b3485 xor bl, byte ptr [ebx]
+      - 005b3488 xor bl, byte ptr [bp + di]
+      - 005b348c mov eax, 0xdf005b32
+      + 005b35b4 inc esi
+      + 005b35b5 xor ebx, dword ptr [ebx]
+      + 005b35b8 xchg edi, eax
+      + 005b35b9 xor ebx, dword ptr [ebx]
+0x005b3754 (+7 instr.) | 0x005b3884 (+11 instr.) | remplacement | decalage +0x130
+      - 005b3754 out 0x34, al
+      - 005b3756 pop ebx
+      - 005b3757 add byte ptr [edi], dh
+      - 005b3759 xor eax, 0x3588005b
+      + 005b3884 push ss
+      + 005b3885 pop ebx
+      + 005b3887 add byte ptr [edi + 0x36], ah
+      + 005b388a pop ebx
+0x005bda14 (+33 instr.) | 0x005bdb44 (+34 instr.) | remplacement | decalage +0x130
+      - 005bda14 ja 0x5bd9ed
+      - 005bda16 pop ebx
+      - 005bda17 add byte ptr [edi + edx*8 - 0x2888ffa5], dh
+      - 005bda1e pop ebx
+      + 005bdb44 cmpsd dword ptr [esi], dword ptr es:[edi]
+      + 005bdb45 fcomp dword ptr [ebx]
+      + 005bdb48 in al, 0xd8
+      + 005bdb4a pop ebx
+0x005bdc4c (+7 instr.) | 0x005bdd7c (+7 instr.) | remplacement | decalage +0x130
+      - 005bdc4c in eax, 0xdb
+      - 005bdc4e pop ebx
+      - 005bdc4f add byte ptr [ebp - 0x2cffa425], bl
+      - 005bdc55 fistp dword ptr [ebx]
+      + 005bdd7c adc eax, 0xcd005bdd
+      + 005bdd81 fcomp qword ptr [ebx]
+      + 005bdd84 add ebx, ebp
+      + 005bdd86 pop ebx
+0x005bf748 (+10 instr.) | 0x005bf878 (+6 instr.) | remplacement | decalage +0x130
+      - 005bf748 adc eax, esi
+      - 005bf74a pop ebx
+      - 005bf74b add byte ptr [edi - 0x1a], bh
+      - 005bf74e pop ebx
+      + 005bf878 inc ecx
+      + 005bf879 int1 
+      + 005bf87a pop ebx
+      + 005bf87b add byte ptr [edi + 0x2f005be7], ch
+0x005bfa3c (+21 instr.) | 0x005bfb6c (+25 instr.) | remplacement | decalage +0x130
+      - 005bfa3c jmp 0x5bfa36
+      - 005bfa3e pop ebx
+      - 005bfa3f add byte ptr [eax + edi*8 - 0x74cffa5], ch
+      - 005bfa46 pop ebx
+      + 005bfb6c sbb edi, edx
+      + 005bfb6e pop ebx
+      + 005bfb6f add ah, bl
+      + 005bfb71 stc 
+0x005c400c (+18 instr.) | 0x005c413c (+15 instr.) | remplacement | decalage +0x130
+      - 005c400c into 
+      - 005c400d aas 
+      - 005c400e pop esp
+      - 005c400f add byte ptr [ebx - 0x4affa3f9], al
+      + 005c413c inc byte ptr [eax + 0x5c]
+      + 005c413f add byte ptr [ebx - 0x1affa3f8], dh
+      + 005c4145 sti 
+      + 005c4146 pop ebx
+0x005ced80 (+3 instr.) | 0x005ceeb0 (+3 instr.) | remplacement | decalage +0x130
+      - 005ced80 cwde 
+      - 005ced81 jmp 0x5ceddf
+      - 005ced83 add byte ptr [ebx + ebp*8 - 0x1467ffa4], cl
+      + 005ceeb0 enter 0x5cec, 0
+      + 005ceeb4 mov esp, 0xc8005cec
+      + 005ceeb9 in al, dx
+0x005d51b8 (+10 instr.) | 0x005d52e8 (+17 instr.) | remplacement | decalage +0x130
+      - 005d51b8 js 0x5d51ff
+      - 005d51ba pop ebp
+      - 005d51bb add byte ptr [esi - 0x1bffa2ba], ch
+      - 005d51c1 inc edi
+      + 005d52e8 test al, 0x46
+      + 005d52ea pop ebp
+      + 005d52eb add dh, bl
+      + 005d52ed inc edi
+0x005d55a8 (+5 instr.) | 0x005d56d8 (+5 instr.) | remplacement | decalage +0x130
+      - 005d55a8 wait 
+      - 005d55a9 push ebp
+      - 005d55aa pop ebp
+      - 005d55ab add byte ptr [edi - 0x64ffa2ab], al
+      + 005d56d8 retf 
+      + 005d56d9 push esi
+      + 005d56da pop ebp
+      + 005d56db add byte ptr [edi - 0x34ffa2aa], dh
+0x005d5f00 (+0 instr.) | 0x005d6030 (+16 instr.) | insertion | decalage +0x130
+      + 005d6030 int3 
+      + 005d6031 int3 
+      + 005d6032 int3 
+      + 005d6033 int3 
+0x005e04b8 (+9 instr.) | 0x005e05f8 (+10 instr.) | remplacement | decalage +0x140
+      - 005e04b8 adc dword ptr [ecx], eax
+      - 005e04ba pop esi
+      - 005e04bb add byte ptr [edi], ch
+      - 005e04bd add bl, byte ptr [esi]
+      + 005e05f8 push ecx
+      + 005e05f9 add bl, byte ptr [esi]
+      + 005e05fc outsd dx, dword ptr [esi]
+      + 005e05fd add ebx, dword ptr [esi]
+0x005e4ea8 (+20 instr.) | 0x005e4fe8 (+26 instr.) | remplacement | decalage +0x140
+      - 005e4ea8 lahf 
+      - 005e4ea9 dec esi
+      - 005e4eaa pop esi
+      - 005e4eab add byte ptr [ebx + 0x7e005e4e], dl
+      + 005e4fe8 fisttp word ptr [edi + 0x5e]
+      + 005e4feb add bl, dl
+      + 005e4fed dec edi
+      + 005e4fee pop esi
+0x005e4fa0 (+11 instr.) | 0x005e50e0 (+9 instr.) | remplacement | decalage +0x140
+      - 005e4fa0 xchg ebx, eax
+      - 005e4fa1 dec edi
+      - 005e4fa2 pop esi
+      - 005e4fa3 add byte ptr [ecx + 0x4f], cl
+      + 005e50e0 rcl dword ptr [eax + 0x5e], cl
+      + 005e50e3 add byte ptr [ecx - 0x40ffa1b0], cl
+      + 005e50e9 push eax
+      + 005e50ea pop esi
+0x005e5074 (+28 instr.) | 0x005e51b4 (+21 instr.) | remplacement | decalage +0x140
+      - 005e5074 bound edx, qword ptr [eax + 0x5e]
+      - 005e5077 add byte ptr [esi], bh
+      - 005e5079 push eax
+      - 005e507a pop esi
+      + 005e51b4 mov byte ptr [0x7e005e51], al
+      + 005e51b9 push ecx
+      + 005e51ba pop esi
+      + 005e51bb add byte ptr [eax + 0x51], bh
+0x005e5204 (+25 instr.) | 0x005e5344 (+28 instr.) | remplacement | decalage +0x140
+      - 005e5204 dec ecx
+      - 005e5205 push ecx
+      - 005e5206 pop esi
+      - 005e5207 add bh, bh
+      + 005e5344 mov dword ptr [edx + 0x5e], edx
+      + 005e5347 add byte ptr [edi], bh
+      + 005e5349 push ebx
+      + 005e534a pop esi
+0x005e53fc (+53 instr.) | 0x005e553c (+57 instr.) | remplacement | decalage +0x140
+      - 005e53fc in al, dx
+      - 005e53fd push ebx
+      - 005e53fe pop esi
+      - 005e53ff add dh, al
+      + 005e553c sub al, 0x55
+      + 005e553e pop esi
+      + 005e553f add byte ptr [esi], al
+      + 005e5541 push esp
+0x005e8af4 (+28 instr.) | 0x005e8c34 (+20 instr.) | remplacement | decalage +0x140
+      - 005e8af4 xchg ebx, eax
+      - 005e8af5 mov bl, byte ptr [esi]
+      - 005e8af8 cdq 
+      - 005e8af9 mov bl, byte ptr [esi]
+      + 005e8c34 ror dword ptr [ebx - 0x7426ffa2], cl
+      + 005e8c3a pop esi
+      + 005e8c3b add bh, bl
+      + 005e8c3d mov ebx, dword ptr [esi]
+0x005e8c14 (+25 instr.) | 0x005e8d54 (+24 instr.) | remplacement | decalage +0x140
+      - 005e8c14 mov bl, 0x8b
+      - 005e8c16 pop esi
+      - 005e8c17 add byte ptr [ecx - 0x40ffa175], bh
+      - 005e8c1d mov ebx, dword ptr [esi]
+      + 005e8d54 mov word ptr [esi], ds
+      + 005e8d58 stc 
+      + 005e8d59 mov word ptr [esi], ds
+      + 005e8d5c dec dword ptr [esi + ebx*2 + 0x5e8d0500]
+0x005ec170 (+4 instr.) | 0x005ec2b0 (+5 instr.) | remplacement | decalage +0x140
+      - 005ec170 pop ecx
+      - 005ec171 rcr dword ptr [esi], 0x4c
+      - 005ec175 rcr dword ptr [esi], 0x66
+      - 005ec179 rcr dword ptr [esi], 0
+      + 005ec2b0 cdq 
+      + 005ec2b1 ret 0x5e
+      + 005ec2b4 mov edx, es
+      + 005ec2b6 pop esi
+0x005ed31c (+5 instr.) | 0x005ed45c (+8 instr.) | remplacement | decalage +0x140
+      - 005ed31c adc eax, 0x3005ed3
+      - 005ed321 rcr dword ptr [esi], cl
+      - 005ed324 or al, 0xd3
+      - 005ed326 pop esi
+      + 005ed45c push ebp
+      + 005ed45d aam 0x5e
+      + 005ed45f add byte ptr [ebx - 0x2c], al
+      + 005ed462 pop esi
+0x005f1ba0 (+32 instr.) | 0x005f1ce0 (+0 instr.) | suppression | decalage +0x140
+      - 005f1ba0 int3 
+      - 005f1ba1 int3 
+      - 005f1ba2 int3 
+      - 005f1ba3 int3 
+0x005fbab4 (+24 instr.) | 0x005fbbd4 (+22 instr.) | remplacement | decalage +0x120
+      - 005fbab4 .byte 0xc7
+      - 005fbab5 jle 0x5fbb16
+      - 005fbab7 add byte ptr [ecx - 0x20ffa078], ch
+      - 005fbabd xchg edx, eax
+      + 005fbbd4 out 0x7f, eax
+      + 005fbbd6 pop edi
+      + 005fbbd7 add cl, cl
+      + 005fbbd9 mov dword ptr [edi], ebx
+0x005ffa50 (+11 instr.) | 0x005ffb70 (+10 instr.) | remplacement | decalage +0x120
+      - 005ffa50 inc esp
+      - 005ffa51 cli 
+      - 005ffa52 pop edi
+      - 005ffa53 add bh, ah
+      + 005ffb70 sti 
+      + 005ffb72 pop edi
+      + 005ffb73 add byte ptr [edi], al
+      + 005ffb75 sti 
+0x005fffc0 (+16 instr.) | 0x006000e0 (+0 instr.) | suppression | decalage +0x120
+      - 005fffc0 int3 
+      - 005fffc1 int3 
+      - 005fffc2 int3 
+      - 005fffc3 int3 
+0x00600f40 (+15 instr.) | 0x00601050 (+7 instr.) | remplacement | decalage +0x110
+      - 00600f40 fmul dword ptr [esi]
+      - 00600f42 pushal 
+      - 00600f43 add ah, al
+      - 00600f45 push cs
+      + 00601050 call 0xd4607064
+      + 00601055 punpcklbw mm0, dword ptr [eax]
+      + 00601058 fimul word ptr [edi]
+      + 0060105a pushal 
+0x0060e32c (+10 instr.) | 0x0060e43c (+10 instr.) | remplacement | decalage +0x110
+      - 0060e32c cmp esp, edx
+      - 0060e32e pushal 
+      - 0060e32f add byte ptr [ecx - 0x1e], ch
+      - 0060e332 pushal 
+      + 0060e43c dec ebx
+      + 0060e43d jecxz 0x60e49f
+      + 0060e43f add byte ptr [ecx - 0x1d], bh
+      + 0060e442 pushal 
+0x00614c38 (+34 instr.) | 0x00614d48 (+37 instr.) | remplacement | decalage +0x110
+      - 00614c38 cmp bh, dh
+      - 00614c3a pushal 
+      - 00614c3b add byte ptr [edx + 0x70060f7], bh
+      - 00614c41 clc 
+      + 00614d48 dec eax
+      + 00614d49 clc 
+      + 00614d4a pushal 
+      + 00614d4b add dl, cl
+0x00618f34 (+21 instr.) | 0x00619044 (+22 instr.) | remplacement | decalage +0x110
+      - 00618f34 fiadd word ptr [eax - 0x7e59ff9f]
+      - 00618f3a popal 
+      - 00618f3b add byte ptr [esi - 0x7e], ch
+      - 00618f3e popal 
+      + 00619044 out dx, al
+      + 00619045 and dword ptr [ecx], 0x6182b6
+      + 0061904c jle 0x618fd1
+      + 0061904e popal 
+0x0061b8a0 (+4 instr.) | 0x0061b9b0 (+6 instr.) | remplacement | decalage +0x110
+      - 0061b8a0 sal byte ptr [edi - 0x47fcff9f], cl
+      - 0061b8a6 popal 
+      - 0061b8a7 add byte ptr [edx], ch
+      - 0061b8a9 mov eax, 0xb8510061
+      + 0061b9b0 loop 0x61b96a
+      + 0061b9b2 popal 
+      + 0061b9b3 add byte ptr [ebx], dl
+      + 0061b9b5 mov ecx, 0xb93a0061
+0x0061b9ec (+7 instr.) | 0x0061bafc (+5 instr.) | remplacement | decalage +0x110
+      - 0061b9ec mov eax, 0xb9260061
+      - 0061b9f2 popal 
+      - 0061b9f3 add byte ptr [ebp - 0x47], cl
+      - 0061b9f6 popal 
+      + 0061bafc add bh, byte ptr [edx - 0x45c9ff9f]
+      + 0061bb02 popal 
+      + 0061bb03 add byte ptr [ebp - 0x46], bl
+      + 0061bb06 popal 
+0x00620338 (+35 instr.) | 0x00620448 (+46 instr.) | remplacement | decalage +0x110
+      - 00620338 mov bl, 0xf9
+      - 0062033a popal 
+      - 0062033b add dl, dh
+      - 0062033d stc 
+      + 00620448 ret 
+      + 00620449 cli 
+      + 0062044a popal 
+      + 0062044b add byte ptr [edx], al
+0x0062d9c8 (+9 instr.) | 0x0062dad8 (+8 instr.) | remplacement | decalage +0x110
+      - 0062d9c8 retf 
+      - 0062d9ca bound eax, qword ptr [eax]
+      - 0062d9cc pop ss
+      - 0062d9cd int3 
+      + 0062dad8 inc esi
+      + 0062dad9 int3 
+      + 0062dada bound eax, qword ptr [eax]
+      + 0062dadc daa 
+0x00636570 (+4 instr.) | 0x00636680 (+5 instr.) | remplacement | decalage +0x110
+      - 00636570 imul ebx, dword ptr [esi + 0x63], 0
+      - 00636574 loop 0x6365d4
+      - 00636576 arpl word ptr [eax], ax
+      - 00636578 retf 0x6360
+      + 00636680 jnp 0x6366e1
+      + 00636682 arpl word ptr [eax], ax
+      + 00636684 pop edi
+      + 00636686 arpl word ptr [eax], ax
+0x0063af5c (+6 instr.) | 0x0063b06c (+8 instr.) | remplacement | decalage +0x110
+      - 0063af5c sbb ch, byte ptr [ebx + 0x63ac4000]
+      - 0063af63 add byte ptr [ebx - 0x54], bl
+      - 0063af66 arpl word ptr [eax], ax
+      - 0063af68 shr byte ptr [ebx + 0x63ae2e00], 1
+      + 0063b06c sub ch, byte ptr [ebp - 0x52afff9d]
+      + 0063b072 arpl word ptr [eax], ax
+      + 0063b074 imul ebp, dword ptr [ebp - 0x521fff9d], 0x63
+      + 0063b07b add byte ptr [esi], bh
+0x0063afd0 (+16 instr.) | 0x0063b0e0 (+0 instr.) | suppression | decalage +0x110
+      - 0063afd0 int3 
+      - 0063afd1 int3 
+      - 0063afd2 int3 
+      - 0063afd3 int3 
+0x0063d9c9 (+42 instr.) | 0x0063dac9 (+44 instr.) | remplacement | decalage +0x100
+      - 0063d9c9 int 0x63
+      - 0063d9cb add byte ptr [edx + 0x4d0063d0], bl
+      - 0063d9d1 shl dword ptr [ebx], 1
+      - 0063d9d4 cmp cl, bh
+      + 0063dac9 into 
+      + 0063daca arpl word ptr [eax], ax
+      + 0063dacc lcall 0x63d2, 0x4d0063d1
+      + 0063dad3 add byte ptr [edx], bh
+0x00643a7d (+4 instr.) | 0x00643b7d (+4 instr.) | remplacement | decalage +0x100
+      - 00643a7d xor eax, 0x35fd0064
+      - 00643a82 add byte ptr fs:[esi - 0x38ff9bc8], cl
+      - 00643a89 cmp byte ptr [eax + eax + 0x35], ah
+      - 00643a8d cmp ah, byte ptr [eax + eax + 0x55]
+      + 00643b7d add ch, bh
+      + 00643b81 add byte ptr fs:[esi - 0x38ff9bc7], cl
+      + 00643b89 cmp dword ptr [eax + eax + 0x35], esp
+      + 00643b8d cmp esp, dword ptr [eax + eax + 0x55]
+0x0065ad38 (+11 instr.) | 0x0065ae38 (+10 instr.) | remplacement | decalage +0x100
+      - 0065ad38 sub edx, dword ptr [ebp + 0x65943c00]
+      - 0065ad3f add ch, ch
+      - 0065ad41 cdq 
+      - 0065ad42 add byte ptr gs:[eax - 0x63], dl
+      + 0065ae38 sub edx, dword ptr [ebp - 0x6ac3ff9b]
+      + 0065ae3e add ch, ch
+      + 0065ae41 lcall 0x65, 0x9e500065
+      + 0065ae48 mov esp, 0x1e006596
+0x0065c770 (+11 instr.) | 0x0065c870 (+11 instr.) | remplacement | decalage +0x100
+      - 0065c770 or ebp, dword ptr [edi - 0x49a9ff9b]
+      - 0065c776 add byte ptr gs:[edi + eax*8], dh
+      - 0065c77a add byte ptr gs:[ebx - 0x4a], ch
+      - 0065c77e add byte ptr gs:[ebp - 0x2eff9a46], dl
+      + 0065c870 or esi, dword ptr [eax - 0x48a9ff9b]
+      + 0065c876 add byte ptr gs:[eax + ecx*8], dh
+      + 0065c87a add byte ptr gs:[ebx - 0x49], ch
+      + 0065c87e add byte ptr gs:[ebp - 0x2eff9a45], dl
+0x0065e4e8 (+3 instr.) | 0x0065e5e8 (+3 instr.) | remplacement | decalage +0x100
+      - 0065e4e8 test cl, ah
+      - 0065e4ea add byte ptr gs:[ebp - 0x52ff9a1e], ch
+      - 0065e4f1 loop 0x65e558
+      + 0065e5e8 test dl, ah
+      + 0065e5ea add byte ptr gs:[ebp - 0x52ff9a1d], ch
+      + 0065e5f1 jecxz 0x65e658
+0x0067e130 (+0 instr.) | 0x0067e230 (+16 instr.) | insertion | decalage +0x100
+      + 0067e230 int3 
+      + 0067e231 int3 
+      + 0067e232 int3 
+      + 0067e233 int3 
+0x0068d730 (+0 instr.) | 0x0068d840 (+16 instr.) | insertion | decalage +0x110
+      + 0068d840 int3 
+      + 0068d841 int3 
+      + 0068d842 int3 
+      + 0068d843 int3 
+0x00690ff0 (+16 instr.) | 0x00691110 (+0 instr.) | suppression | decalage +0x120
+      - 00690ff0 int3 
+      - 00690ff1 int3 
+      - 00690ff2 int3 
+      - 00690ff3 int3 
+0x006b9eb0 (+83 instr.) | 0x006b9fc0 (+86 instr.) | remplacement | decalage +0x110
+      - 006b9eb0 jecxz 0x6b9e34
+      - 006b9eb2 imul eax, dword ptr [eax], -0x5b
+      - 006b9eb5 xchg ebx, eax
+      - 006b9eb6 imul eax, dword ptr [eax], 0x33
+      + 006b9fc0 sub dword ptr [ebx], -0x4b
+      + 006b9fc5 xchg esp, eax
+      + 006b9fc6 imul eax, dword ptr [eax], 0x43
+      + 006b9fc9 xchg ebp, eax
+0x006bcfc0 (+72 instr.) | 0x006bd0d0 (+76 instr.) | remplacement | decalage +0x110
+      - 006bcfc0 leave 
+      - 006bcfc1 mov ah, 0x6b
+      - 006bcfc3 add byte ptr [ebp - 0x3f], ah
+      - 006bcfc6 imul eax, dword ptr [eax], 0x7f
+      + 006bd0d0 fnstenv [ebp - 0x3d8aff95]
+      + 006bd0d6 imul eax, dword ptr [eax], -0x71
+      + 006bd0d9 ret 
+      + 006bd0da imul eax, dword ptr [eax], -0xd
+0x006c4314 (+7 instr.) | 0x006c4424 (+8 instr.) | remplacement | decalage +0x110
+      - 006c4314 das 
+      - 006c4315 and ebp, dword ptr [eax + eax + 0x73]
+      - 006c4319 sub byte ptr [eax + eax - 0x41], ch
+      - 006c431d sub ebp, dword ptr [eax + eax - 0xa]
+      + 006c4424 aas 
+      + 006c4425 and al, 0x6c
+      + 006c4427 add byte ptr [ebx - 0x30ff93d7], al
+      + 006c442d sub al, 0x6c
+0x006c62d4 (+9 instr.) | 0x006c63e4 (+6 instr.) | remplacement | decalage +0x110
+      - 006c62d4 salc 
+      - 006c62d5 push edx
+      - 006c62d6 insb byte ptr es:[edi], dx
+      - 006c62d7 add byte ptr [ebx + edx*2 + 0x6c], al
+      + 006c63e4 out 0x53, al
+      + 006c63e6 insb byte ptr es:[edi], dx
+      + 006c63e7 add byte ptr [esp + edx*2 + 0x6c], dl
+      + 006c63eb add byte ptr [ecx + 0x61], al
+0x006ccef4 (+8 instr.) | 0x006cd004 (+9 instr.) | remplacement | decalage +0x110
+      - 006ccef4 lahf 
+      - 006ccef5 retf 0x6c
+      - 006ccef8 in eax, 0xcc
+      - 006ccefa insb byte ptr es:[edi], dx
+      + 006cd004 scasd eax, dword ptr es:[edi]
+      + 006cd005 retf 
+      + 006cd006 insb byte ptr es:[edi], dx
+      + 006cd007 add ch, dh
+0x006ce560 (+9 instr.) | 0x006ce670 (+8 instr.) | remplacement | decalage +0x110
+      - 006ce560 sbb al, 0xd5
+      - 006ce562 insb byte ptr es:[edi], dx
+      - 006ce563 add byte ptr [ecx - 0x2b], bh
+      - 006ce566 insb byte ptr es:[edi], dx
+      + 006ce670 sub al, 0xd6
+      + 006ce672 insb byte ptr es:[edi], dx
+      + 006ce673 add byte ptr [ecx + 0x6a006cd6], cl
+      + 006ce679 fisubr dword ptr [eax + eax + 0x4a]
+0x006d1d84 (+20 instr.) | 0x006d1e94 (+22 instr.) | remplacement | decalage +0x110
+      - 006d1d84 outsb dx, byte ptr [esi]
+      - 006d1d85 std 
+      - 006d1d86 insb byte ptr es:[edi], dx
+      - 006d1d87 add bh, bh
+      + 006d1e94 jle 0x6d1e94
+      + 006d1e96 insb byte ptr es:[edi], dx
+      + 006d1e97 add byte ptr [edi], cl
+      + 006d1e99 add byte ptr [ebp], ch
+0x006d1f7c (+12 instr.) | 0x006d208c (+13 instr.) | remplacement | decalage +0x110
+      - 006d1f7c imul ebx, dword ptr [edi], 0x6d
+      - 006d1f7f add byte ptr [ebx - 0x4aff92e2], al
+      - 006d1f85 push ds
+      - 006d1f86 insd dword ptr es:[edi], dx
+      + 006d208c jnp 0x6d20ae
+      + 006d208e insd dword ptr es:[edi], dx
+      + 006d208f add byte ptr [ebx - 0x3aff92e1], dl
+      + 006d2095 pop ds
+0x006d317c (+13 instr.) | 0x006d328c (+12 instr.) | remplacement | decalage +0x110
+      - 006d317c shl dword ptr [ecx], 0x6d
+      - 006d317f add cl, al
+      - 006d3181 and dword ptr [ebp], ebp
+      - 006d3184 shl dword ptr [ecx], 0x6d
+      + 006d328c shl dword ptr [edx], 1
+      + 006d328e insd dword ptr es:[edi], dx
+      + 006d328f add cl, dl
+      + 006d3291 and ch, byte ptr [ebp]
+0x006d628c (+23 instr.) | 0x006d639c (+24 instr.) | remplacement | decalage +0x110
+      - 006d628c .byte 0xdb
+      - 006d628d insd dword ptr es:[edi], dx
+      - 006d628f add byte ptr [eax], bh
+      - 006d6291 aaa 
+      + 006d639c jmp 0x6d63d5
+      + 006d639e insd dword ptr es:[edi], dx
+      + 006d639f add byte ptr [eax + 0x38], cl
+      + 006d63a2 insd dword ptr es:[edi], dx
+0x006e55b0 (+14 instr.) | 0x006e56c0 (+13 instr.) | remplacement | decalage +0x110
+      - 006e55b0 push ebp
+      - 006e55b2 outsb dx, byte ptr [esi]
+      - 006e55b3 add byte ptr [ebx + 0x54], dh
+      - 006e55b6 outsb dx, byte ptr [esi]
+      + 006e56c0 push esi
+      + 006e56c2 outsb dx, byte ptr [esi]
+      + 006e56c3 add byte ptr [ebx - 0x4dff91ab], al
+      + 006e56c9 push ebp
+0x006e99e0 (+10 instr.) | 0x006e9af0 (+11 instr.) | remplacement | decalage +0x110
+      - 006e99e0 mov dh, 0x96
+      - 006e99e2 outsb dx, byte ptr [esi]
+      - 006e99e3 add byte ptr [edi], bl
+      - 006e99e5 xchg esi, eax
+      + 006e9af0 .byte 0xc6
+      + 006e9af1 xchg edi, eax
+      + 006e9af2 outsb dx, byte ptr [esi]
+      + 006e9af3 add byte ptr [edi], ch
+0x006ef980 (+16 instr.) | 0x006efa90 (+0 instr.) | suppression | decalage +0x110
+      - 006ef980 int3 
+      - 006ef981 int3 
+      - 006ef982 int3 
+      - 006ef983 int3 
+0x006f0de9 (+5 instr.) | 0x006f0ee9 (+8 instr.) | remplacement | decalage +0x100
+      - 006f0de9 or ebp, dword ptr [edi]
+      - 006f0dec outsd dx, dword ptr [esi]
+      - 006f0ded or ebp, dword ptr [edi]
+      - 006f0df0 cmp eax, 0x7e006f0c
+      + 006f0ee9 or al, 0x6f
+      + 006f0eeb add byte ptr [edi + 0xc], ch
+      + 006f0eee outsd dx, dword ptr [esi]
+      + 006f0eef add byte ptr [0x7e006f0d], bh
+0x006f2080 (+0 instr.) | 0x006f2180 (+16 instr.) | insertion | decalage +0x100
+      + 006f2180 int3 
+      + 006f2181 int3 
+      + 006f2182 int3 
+      + 006f2183 int3 
+0x00701fa8 (+28 instr.) | 0x007020b8 (+28 instr.) | remplacement | decalage +0x110
+      - 00701fa8 in eax, 0xdd
+      - 00701faa outsd dx, dword ptr [esi]
+      - 00701fab add byte ptr [ebp + edi*8 + 0x66c006f], bh
+      - 00701fb2 jo 0x701fb4
+      + 007020b8 cmc 
+      + 007020b9 fisubr word ptr [edi]
+      + 007020bc int3 
+      + 007020bd .byte 0xfe
+0x00703e18 (+8 instr.) | 0x00703f28 (+6 instr.) | remplacement | decalage +0x110
+      - 00703e18 aas 
+      - 00703e19 xor esi, dword ptr [eax]
+      - 00703e1c mov byte ptr [ebx], dh
+      - 00703e1e jo 0x703e20
+      + 00703f28 dec edi
+      + 00703f29 xor al, 0x70
+      + 00703f2b add byte ptr [eax - 0x44ff8fcc], bl
+      + 00703f31 cmp dword ptr [eax], esi
+0x00706b6c (+8 instr.) | 0x00706c7c (+7 instr.) | remplacement | decalage +0x110
+      - 00706b6c xchg esp, eax
+      - 00706b6d arpl word ptr [eax], si
+      - 00706b70 scasb al, byte ptr es:[edi]
+      - 00706b71 jo 0x706b74
+      + 00706c7c movsb byte ptr es:[edi], byte ptr [esi]
+      + 00706c7d jo 0x706c80
+      + 00706c80 mov esi, 0x40007065
+      + 00706c85 insb byte ptr es:[edi], dx
+0x00712598 (+5 instr.) | 0x007126a8 (+7 instr.) | remplacement | decalage +0x110
+      - 00712598 neg byte ptr [ebx]
+      - 0071259a jno 0x71259c
+      - 0071259c xor dword ptr [ecx + esi*2], ebx
+      - 0071259f add byte ptr [ebp - 0x8ff8ee0], dh
+      + 007126a8 push es
+      + 007126a9 sbb eax, 0x1d410071
+      + 007126ae jno 0x7126b0
+      + 007126b0 lds esp, ptr [ecx]
+0x00719b70 (+16 instr.) | 0x00719c80 (+0 instr.) | suppression | decalage +0x110
+      - 00719b70 int3 
+      - 00719b71 int3 
+      - 00719b72 int3 
+      - 00719b73 int3 
+0x00725351 (+2 instr.) | 0x00725451 (+2 instr.) | remplacement | decalage +0x100
+      - 00725351 cmp eax, 0x3d640072
+      - 00725356 jb 0x725358
+      + 00725451 jb 0x725454
+      + 00725454 jb 0x725458
+0x0073041c (+5 instr.) | 0x0073051c (+5 instr.) | remplacement | decalage +0x100
+      - 0073041c fiadd dword ptr [edx]
+      - 0073041e jae 0x730420
+      - 00730420 mov eax, 0x25007303
+      - 00730425 add esi, dword ptr [ebx]
+      + 0073051c fiadd dword ptr [ebx]
+      + 0073051e jae 0x730520
+      + 00730520 mov eax, 0x25007304
+      + 00730525 add al, 0x73
+0x00730560 (+16 instr.) | 0x00730660 (+0 instr.) | suppression | decalage +0x100
+      - 00730560 int3 
+      - 00730561 int3 
+      - 00730562 int3 
+      - 00730563 int3 
+0x00731668 (+35 instr.) | 0x00731758 (+38 instr.) | remplacement | decalage +0xf0
+      - 00731668 mov ah, 5
+      - 0073166a jae 0x73166c
+      - 0073166c push es
+      - 0073166e jae 0x731670
+      + 00731758 movsb byte ptr es:[edi], byte ptr [esi]
+      + 00731759 push es
+      + 0073175a jae 0x73175c
+      + 0073175c push ds
+0x007353bc (+40 instr.) | 0x007354ac (+41 instr.) | remplacement | decalage +0xf0
+      - 007353bc lodsd eax, dword ptr [esi]
+      - 007353bd dec edx
+      - 007353be jae 0x7353c0
+      - 007353c0 loop 0x73540c
+      + 007354ac popfd 
+      + 007354ad dec ebx
+      + 007354ae jae 0x7354b0
+      + 007354b0 ror byte ptr [ebx + 0x73], cl
+0x00739f94 (+45 instr.) | 0x0073a084 (+59 instr.) | remplacement | decalage +0xf0
+      - 00739f94 bound edx, qword ptr [ecx - 0x6dfbff8d]
+      - 00739f9a jae 0x739f9c
+      - 00739f9c jle 0x739f30
+      - 00739f9e jae 0x739fa0
+      + 0073a084 push edx
+      + 0073a085 xchg edx, eax
+      + 0073a086 jae 0x73a088
+      + 0073a088 hlt 
+0x0073a02f (+1 instr.) | 0x0073a120 (+0 instr.) | suppression | decalage +0xf1
+      - 0073a02f int3 
+0x0073a6ac (+13 instr.) | 0x0073a79c (+16 instr.) | remplacement | decalage +0xf0
+      - 0073a6ac mov dword ptr [eax - 0x5f18ff8d], esp
+      - 0073a6b2 jae 0x73a6b4
+      - 0073a6b4 aaa 
+      - 0073a6b5 mov eax, dword ptr [0xa1630073]
+      + 0073a79c jns 0x73a73f
+      + 0073a79e jae 0x73a7a0
+      + 0073a7a0 xlatb 
+      + 0073a7a1 mov eax, dword ptr [0xa2270073]
+0x0073f4f4 (+5 instr.) | 0x0073f5e4 (+9 instr.) | remplacement | decalage +0xf0
+      - 0073f4f4 imul esi, ecx, 0x73
+      - 0073f4f7 add byte ptr [eax + 0x2e0073f1], ah
+      - 0073f4fd bnd jae 0x73f500
+      - 0073f500 push edx
+      + 0073f5e4 pop ebx
+      + 0073f5e5 bnd jae 0x73f5e8
+      + 0073f5e8 nop 
+      + 0073f5e9 bnd jae 0x73f5ec
+0x00740fb0 (+16 instr.) | 0x007410a0 (+0 instr.) | suppression | decalage +0xf0
+      - 00740fb0 int3 
+      - 00740fb1 int3 
+      - 00740fb2 int3 
+      - 00740fb3 int3 
+0x00741d84 (+19 instr.) | 0x00741e64 (+20 instr.) | remplacement | decalage +0xe0
+      - 00741d84 hlt 
+      - 00741d85 sbb byte ptr [eax + eax - 0x16], dh
+      - 00741d89 sbb byte ptr [eax + eax - 2], dh
+      - 00741d8d sbb byte ptr [eax + eax], dh
+      + 00741e64 aam 0x19
+      + 00741e66 je 0x741e68
+      + 00741e68 retf 0x7419
+      + 00741e6b add dh, bl
+0x00742360 (+6 instr.) | 0x00742440 (+5 instr.) | remplacement | decalage +0xe0
+      - 00742360 in al, 0x22
+      - 00742362 je 0x742364
+      - 00742364 leave 
+      - 00742365 and dh, byte ptr [eax + eax - 0x25]
+      + 00742440 les esp, ptr [ebx]
+      + 00742442 je 0x742444
+      + 00742444 test eax, 0xbb007423
+      + 00742449 and esi, dword ptr [eax + eax - 0x4e]
+0x00746a1c (+33 instr.) | 0x00746afc (+32 instr.) | remplacement | decalage +0xe0
+      - 00746a1c push edi
+      - 00746a1d je 0x746a20
+      - 00746a20 pop esi
+      - 00746a21 je 0x746a24
+      + 00746afc aaa 
+      + 00746afd je 0x746b00
+      + 00746b00 je 0x746b04
+      + 00746b04 inc ebp
+0x00746c3c (+9 instr.) | 0x00746d1c (+9 instr.) | remplacement | decalage +0xe0
+      - 00746c3c and al, 0x6b
+      - 00746c3e je 0x746c40
+      - 00746c40 and al, 0x6b
+      - 00746c42 je 0x746c44
+      + 00746d1c add al, 0x6c
+      + 00746d1e je 0x746d20
+      + 00746d20 add al, 0x6c
+      + 00746d22 je 0x746d24
+0x0074d734 (+13 instr.) | 0x0074d814 (+11 instr.) | remplacement | decalage +0xe0
+      - 0074d734 jno 0x74d707
+      - 0074d736 je 0x74d738
+      - 0074d738 mov edx, ecx
+      - 0074d73a je 0x74d73c
+      + 0074d814 push ecx
+      + 0074d815 sal byte ptr [eax + eax + 0x6b], cl
+      + 0074d819 sal byte ptr [eax + eax - 0x7b], cl
+      + 0074d81d sal byte ptr [eax + eax - 0x61], cl
+0x0074d7c0 (+11 instr.) | 0x0074d8a0 (+10 instr.) | remplacement | decalage +0xe0
+      - 0074d7c0 adc ecx, 0xd19b0074
+      - 0074d7c6 je 0x74d7c8
+      - 0074d7c8 mov ch, 0xd1
+      - 0074d7ca je 0x74d7cc
+      + 0074d8a0 popal 
+      + 0074d8a1 sal byte ptr [eax + eax + 0x7b], cl
+      + 0074d8a5 sal byte ptr [eax + eax - 0x6b], cl
+      + 0074d8a9 sal byte ptr [eax + eax - 0x51], cl
+0x00750060 (+0 instr.) | 0x00750140 (+16 instr.) | insertion | decalage +0xe0
+      + 00750140 int3 
+      + 00750141 int3 
+      + 00750142 int3 
+      + 00750143 int3 
+0x00752974 (+3 instr.) | 0x00752a64 (+5 instr.) | remplacement | decalage +0xf0
+      - 00752974 mov esp, 0x47007522
+      - 00752979 and esi, dword ptr [ebp]
+      - 0075297c add byte ptr [ecx], al
+      + 00752a64 lodsb al, byte ptr [esi]
+      + 00752a65 and esi, dword ptr [ebp]
+      + 00752a68 aaa 
+      + 00752a69 and al, 0x75
+0x007529a6 (+8 instr.) | 0x00752a95 (+7 instr.) | remplacement | decalage +0xef
+      - 007529a6 add dword ptr [eax], eax
+      - 007529a8 add byte ptr [eax], al
+      - 007529aa add byte ptr [eax], al
+      - 007529ac add byte ptr [eax], al
+      + 00752a95 add dword ptr [ecx], eax
+      + 00752a97 add byte ptr [eax], al
+      + 00752a99 add byte ptr [eax], al
+      + 00752a9b add byte ptr [eax], al
+0x00752f0c (+10 instr.) | 0x00752ffc (+16 instr.) | remplacement | decalage +0xf0
+      - 00752f0c xor eax, 0xb900752a
+      - 00752f11 sub dh, byte ptr [ebp]
+      - 00752f14 sub si, word ptr [ebp]
+      - 00752f18 adc byte ptr [esi*2 + 0x752cba00], ch
+      + 00752ffc and eax, 0xa900752b
+      + 00753001 sub esi, dword ptr [ebp]
+      + 00753004 push esi
+      + 00753005 sub al, 0x75
+0x0075f394 (+167 instr.) | 0x0075f484 (+166 instr.) | remplacement | decalage +0xf0
+      - 0075f394 outsd dx, dword ptr [esi]
+      - 0075f395 mov ah, 0x75
+      - 0075f397 add byte ptr [ecx - 0x6ff8a4b], al
+      - 0075f39d mov dh, 0x75
+      + 0075f484 pop edi
+      + 0075f485 mov ch, 0x75
+      + 0075f487 add byte ptr [ecx - 0x4a], dh
+      + 0075f48a jne 0x75f48c
+0x0076022c (+43 instr.) | 0x0076031c (+43 instr.) | remplacement | decalage +0xf0
+      - 0076022c mov ch, 0xf7
+      - 0076022e jne 0x760230
+      - 00760230 pop eax
+      - 00760231 cli 
+      + 0076031c movsd dword ptr es:[edi], dword ptr [esi]
+      + 0076031d clc 
+      + 0076031e jne 0x760320
+      + 00760320 dec eax
+0x00769a74 (+8 instr.) | 0x00769b64 (+7 instr.) | remplacement | decalage +0xf0
+      - 00769a74 outsb dx, byte ptr [esi]
+      - 00769a75 xor esi, dword ptr [esi]
+      - 00769a78 cdq 
+      - 00769a79 xor esi, dword ptr [esi]
+      + 00769b64 pop esi
+      + 00769b65 xor al, 0x76
+      + 00769b67 add byte ptr [ecx + 0x2f007634], cl
+      + 00769b6d xor eax, 0x36e90076
+0x0076a39c (+33 instr.) | 0x0076a48c (+29 instr.) | remplacement | decalage +0xf0
+      - 0076a39c pop esp
+      - 0076a39d pushfd 
+      - 0076a39e jbe 0x76a3a0
+      - 0076a3a0 .byte 0xc6
+      + 0076a48c dec esp
+      + 0076a48d popfd 
+      + 0076a48e jbe 0x76a490
+      + 0076a490 mov dh, 0x9d
+0x0076efa8 (+15 instr.) | 0x0076f098 (+14 instr.) | remplacement | decalage +0xf0
+      - 0076efa8 push esi
+      - 0076efa9 out dx, al
+      - 0076efaa jbe 0x76efac
+      - 0076efac mov edi, gs
+      + 0076f098 inc esi
+      + 0076f099 out dx, eax
+      + 0076f09a jbe 0x76f09c
+      + 0076f09c jl 0x76f08e
+0x00770430 (+11 instr.) | 0x00770520 (+10 instr.) | remplacement | decalage +0xf0
+      - 00770430 loopne 0x770428
+      - 00770432 jbe 0x770434
+      - 00770434 .byte 0xc5
+      - 00770435 cld 
+      + 00770520 sal bh, 1
+      + 00770522 jbe 0x770524
+      + 00770524 mov ch, 0xfd
+      + 00770526 jbe 0x770528
+0x007751f8 (+21 instr.) | 0x007752e8 (+25 instr.) | remplacement | decalage +0xf0
+      - 007751f8 sub byte ptr [edi + esi*2], cl
+      - 007751fc mov dword ptr [edi + esi*2], ecx
+      - 00775200 ljmp 0x774d:0x4b00774c
+      - 00775207 add cl, cl
+      + 007752e8 sbb byte ptr [ebp + 0x77], cl
+      + 007752eb add byte ptr [ecx + 0x4d], bh
+      + 007752ee ja 0x7752f0
+      + 007752f0 fimul dword ptr [ebp + 0x77]
+0x0077ed2c (+85 instr.) | 0x0077ee1c (+80 instr.) | remplacement | decalage +0xf0
+      - 0077ed2c in eax, dx
+      - 0077ed2d js 0x77eda6
+      - 0077ed2f add byte ptr [ecx + edi*2], ah
+      - 0077ed32 ja 0x77ed34
+      + 0077ee1c fnstsw word ptr [ecx + 0x77]
+      + 0077ee1f add byte ptr [edx + edi*2], dl
+      + 0077ee22 ja 0x77ee24
+      + 0077ee24 jp 0x77ee9e
+0x007827c0 (+14 instr.) | 0x007828b0 (+10 instr.) | remplacement | decalage +0xf0
+      - 007827c0 sbb esp, dword ptr [eax + edi*2]
+      - 007827c3 add byte ptr [ecx], ch
+      - 007827c5 and al, 0x78
+      - 007827c7 add byte ptr [ecx + 0x24], bh
+      + 007828b0 or esp, dword ptr [0x25190078]
+      + 007828b6 js 0x7828b8
+      + 007828b8 imul esp, dword ptr [0x259b0078], 0x26200078
+      + 007828c2 js 0x7828c4
+0x00783820 (+28 instr.) | 0x00783910 (+27 instr.) | remplacement | decalage +0xf0
+      - 00783820 test al, 0x28
+      - 00783822 js 0x783824
+      - 00783824 jb 0x78384f
+      - 00783826 js 0x783828
+      + 00783910 cwde 
+      + 00783911 sub dword ptr [eax], edi
+      + 00783914 bound ebp, qword ptr [edx]
+      + 00783916 js 0x783918
+0x00784c30 (+0 instr.) | 0x00784d20 (+16 instr.) | insertion | decalage +0xf0
+      + 00784d20 int3 
+      + 00784d21 int3 
+      + 00784d22 int3 
+      + 00784d23 int3 
+0x00784ff4 (+17 instr.) | 0x007850f4 (+19 instr.) | remplacement | decalage +0x100
+      - 00784ff4 and byte ptr [ebp + 0x78], cl
+      - 00784ff7 add byte ptr [eax + 0x4d], bh
+      - 00784ffa js 0x784ffc
+      - 00784ffc ret 0x784d
+      + 007850f4 and byte ptr [esi + 0x78], cl
+      + 007850f7 add byte ptr [eax + 0x4e], bh
+      + 007850fa js 0x7850fc
+      + 007850fc ret 0x784e
+0x0078b681 (+8 instr.) | 0x0078b781 (+8 instr.) | remplacement | decalage +0x100
+      - 0078b681 mov dh, 0x78
+      - 0078b683 add byte ptr [ecx - 0x4a], bl
+      - 0078b686 js 0x78b688
+      - 0078b688 pop edi
+      + 0078b781 mov bh, 0x78
+      + 0078b783 add byte ptr [ecx - 0x49], bl
+      + 0078b786 js 0x78b788
+      + 0078b788 pop edi
+0x0078bbc0 (+16 instr.) | 0x0078bcc0 (+0 instr.) | suppression | decalage +0x100
+      - 0078bbc0 int3 
+      - 0078bbc1 int3 
+      - 0078bbc2 int3 
+      - 0078bbc3 int3 
+0x00791a60 (+16 instr.) | 0x00791b50 (+0 instr.) | suppression | decalage +0xf0
+      - 00791a60 int3 
+      - 00791a61 int3 
+      - 00791a62 int3 
+      - 00791a63 int3 
+0x00793f10 (+0 instr.) | 0x00793ff0 (+16 instr.) | insertion | decalage +0xe0
+      + 00793ff0 int3 
+      + 00793ff1 int3 
+      + 00793ff2 int3 
+      + 00793ff3 int3 
+0x0079d1d0 (+0 instr.) | 0x0079d2c0 (+16 instr.) | insertion | decalage +0xf0
+      + 0079d2c0 int3 
+      + 0079d2c1 int3 
+      + 0079d2c2 int3 
+      + 0079d2c3 int3 
+0x007b1770 (+0 instr.) | 0x007b1870 (+16 instr.) | insertion | decalage +0x100
+      + 007b1870 int3 
+      + 007b1871 int3 
+      + 007b1872 int3 
+      + 007b1873 int3 
+0x007bb840 (+22 instr.) | 0x007bb950 (+26 instr.) | remplacement | decalage +0x110
+      - 007bb840 ljmp 0x7bb5:0xb007bb4
+      - 007bb847 add byte ptr [esi*4 - 0x4ab0ff85], bl
+      - 007bb84e jnp 0x7bb850
+      - 007bb850 pushal 
+      + 007bb950 cli 
+      + 007bb951 mov ch, 0x7b
+      + 007bb953 add byte ptr [ebx], bl
+      + 007bb955 mov dh, 0x7b
+0x007c5248 (+18 instr.) | 0x007c5358 (+20 instr.) | remplacement | decalage +0x110
+      - 007c5248 jmp 0x7c5295
+      - 007c524a jl 0x7c524c
+      - 007c524c iretd 
+      - 007c524d dec ebx
+      + 007c5358 sti 
+      + 007c5359 dec esp
+      + 007c535a jl 0x7c535c
+      + 007c535c fisttp word ptr [esp + edi*2]
+0x007c6104 (+21 instr.) | 0x007c6214 (+14 instr.) | remplacement | decalage +0x110
+      - 007c6104 jno 0x7c6163
+      - 007c6106 jl 0x7c6108
+      - 007c6108 push ebp
+      - 007c6109 pop ebp
+      + 007c6214 sbb dword ptr [esi + 0x7c], 0x7c5e6500
+      + 007c621b add byte ptr [esi + ebx*2 + 0x7c], ch
+      + 007c621f add byte ptr [ebx + 0x5e], dh
+      + 007c6222 jl 0x7c6224
+0x007c744c (+9 instr.) | 0x007c755c (+11 instr.) | remplacement | decalage +0x110
+      - 007c744c push edi
+      - 007c744d jo 0x7c74cb
+      - 007c744f add byte ptr [ebp + 0x71], bl
+      - 007c7452 jl 0x7c7454
+      + 007c755c jno 0x7c75db
+      + 007c755f add byte ptr [ebp + 0x72], ch
+      + 007c7562 jl 0x7c7564
+      + 007c7564 inc esi
+0x007c7908 (+9 instr.) | 0x007c7a18 (+6 instr.) | remplacement | decalage +0x110
+      - 007c7908 or esi, dword ptr [edi + 0x7c]
+      - 007c790b add byte ptr [eax + edi*2 + 0x7c], dh
+      - 007c790f add byte ptr [edi + 0x78], bh
+      - 007c7912 jl 0x7c7914
+      + 007c7a18 sbb edi, dword ptr [eax + 0x7c]
+      + 007c7a1b add byte ptr [ecx + edi*2 + 0x798f007c], al
+      + 007c7a22 jl 0x7c7a24
+      + 007c7a24 .byte 0x8f
+0x007c9330 (+15 instr.) | 0x007c9440 (+15 instr.) | remplacement | decalage +0x110
+      - 007c9330 fdivr dword ptr [ebp + 0x7c]
+      - 007c9333 add al, bl
+      - 007c9335 jge 0x7c93b3
+      - 007c9337 add byte ptr [ecx + 0x4b007c81], al
+      + 007c9440 call 0xe87d10c3
+      + 007c9445 jle 0x7c94c3
+      + 007c9447 add byte ptr [ecx + 0x5b007c82], dl
+      + 007c944d test dword ptr [eax + eax - 0xa], edi
+0x007c9c54 (+19 instr.) | 0x007c9d64 (+10 instr.) | remplacement | decalage +0x110
+      - 007c9c54 xlatb 
+      - 007c9c55 xchg esi, eax
+      - 007c9c56 jl 0x7c9c58
+      - 007c9c58 sti 
+      + 007c9d64 out 0x97, eax
+      + 007c9d66 jl 0x7c9d68
+      + 007c9d68 or ebx, dword ptr [eax - 0x67d0ff84]
+      + 007c9d6e jl 0x7c9d70
+0x007cfbd8 (+19 instr.) | 0x007cfce8 (+14 instr.) | remplacement | decalage +0x110
+      - 007cfbd8 sti 
+      - 007cfbda jl 0x7cfbdc
+      - 007cfbdc sti 
+      - 007cfbde jl 0x7cfbe0
+      + 007cfce8 ja 0x7cfce6
+      + 007cfcea jl 0x7cfcec
+      + 007cfcec ja 0x7cfcea
+      + 007cfcee jl 0x7cfcf0
+0x007d7970 (+0 instr.) | 0x007d7a80 (+16 instr.) | insertion | decalage +0x110
+      + 007d7a80 int3 
+      + 007d7a81 int3 
+      + 007d7a82 int3 
+      + 007d7a83 int3 
+0x007ebe30 (+32 instr.) | 0x007ebf50 (+0 instr.) | suppression | decalage +0x120
+      - 007ebe30 int3 
+      - 007ebe31 int3 
+      - 007ebe32 int3 
+      - 007ebe33 int3 
+0x00809c68 (+11 instr.) | 0x00809d68 (+11 instr.) | remplacement | decalage +0x100
+      - 00809c68 sub dh, byte ptr [edi - 0x80]
+      - 00809c6b add byte ptr [ecx], dh
+      - 00809c6d ja 0x809bef
+      - 00809c6f add byte ptr [eax], bh
+      + 00809d68 sub bh, byte ptr [eax - 0x80]
+      + 00809d6b add byte ptr [ecx], dh
+      + 00809d6d js 0x809cef
+      + 00809d6f add byte ptr [eax], bh
+0x0080ac78 (+5 instr.) | 0x0080ad78 (+4 instr.) | remplacement | decalage +0x100
+      - 0080ac78 bound ebp, qword ptr [ebx - 0x549dff80]
+      - 0080ac7e add byte ptr [eax], 0x7b
+      - 0080ac81 stosd dword ptr es:[edi], eax
+      - 0080ac82 add byte ptr [eax], 0x91
+      + 0080ad78 bound ebp, qword ptr [eax + eax*4 - 0x7f539e00]
+      + 0080ad7f add byte ptr [ebx - 0x54], bh
+      + 0080ad82 add byte ptr [eax], 0x91
+      + 0080ad85 lodsb al, byte ptr [esi]
+0x0080b705 (+6 instr.) | 0x0080b805 (+5 instr.) | remplacement | decalage +0x100
+      - 0080b705 scasd eax, dword ptr es:[edi]
+      - 0080b706 add byte ptr [eax], 0x5d
+      - 0080b709 mov dl, 0x80
+      - 0080b70b add bh, dh
+      + 0080b805 mov al, 0x80
+      + 0080b807 add byte ptr [ebp - 0x4d], bl
+      + 0080b80a add byte ptr [eax], 0xf7
+      + 0080b80d mov dh, 0x80
+0x0080ba61 (+6 instr.) | 0x0080bb61 (+5 instr.) | remplacement | decalage +0x100
+      - 0080ba61 mov bh, 0x80
+      - 0080ba63 add ah, bh
+      - 0080ba65 mov bh, 0x80
+      - 0080ba67 add byte ptr [ebx + 0x140080b8], dh
+      + 0080bb61 mov eax, 0xb8fc0080
+      + 0080bb66 add byte ptr [eax], 0xb3
+      + 0080bb69 mov ecx, 0xba140080
+      + 0080bb6e add byte ptr [eax], 0x55
+0x0081b18c (+12 instr.) | 0x0081b28c (+12 instr.) | remplacement | decalage +0x100
+      - 0081b18c sbb al, 0xa5
+      - 0081b18e add dword ptr [eax], 0x81a523
+      - 0081b194 sub ah, byte ptr [ebp - 0x5aceff7f]
+      - 0081b19a add dword ptr [eax], 0x81a538
+      + 0081b28c sbb al, 0xa6
+      + 0081b28e add dword ptr [eax], 0x81a623
+      + 0081b294 sub ah, byte ptr [esi - 0x59ceff7f]
+      + 0081b29a add dword ptr [eax], 0x81a638
+0x0081c410 (+9 instr.) | 0x0081c510 (+7 instr.) | remplacement | decalage +0x100
+      - 0081c410 and bl, al
+      - 0081c412 add dword ptr [eax], 0x81c329
+      - 0081c418 xor al, bl
+      - 0081c41a add dword ptr [eax], 0x81c33b
+      + 0081c510 and ah, al
+      + 0081c512 add dword ptr [eax], 0x81c429
+      + 0081c518 xor al, ah
+      + 0081c51a add dword ptr [eax], 0x81c43b
+0x0081dd70 (+0 instr.) | 0x0081de70 (+16 instr.) | insertion | decalage +0x100
+      + 0081de70 int3 
+      + 0081de71 int3 
+      + 0081de72 int3 
+      + 0081de73 int3 
+0x0082d070 (+0 instr.) | 0x0082d180 (+16 instr.) | insertion | decalage +0x110
+      + 0082d180 int3 
+      + 0082d181 int3 
+      + 0082d182 int3 
+      + 0082d183 int3 
+0x0083295b (+4 instr.) | 0x00832a7b (+4 instr.) | remplacement | decalage +0x120
+      - 0083295b push 0x36
+      - 0083295d mov dword ptr [ebp - 0x3c], 0
+      - 00832964 mov dword ptr [ebp - 0x34], 0
+      - 0083296b mov dword ptr [ebp - 0x38], 0x35
+      + 00832a7b push 0x27
+      + 00832a7d mov dword ptr [ebp - 0x3c], 0
+      + 00832a84 mov dword ptr [ebp - 0x34], 0
+      + 00832a8b mov dword ptr [ebp - 0x38], 0x26
+0x00832a99 (+0 instr.) | 0x00832bb9 (+2 instr.) | insertion | decalage +0x120
+      + 00832bb9 call 0x44a260
+      + 00832bbe call 0x44bb20
+0x00834920 (+0 instr.) | 0x00834a4a (+6 instr.) | insertion | decalage +0x12a
+      + 00834a4a int3 
+      + 00834a4b int3 
+      + 00834a4c int3 
+      + 00834a4d int3 
+0x00869b40 (+16 instr.) | 0x00869c70 (+0 instr.) | suppression | decalage +0x130
+      - 00869b40 int3 
+      - 00869b41 int3 
+      - 00869b42 int3 
+      - 00869b43 int3 
+0x008708ec (+4 instr.) | 0x00870a0c (+5 instr.) | remplacement | decalage +0x120
+      - 008708ec and byte ptr [eax], cl
+      - 008708ee xchg dword ptr [eax], eax
+      - 008708f0 or byte ptr fs:[edi - 0x78f75800], al
+      - 008708f7 add byte ptr [esi - 0x33ff78f9], ch
+      + 00870a0c inc eax
+      + 00870a0d or dword ptr [edi - 0x78f67c00], eax
+      + 00870a13 add al, cl
+      + 00870a15 or dword ptr [edi - 0x78f73200], eax
+0x00874e50 (+0 instr.) | 0x00874f70 (+16 instr.) | insertion | decalage +0x120
+      + 00874f70 int3 
+      + 00874f71 int3 
+      + 00874f72 int3 
+      + 00874f73 int3 
+0x00879e40 (+0 instr.) | 0x00879f70 (+16 instr.) | insertion | decalage +0x130
+      + 00879f70 int3 
+      + 00879f71 int3 
+      + 00879f72 int3 
+      + 00879f73 int3 
+0x00891910 (+4 instr.) | 0x00891a50 (+6 instr.) | remplacement | decalage +0x140
+      - 00891910 mov ebx, 0xc2008918
+      - 00891915 sbb byte ptr [ecx - 0x76e73700], cl
+      - 0089191b add al, dl
+      - 0089191d sbb byte ptr [ecx - 0x1374ab00], cl
+      + 00891a50 sti 
+      + 00891a51 sbb dword ptr [ecx - 0x76e5fe00], ecx
+      + 00891a57 add byte ptr [ecx], cl
+      + 00891a59 sbb cl, byte ptr [ecx - 0x76e5f000]
+0x0089d538 (+9 instr.) | 0x0089d678 (+9 instr.) | remplacement | decalage +0x140
+      - 0089d538 .byte 0xdc
+      - 0089d539 aam 0x89
+      - 0089d53b add bl, ah
+      - 0089d53d aam 0x89
+      + 0089d678 sbb al, 0xd6
+      + 0089d67a mov dword ptr [eax], eax
+      + 0089d67c and edx, esi
+      + 0089d67e mov dword ptr [eax], eax
+0x0089e6d8 (+8 instr.) | 0x0089e818 (+6 instr.) | remplacement | decalage +0x140
+      - 0089e6d8 jle 0x89e6c0
+      - 0089e6da mov dword ptr [eax], eax
+      - 0089e6dc test esi, esp
+      - 0089e6de mov dword ptr [eax], eax
+      + 0089e818 mov esi, 0xc50089e7
+      + 0089e81d out 0x89, eax
+      + 0089e81f add ah, cl
+      + 0089e821 out 0x89, eax
+0x0089eea0 (+0 instr.) | 0x0089efe0 (+16 instr.) | insertion | decalage +0x140
+      + 0089efe0 int3 
+      + 0089efe1 int3 
+      + 0089efe2 int3 
+      + 0089efe3 int3 
+0x008a0ff0 (+16 instr.) | 0x008a1140 (+0 instr.) | suppression | decalage +0x150
+      - 008a0ff0 int3 
+      - 008a0ff1 int3 
+      - 008a0ff2 int3 
+      - 008a0ff3 int3 
+0x008b637c (+9 instr.) | 0x008b64bc (+10 instr.) | remplacement | decalage +0x140
+      - 008b637c and al, 0x62
+      - 008b637e mov eax, dword ptr [eax]
+      - 008b6380 push ebx
+      - 008b6381 bound ecx, qword ptr [ebx - 0x749d9100]
+      + 008b64bc arpl word ptr fs:[ebx - 0x749c6d00], cx
+      + 008b64c3 add byte ptr [edi - 0x7ff749d], ch
+      + 008b64c9 arpl word ptr [ebx - 0x749bd600], cx
+      + 008b64cf add byte ptr [ecx], dl
+0x008c3e90 (+0 instr.) | 0x008c3fd0 (+16 instr.) | insertion | decalage +0x140
+      + 008c3fd0 int3 
+      + 008c3fd1 int3 
+      + 008c3fd2 int3 
+      + 008c3fd3 int3 
+0x008c62c8 (+13 instr.) | 0x008c6418 (+10 instr.) | remplacement | decalage +0x150
+      - 008c62c8 pop ebp
+      - 008c62c9 popal 
+      - 008c62ca mov word ptr [eax], es
+      - 008c62cc or byte ptr [edx - 0x74], ah
+      + 008c6418 lodsd eax, dword ptr [esi]
+      + 008c6419 bound ecx, qword ptr [eax + eax + 0x8c6358]
+      + 008c6420 in eax, 0x61
+      + 008c6422 mov word ptr [eax], es
+0x008c7d84 (+10 instr.) | 0x008c7ed4 (+10 instr.) | remplacement | decalage +0x150
+      - 008c7d84 aam 0x7c
+      - 008c7d86 mov word ptr [eax], es
+      - 008c7d88 push cs
+      - 008c7d89 jl 0x8c7d17
+      + 008c7ed4 and al, 0x7e
+      + 008c7ed6 mov word ptr [eax], es
+      + 008c7ed8 pop esi
+      + 008c7ed9 jge 0x8c7e67
+0x008c7fd4 (+11 instr.) | 0x008c8124 (+7 instr.) | remplacement | decalage +0x150
+      - 008c7fd4 and al, 0x7f
+      - 008c7fd6 mov word ptr [eax], es
+      - 008c7fd8 pop esi
+      - 008c7fd9 jle 0x8c7f67
+      + 008c8124 je 0x8c80a6
+      + 008c8126 mov word ptr [eax], es
+      + 008c8128 scasb al, byte ptr es:[edi]
+      + 008c8129 jg 0x8c80b7
+0x008cbb34 (+7 instr.) | 0x008cbc84 (+7 instr.) | remplacement | decalage +0x150
+      - 008cbb34 test byte ptr [edx - 0x4641ff74], bh
+      - 008cbb3a mov word ptr [eax], es
+      - 008cbb3c dec ebx
+      - 008cbb3d mov edx, 0xba6b008c
+      + 008cbc84 aam 0xbb
+      + 008cbc86 mov word ptr [eax], es
+      + 008cbc88 push cs
+      + 008cbc89 mov ebx, 0xbb9b008c
+0x008cde80 (+8 instr.) | 0x008cdfd0 (+5 instr.) | remplacement | decalage +0x150
+      - 008cde80 .byte 0x62
+      - 008cde81 fimul word ptr [eax + eax + 0x8cde71]
+      - 008cde88 push -0x22
+      - 008cde8a mov word ptr [eax], es
+      + 008cdfd0 mov dl, 0xdf
+      + 008cdfd2 mov word ptr [eax], es
+      + 008cdfd4 rcr edi, 0x8c
+      + 008cdfd7 add byte ptr [edx - 0x35ff7321], bh
+0x008cea00 (+13 instr.) | 0x008ceb50 (+12 instr.) | remplacement | decalage +0x150
+      - 008cea00 shr al, 0x8c
+      - 008cea03 add ch, cl
+      - 008cea05 call 0xe981ea96
+      - 008cea0a mov word ptr [eax], es
+      + 008ceb50 adc dl, ch
+      + 008ceb52 mov word ptr [eax], es
+      + 008ceb54 sbb eax, 0x45008cea
+      + 008ceb59 ljmp 0x8c:0xea55008c
+0x008cff60 (+32 instr.) | 0x008d00b0 (+0 instr.) | suppression | decalage +0x150
+      - 008cff60 int3 
+      - 008cff61 int3 
+      - 008cff62 int3 
+      - 008cff63 int3 
+0x008d0810 (+0 instr.) | 0x008d0940 (+16 instr.) | insertion | decalage +0x130
+      + 008d0940 int3 
+      + 008d0941 int3 
+      + 008d0942 int3 
+      + 008d0943 int3 
+0x008d1d80 (+0 instr.) | 0x008d1ec0 (+16 instr.) | insertion | decalage +0x140
+      + 008d1ec0 int3 
+      + 008d1ec1 int3 
+      + 008d1ec2 int3 
+      + 008d1ec3 int3 
+0x008d79f0 (+0 instr.) | 0x008d7b40 (+32 instr.) | insertion | decalage +0x150
+      + 008d7b40 int3 
+      + 008d7b41 int3 
+      + 008d7b42 int3 
+      + 008d7b43 int3 
+0x008d8c40 (+0 instr.) | 0x008d8db0 (+16 instr.) | insertion | decalage +0x170
+      + 008d8db0 int3 
+      + 008d8db1 int3 
+      + 008d8db2 int3 
+      + 008d8db3 int3 
+0x008e5104 (+19 instr.) | 0x008e5284 (+16 instr.) | remplacement | decalage +0x180
+      - 008e5104 clc 
+      - 008e5105 dec edi
+      - 008e5106 mov es, word ptr [eax]
+      - 008e5108 xchg ebx, eax
+      + 008e5284 js 0x8e52d7
+      + 008e5286 mov es, word ptr [eax]
+      + 008e5288 adc edx, dword ptr [ecx - 0x72]
+      + 008e528b add byte ptr [edi + 0x51], bh
+0x008e6658 (+13 instr.) | 0x008e67d8 (+19 instr.) | remplacement | decalage +0x180
+      - 008e6658 lds esp, ptr [ebp - 0x72]
+      - 008e665b add ch, al
+      - 008e665d mov es, word ptr gs:[eax]
+      - 008e6660 xor esp, dword ptr [ebp - 0x72]
+      + 008e67d8 inc ebp
+      + 008e67d9 mov es, word ptr [bx + si]
+      + 008e67dc inc ebp
+      + 008e67dd mov es, word ptr [bx + si]
+0x008e668f (+1 instr.) | 0x008e6810 (+0 instr.) | suppression | decalage +0x181
+      - 008e668f int3 
+0x008e8f90 (+5 instr.) | 0x008e9110 (+10 instr.) | remplacement | decalage +0x180
+      - 008e8f90 inc edx
+      - 008e8f91 lea ecx, [esi - 0x71727300]
+      - 008e8f97 add byte ptr [ecx - 0x58ff7173], bl
+      - 008e8f9d lea ecx, [esi - 0x71724900]
+      + 008e9110 ret 0x8e8e
+      + 008e9113 add byte ptr [0x19008e8f], cl
+      + 008e9119 .byte 0x8f
+      + 008e911a mov es, word ptr [eax]
+0x008e8fb0 (+0 instr.) | 0x008e912f (+1 instr.) | insertion | decalage +0x17f
+      + 008e912f int3 
+0x008ebd18 (+11 instr.) | 0x008ebe98 (+15 instr.) | remplacement | decalage +0x180
+      - 008ebd18 cmp byte ptr [ebx - 0x4427ff72], 0x8e
+      - 008ebd1f add dh, ah
+      - 008ebd21 mov ebx, 0xbbfa008e
+      - 008ebd26 mov es, word ptr [eax]
+      + 008ebe98 add byte ptr [ebp - 0x42a7ff72], bh
+      + 008ebe9e mov es, word ptr [eax]
+      + 008ebea0 mov bp, 0x8e
+      + 008ebea4 jp 0x8ebe63
+0x008eec90 (+0 instr.) | 0x008eee10 (+16 instr.) | insertion | decalage +0x180
+      + 008eee10 int3 
+      + 008eee11 int3 
+      + 008eee12 int3 
+      + 008eee13 int3 
+0x008f0be8 (+21 instr.) | 0x008f0d78 (+25 instr.) | remplacement | decalage +0x190
+      - 008f0be8 mov ecx, 0x49008f02
+      - 008f0bed add ecx, dword ptr [edi - 0x70fc2700]
+      - 008f0bf3 add byte ptr [ecx + 4], ch
+      - 008f0bf6 pop dword ptr [eax]
+      + 008f0d78 dec ecx
+      + 008f0d79 add al, 0x8f
+      + 008f0d7b add cl, bl
+      + 008f0d7d add al, 0x8f
+0x008f58e8 (+23 instr.) | 0x008f5a78 (+27 instr.) | remplacement | decalage +0x190
+      - 008f58e8 cmp bl, byte ptr [eax - 0x71]
+      - 008f58eb add byte ptr [edi + 0x58], al
+      - 008f58ee pop dword ptr [eax]
+      - 008f58f0 push esp
+      + 008f5a78 retf 0x8f59
+      + 008f5a7b add bh, dl
+      + 008f5a7d pop ecx
+      + 008f5a7e pop dword ptr [eax]
+0x008f5f80 (+19 instr.) | 0x008f6110 (+21 instr.) | remplacement | decalage +0x190
+      - 008f5f80 sbb dword ptr [edx - 0x71], ebx
+      - 008f5f83 add byte ptr [ebx + 0x5a], al
+      - 008f5f86 pop dword ptr [eax]
+      - 008f5f88 and al, 0x5a
+      + 008f6110 test eax, 0xd3008f5b
+      + 008f6115 pop ebx
+      + 008f6116 pop dword ptr [eax]
+      + 008f6118 mov ah, 0x5b
+0x008f5fe4 (+9 instr.) | 0x008f6174 (+7 instr.) | remplacement | decalage +0x190
+      - 008f5fe4 pushfd 
+      - 008f5fe5 pop ebp
+      - 008f5fe6 pop dword ptr [eax]
+      - 008f5fe8 jne 0x8f6048
+      + 008f6174 sub al, 0x5f
+      + 008f6176 pop dword ptr [eax]
+      + 008f6178 add eax, 0xf0008f60
+      + 008f617d pop ebp
+0x008f728c (+12 instr.) | 0x008f741c (+11 instr.) | remplacement | decalage +0x190
+      - 008f728c pushal 
+      - 008f728d jb 0x8f721e
+      - 008f728f add byte ptr [eax + 0x72], ah
+      - 008f7292 pop dword ptr [eax]
+      + 008f741c .byte 0xf0
+      + 008f741d jae 0x8f73ae
+      + 008f741f add al, dh
+      + 008f7421 jae 0x8f73b2
+0x008f7870 (+11 instr.) | 0x008f7a00 (+11 instr.) | remplacement | decalage +0x190
+      - 008f7870 lodsb al, byte ptr [esi]
+      - 008f7871 jne 0x8f7802
+      - 008f7873 add byte ptr [esi + esi*2 - 0x71], cl
+      - 008f7877 add bl, ch
+      + 008f7a00 cmp al, 0x77
+      + 008f7a02 pop dword ptr [eax]
+      + 008f7a04 fdiv qword ptr [edi - 0x71]
+      + 008f7a07 add byte ptr [ebx + 0x76], bh
+0x008f7b14 (+30 instr.) | 0x008f7ca4 (+37 instr.) | remplacement | decalage +0x190
+      - 008f7b14 jmp 0x8f7b90
+      - 008f7b16 pop dword ptr [eax]
+      - 008f7b18 fidivr dword ptr [edx - 0x71]
+      - 008f7b1b add cl, cl
+      + 008f7ca4 jnp 0x8f7d22
+      + 008f7ca6 pop dword ptr [eax]
+      + 008f7ca8 push 0x7c
+      + 008f7caa pop dword ptr [eax]
+0x008f83d8 (+12 instr.) | 0x008f8568 (+11 instr.) | remplacement | decalage +0x190
+      - 008f83d8 jl 0x8f8458
+      - 008f83da pop dword ptr [eax]
+      - 008f83dc dec eax
+      - 008f83dd jg 0x8f836e
+      + 008f8568 or al, 0x80
+      + 008f856a pop dword ptr [eax]
+      + 008f856c fadd dword ptr [eax - 0x7e40ff71]
+      + 008f8572 pop dword ptr [eax]
+0x008f89b0 (+13 instr.) | 0x008f8b40 (+10 instr.) | remplacement | decalage +0x190
+      - 008f89b0 cmp al, 0x87
+      - 008f89b2 pop dword ptr [eax]
+      - 008f89b4 cmp al, 0x87
+      - 008f89b6 pop dword ptr [eax]
+      + 008f8b40 int3 
+      + 008f8b41 mov byte ptr [edi - 0x70773400], cl
+      + 008f8b47 add byte ptr [ecx - 0x77], al
+      + 008f8b4a pop dword ptr [eax]
+0x008f89de (+2 instr.) | 0x008f8b70 (+0 instr.) | suppression | decalage +0x192
+      - 008f89de int3 
+      - 008f89df int3 
+0x008fa8a0 (+16 instr.) | 0x008faa30 (+0 instr.) | suppression | decalage +0x190
+      - 008fa8a0 int3 
+      - 008fa8a1 int3 
+      - 008fa8a2 int3 
+      - 008fa8a3 int3 
+0x008fbdb4 (+27 instr.) | 0x008fbf34 (+20 instr.) | remplacement | decalage +0x180
+      - 008fbdb4 salc 
+      - 008fbdb5 lodsb al, byte ptr [esi]
+      - 008fbdb6 pop dword ptr [eax]
+      - 008fbdb8 dec edi
+      + 008fbf34 push esi
+      + 008fbf35 scasb al, byte ptr es:[edi]
+      + 008fbf36 pop dword ptr [eax]
+      + 008fbf38 iretd 
+0x008fbe6b (+26 instr.) | 0x008fbfeb (+26 instr.) | remplacement | decalage +0x180
+      - 008fbe6b or eax, dword ptr [edi]
+      - 008fbe6d mov dl, 0x8f
+      - 008fbe6f add ah, ah
+      - 008fbe71 mov al, 0x8f
+      + 008fbfeb or eax, dword ptr [edi + 0x64008fb3]
+      + 008fbff1 mov dl, 0x8f
+      + 008fbff3 add byte ptr [edi], dl
+      + 008fbff5 mov bl, 0x8f
+0x008fbfb0 (+16 instr.) | 0x008fc130 (+0 instr.) | suppression | decalage +0x180
+      - 008fbfb0 int3 
+      - 008fbfb1 int3 
+      - 008fbfb2 int3 
+      - 008fbfb3 int3 
+0x00900054 (+10 instr.) | 0x009001c4 (+12 instr.) | remplacement | decalage +0x170
+      - 00900054 jb 0x900054
+      - 00900056 pop dword ptr [eax]
+      - 00900058 inc ebx
+      - 00900059 add byte ptr [eax - 0x70018200], dl
+      + 009001c4 loop 0x9001c5
+      + 009001c6 pop dword ptr [eax]
+      + 009001c8 mov bl, 1
+      + 009001ca nop 
+0x009029f0 (+73 instr.) | 0x00902b60 (+56 instr.) | remplacement | decalage +0x170
+      - 009029f0 enter -0x6ffa, 0
+      - 009029f4 xlatb 
+      - 009029f5 push es
+      - 009029f6 nop 
+      + 00902b60 cmp byte ptr [eax], cl
+      + 00902b62 nop 
+      + 00902b63 add byte ptr [edi + 8], al
+      + 00902b66 nop 
+0x00902b9c (+10 instr.) | 0x00902d0c (+20 instr.) | remplacement | decalage +0x170
+      - 00902b9c sub edx, dword ptr ss:[eax - 0x6fd49400]
+      - 00902ba3 add byte ptr [ebp + 0x2b], bl
+      - 00902ba6 nop 
+      - 00902ba7 add dh, ch
+      + 00902d0c cmpsb byte ptr [esi], byte ptr es:[edi]
+      + 00902d0d sub al, 0x90
+      + 00902d0f add ah, bl
+      + 00902d11 sub al, 0x90
+0x00903338 (+6 instr.) | 0x009034a8 (+6 instr.) | remplacement | decalage +0x170
+      - 00903338 jle 0x90336b
+      - 0090333a nop 
+      - 0090333b add byte ptr [ebp + 0x6a009031], dl
+      - 00903341 xor dl, byte ptr [eax - 0x6fcce200]
+      + 009034a8 out dx, al
+      + 009034a9 xor dl, byte ptr [eax - 0x6fccfb00]
+      + 009034af add dl, bl
+      + 009034b1 xor edx, dword ptr [eax - 0x6fcb7200]
+0x009037bc (+19 instr.) | 0x0090392c (+13 instr.) | remplacement | decalage +0x170
+      - 009037bc jno 0x9037f5
+      - 009037be nop 
+      - 009037bf add cl, al
+      - 009037c1 nop 
+      + 0090392c loope 0x903966
+      + 0090392e nop 
+      + 0090392f add byte ptr [ecx], dh
+      + 00903931 cmp byte ptr [eax - 0x6fc84d00], dl
+0x00904030 (+15 instr.) | 0x009041a0 (+19 instr.) | remplacement | decalage +0x170
+      - 00904030 xchg esi, eax
+      - 00904031 nop 
+      - 00904033 add byte ptr [eax + 0x200903e], bh
+      - 00904039 aas 
+      + 009041a0 push es
+      + 009041a1 inc eax
+      + 009041a2 nop 
+      + 009041a3 add byte ptr [eax], ch
+0x0090433c (+10 instr.) | 0x009044ac (+11 instr.) | remplacement | decalage +0x170
+      - 0090433c and eax, 0xc009042
+      - 00904341 inc ebx
+      - 00904342 nop 
+      - 00904343 add byte ptr [ecx + 0x42], cl
+      + 009044ac xchg ebp, eax
+      + 009044ad inc ebx
+      + 009044ae nop 
+      + 009044af add byte ptr [esp + eax*2 - 0x70], bh
+0x00904eb0 (+8 instr.) | 0x00905020 (+11 instr.) | remplacement | decalage +0x170
+      - 00904eb0 push 0x7300904e
+      - 00904eb5 dec esi
+      - 00904eb6 nop 
+      - 00904eb7 add byte ptr [eax + 0x4e], cl
+      + 00905020 fmul dword ptr [edi - 0x70]
+      + 00905023 add bl, ah
+      + 00905025 dec edi
+      + 00905026 nop 
+0x00905c90 (+0 instr.) | 0x00905e00 (+16 instr.) | insertion | decalage +0x170
+      + 00905e00 int3 
+      + 00905e01 int3 
+      + 00905e02 int3 
+      + 00905e03 int3 
+0x009060f0 (+32 instr.) | 0x00906270 (+22 instr.) | remplacement | decalage +0x180
+      - 009060f0 or ebx, dword ptr [edi - 0x70]
+      - 009060f3 add byte ptr [esi], bl
+      - 009060f5 pop edi
+      - 009060f6 nop 
+      + 00906270 mov esp, dword ptr [eax - 0x70]
+      + 00906273 add byte ptr [esi - 0x4eff6fa0], bl
+      + 00906279 pushal 
+      + 0090627a nop 
+0x00906218 (+15 instr.) | 0x00906398 (+10 instr.) | remplacement | decalage +0x180
+      - 00906218 imul esp, dword ptr [ecx - 0x70], 0x90617400
+      - 0090621f add byte ptr [edi + 0x61], bh
+      - 00906222 nop 
+      - 00906223 add al, bl
+      + 00906398 jmp 0xf490f3ff
+      + 0090639d bound edx, qword ptr [eax - 0x6f9d0100]
+      + 009063a3 add byte ptr [eax + 0x63], bl
+      + 009063a6 nop 
+0x009063b8 (+4 instr.) | 0x00906538 (+3 instr.) | remplacement | decalage +0x180
+      - 009063b8 push es
+      - 009063b9 arpl word ptr [eax - 0x6f9d8500], dx
+      - 009063bf add byte ptr [eax + 0x63], dh
+      - 009063c2 nop 
+      + 00906538 xchg byte ptr [eax + edx*4], ah
+      + 0090653c sti 
+      + 0090653d arpl word ptr [eax - 0x6f9b1000], dx
+0x00906d44 (+12 instr.) | 0x00906ec4 (+17 instr.) | remplacement | decalage +0x180
+      - 00906d44 and ch, byte ptr [eax + edx*4]
+      - 00906d48 sub dword ptr [ebx - 0x70], ebp
+      - 00906d4b add byte ptr [esi - 0x2aff6f95], ah
+      - 00906d51 push -0x70
+      + 00906ec4 mov byte ptr [0xa900906d], al
+      + 00906ec9 insb byte ptr es:[edi], dx
+      + 00906eca nop 
+      + 00906ecb add byte ptr [esi], ah
+0x0090741c (+13 instr.) | 0x0090759c (+13 instr.) | remplacement | decalage +0x180
+      - 0090741c xlatb 
+      - 0090741d jb 0x9073af
+      - 0090741f add ch, bl
+      - 00907421 jno 0x9073b3
+      + 0090759c push edi
+      + 0090759d je 0x90752f
+      + 0090759f add byte ptr [ebp + 0x73], bl
+      + 009075a2 nop 
+0x00907464 (+16 instr.) | 0x009075e4 (+23 instr.) | remplacement | decalage +0x180
+      - 00907464 xor byte ptr [ebx - 0x70], 0
+      - 00907468 mov dword ptr [ebx - 0x70], esi
+      - 0090746b add byte ptr [eax - 0x66ff6f8d], dl
+      - 00907471 jae 0x907403
+      + 009075e4 add dh, byte ptr [ebp - 0x70]
+      + 009075e7 add byte ptr [ecx], cl
+      + 009075e9 jne 0x90757b
+      + 009075eb add byte ptr [eax], dl
+0x009078c0 (+8 instr.) | 0x00907a40 (+6 instr.) | remplacement | decalage +0x180
+      - 009078c0 cmc 
+      - 009078c1 jne 0x907853
+      - 009078c3 add byte ptr [edx], bh
+      - 009078c5 jbe 0x907857
+      + 00907a40 jne 0x907ab9
+      + 00907a42 nop 
+      + 00907a43 add byte ptr [edx - 0x4aff6f89], bh
+      + 00907a49 ja 0x9079db
+0x009078fc (+9 instr.) | 0x00907a7c (+10 instr.) | remplacement | decalage +0x180
+      - 009078fc mov edx, 0xa009076
+      - 00907901 js 0x907893
+      - 00907903 add al, dl
+      - 00907905 ja 0x907897
+      + 00907a7c cmp bh, byte ptr [eax - 0x70]
+      + 00907a7f add byte ptr [edx + 0x50009079], cl
+      + 00907a85 jns 0x907a17
+      + 00907a87 add byte ptr [ebp + 0x78], bh
+0x00908864 (+8 instr.) | 0x009089e4 (+6 instr.) | remplacement | decalage +0x180
+      - 00908864 rol byte ptr [esi - 0x790cff70], 1
+      - 0090886a nop 
+      - 0090886b add byte ptr [esi - 0x79], al
+      - 0090886e nop 
+      + 009089e4 push eax
+      + 009089e5 mov byte ptr [eax - 0x6f778d00], dl
+      + 009089eb add dh, al
+      + 009089ed mov byte ptr [eax - 0x6f776600], dl
+0x00908cf0 (+4 instr.) | 0x00908e70 (+6 instr.) | remplacement | decalage +0x180
+      - 00908cf0 jg 0x908c7e
+      - 00908cf2 nop 
+      - 00908cf3 add byte ptr [esi - 0x1eff6f74], bh
+      - 00908cf9 mov word ptr [eax], ss
+      + 00908e70 dec dword ptr [ebp - 0x71c1ff70]
+      + 00908e76 nop 
+      + 00908e77 add byte ptr [ecx - 0x72], ah
+      + 00908e7a nop 
+0x00909724 (+14 instr.) | 0x009098a4 (+23 instr.) | remplacement | decalage +0x180
+      - 00909724 jo 0x9096bc
+      - 00909726 nop 
+      - 00909727 add byte ptr [esi - 0x6a], al
+      - 0090972a nop 
+      + 009098a4 .byte 0xf0
+      + 009098a5 xchg edi, eax
+      + 009098a6 nop 
+      + 009098a7 add dh, al
+0x00909b9c (+8 instr.) | 0x00909d1c (+12 instr.) | remplacement | decalage +0x180
+      - 00909b9c dec ebp
+      - 00909b9d cwde 
+      - 00909b9e nop 
+      - 00909b9f add byte ptr [ebp - 0x68], cl
+      + 00909d1c int 0x99
+      + 00909d1e nop 
+      + 00909d1f add ch, cl
+      + 00909d21 cdq 
+0x0090ad50 (+97 instr.) | 0x0090aed0 (+100 instr.) | remplacement | decalage +0x180
+      - 0090ad50 dec esi
+      - 0090ad51 mov dword ptr [0xa37d0090], eax
+      - 0090ad56 nop 
+      - 0090ad57 add byte ptr [esp], al
+      + 0090aed0 into 
+      + 0090aed1 movsb byte ptr es:[edi], byte ptr [esi]
+      + 0090aed2 nop 
+      + 0090aed3 add ch, bh
+0x0090cfd8 (+17 instr.) | 0x0090d158 (+6 instr.) | remplacement | decalage +0x180
+      - 0090cfd8 adc cl, bh
+      - 0090cfda nop 
+      - 0090cfdb add ah, dh
+      - 0090cfdd into 
+      + 0090d158 xchg edx, eax
+      + 0090d159 rcl byte ptr [eax - 0x6f2f8c00]
+      + 0090d15f add byte ptr [edx - 0x47ff6f30], bl
+      + 0090d165 rcl byte ptr [eax - 0x6f2f2a00]
+0x0090f348 (+5 instr.) | 0x0090f4c8 (+9 instr.) | remplacement | decalage +0x180
+      - 0090f348 mov dh, 0xf2
+      - 0090f34a nop 
+      - 0090f34b add byte ptr [ebp - 0x2cff6f0e], al
+      - 0090f351 nop 
+      + 0090f4c8 hlt 
+      + 0090f4ca nop 
+      + 0090f4cb add byte ptr [0x530090f4], al
+      + 0090f4d1 hlt 
+0x00911048 (+12 instr.) | 0x009111c8 (+6 instr.) | remplacement | decalage +0x180
+      - 00911048 wait 
+      - 00911049 setno byte ptr [eax]
+      - 0091104c cmp dword ptr [edi], ecx
+      - 0091104e xchg ecx, eax
+      + 009111c8 sbb edx, dword ptr [ecx]
+      + 009111ca xchg ecx, eax
+      + 009111cb add byte ptr [ecx - 0x41ff6ef0], bh
+      + 009111d1 adc dword ptr [ecx - 0x6eee4200], edx
+0x00911290 (+7 instr.) | 0x00911410 (+8 instr.) | remplacement | decalage +0x180
+      - 00911290 ret 0x9111
+      - 00911293 add byte ptr [eax + 0x11], ah
+      - 00911296 xchg ecx, eax
+      - 00911297 add byte ptr [edi - 0x78ff6eee], al
+      + 00911410 inc edx
+      + 00911411 adc edx, dword ptr [ecx - 0x6eed2000]
+      + 00911417 add byte ptr [edi], al
+      + 00911419 adc al, 0x91
+0x00912b1c (+10 instr.) | 0x00912c9c (+17 instr.) | remplacement | decalage +0x180
+      - 00912b1c or dword ptr [ebx], ebp
+      - 00912b1e xchg ecx, eax
+      - 00912b1f add al, ch
+      - 00912b21 sub dl, byte ptr [ecx - 0x6ed51b00]
+      + 00912c9c mov dword ptr [ecx + edx*4], ebp
+      + 00912c9f add byte ptr [eax + 0x2c], ch
+      + 00912ca2 xchg ecx, eax
+      + 00912ca3 add byte ptr [ebp + 0x2c], ah
+0x009141d8 (+14 instr.) | 0x00914358 (+17 instr.) | remplacement | decalage +0x180
+      - 009141d8 imul edi, dword ptr [edi], 0x3f740091
+      - 009141de xchg ecx, eax
+      - 009141df add bl, cl
+      - 009141e1 inc ecx
+      + 00914358 jmp 0xf491d49d
+      + 0091435d inc eax
+      + 0091435e xchg ecx, eax
+      + 0091435f add byte ptr [ebx + 0x43], cl
+0x00918624 (+7 instr.) | 0x009187a4 (+6 instr.) | remplacement | decalage +0x180
+      - 00918624 arpl word ptr [ebx - 0x7c93ff6f], ax
+      - 0091862a xchg ecx, eax
+      - 0091862b add byte ptr [ebp - 0x7d], dh
+      - 0091862e xchg ecx, eax
+      + 009187a4 jecxz 0x91872a
+      + 009187a6 xchg ecx, eax
+      + 009187a7 add ah, ch
+      + 009187a9 test byte ptr [ecx - 0x6e7b0b00], dl
+0x00919dbc (+20 instr.) | 0x00919f3c (+9 instr.) | remplacement | decalage +0x180
+      - 00919dbc jmp 0xef922f5d
+      - 00919dc1 pushfd 
+      - 00919dc2 xchg ecx, eax
+      - 00919dc3 add byte ptr [eax], cl
+      + 00919f3c imul ebx, dword ptr [esi - 0x6190ff6f], 0x9e880091
+      + 00919f46 xchg ecx, eax
+      + 00919f47 add byte ptr [ebp - 0x62], dh
+      + 00919f4a xchg ecx, eax
+0x0091aea0 (+13 instr.) | 0x0091b020 (+10 instr.) | remplacement | decalage +0x180
+      - 0091aea0 fild qword ptr [ebp - 0x5200ff6f]
+      - 0091aea6 xchg ecx, eax
+      - 0091aea7 add ah, ch
+      - 0091aea9 lodsd eax, dword ptr [esi]
+      + 0091b020 pop edi
+      + 0091b021 scasd eax, dword ptr es:[edi]
+      + 0091b022 xchg ecx, eax
+      + 0091b023 add byte ptr [edi - 0x51], bh
+0x0091f178 (+13 instr.) | 0x0091f2f8 (+8 instr.) | remplacement | decalage +0x180
+      - 0091f178 .byte 0x8d
+      - 0091f179 out dx, eax
+      - 0091f17a xchg ecx, eax
+      - 0091f17b add dl, ch
+      + 0091f2f8 or eax, 0x6a0091f1
+      + 0091f2fd int1 
+      + 0091f2fe xchg ecx, eax
+      + 0091f2ff add byte ptr [ebx + 0xd0091f1], ch
+0x00923e70 (+13 instr.) | 0x00923ff0 (+11 instr.) | remplacement | decalage +0x180
+      - 00923e70 add bh, byte ptr [esi]
+      - 00923e72 xchg edx, eax
+      - 00923e73 add byte ptr [edi + 0x3e], cl
+      - 00923e76 xchg edx, eax
+      + 00923ff0 cmp byte ptr [edi], 0x92
+      + 00923ff3 add bh, cl
+      + 00923ff5 aas 
+      + 00923ff6 xchg edx, eax
+0x00924328 (+31 instr.) | 0x009244a8 (+30 instr.) | remplacement | decalage +0x180
+      - 00924328 aaa 
+      - 00924329 inc edx
+      - 0092432a xchg edx, eax
+      - 0092432b add byte ptr [esi], ch
+      + 009244a8 mov bh, 0x43
+      + 009244aa xchg edx, eax
+      + 009244ab add byte ptr [esi - 0x5aff6dbd], ch
+      + 009244b1 inc ebx
+0x0092436f (+1 instr.) | 0x009244f0 (+0 instr.) | suppression | decalage +0x181
+      - 0092436f int3 
+0x00925194 (+7 instr.) | 0x00925314 (+13 instr.) | remplacement | decalage +0x180
+      - 00925194 sahf 
+      - 00925195 dec edi
+      - 00925196 xchg edx, eax
+      - 00925197 add byte ptr [ebx - 0x61ff6db1], ah
+      + 00925314 push ds
+      + 00925315 push ecx
+      + 00925316 xchg edx, eax
+      + 00925317 add byte ptr [ebx], ah
+0x009275c8 (+5 instr.) | 0x00927748 (+6 instr.) | remplacement | decalage +0x180
+      - 009275c8 sub dh, byte ptr [ebp - 0x6e]
+      - 009275cb add byte ptr [edx], ch
+      - 009275cd jne 0x927561
+      - 009275cf add byte ptr [ebp + esi*2 + 0x75a60092], cl
+      + 00927748 stosb byte ptr es:[edi], al
+      + 00927749 jbe 0x9276dd
+      + 0092774b add byte ptr [edx + 0xc009276], ch
+      + 00927751 ja 0x9276e5
+0x0092db40 (+6 instr.) | 0x0092dcc0 (+4 instr.) | remplacement | decalage +0x180
+      - 0092db40 sub al, 0xd9
+      - 0092db42 xchg edx, eax
+      - 0092db43 add byte ptr [eax - 0x27], bh
+      - 0092db46 xchg edx, eax
+      + 0092dcc0 lodsb al, byte ptr [esi]
+      + 0092dcc1 ficom dword ptr [edx - 0x6d250800]
+      + 0092dcc7 add byte ptr [edx], bl
+      + 0092dcc9 fist dword ptr [edx + 0x2000000]
+0x0092db60 (+9 instr.) | 0x0092dce0 (+8 instr.) | remplacement | decalage +0x180
+      - 0092db60 mov dh, 0xd9
+      - 0092db62 xchg edx, eax
+      - 0092db63 add byte ptr [edi - 0x9ff6d27], bh
+      - 0092db69 fst dword ptr [edx - 0x6d260100]
+      + 0092dce0 fist dword ptr ss:[edx - 0x6d24c100]
+      + 0092dce7 add byte ptr [esi - 0x25], dh
+      + 0092dcea xchg edx, eax
+      + 0092dceb add byte ptr [edi - 0x25], bh
+0x0092db8c (+12 instr.) | 0x0092dd0c (+15 instr.) | remplacement | decalage +0x180
+      - 0092db8c add eax, 0x66900505
+      - 0092db91 ficom dword ptr [edx - 0x6d258900]
+      - 0092db97 add byte ptr [eax - 0x69ff6d26], cl
+      - 0092db9d ficom dword ptr [edx - 0x6d256400]
+      + 0092dd0c add eax, 0xe6900505
+      + 0092dd11 fist dword ptr [edx - 0x6d240900]
+      + 0092dd17 add byte ptr [eax], cl
+      + 0092dd19 fcom qword ptr [edx - 0x6d23ea00]
+0x0092df60 (+8 instr.) | 0x0092e0e0 (+8 instr.) | remplacement | decalage +0x180
+      - 0092df60 fcmovu st(0), st(4)
+      - 0092df62 xchg edx, eax
+      - 0092df63 add byte ptr [0x930092dd], dh
+      - 0092df69 fst qword ptr [edx - 0x6d223600]
+      + 0092e0e0 pop edx
+      + 0092e0e1 ficom word ptr [edx - 0x6d214b00]
+      + 0092e0e7 add byte ptr [ebx], dl
+      + 0092e0e9 fist word ptr [edx - 0x6d20b600]
+0x0092e8b0 (+11 instr.) | 0x0092ea30 (+9 instr.) | remplacement | decalage +0x180
+      - 0092e8b0 xchg ecx, eax
+      - 0092e8b1 out 0x92, eax
+      - 0092e8b3 add byte ptr [ecx - 0x11ff6d19], dl
+      - 0092e8b9 out 0x92, eax
+      + 0092ea30 adc ecx, ebp
+      + 0092ea32 xchg edx, eax
+      + 0092ea33 add byte ptr [ecx], dl
+      + 0092ea35 jmp 0xea00eacc
+0x0092eb70 (+4 instr.) | 0x0092ecf0 (+8 instr.) | remplacement | decalage +0x180
+      - 0092eb70 cmp eax, 0xca0092eb
+      - 0092eb75 ljmp 0x92:0xea670092
+      - 0092eb7c push edi
+      - 0092eb7d jmp 0x92eb11
+      + 0092ecf0 mov ebp, 0x4a0092ec
+      + 0092ecf5 in al, dx
+      + 0092ecf6 xchg edx, eax
+      + 0092ecf7 add bh, ah
+0x0092eda4 (+8 instr.) | 0x0092ef24 (+12 instr.) | remplacement | decalage +0x180
+      - 0092eda4 je 0x92ed93
+      - 0092eda6 xchg edx, eax
+      - 0092eda7 add ch, bl
+      - 0092eda9 in al, dx
+      + 0092ef24 hlt 
+      + 0092ef25 out dx, al
+      + 0092ef26 xchg edx, eax
+      + 0092ef27 add byte ptr [ebp - 0x12], bl
+0x0092f1d8 (+19 instr.) | 0x0092f358 (+18 instr.) | remplacement | decalage +0x180
+      - 0092f1d8 retf 0x92ef
+      - 0092f1db add bl, bh
+      - 0092f1dd out dx, eax
+      - 0092f1de xchg edx, eax
+      + 0092f358 dec edx
+      + 0092f359 int1 
+      + 0092f35a xchg edx, eax
+      + 0092f35b add byte ptr [ebx - 0xf], bh
+0x0092f230 (+7 instr.) | 0x0092f3b0 (+7 instr.) | remplacement | decalage +0x180
+      - 0092f230 sal ecx, 0x92
+      - 0092f233 add byte ptr [eax + 0x4e0092f1], bh
+      - 0092f239 int1 
+      - 0092f23a xchg edx, eax
+      + 0092f3b0 inc ecx
+      + 0092f3b1 xchg edx, eax
+      + 0092f3b3 add byte ptr [eax], bh
+      + 0092f3b5 xchg edx, eax
+0x0092fa8c (+4 instr.) | 0x0092fc0c (+3 instr.) | remplacement | decalage +0x180
+      - 0092fa8c xor eax, 0x380092fa
+      - 0092fa91 cli 
+      - 0092fa92 xchg edx, eax
+      - 0092fa93 add byte ptr [eax], al
+      + 0092fc0c mov ch, 0xfb
+      + 0092fc0e xchg edx, eax
+      + 0092fc0f add byte ptr [eax + 0x92fb], bh
+0x0092fc20 (+11 instr.) | 0x0092fda0 (+15 instr.) | remplacement | decalage +0x180
+      - 0092fc20 .byte 0xdb
+      - 0092fc21 sti 
+      - 0092fc22 xchg edx, eax
+      - 0092fc23 add byte ptr [ecx - 0x35ff6d05], bh
+      + 0092fda0 pop ebx
+      + 0092fda1 std 
+      + 0092fda2 xchg edx, eax
+      + 0092fda3 add byte ptr [ecx], bh
+0x009305b4 (+8 instr.) | 0x00930734 (+13 instr.) | remplacement | decalage +0x180
+      - 009305b4 mov edx, 0x56009301
+      - 009305b9 add dl, byte ptr [ebx - 0x6cfdcc00]
+      - 009305bf add byte ptr [ebp + 2], al
+      - 009305c2 xchg ebx, eax
+      + 00930734 cmp al, byte ptr [ebx]
+      + 00930736 xchg ebx, eax
+      + 00930737 add dh, dl
+      + 00930739 add edx, dword ptr [ebx - 0x6cfc4c00]
+0x009305e0 (+0 instr.) | 0x0093075e (+2 instr.) | insertion | decalage +0x17e
+      + 0093075e int3 
+      + 0093075f int3 
+0x00932010 (+13 instr.) | 0x00932190 (+7 instr.) | remplacement | decalage +0x180
+      - 00932010 pop es
+      - 00932011 pop ds
+      - 00932012 xchg ebx, eax
+      - 00932013 add byte ptr [edx + 0x7b00931f], al
+      + 00932190 xchg dword ptr [eax], esp
+      + 00932192 xchg ebx, eax
+      + 00932193 add byte ptr [edx], al
+      + 00932195 and dword ptr [ebx - 0x6cdf0500], edx
+0x0093bac0 (+73 instr.) | 0x0093bc40 (+60 instr.) | remplacement | decalage +0x180
+      - 0093bac0 salc 
+      - 0093bac1 xchg ebx, eax
+      - 0093bac3 add byte ptr [esi + 0x64], dh
+      - 0093bac6 xchg ebx, eax
+      + 0093bc40 push esi
+      + 0093bc41 xchg bx, ax
+      + 0093bc43 add dh, dh
+      + 0093bc45 xchg ebx, eax
+0x0093bb78 (+72 instr.) | 0x0093bcf8 (+80 instr.) | remplacement | decalage +0x180
+      - 0093bb78 retf 0x9364
+      - 0093bb7b add byte ptr [eax - 0x4fff6c90], dh
+      - 0093bb81 jo 0x93bb16
+      - 0093bb83 add byte ptr [edi + 0x73], ch
+      + 0093bcf8 dec edx
+      + 0093bcf9 xchg bx, ax
+      + 0093bcfb add byte ptr [eax], dh
+      + 0093bcfd jb 0x93bc92
+0x0093d8d4 (+25 instr.) | 0x0093da54 (+17 instr.) | remplacement | decalage +0x180
+      - 0093d8d4 xchg esi, eax
+      - 0093d8d5 fcom dword ptr [ebx - 0x6c2adf00]
+      - 0093d8db add byte ptr [0x5f0093d5], ch
+      - 0093d8e1 aad 0x93
+      + 0093da54 push ss
+      + 0093da55 ficom dword ptr [ebx - 0x6c295f00]
+      + 0093da5b add byte ptr [ebp - 0x20ff6c2a], ch
+      + 0093da61 salc 
+0x0093fe04 (+25 instr.) | 0x0093ff84 (+29 instr.) | remplacement | decalage +0x180
+      - 0093fe04 sub edi, esp
+      - 0093fe06 xchg ebx, eax
+      - 0093fe07 add byte ptr [esi - 4], cl
+      - 0093fe0a xchg ebx, eax
+      + 0093ff84 stosd dword ptr es:[edi], eax
+      + 0093ff85 std 
+      + 0093ff86 xchg ebx, eax
+      + 0093ff87 add dh, cl
+0x0093fe3e (+2 instr.) | 0x0093ffc0 (+0 instr.) | suppression | decalage +0x182
+      - 0093fe3e int3 
+      - 0093fe3f int3 
+0x00944928 (+6 instr.) | 0x00944aa8 (+9 instr.) | remplacement | decalage +0x180
+      - 00944928 mov ch, 0x48
+      - 0094492a xchg esp, eax
+      - 0094492b add byte ptr [ebp - 0x38ff6bb8], dl
+      - 00944931 dec eax
+      + 00944aa8 xor eax, 0x1500944a
+      + 00944aad dec edx
+      + 00944aae xchg esp, eax
+      + 00944aaf add byte ptr [edi + 0x4a], al
+0x009495cc (+8 instr.) | 0x0094974c (+16 instr.) | remplacement | decalage +0x180
+      - 009495cc imul edx, dword ptr [ebp - 0x6a7eff6c], -0x6c
+      - 009495d3 add byte ptr [ebp - 0x6b], bh
+      - 009495d6 xchg esp, eax
+      - 009495d7 add byte ptr [ebp - 0x6b], bh
+      + 0094974c jmp 0x9496e4
+      + 0094974e xchg esp, eax
+      + 0094974f add byte ptr [ecx], al
+      + 00949751 xchg edi, eax
+0x0094b0b4 (+16 instr.) | 0x0094b234 (+18 instr.) | remplacement | decalage +0x180
+      - 0094b0b4 adc eax, 0x2c0094ae
+      - 0094b0b9 scasb al, byte ptr es:[edi]
+      - 0094b0ba xchg esp, eax
+      - 0094b0bb add byte ptr [ebx - 0x52], al
+      + 0094b234 xchg ebp, eax
+      + 0094b235 scasd eax, dword ptr es:[edi]
+      + 0094b236 xchg esp, eax
+      + 0094b237 add byte ptr [edi + ebp*4 - 0x503cff6c], ch
+0x0094f1d4 (+8 instr.) | 0x0094f354 (+6 instr.) | remplacement | decalage +0x180
+      - 0094f1d4 sub eax, 0x3e0094f1
+      - 0094f1d9 int1 
+      - 0094f1da xchg esp, eax
+      - 0094f1db add byte ptr [edi], dh
+      + 0094f354 lodsd eax, dword ptr [esi]
+      + 0094f355 xchg esp, eax
+      + 0094f357 add byte ptr [esi - 0x48ff6b0e], bh
+      + 0094f35d xchg esp, eax
+0x0094f2a8 (+10 instr.) | 0x0094f428 (+11 instr.) | remplacement | decalage +0x180
+      - 0094f2a8 pop edx
+      - 0094f2a9 int1 
+      - 0094f2aa xchg esp, eax
+      - 0094f2ab add byte ptr [esi - 0xf], ah
+      + 0094f428 .byte 0xda
+      + 0094f429 xchg esp, eax
+      + 0094f42b add dh, ah
+      + 0094f42d xchg esp, eax
+0x0095337c (+220 instr.) | 0x009534fc (+190 instr.) | remplacement | decalage +0x180
+      - 0095337c inc ebx
+      - 0095337d setne byte ptr [eax]
+      - 00953380 pop ds
+      - 00953381 setne byte ptr [eax]
+      + 009534fc ret 
+      + 009534fd adc byte ptr [ebp - 0x6aef6100], dl
+      + 00953503 add bh, cl
+      + 00953505 adc byte ptr [ebp - 0x6aef4900], dl
+0x00961988 (+13 instr.) | 0x00961b08 (+8 instr.) | remplacement | decalage +0x180
+      - 00961988 xor al, 0x16
+      - 0096198a xchg esi, eax
+      - 0096198b add dh, dh
+      - 0096198d pop ss
+      + 00961b08 mov ah, 0x17
+      + 00961b0a xchg esi, eax
+      + 00961b0b add byte ptr [esi + 0x19], dh
+      + 00961b0e xchg esi, eax
+0x00963798 (+7 instr.) | 0x00963918 (+15 instr.) | remplacement | decalage +0x180
+      - 00963798 pop edx
+      - 00963799 xor eax, 0x35920096
+      - 0096379e xchg esi, eax
+      - 0096379f add byte ptr [ebp + 0x35], ch
+      + 00963918 fidiv dword ptr [esi]
+      + 0096391a xchg esi, eax
+      + 0096391b add byte ptr [edx], dl
+      + 0096391d aaa 
+0x00963a48 (+7 instr.) | 0x00963bc8 (+9 instr.) | remplacement | decalage +0x180
+      - 00963a48 cmp byte ptr [eax], 0x96
+      - 00963a4b add byte ptr [ebp + 0x28009638], cl
+      - 00963a51 cmp byte ptr [esi - 0x69c7d800], dl
+      - 00963a57 add byte ptr [eax + edi + 0x38c10096], bh
+      + 00963bc8 add byte ptr [edx], bh
+      + 00963bca xchg esi, eax
+      + 00963bcb add byte ptr [0xa800963a], cl
+      + 00963bd1 cmp dword ptr [esi - 0x69c65800], edx
+0x00963a70 (+0 instr.) | 0x00963bee (+2 instr.) | insertion | decalage +0x17e
+      + 00963bee int3 
+      + 00963bef int3 
+0x00963e90 (+29 instr.) | 0x00964010 (+19 instr.) | remplacement | decalage +0x180
+      - 00963e90 .byte 0xc7
+      - 00963e91 cmp dl, byte ptr [esi]
+      - 00963e97 add byte ptr [eax], al
+      - 00963e99 add byte ptr [eax], al
+      + 00964010 inc edi
+      + 00964011 cmp al, 0x96
+      + 00964013 add byte ptr [eax], al
+      + 00964015 add byte ptr [eax], al
+0x00965404 (+35 instr.) | 0x00965574 (+27 instr.) | remplacement | decalage +0x170
+      - 00965404 mov byte ptr [0xa8009653], al
+      - 00965409 push ebx
+      - 0096540a xchg esi, eax
+      - 0096540b add byte ptr [esi - 0x4bff69ad], ch
+      + 00965574 adc dl, byte ptr [ebp - 0x6a]
+      + 00965577 add byte ptr [eax], bl
+      + 00965579 push ebp
+      + 0096557a xchg esi, eax
+0x00966880 (+3 instr.) | 0x009669f0 (+2 instr.) | remplacement | decalage +0x170
+      - 00966880 and eax, 0x25009668
+      - 00966885 push 0x68250096
+      - 0096688a xchg esi, eax
+      + 009669f0 xchg ebp, eax
+      + 009669f1 imul edx, dword ptr [esi - 0x69966b00], 0x96699500
+0x00966c00 (+0 instr.) | 0x00966d70 (+32 instr.) | insertion | decalage +0x170
+      + 00966d70 int3 
+      + 00966d71 int3 
+      + 00966d72 int3 
+      + 00966d73 int3 
+0x009672f0 (+7 instr.) | 0x00967480 (+5 instr.) | remplacement | decalage +0x190
+      - 009672f0 mov esp, 0x7009672
+      - 009672f5 jno 0x96728d
+      - 009672f7 add ch, cl
+      - 009672f9 jo 0x967291
+      + 00967480 dec esp
+      + 00967481 je 0x967419
+      + 00967483 add byte ptr [edi + 0x5d009672], dl
+      + 00967489 jb 0x967421
+0x00967e00 (+7 instr.) | 0x00967f90 (+8 instr.) | remplacement | decalage +0x190
+      - 00967e00 int 0x7d
+      - 00967e02 xchg esi, eax
+      - 00967e03 add dh, bl
+      - 00967e05 jge 0x967d9d
+      + 00967f90 pop ebp
+      + 00967f91 jg 0x967f29
+      + 00967f93 add byte ptr [esi + 0x7f], ch
+      + 00967f96 xchg esi, eax
+0x00967e70 (+18 instr.) | 0x00968000 (+27 instr.) | remplacement | decalage +0x190
+      - 00967e70 pushfd 
+      - 00967e71 jp 0x967e09
+      - 00967e73 add byte ptr [edi + 0x5900967a], ah
+      - 00967e79 jns 0x967e11
+      + 00968000 sub al, 0x7c
+      + 00968002 xchg esi, eax
+      + 00968003 add byte ptr [edi], dh
+      + 00968005 jl 0x967f9d
+0x009687a4 (+16 instr.) | 0x00968934 (+14 instr.) | remplacement | decalage +0x190
+      - 009687a4 outsb dx, byte ptr [esi]
+      - 009687a5 xchg byte ptr [esi - 0x69807600], dl
+      - 009687ab add byte ptr [esi + 0x7f], bh
+      - 009687ae xchg esi, eax
+      + 00968934 inc byte ptr [edi - 0x7ee5ff6a]
+      + 0096893a xchg esi, eax
+      + 0096893b add byte ptr [esi], cl
+      + 0096893d adc dword ptr [esi - 0x69790000], 0x96817b00
+0x00968c00 (+6 instr.) | 0x00968d90 (+7 instr.) | remplacement | decalage +0x190
+      - 00968c00 cmp byte ptr [ebx - 0x74bbff6a], cl
+      - 00968c06 xchg esi, eax
+      - 00968c07 add byte ptr [esi - 0x75], ah
+      - 00968c0a xchg esi, eax
+      + 00968d90 enter -0x6974, 0
+      + 00968d94 aam 0x8c
+      + 00968d96 xchg esi, eax
+      + 00968d97 add dh, dh
+0x0096a318 (+3 instr.) | 0x0096a4a8 (+5 instr.) | remplacement | decalage +0x190
+      - 0096a318 or esp, dword ptr [ebx - 0x5ceeff6a]
+      - 0096a31e xchg esi, eax
+      - 0096a31f add byte ptr [ebx], dl
+      + 0096a4a8 wait 
+      + 0096a4a9 movsb byte ptr es:[edi], byte ptr [esi]
+      + 0096a4aa xchg esi, eax
+      + 0096a4ab add byte ptr [ecx - 0x5bff695c], ah
+0x0096b0c4 (+11 instr.) | 0x0096b254 (+8 instr.) | remplacement | decalage +0x190
+      - 0096b0c4 jno 0x96b076
+      - 0096b0c6 xchg esi, eax
+      - 0096b0c7 add dh, bl
+      - 0096b0c9 scasb al, byte ptr es:[edi]
+      + 0096b254 add dword ptr [edx - 0x4f91ff6a], esi
+      + 0096b25a xchg esi, eax
+      + 0096b25b add dh, dh
+      + 0096b25d mov al, 0x96
+0x0096b404 (+14 instr.) | 0x0096b594 (+17 instr.) | remplacement | decalage +0x190
+      - 0096b404 arpl word ptr [ebx - 0x4d34ff6a], si
+      - 0096b40a xchg esi, eax
+      - 0096b40b add byte ptr [eax - 0x4d], bh
+      - 0096b40e xchg esi, eax
+      + 0096b594 mov ah, 0x96
+      + 0096b597 add byte ptr [ebx - 0x4c], bl
+      + 0096b59a xchg esi, eax
+      + 0096b59b add byte ptr [eax], cl
+0x0096b860 (+5 instr.) | 0x0096b9f0 (+7 instr.) | remplacement | decalage +0x190
+      - 0096b860 inc edi
+      - 0096b861 mov ch, 0x96
+      - 0096b863 add byte ptr [0x3e0096b5], dh
+      - 0096b869 mov ch, 0x96
+      + 0096b9f0 xlatb 
+      + 0096b9f1 mov dh, 0x96
+      + 0096b9f3 add ch, al
+      + 0096b9f5 mov dh, 0x96
+0x0096b963 (+37 instr.) | 0x0096baf3 (+41 instr.) | remplacement | decalage +0x190
+      - 0096b963 add byte ptr [edi - 0x68ff694b], dl
+      - 0096b969 mov ch, 0x96
+      - 0096b96b add byte ptr [esi], dh
+      - 0096b96d mov dh, 0x96
+      + 0096baf3 add byte ptr [edi], ah
+      + 0096baf5 mov bh, 0x96
+      + 0096baf7 add byte ptr [edi], ah
+      + 0096baf9 mov bh, 0x96
+0x0096bac8 (+10 instr.) | 0x0096bc58 (+7 instr.) | remplacement | decalage +0x190
+      - 0096bac8 xlatb 
+      - 0096bac9 mov bh, 0x96
+      - 0096bacb add dh, cl
+      - 0096bacd mov bh, 0x96
+      + 0096bc58 mov ecx, 0xb95e0096
+      + 0096bc5e xchg esi, eax
+      + 0096bc5f add dh, ch
+      + 0096bc61 mov eax, 0xb8fa0096
+0x0096ca28 (+23 instr.) | 0x0096cbb8 (+21 instr.) | remplacement | decalage +0x190
+      - 0096ca28 dec edi
+      - 0096ca29 leave 
+      - 0096ca2a xchg esi, eax
+      - 0096ca2b add byte ptr [eax - 0x37], ch
+      + 0096cbb8 .byte 0xdf
+      + 0096cbb9 retf 0x96
+      + 0096cbbc clc 
+      + 0096cbbd retf 0x96
+0x0096ca60 (+0 instr.) | 0x0096cbef (+1 instr.) | insertion | decalage +0x18f
+      + 0096cbef int3 
+0x0096d574 (+23 instr.) | 0x0096d704 (+19 instr.) | remplacement | decalage +0x190
+      - 0096d574 mov cl, 0xca
+      - 0096d576 xchg esi, eax
+      - 0096d577 add byte ptr [ebp - 0x2c], al
+      - 0096d57a xchg esi, eax
+      + 0096d704 inc ecx
+      + 0096d705 int3 
+      + 0096d706 xchg esi, eax
+      + 0096d707 add ch, dl
+0x0096d68c (+4 instr.) | 0x0096d81c (+6 instr.) | remplacement | decalage +0x190
+      - 0096d68c mov dl, 0xd2
+      - 0096d68e xchg esi, eax
+      - 0096d68f add cl, bl
+      - 0096d691 rcl byte ptr [esi - 0x692d2700], cl
+      + 0096d81c inc edx
+      + 0096d81d aam 0x96
+      + 0096d81f add byte ptr [ecx - 0x2c], ch
+      + 0096d822 xchg esi, eax
+0x0096d6b8 (+2 instr.) | 0x0096d848 (+4 instr.) | remplacement | decalage +0x190
+      - 0096d6b8 std 
+      - 0096d6b9 rcl dword ptr [esi - 0x692cc600], cl
+      + 0096d848 .byte 0x8d
+      + 0096d849 aad 0x96
+      + 0096d84b add dl, cl
+      + 0096d84d aam 0x96
+0x0096e5a8 (+14 instr.) | 0x0096e738 (+16 instr.) | remplacement | decalage +0x190
+      - 0096e5a8 cmp al, 0xe0
+      - 0096e5aa xchg esi, eax
+      - 0096e5ab add byte ptr [ebx - 0x20], dl
+      - 0096e5ae xchg esi, eax
+      + 0096e738 int3 
+      + 0096e739 loope 0x96e6d1
+      + 0096e73b add bl, ah
+      + 0096e73d loope 0x96e6d5
+0x0096e650 (+16 instr.) | 0x0096e7e0 (+0 instr.) | suppression | decalage +0x190
+      - 0096e650 int3 
+      - 0096e651 int3 
+      - 0096e652 int3 
+      - 0096e653 int3 
+0x0096f220 (+23 instr.) | 0x0096f3a0 (+19 instr.) | remplacement | decalage +0x180
+      - 0096f220 mov edx, 0x940096e6
+      - 0096f225 out 0x96, eax
+      - 0096f227 add byte ptr [edx], al
+      - 0096f229 call 0xe9aef2c4
+      + 0096f3a0 cmp ch, al
+      + 0096f3a2 xchg esi, eax
+      + 0096f3a3 add byte ptr [ecx + ebp*8], dl
+      + 0096f3a6 xchg esi, eax
+0x0096f8fc (+25 instr.) | 0x0096fa7c (+22 instr.) | remplacement | decalage +0x180
+      - 0096f8fc out 0xf5, eax
+      - 0096f8fe xchg esi, eax
+      - 0096f8ff add byte ptr [ecx - 0xa], cl
+      - 0096f902 xchg esi, eax
+      + 0096fa7c not dword ptr [bp - 0x3700]
+      + 0096fa81 not dword ptr [esi - 0x69067d00]
+      + 0096fa87 add byte ptr [ecx + edi*8 - 0x62aff6a], ch
+      + 0096fa8e xchg esi, eax
+0x00971b88 (+6 instr.) | 0x00971d08 (+10 instr.) | remplacement | decalage +0x180
+      - 00971b88 inc ebx
+      - 00971b89 sbb edx, dword ptr [edi - 0x68e4cd00]
+      - 00971b8f add byte ptr [eax], bl
+      - 00971b91 sbb edx, dword ptr [edi - 0x68e50e00]
+      + 00971d08 ret 
+      + 00971d09 sbb al, 0x97
+      + 00971d0b add byte ptr [ebx - 0x67ff68e4], dh
+      + 00971d11 sbb al, 0x97
+0x00971ef0 (+7 instr.) | 0x00972070 (+6 instr.) | remplacement | decalage +0x180
+      - 00971ef0 scasb al, byte ptr es:[edi]
+      - 00971ef1 push ds
+      - 00971ef2 xchg edi, eax
+      - 00971ef3 add byte ptr [eax + 0x6d00971e], cl
+      + 00972070 and byte ptr cs:[edi - 0x68dff800], dl
+      + 00972077 add ch, ch
+      + 00972079 pop ds
+      + 0097207a xchg edi, eax
+0x0097277c (+16 instr.) | 0x009728fc (+5 instr.) | remplacement | decalage +0x180
+      - 0097277c sub eax, 0x24009727
+      - 00972781 daa 
+      - 00972782 xchg edi, eax
+      - 00972783 add byte ptr [ebx], bl
+      + 009728fc lodsd eax, dword ptr [esi]
+      + 009728fd sub byte ptr [edi - 0x68d75c00], dl
+      + 00972903 add byte ptr [ebx - 0x6dff68d8], bl
+      + 00972909 sub byte ptr [edi - 0x68d77700], dl
+0x009730b8 (+12 instr.) | 0x00973238 (+6 instr.) | remplacement | decalage +0x180
+      - 009730b8 in al, dx
+      - 009730b9 das 
+      - 009730ba xchg edi, eax
+      - 009730bb add dh, dh
+      + 00973238 insb byte ptr es:[edi], dx
+      + 00973239 xor dword ptr [edi - 0x68ce8a00], edx
+      + 0097323f add byte ptr [ebx + 0x34009731], dl
+      + 00973245 xor dl, byte ptr [edi - 0x68cdcc00]
+0x00973238 (+12 instr.) | 0x009733b8 (+13 instr.) | remplacement | decalage +0x180
+      - 00973238 adc al, 0x31
+      - 0097323a xchg edi, eax
+      - 0097323b add byte ptr [edx], ch
+      - 0097323d xor dword ptr [edi - 0x68ced600], edx
+      + 009733b8 xchg esp, eax
+      + 009733b9 xor dl, byte ptr [edi - 0x68cd5600]
+      + 009733bf add byte ptr [edx - 0x38ff68ce], ch
+      + 009733c5 xor dl, byte ptr [edi - 0x68ccfd00]
+0x009735f8 (+11 instr.) | 0x00973778 (+12 instr.) | remplacement | decalage +0x180
+      - 009735f8 or eax, 0xed009735
+      - 009735fd xor al, 0x97
+      - 009735ff add ch, bh
+      - 00973601 xor al, 0x97
+      + 00973778 lea esi, [esi]
+      + 0097377a xchg edi, eax
+      + 0097377b add byte ptr [ebp + 0x36], ch
+      + 0097377e xchg edi, eax
+0x009738d0 (+3 instr.) | 0x00973a50 (+5 instr.) | remplacement | decalage +0x180
+      - 009738d0 .byte 0x8c
+      - 009738d1 cmp byte ptr [edi - 0x68c7bc00], dl
+      - 009738d7 add byte ptr [ecx + 0x9738], dl
+      + 00973a50 or al, 0x3a
+      + 00973a52 xchg edi, eax
+      + 00973a53 add ah, al
+      + 00973a55 cmp dword ptr [edi - 0x68c5ef00], edx
+0x00973a10 (+6 instr.) | 0x00973b90 (+6 instr.) | remplacement | decalage +0x180
+      - 00973a10 sbb byte ptr [ecx], bh
+      - 00973a12 xchg edi, eax
+      - 00973a13 add byte ptr [ebx], ah
+      - 00973a15 cmp dword ptr [edi - 0x68c68d00], edx
+      + 00973b90 cwde 
+      + 00973b91 cmp dl, byte ptr [edi - 0x68c55d00]
+      + 00973b97 add bl, dh
+      + 00973b99 cmp dl, byte ptr [edi - 0x68c55200]
+0x00973c08 (+4 instr.) | 0x00973d88 (+4 instr.) | remplacement | decalage +0x180
+      - 00973c08 push ebp
+      - 00973c09 cmp edx, dword ptr [edi - 0x68c4fb00]
+      - 00973c0f add byte ptr [edx + 0x3b], dh
+      - 00973c12 xchg edi, eax
+      + 00973d88 aad 0x3c
+      + 00973d8a xchg edi, eax
+      + 00973d8b add byte ptr [ebp - 0xdff68c4], al
+      + 00973d91 cmp al, 0x97
+0x00973f00 (+6 instr.) | 0x00974080 (+8 instr.) | remplacement | decalage +0x180
+      - 00973f00 retf 0x973d
+      - 00973f03 add byte ptr [ecx + 0x3f00973c], dl
+      - 00973f09 xchg edi, eax
+      - 00973f0b add byte ptr [eax + 0x3c], cl
+      + 00974080 dec edx
+      + 00974081 aas 
+      + 00974082 xchg edi, eax
+      + 00974083 add byte ptr [ecx], dl
+0x0097acdb (+0 instr.) | 0x0097ae5b (+3 instr.) | insertion | decalage +0x180
+      + 0097ae5b int3 
+      + 0097ae5c int3 
+      + 0097ae5d int3 
+0x0098d9e0 (+2 instr.) | 0x0098db63 (+7 instr.) | remplacement | decalage +0x183
+      - 0098d9e0 call 0x9ac850
+      - 0098d9e5 jmp 0x9909b0
+      + 0098db63 int3 
+      + 0098db64 int3 
+      + 0098db65 int3 
+      + 0098db66 int3 
+0x0098da10 (+0 instr.) | 0x0098db90 (+8 instr.) | insertion | decalage +0x180
+      + 0098db90 call 0x9c9890
+      + 0098db95 jmp 0xad07d0
+      + 0098db9a int3 
+      + 0098db9b int3 
+0x0099308c (+15 instr.) | 0x0099321c (+17 instr.) | remplacement | decalage +0x190
+      - 0099308c iretd 
+      - 0099308d sub al, 0x99
+      - 0099308f add bh, cl
+      - 00993091 sub al, 0x99
+      + 0099321c pop edi
+      + 0099321d cdq 
+      + 0099321f add byte ptr [edi + 0x2e], bl
+      + 00993222 cdq 
+0x0099cf20 (+16 instr.) | 0x0099d0b0 (+0 instr.) | suppression | decalage +0x190
+      - 0099cf20 int3 
+      - 0099cf21 int3 
+      - 0099cf22 int3 
+      - 0099cf23 int3 
+0x009a2d10 (+0 instr.) | 0x009a2e90 (+16 instr.) | insertion | decalage +0x180
+      + 009a2e90 int3 
+      + 009a2e91 int3 
+      + 009a2e92 int3 
+      + 009a2e93 int3 
+0x009b2cf0 (+0 instr.) | 0x009b2e80 (+32 instr.) | insertion | decalage +0x190
+      + 009b2e80 int3 
+      + 009b2e81 int3 
+      + 009b2e82 int3 
+      + 009b2e83 int3 
+0x009b34d8 (+4 instr.) | 0x009b3688 (+9 instr.) | remplacement | decalage +0x1b0
+      - 009b34d8 retf 0x9b2e
+      - 009b34db add byte ptr [eax + esi + 0x3280009b], cl
+      - 009b34e2 wait 
+      - 009b34e3 add byte ptr [esi - 0x33ff64cc], bh
+      + 009b3688 jp 0x9b36ba
+      + 009b368a wait 
+      + 009b368b add byte ptr [edx + esi], bh
+      + 009b368e wait 
+0x009b5bb8 (+9 instr.) | 0x009b5d68 (+6 instr.) | remplacement | decalage +0x1b0
+      - 009b5bb8 bound ecx, qword ptr [edi - 0x65]
+      - 009b5bbb add ch, al
+      - 009b5bbd push eax
+      - 009b5bbe wait 
+      + 009b5d68 adc dl, byte ptr [ecx - 0x65]
+      + 009b5d6b add byte ptr [ebp + 0x52], dh
+      + 009b5d6e wait 
+      + 009b5d6f add byte ptr [edx + 0x55], bl
+0x009c50c0 (+8 instr.) | 0x009c5270 (+8 instr.) | remplacement | decalage +0x1b0
+      - 009c50c0 mov al, byte ptr [0xee009c43]
+      - 009c50c5 inc esp
+      - 009c50c6 pushfd 
+      - 009c50c7 add byte ptr [edx - 0x6ff63b9], dl
+      + 009c5270 push eax
+      + 009c5271 inc ebp
+      + 009c5272 pushfd 
+      + 009c5273 add byte ptr [esi + 0x42009c46], bl
+0x009c6704 (+7 instr.) | 0x009c68b4 (+9 instr.) | remplacement | decalage +0x1b0
+      - 009c6704 jecxz 0x9c675d
+      - 009c6706 pushfd 
+      - 009c6707 add byte ptr [ebp + 0x57009c59], ch
+      - 009c670d pop esp
+      + 009c68b4 xchg ebx, eax
+      + 009c68b5 pop ecx
+      + 009c68b6 pushfd 
+      + 009c68b7 add byte ptr [ebp + 0x5b], bl
+0x009c6720 (+0 instr.) | 0x009c68cd (+3 instr.) | insertion | decalage +0x1ad
+      + 009c68cd int3 
+      + 009c68ce int3 
+      + 009c68cf int3 
+0x009cf9b8 (+6 instr.) | 0x009cfb68 (+9 instr.) | remplacement | decalage +0x1b0
+      - 009cf9b8 pop esp
+      - 009cf9b9 neg dword ptr [eax + eax + 0x9cf88a]
+      - 009cf9c0 lahf 
+      - 009cf9c1 stc 
+      + 009cfb68 or al, 0xf9
+      + 009cfb6a pushfd 
+      + 009cfb6b add byte ptr [edx], bh
+      + 009cfb6d cli 
+0x009cfce4 (+8 instr.) | 0x009cfe94 (+7 instr.) | remplacement | decalage +0x1b0
+      - 009cfce4 sti 
+      - 009cfce6 pushfd 
+      - 009cfce7 add byte ptr [0x25009cfc], ah
+      - 009cfced cld 
+      + 009cfe94 adc eax, 0xd5009cfd
+      + 009cfe99 std 
+      + 009cfe9a pushfd 
+      + 009cfe9b add ch, dl
+0x009d2828 (+5 instr.) | 0x009d29d8 (+4 instr.) | remplacement | decalage +0x1b0
+      - 009d2828 int3 
+      - 009d2829 and eax, 0x26fa009d
+      - 009d282e popfd 
+      - 009d282f add byte ptr [edi], cl
+      + 009d29d8 jl 0x9d2a01
+      + 009d29da popfd 
+      + 009d29db add byte ptr [edx - 0x40ff62d8], ch
+      + 009d29e1 sub dword ptr [ebp - 0x62d76f00], ebx
+0x009d3660 (+0 instr.) | 0x009d3810 (+16 instr.) | insertion | decalage +0x1b0
+      + 009d3810 int3 
+      + 009d3811 int3 
+      + 009d3812 int3 
+      + 009d3813 int3 
+0x009e42ec (+13 instr.) | 0x009e44ac (+9 instr.) | remplacement | decalage +0x1c0
+      - 009e42ec cmpsb byte ptr [esi], byte ptr es:[edi]
+      - 009e42ed inc edx
+      - 009e42ee sahf 
+      - 009e42ef add byte ptr [edi - 0x33ff61be], ch
+      + 009e44ac inc sp
+      + 009e44ae sahf 
+      + 009e44af add byte ptr [edi + 0x44], ch
+      + 009e44b2 sahf 
+0x009ee380 (+10 instr.) | 0x009ee540 (+8 instr.) | remplacement | decalage +0x1c0
+      - 009ee380 mov ebp, 0xc7009ee2
+      - 009ee385 loop 0x9ee325
+      - 009ee387 add ch, ah
+      - 009ee389 loop 0x9ee329
+      + 009ee540 jge 0x9ee526
+      + 009ee542 sahf 
+      + 009ee543 add byte ptr [edi - 0x5aff611c], al
+      + 009ee549 in al, 0x9e
+0x009f0558 (+18 instr.) | 0x009f0718 (+26 instr.) | remplacement | decalage +0x1c0
+      - 009f0558 and al, 5
+      - 009f055a lahf 
+      - 009f055b add byte ptr [ecx], dh
+      - 009f055d add eax, 0x552009f
+      + 009f0718 in al, 6
+      + 009f071a lahf 
+      + 009f071b add cl, dh
+      + 009f071d push es
+0x009f05a4 (+6 instr.) | 0x009f0764 (+12 instr.) | remplacement | decalage +0x1c0
+      - 009f05a4 test byte ptr [0x58c009f], al
+      - 009f05aa lahf 
+      - 009f05ab add byte ptr [ebp + eax + 0x5a1009f], dl
+      - 009f05b2 lahf 
+      + 009f0764 inc esp
+      + 009f0765 pop es
+      + 009f0766 lahf 
+      + 009f0767 add byte ptr [edi + eax - 0x61], cl
+0x009fded4 (+8 instr.) | 0x009fe094 (+18 instr.) | remplacement | decalage +0x1c0
+      - 009fded4 push 0x68009fde
+      - 009fded9 ficomp word ptr [edi - 0x60218900]
+      - 009fdedf add byte ptr [edi - 0x22], dh
+      - 009fdee2 lahf 
+      + 009fe094 sub al, ah
+      + 009fe096 lahf 
+      + 009fe097 add byte ptr [eax], ch
+      + 009fe099 loopne 0x9fe03a
+0x009fe02c (+14 instr.) | 0x009fe1ec (+16 instr.) | remplacement | decalage +0x1c0
+      - 009fe02c and esp, eax
+      - 009fe02e lahf 
+      - 009fe02f add byte ptr [edi], dl
+      - 009fe031 fistp word ptr [edi - 0x6020e900]
+      + 009fe1ec jecxz 0x9fe1cf
+      + 009fe1ee lahf 
+      + 009fe1ef add bh, dl
+      + 009fe1f1 loopne 0x9fe192
+0x00a03fa4 (+10 instr.) | 0x00a04164 (+13 instr.) | remplacement | decalage +0x1c0
+      - 00a03fa4 fnstsw word ptr [edx]
+      - 00a03fa6 mov al, byte ptr [0xa0391200]
+      - 00a03fab add ch, bl
+      - 00a03fad cmp ah, byte ptr [eax - 0x5fc64300]
+      + 00a04164 popfd 
+      + 00a04165 cmp al, 0xa0
+      + 00a04167 add dl, dl
+      + 00a04169 cmp ah, byte ptr [eax - 0x5fc36300]
+0x00a0650c (+7 instr.) | 0x00a066cc (+9 instr.) | remplacement | decalage +0x1c0
+      - 00a0650c fsub qword ptr [ecx - 0x60]
+      - 00a0650f add byte ptr [eax + 0x63], cl
+      - 00a06512 mov al, byte ptr [0xa0644000]
+      - 00a06517 add bh, al
+      + 00a066cc pushfd 
+      + 00a066cd arpl word ptr [eax - 0x5f9af800], sp
+      + 00a066d3 add byte ptr [eax], al
+      + 00a066d5 mov al, byte ptr [0xa0648700]
+0x00a09f8c (+9 instr.) | 0x00a0a14c (+6 instr.) | remplacement | decalage +0x1c0
+      - 00a09f8c hlt 
+      - 00a09f8d cdq 
+      - 00a09f8e mov al, byte ptr [0xa099f700]
+      - 00a09f93 add ah, dh
+      + 00a0a14c mov ah, 0x9b
+      + 00a0a14e mov al, byte ptr [0xa09bb700]
+      + 00a0a153 add byte ptr [ebx + ebx*4 - 0x644bff60], dh
+      + 00a0a15a mov al, byte ptr [0xa09bb400]
+0x00a0aaa8 (+6 instr.) | 0x00a0ac68 (+6 instr.) | remplacement | decalage +0x1c0
+      - 00a0aaa8 mov byte ptr [0xa000a0a9], al
+      - 00a0aaad stosb byte ptr es:[edi], al
+      - 00a0aaae mov al, byte ptr [0xa0a96100]
+      - 00a0aab3 add byte ptr [edx + ebp*4 - 0x60], bl
+      + 00a0ac68 bound ebp, qword ptr [ebx - 0x539fff60]
+      + 00a0ac6e mov al, byte ptr [0xa0ab2100]
+      + 00a0ac73 add byte ptr [esp + ebp*4], bl
+      + 00a0ac76 mov al, byte ptr [0xa0ab9f00]
+0x00a22b3c (+4 instr.) | 0x00a22cfc (+7 instr.) | remplacement | decalage +0x1c0
+      - 00a22b3c mov edx, 0x4100a21b
+      - 00a22b41 and byte ptr [edx - 0x5dd9b100], ah
+      - 00a22b47 add byte ptr [edx + ebp], ch
+      - 00a22b4a mov byte ptr [0xcccccc00], al
+      + 00a22cfc jp 0xa22d1b
+      + 00a22cfe mov byte ptr [0xa2220100], al
+      + 00a22d03 add byte ptr [edi], cl
+      + 00a22d05 sub byte ptr [edx - 0x5dd41400], ah
+0x00a2fe50 (+6 instr.) | 0x00a30010 (+7 instr.) | remplacement | decalage +0x1c0
+      - 00a2fe50 mov esp, gs
+      - 00a2fe52 mov byte ptr [0xa2ee7400], al
+      - 00a2fe57 add byte ptr [eax + 0x2e00a2f1], bl
+      - 00a2fe5d cli 
+      + 00a30010 dec esp
+      + 00a30011 out dx, al
+      + 00a30012 mov byte ptr [0xa2f03400], al
+      + 00a30017 add byte ptr [eax - 0xd], bl
+0x00a369d0 (+16 instr.) | 0x00a36b90 (+0 instr.) | suppression | decalage +0x1c0
+      - 00a369d0 int3 
+      - 00a369d1 int3 
+      - 00a369d2 int3 
+      - 00a369d3 int3 
+0x00a72fd4 (+18 instr.) | 0x00a73184 (+9 instr.) | remplacement | decalage +0x1b0
+      - 00a72fd4 xchg esp, eax
+      - 00a72fd5 das 
+      - 00a72fd6 cmpsd dword ptr [esi], dword ptr es:[edi]
+      - 00a72fd7 add byte ptr [ebp + 0x2e], ah
+      + 00a73184 inc esp
+      + 00a73185 xor dword ptr [edi - 0x58cfeb00], esp
+      + 00a7318b add byte ptr [eax], ah
+      + 00a7318d xor dword ptr [edi - 0x58ce8700], esp
+0x00a73fc0 (+16 instr.) | 0x00a74170 (+0 instr.) | suppression | decalage +0x1b0
+      - 00a73fc0 int3 
+      - 00a73fc1 int3 
+      - 00a73fc2 int3 
+      - 00a73fc3 int3 
+0x00a7f144 (+11 instr.) | 0x00a7f2e4 (+7 instr.) | remplacement | decalage +0x1a0
+      - 00a7f144 fdivrp st(0)
+      - 00a7f146 cmpsd dword ptr [esi], dword ptr es:[edi]
+      - 00a7f147 add byte ptr [ecx], bh
+      - 00a7f149 int1 
+      + 00a7f2e4 jle 0xa7f2d8
+      + 00a7f2e6 cmpsd dword ptr [esi], dword ptr es:[edi]
+      + 00a7f2e7 add cl, bl
+      + 00a7f2e9 repne cmpsd dword ptr [esi], dword ptr es:[edi]
+0x00a80640 (+6 instr.) | 0x00a807e0 (+10 instr.) | remplacement | decalage +0x1a0
+      - 00a80640 fadd dword ptr [0x63600a8]
+      - 00a80646 test al, 0
+      - 00a80648 ret 
+      - 00a80649 add eax, 0x57000a8
+      + 00a807e0 js 0xa807e9
+      + 00a807e2 test al, 0
+      + 00a807e4 salc 
+      + 00a807e5 pop es
+0x00a84984 (+9 instr.) | 0x00a84b24 (+12 instr.) | remplacement | decalage +0x1a0
+      - 00a84984 mov edi, 0x4e00a848
+      - 00a84989 dec ecx
+      - 00a8498a test al, 0
+      - 00a8498c rol byte ptr [esi - 0x58], 1
+      + 00a84b24 pop edi
+      + 00a84b25 dec edx
+      + 00a84b26 test al, 0
+      + 00a84b28 out dx, al
+0x00a8810c (+6 instr.) | 0x00a882ac (+7 instr.) | remplacement | decalage +0x1a0
+      - 00a8810c cmp byte ptr [eax - 0x7efdff58], al
+      - 00a88112 test al, 0
+      - 00a88114 and edi, dword ptr [esi - 0x58]
+      - 00a88117 add byte ptr [esi + 0x7d], dl
+      + 00a882ac fadd dword ptr [ecx - 0x7d5dff58]
+      + 00a882b2 test al, 0
+      + 00a882b4 ret 
+      + 00a882b5 jg 0xa8825f
+0x00ab6638 (+9 instr.) | 0x00ab67d8 (+3 instr.) | remplacement | decalage +0x1a0
+      - 00ab6638 loop 0xab669f
+      - 00ab663a stosd dword ptr es:[edi], eax
+      - 00ab663b add dl, bh
+      - 00ab663d stosd dword ptr es:[edi], eax
+      + 00ab67d8 and byte ptr [edi - 0x55], 0
+      + 00ab67dc lcall 0xab67, 0xaa00ab67
+      + 00ab67e3 add byte ptr [edx - 0x33ff5499], bh
+0x00ab676c (+8 instr.) | 0x00ab690c (+5 instr.) | remplacement | decalage +0x1a0
+      - 00ab676c mov edi, 0xe300ab66
+      - 00ab6771 stosw word ptr es:[edi], ax
+      - 00ab6773 add bh, dh
+      - 00ab6775 stosw word ptr es:[edi], ax
+      + 00ab690c pop edi
+      + 00ab690d push 0x688300ab
+      + 00ab6912 stosd dword ptr es:[edi], eax
+      + 00ab6913 add byte ptr [edi - 0x54ff5498], dl
+0x00ac2018 (+7 instr.) | 0x00ac21b8 (+7 instr.) | remplacement | decalage +0x1a0
+      - 00ac2018 cmc 
+      - 00ac2019 sbb al, 0xac
+      - 00ac201b add byte ptr [eax], al
+      - 00ac201d and byte ptr [eax + eax + 0xac1ae2], ch
+      + 00ac21b8 xchg ebp, eax
+      + 00ac21b9 push ds
+      + 00ac21ba lodsb al, byte ptr [esi]
+      + 00ac21bb add byte ptr [eax - 0x7dff53df], ah
+0x00ac4014 (+9 instr.) | 0x00ac41b4 (+7 instr.) | remplacement | decalage +0x1a0
+      - 00ac4014 xor bh, byte ptr [edi]
+      - 00ac4016 lodsb al, byte ptr [esi]
+      - 00ac4017 add byte ptr [eax], cl
+      - 00ac4019 inc eax
+      + 00ac41b4 rol byte ptr [eax - 0x54], cl
+      + 00ac41b7 add byte ptr [eax - 0x48ff53bf], ch
+      + 00ac41bd lodsb al, byte ptr ds:[esi]
+      + 00ac41bf add ah, ah
+0x00ace050 (+16 instr.) | 0x00ace1f0 (+0 instr.) | suppression | decalage +0x1a0
+      - 00ace050 int3 
+      - 00ace051 int3 
+      - 00ace052 int3 
+      - 00ace053 int3 
+0x00ad2ec0 (+16 instr.) | 0x00ad3050 (+0 instr.) | suppression | decalage +0x190
+      - 00ad2ec0 int3 
+      - 00ad2ec1 int3 
+      - 00ad2ec2 int3 
+      - 00ad2ec3 int3 
+0x00ad3d44 (+5 instr.) | 0x00ad3ec4 (+5 instr.) | remplacement | decalage +0x180
+      - 00ad3d44 scasd eax, dword ptr es:[edi]
+      - 00ad3d45 cmp byte ptr [ebp - 0x52ce1a00], ch
+      - 00ad3d4b add byte ptr [edi + 0x32], ch
+      - 00ad3d4e lodsd eax, dword ptr [esi]
+      + 00ad3ec4 das 
+      + 00ad3ec5 cmp ch, byte ptr [ebp - 0x52cc9a00]
+      + 00ad3ecb add bh, ch
+      + 00ad3ecd xor ebp, dword ptr [ebp - 0x52c5fd00]
+0x00ad4c20 (+6 instr.) | 0x00ad4da0 (+6 instr.) | remplacement | decalage +0x180
+      - 00ad4c20 jle 0xad4c69
+      - 00ad4c22 lodsd eax, dword ptr [esi]
+      - 00ad4c23 add byte ptr [ecx + 0x3200ad40], ch
+      - 00ad4c29 inc ecx
+      + 00ad4da0 dec byte ptr [eax - 0x53]
+      + 00ad4da3 add byte ptr [ecx], ch
+      + 00ad4da5 inc edx
+      + 00ad4da6 lodsd eax, dword ptr [esi]
+0x00ad5b60 (+9 instr.) | 0x00ad5ce0 (+12 instr.) | remplacement | decalage +0x180
+      - 00ad5b60 mov edi, 0xe900ad56
+      - 00ad5b65 dec edi
+      - 00ad5b66 lodsd eax, dword ptr [esi]
+      - 00ad5b67 add byte ptr [edx + 0x50], dh
+      + 00ad5ce0 aas 
+      + 00ad5ce1 pop eax
+      + 00ad5ce2 lodsd eax, dword ptr [esi]
+      + 00ad5ce3 add byte ptr [ecx + 0x51], ch
+0x00ad8040 (+7 instr.) | 0x00ad81c0 (+6 instr.) | remplacement | decalage +0x180
+      - 00ad8040 sub al, 0x7d
+      - 00ad8042 lodsd eax, dword ptr [esi]
+      - 00ad8043 add byte ptr [edi + 0x2a00ad7d], bl
+      - 00ad8049 jle 0xad7ff8
+      + 00ad81c0 lodsb al, byte ptr [esi]
+      + 00ad81c1 jle 0xad8170
+      + 00ad81c3 add byte ptr [edi], bl
+      + 00ad81c5 jg 0xad8174
+0x00ad8060 (+0 instr.) | 0x00ad81df (+1 instr.) | insertion | decalage +0x17f
+      + 00ad81df int3 
+0x00ae28d4 (+11 instr.) | 0x00ae2a54 (+10 instr.) | remplacement | decalage +0x180
+      - 00ae28d4 in eax, 0x19
+      - 00ae28d6 scasb al, byte ptr es:[edi]
+      - 00ae28d7 add byte ptr [edi + 0x12], ch
+      - 00ae28da scasb al, byte ptr es:[edi]
+      + 00ae2a54 sbb ebp, dword ptr gs:[esi - 0x51ec1100]
+      + 00ae2a5b add byte ptr [ebx + 0x14], bh
+      + 00ae2a5e scasb al, byte ptr es:[edi]
+      + 00ae2a5f add byte ptr [esi], ch
+0x00ae28ff (+1 instr.) | 0x00ae2a80 (+0 instr.) | suppression | decalage +0x181
+      - 00ae28ff int3 
+0x00ae41a4 (+10 instr.) | 0x00ae4324 (+16 instr.) | remplacement | decalage +0x180
+      - 00ae41a4 push ebp
+      - 00ae41a5 sub ebp, dword ptr [esi - 0x51d49e00]
+      - 00ae41ab add al, bh
+      - 00ae41ad sub ebp, dword ptr [esi - 0x51cd6100]
+      + 00ae4324 aad 0x2c
+      + 00ae4326 scasb al, byte ptr es:[edi]
+      + 00ae4327 add dl, ah
+      + 00ae4329 sub al, 0xae
+0x00ae41cf (+1 instr.) | 0x00ae4350 (+0 instr.) | suppression | decalage +0x181
+      - 00ae41cf int3 
+0x00ae4f28 (+6 instr.) | 0x00ae50a8 (+5 instr.) | remplacement | decalage +0x180
+      - 00ae4f28 add ecx, dword ptr [ebp - 0x52]
+      - 00ae4f2b add byte ptr [ecx - 0xaff51ba], al
+      - 00ae4f31 inc esi
+      - 00ae4f32 scasb al, byte ptr es:[edi]
+      + 00ae50a8 or dword ptr [esi - 0x52], 0
+      + 00ae50ac add dword ptr [eax - 0x52], ecx
+      + 00ae50af add byte ptr [ebp + 0x48], dh
+      + 00ae50b2 scasb al, byte ptr es:[edi]
+0x00ae5d28 (+9 instr.) | 0x00ae5ea8 (+7 instr.) | remplacement | decalage +0x180
+      - 00ae5d28 add al, 0x5b
+      - 00ae5d2a scasb al, byte ptr es:[edi]
+      - 00ae5d2b add byte ptr [eax + 0x54], bh
+      - 00ae5d2e scasb al, byte ptr es:[edi]
+      + 00ae5ea8 test byte ptr [esi + ebp*4], bl
+      + 00ae5eac clc 
+      + 00ae5ead push ebp
+      + 00ae5eae scasb al, byte ptr es:[edi]
+0x00ae6af8 (+5 instr.) | 0x00ae6c78 (+6 instr.) | remplacement | decalage +0x180
+      - 00ae6af8 retf 
+      - 00ae6af9 push 0x624800ae
+      - 00ae6afe scasb al, byte ptr es:[edi]
+      - 00ae6aff add ah, al
+      + 00ae6c78 dec ebx
+      + 00ae6c79 push -0x52
+      + 00ae6c7b add al, cl
+      + 00ae6c7d arpl word ptr [esi - 0x519bbc00], bp
+0x00aef170 (+7 instr.) | 0x00aef2f0 (+7 instr.) | remplacement | decalage +0x180
+      - 00aef170 mov esi, 0xad00aee5
+      - 00aef175 out 0xae, eax
+      - 00aef177 add byte ptr [ecx - 0x7bff5117], bl
+      - 00aef17d jmp 0xaef12d
+      + 00aef2f0 out 0xae, eax
+      + 00aef2f3 add byte ptr [0x1900aee9], ch
+      + 00aef2f9 jmp 0xaef2a9
+      + 00aef2fb add byte ptr [ebp*8 - 0x1112ff52], al
+0x00af6668 (+12 instr.) | 0x00af67e8 (+7 instr.) | remplacement | decalage +0x180
+      - 00af6668 or byte ptr [ecx - 0x51], ah
+      - 00af666b add byte ptr [ecx + 0x61], cl
+      - 00af666e scasd eax, dword ptr es:[edi]
+      - 00af666f add byte ptr [edi - 0x39ff509f], al
+      + 00af67e8 mov byte ptr [edx - 0x51], ah
+      + 00af67eb add cl, cl
+      + 00af67ed bound ebp, qword ptr [edi - 0x509cf900]
+      + 00af67f3 add byte ptr [esi + 0x63], al
+0x00afdaa8 (+13 instr.) | 0x00afdc28 (+9 instr.) | remplacement | decalage +0x180
+      - 00afdaa8 stosd dword ptr es:[edi], eax
+      - 00afdaa9 xlatb 
+      - 00afdaaa scasd eax, dword ptr es:[edi]
+      - 00afdaab add ch, ah
+      + 00afdc28 sub ebx, ecx
+      + 00afdc2a scasd eax, dword ptr es:[edi]
+      + 00afdc2b add byte ptr [ebp - 0x27], ah
+      + 00afdc2e scasd eax, dword ptr es:[edi]
+0x00afdad0 (+0 instr.) | 0x00afdc4f (+1 instr.) | insertion | decalage +0x17f
+      + 00afdc4f int3 
+0x00b08f10 (+16 instr.) | 0x00b09090 (+0 instr.) | suppression | decalage +0x180
+      - 00b08f10 int3 
+      - 00b08f11 int3 
+      - 00b08f12 int3 
+      - 00b08f13 int3 
+0x00b0f7f8 (+15 instr.) | 0x00b0f968 (+19 instr.) | remplacement | decalage +0x170
+      - 00b0f7f8 adc al, 0xe9
+      - 00b0f7fa mov al, 0
+      - 00b0f7fc .byte 0x8f
+      - 00b0f7fd loope 0xb0f7af
+      + 00b0f968 test dl, ch
+      + 00b0f96a mov al, 0
+      + 00b0f96c jmp edx
+      + 00b0f96e mov al, 0
+0x00b11118 (+14 instr.) | 0x00b11288 (+14 instr.) | remplacement | decalage +0x170
+      - 00b11118 mov edx, 0x5600b101
+      - 00b1111d cli 
+      - 00b1111e mov al, 0
+      - 00b11120 out 0xfa, eax
+      + 00b11288 sub al, byte ptr [ebx]
+      + 00b1128a mov cl, 0
+      + 00b1128c .byte 0xc6
+      + 00b1128d sti 
+0x00b17820 (+9 instr.) | 0x00b17990 (+8 instr.) | remplacement | decalage +0x170
+      - 00b17820 sbb ah, byte ptr [edi - 0x4f]
+      - 00b17823 add byte ptr [0x5000b169], ch
+      - 00b17829 imul esi, dword ptr [ecx - 0x4e928600], 0
+      - 00b17830 pushfd 
+      + 00b17990 mov ch, byte ptr [eax - 0x4f]
+      + 00b17993 add byte ptr [ebp - 0x3fff4e96], bl
+      + 00b17999 insb byte ptr es:[edi], dx
+      + 00b1799a mov cl, 0
+0x00b1a288 (+13 instr.) | 0x00b1a3f8 (+13 instr.) | remplacement | decalage +0x170
+      - 00b1a288 xchg ebx, eax
+      - 00b1a28a mov cl, 0
+      - 00b1a28c dec dword ptr [ebx - 0x736fff4f]
+      - 00b1a292 mov cl, 0
+      + 00b1a3f8 xlatb 
+      + 00b1a3f9 xchg esp, eax
+      + 00b1a3fa mov cl, 0
+      + 00b1a3fc outsd dx, dword ptr [esi]
+0x00b1bc28 (+14 instr.) | 0x00b1bd98 (+16 instr.) | remplacement | decalage +0x170
+      - 00b1bc28 sub dword ptr [ebp - 0x5ac9ff4f], esp
+      - 00b1bc2e mov cl, 0
+      - 00b1bc30 int3 
+      - 00b1bc31 movsd dword ptr es:[edi], dword ptr [esi]
+      + 00b1bd98 cdq 
+      + 00b1bd99 cmpsb byte ptr [esi], byte ptr es:[edi]
+      + 00b1bd9a mov cl, 0
+      + 00b1bd9c cmpsb byte ptr [esi], byte ptr es:[edi]
+0x00b1ecc4 (+16 instr.) | 0x00b1ee34 (+11 instr.) | remplacement | decalage +0x170
+      - 00b1ecc4 mov ah, 0xdd
+      - 00b1ecc6 mov cl, 0
+      - 00b1ecc8 jnp 0xb1eca0
+      - 00b1ecca mov cl, 0
+      + 00b1ee34 and al, 0xdf
+      + 00b1ee36 mov cl, 0
+      + 00b1ee38 jmp 0xb1ee11
+      + 00b1ee3a mov cl, 0
+0x00b1ecf0 (+0 instr.) | 0x00b1ee5e (+2 instr.) | insertion | decalage +0x16e
+      + 00b1ee5e int3 
+      + 00b1ee5f int3 
+0x00b205c4 (+15 instr.) | 0x00b20734 (+13 instr.) | remplacement | decalage +0x170
+      - 00b205c4 jns 0xb205bc
+      - 00b205c6 mov cl, 0
+      - 00b205c8 push esi
+      - 00b205c9 out dx, eax
+      + 00b20734 jmp 0xc6b2b930
+      + 00b20739 .byte 0xf0
+      + 00b2073a mov cl, 0
+      + 00b2073c push edi
+0x00b205f0 (+0 instr.) | 0x00b2075f (+1 instr.) | insertion | decalage +0x16f
+      + 00b2075f int3 
+0x00b21ef4 (+11 instr.) | 0x00b22064 (+11 instr.) | remplacement | decalage +0x170
+      - 00b21ef4 jg 0xb21f05
+      - 00b21ef6 mov dl, 0
+      - 00b21ef8 push eax
+      - 00b21ef9 or byte ptr [edx - 0x4df71f00], dh
+      + 00b22064 out dx, eax
+      + 00b22065 adc byte ptr [edx - 0x4df64000], dh
+      + 00b2206b add byte ptr [ecx + 0xa], dl
+      + 00b2206e mov dl, 0
+0x00b21f1e (+2 instr.) | 0x00b22090 (+0 instr.) | suppression | decalage +0x172
+      - 00b21f1e int3 
+      - 00b21f1f int3 
+0x00b23884 (+8 instr.) | 0x00b239f4 (+7 instr.) | remplacement | decalage +0x170
+      - 00b23884 cmc 
+      - 00b23885 sub byte ptr [edx - 0x4dde4c00], dh
+      - 00b2388b add byte ptr [eax + 0x22], al
+      - 00b2388e mov dl, 0
+      + 00b239f4 sub dh, byte ptr gs:[edx - 0x4ddcdc00]
+      + 00b239fb add byte ptr [eax + 0x2b00b223], dh
+      + 00b23a01 sub dh, byte ptr [edx - 0x4dcaef00]
+      + 00b23a07 add byte ptr [esi + 0x2500b22d], dl
+0x00b238b0 (+0 instr.) | 0x00b23a1e (+2 instr.) | insertion | decalage +0x16e
+      + 00b23a1e int3 
+      + 00b23a1f int3 
+0x00b2434c (+14 instr.) | 0x00b244bc (+12 instr.) | remplacement | decalage +0x170
+      - 00b2434c add byte ptr [edx - 0x4e], al
+      - 00b2434f add byte ptr [esi], dl
+      - 00b24351 inc edx
+      - 00b24352 mov dl, 0
+      + 00b244bc jo 0xb24501
+      + 00b244be mov dl, 0
+      + 00b244c0 xchg byte ptr [ebx - 0x4e], al
+      + 00b244c3 add byte ptr [ebx + 0x43], bl
+0x00b24c40 (+0 instr.) | 0x00b24db0 (+16 instr.) | insertion | decalage +0x170
+      + 00b24db0 int3 
+      + 00b24db1 int3 
+      + 00b24db2 int3 
+      + 00b24db3 int3 
+0x00b26218 (+29 instr.) | 0x00b26398 (+17 instr.) | remplacement | decalage +0x180
+      - 00b26218 .byte 0xf0
+      - 00b26219 popal 
+      - 00b2621a mov dl, 0
+      - 00b2621c lodsb al, byte ptr [esi]
+      + 00b26398 jo 0xb263fd
+      + 00b2639a mov dl, 0
+      + 00b2639c sub al, 0x5a
+      + 00b2639e mov dl, 0
+0x00b263a4 (+12 instr.) | 0x00b26524 (+16 instr.) | remplacement | decalage +0x180
+      - 00b263a4 js 0xb26409
+      - 00b263a6 mov dl, 0
+      - 00b263a8 adc eax, 0x9700b263
+      - 00b263ad arpl word ptr [edx - 0x4d9ceb00], si
+      + 00b26524 clc 
+      + 00b26525 mov dl, 0
+      + 00b26528 xchg ebp, eax
+      + 00b26529 mov dl, 0
+0x00b268e4 (+8 instr.) | 0x00b26a64 (+10 instr.) | remplacement | decalage +0x180
+      - 00b268e4 mul dword ptr [edx + esi*4]
+      - 00b268e8 leave 
+      - 00b268e9 push 0x658a00b2
+      - 00b268ee mov dl, 0
+      + 00b26a64 ja 0xb26acc
+      + 00b26a66 mov dl, 0
+      + 00b26a68 dec ecx
+      + 00b26a69 push -0x4e
+0x00b29498 (+9 instr.) | 0x00b29618 (+25 instr.) | remplacement | decalage +0x180
+      - 00b29498 mov ss, word ptr [ecx - 0x6e93ff4e]
+      - 00b2949e mov dl, 0
+      - 00b294a0 mov ss, word ptr [ecx - 0x6ecaff4e]
+      - 00b294a6 mov dl, 0
+      + 00b29618 push cs
+      + 00b29619 xchg ebx, eax
+      + 00b2961a mov dl, 0
+      + 00b2961c in al, dx
+0x00b2ffb0 (+16 instr.) | 0x00b30130 (+0 instr.) | suppression | decalage +0x180
+      - 00b2ffb0 int3 
+      - 00b2ffb1 int3 
+      - 00b2ffb2 int3 
+      - 00b2ffb3 int3 
+0x00b420a4 (+8 instr.) | 0x00b42214 (+13 instr.) | remplacement | decalage +0x170
+      - 00b420a4 mov eax, dword ptr [0x2b00b411]
+      - 00b420a9 or dh, byte ptr [eax + eax + 0xb40abc]
+      - 00b420b0 push 0x11
+      - 00b420b2 mov ah, 0
+      + 00b42214 adc dword ptr [ebx], edx
+      + 00b42216 mov ah, 0
+      + 00b42218 wait 
+      + 00b42219 or esi, dword ptr [eax + eax + 0xb40c2c]
+0x00b420d0 (+0 instr.) | 0x00b4223c (+4 instr.) | insertion | decalage +0x16c
+      + 00b4223c int3 
+      + 00b4223d int3 
+      + 00b4223e int3 
+      + 00b4223f int3 
+0x00b439b4 (+9 instr.) | 0x00b43b24 (+14 instr.) | remplacement | decalage +0x170
+      - 00b439b4 pushal 
+      - 00b439b5 sub dh, byte ptr [eax + eax + 0xb42309]
+      - 00b439bc cwde 
+      - 00b439bd and esi, dword ptr [eax + eax + 0xb42a24]
+      + 00b43b24 shr byte ptr [ebx], 1
+      + 00b43b26 mov ah, 0
+      + 00b43b28 jns 0xb43b4e
+      + 00b43b2a mov ah, 0
+0x00b439e0 (+0 instr.) | 0x00b43b4d (+3 instr.) | insertion | decalage +0x16d
+      + 00b43b4d int3 
+      + 00b43b4e int3 
+      + 00b43b4f int3 
+0x00b45374 (+15 instr.) | 0x00b454e4 (+13 instr.) | remplacement | decalage +0x170
+      - 00b45374 retf 
+      - 00b45375 inc ebx
+      - 00b45376 mov ah, 0
+      - 00b45378 push ecx
+      + 00b454e4 cmp eax, dword ptr [ebp - 0x4c]
+      + 00b454e7 add cl, al
+      + 00b454e9 cmp eax, 0x3e5200b4
+      + 00b454ee mov ah, 0
+0x00b46ca4 (+15 instr.) | 0x00b46e14 (+14 instr.) | remplacement | decalage +0x170
+      - 00b46ca4 out 0x55, eax
+      - 00b46ca6 mov ah, 0
+      - 00b46ca8 hlt 
+      - 00b46ca9 push ebp
+      + 00b46e14 push edi
+      + 00b46e15 push edi
+      + 00b46e16 mov ah, 0
+      + 00b46e18 push edi
+0x00b48624 (+9 instr.) | 0x00b48794 (+15 instr.) | remplacement | decalage +0x170
+      - 00b48624 push ebp
+      - 00b48625 jbe 0xb485db
+      - 00b48627 add byte ptr [0x9100b46f], al
+      - 00b4862d outsd dx, dword ptr [esi]
+      + 00b48794 lds esi, ptr [edi - 0x4c]
+      + 00b48797 add byte ptr [ebp + 0x70], dh
+      + 00b4879a mov ah, 0
+      + 00b4879c add dword ptr [ecx - 0x4c], esi
+0x00b4a054 (+11 instr.) | 0x00b4a1c4 (+8 instr.) | remplacement | decalage +0x170
+      - 00b4a054 adc eax, 0xc900b490
+      - 00b4a059 mov byte ptr [eax + eax + 0xb48955], dh
+      - 00b4a060 fisttp dword ptr [edi - 0x6be9ff4c]
+      - 00b4a066 mov ah, 0
+      + 00b4a1c4 test dword ptr [ecx - 0x75c6ff4c], edx
+      + 00b4a1ca mov ah, 0
+      + 00b4a1cc lds ecx, ptr [edx - 0x6eb4ff4c]
+      + 00b4a1d2 mov ah, 0
+0x00b4a080 (+0 instr.) | 0x00b4a1ef (+1 instr.) | insertion | decalage +0x16f
+      + 00b4a1ef int3 
+0x00b4afa8 (+7 instr.) | 0x00b4b118 (+3 instr.) | remplacement | decalage +0x170
+      - 00b4afa8 xchg dword ptr [ebp - 0x5909ff4c], ebp
+      - 00b4afae mov ah, 0
+      - 00b4afb0 outsd dx, dword ptr [esi]
+      - 00b4afb1 cmpsd dword ptr [esi], dword ptr es:[edi]
+      + 00b4b118 imul dword ptr [esi - 0x5799ff4c]
+      + 00b4b11e mov ah, 0
+      + 00b4b120 fild qword ptr [eax - 0x5134ff4c]
+0x00b4bdbc (+6 instr.) | 0x00b4bf2c (+2 instr.) | remplacement | decalage +0x170
+      - 00b4bdbc lahf 
+      - 00b4bdbd mov ebx, 0xb51800b4
+      - 00b4bdc2 mov ah, 0
+      - 00b4bdc4 xchg ecx, eax
+      + 00b4bf2c bsr esi, dword ptr [eax + eax + 0xb4b688]
+      + 00b4bf34 add dword ptr [edi - 0x4321ff4c], esi
+0x00b4cc20 (+4 instr.) | 0x00b4cd90 (+9 instr.) | remplacement | decalage +0x170
+      - 00b4cc20 push es
+      - 00b4cc21 retf 0xb4
+      - 00b4cc24 mov al, byte ptr [0x1900b4c3]
+      - 00b4cc29 les esi, ptr [eax + eax + 0xb4c9d5]
+      + 00b4cd90 jbe 0xb4cd5d
+      + 00b4cd92 mov ah, 0
+      + 00b4cd94 adc ch, al
+      + 00b4cd96 mov ah, 0
+0x00b4db8c (+5 instr.) | 0x00b4dcfc (+10 instr.) | remplacement | decalage +0x170
+      - 00b4db8c imul ebx, ecx, -0x4c
+      - 00b4db8f add bl, ch
+      - 00b4db91 sal byte ptr [eax + eax + 0xb4d364], cl
+      - 00b4db98 aas 
+      + 00b4dcfc fcmovnu st(0), st(2)
+      + 00b4dcfe mov ah, 0
+      + 00b4dd00 pop ebx
+      + 00b4dd01 aam 0xb4
+0x00b4eba4 (+6 instr.) | 0x00b4ed14 (+6 instr.) | remplacement | decalage +0x170
+      - 00b4eba4 sub ecx, 0xe2ff00b4
+      - 00b4ebaa mov ah, 0
+      - 00b4ebac jnp 0xb4eb91
+      - 00b4ebae mov ah, 0
+      + 00b4ed14 int1 
+      + 00b4ed15 ljmp 0xb4:0xe46f00b4
+      + 00b4ed1c jmp 0xb4ed02
+      + 00b4ed1e mov ah, 0
+0x00b4ebbe (+2 instr.) | 0x00b4ed30 (+0 instr.) | suppression | decalage +0x172
+      - 00b4ebbe int3 
+      - 00b4ebbf int3 
+0x00b4fa4c (+9 instr.) | 0x00b4fbbc (+11 instr.) | remplacement | decalage +0x170
+      - 00b4fa4c and al, 0xf8
+      - 00b4fa4e mov ah, 0
+      - 00b4fa50 wait 
+      - 00b4fa51 int1 
+      + 00b4fbbc xchg esp, eax
+      + 00b4fbbd stc 
+      + 00b4fbbe mov ah, 0
+      + 00b4fbc0 or esi, ebx
+0x00b50984 (+7 instr.) | 0x00b50af4 (+5 instr.) | remplacement | decalage +0x170
+      - 00b50984 bound eax, qword ptr [edi]
+      - 00b50986 mov ch, 0
+      - 00b50988 rol dword ptr [eax], 1
+      - 00b5098a mov ch, 0
+      + 00b50af4 ror byte ptr [eax], cl
+      + 00b50af6 mov ch, 0
+      + 00b50af8 inc ecx
+      + 00b50af9 add dh, byte ptr [ebp - 0x4afd4600]
+0x00b51994 (+6 instr.) | 0x00b51b04 (+5 instr.) | remplacement | decalage +0x170
+      - 00b51994 jno 0xb519ad
+      - 00b51996 mov ch, 0
+      - 00b51998 out dx, eax
+      - 00b51999 adc byte ptr [ebp - 0x4aee9800], dh
+      + 00b51b04 loope 0xb51b1e
+      + 00b51b06 mov ch, 0
+      + 00b51b08 pop edi
+      + 00b51b09 adc dh, byte ptr [ebp - 0x4aed2800]
+0x00b519af (+1 instr.) | 0x00b51b20 (+0 instr.) | suppression | decalage +0x171
+      - 00b519af int3 
+0x00b61e70 (+16 instr.) | 0x00b61fe0 (+0 instr.) | suppression | decalage +0x170
+      - 00b61e70 int3 
+      - 00b61e71 int3 
+      - 00b61e72 int3 
+      - 00b61e73 int3 
+0x00b66c68 (+10 instr.) | 0x00b66dc8 (+6 instr.) | remplacement | decalage +0x160
+      - 00b66c68 ret 0xb667
+      - 00b66c6b add bh, ch
+      - 00b66c6d pushal 
+      - 00b66c6e mov dh, 0
+      + 00b66dc8 and ch, byte ptr [ecx - 0x4a]
+      + 00b66dcb add byte ptr [edi + 0x62], cl
+      + 00b66dce mov dh, 0
+      + 00b66dd0 fsub dword ptr [edx - 0x4a]
+0x00b6e200 (+0 instr.) | 0x00b6e360 (+16 instr.) | insertion | decalage +0x160
+      + 00b6e360 int3 
+      + 00b6e361 int3 
+      + 00b6e362 int3 
+      + 00b6e363 int3 
+0x00b73520 (+0 instr.) | 0x00b73690 (+16 instr.) | insertion | decalage +0x170
+      + 00b73690 int3 
+      + 00b73691 int3 
+      + 00b73692 int3 
+      + 00b73693 int3 
+0x00b7bcf8 (+7 instr.) | 0x00b7be78 (+7 instr.) | remplacement | decalage +0x180
+      - 00b7bcf8 xlatb 
+      - 00b7bcf9 mov edx, 0xb45d00b7
+      - 00b7bcfe mov bh, 0
+      - 00b7bd00 salc 
+      + 00b7be78 push edi
+      + 00b7be79 mov esp, 0xb5dd00b7
+      + 00b7be7e mov bh, 0
+      + 00b7be80 push esi
+0x00b80afc (+4 instr.) | 0x00b80c7c (+4 instr.) | remplacement | decalage +0x180
+      - 00b80afc fimul dword ptr [eax]
+      - 00b80afe mov eax, 0xb8025800
+      - 00b80b03 add cl, dl
+      - 00b80b05 add bh, byte ptr [eax - 0x47f75200]
+      + 00b80c7c pop edx
+      + 00b80c7d or bh, byte ptr [eax - 0x47fc2800]
+      + 00b80c83 add byte ptr [ecx + 4], dl
+      + 00b80c86 mov eax, 0xb80a2e00
+0x00b83abc (+7 instr.) | 0x00b83c3c (+4 instr.) | remplacement | decalage +0x180
+      - 00b83abc cmpsb byte ptr [esi], byte ptr es:[edi]
+      - 00b83abd xor edi, dword ptr [eax - 0x47cbcf00]
+      - 00b83ac3 add byte ptr [edx + 0x34], bl
+      - 00b83ac6 mov eax, 0xb8348300
+      + 00b83c3c xor eax, 0x35b100b8
+      + 00b83c42 mov eax, 0xb835da00
+      + 00b83c47 add byte ptr [ebx], al
+      + 00b83c49 mov eax, 0xcccccc00
+0x00b90c6c (+10 instr.) | 0x00b90dec (+9 instr.) | remplacement | decalage +0x180
+      - 00b90c6c sub dword ptr [ecx + edi*4], ecx
+      - 00b90c6f add byte ptr [edx], dh
+      - 00b90c71 or al, 0xb9
+      - 00b90c73 add byte ptr [ebx], bh
+      + 00b90dec test eax, 0xb200b90d
+      + 00b90df1 or eax, 0xdbb00b9
+      + 00b90df6 mov ecx, 0xb90dc400
+      + 00b90dfb add al, dl
+0x00bbf670 (+16 instr.) | 0x00bbf7f0 (+0 instr.) | suppression | decalage +0x180
+      - 00bbf670 int3 
+      - 00bbf671 int3 
+      - 00bbf672 int3 
+      - 00bbf673 int3 
+0x00bd7914 (+7 instr.) | 0x00bd7a84 (+6 instr.) | remplacement | decalage +0x170
+      - 00bd7914 pushfd 
+      - 00bd7915 je 0xbd78d4
+      - 00bd7917 add byte ptr [ecx], al
+      - 00bd7919 outsb dx, byte ptr [esi]
+      + 00bd7a84 or al, 0x76
+      + 00bd7a86 mov ebp, 0xbd6f7100
+      + 00bd7a8b add bh, dh
+      + 00bd7a8d outsd dx, dword ptr [esi]
+0x00bd7930 (+0 instr.) | 0x00bd7a9e (+2 instr.) | insertion | decalage +0x16e
+      + 00bd7a9e int3 
+      + 00bd7a9f int3 
+0x00bf1260 (+4 instr.) | 0x00bf13d0 (+4 instr.) | remplacement | decalage +0x170
+      - 00bf1260 mov dword ptr [eax], edx
+      - 00bf1262 mov edi, 0xbf107f00
+      - 00bf1267 add bl, bl
+      - 00bf1269 adc dword ptr [edi - 0x40ee5400], edi
+      + 00bf13d0 stc 
+      + 00bf13d1 adc dword ptr [edi - 0x40ee1100], edi
+      + 00bf13d7 add byte ptr [ebx + 0x13], cl
+      + 00bf13da mov edi, 0xbf131c00
+0x00bf1f34 (+7 instr.) | 0x00bf20a4 (+7 instr.) | remplacement | decalage +0x170
+      - 00bf1f34 pop edi
+      - 00bf1f35 push ds
+      - 00bf1f36 mov edi, 0xbf1e2200
+      - 00bf1f3b add byte ptr [edi + 0x1e], bl
+      + 00bf20a4 iretd 
+      + 00bf20a5 pop ds
+      + 00bf20a6 mov edi, 0xbf1f9200
+      + 00bf20ab add bh, cl
+0x00bf9a50 (+7 instr.) | 0x00bf9bc0 (+0 instr.) | suppression | decalage +0x170
+      - 00bf9a50 mov dword ptr [ecx], 0
+      - 00bf9a56 mov eax, ecx
+      - 00bf9a58 mov dword ptr [ecx + 0xc], 0
+      - 00bf9a5f mov dword ptr [ecx + 4], 0
+0x00bf9a80 (+0 instr.) | 0x00bf9bcb (+23 instr.) | insertion | decalage +0x14b
+      + 00bf9bcb int3 
+      + 00bf9bcc int3 
+      + 00bf9bcd int3 
+      + 00bf9bce int3 
+0x00c09fb0 (+32 instr.) | 0x00c0a130 (+0 instr.) | suppression | decalage +0x180
+      - 00c09fb0 int3 
+      - 00c09fb1 int3 
+      - 00c09fb2 int3 
+      - 00c09fb3 int3 
+0x00c0bfd8 (+8 instr.) | 0x00c0c138 (+8 instr.) | remplacement | decalage +0x160
+      - 00c0bfd8 wait 
+      - 00c0bfd9 mov ebp, 0xbe4000c0
+      - 00c0bfde rol byte ptr [eax], 0xb5
+      - 00c0bfe1 mov ebp, 0xbdcc00c0
+      + 00c0c138 sti 
+      + 00c0c139 mov esi, 0xbfa000c0
+      + 00c0c13e rol byte ptr [eax], 0x15
+      + 00c0c141 mov edi, 0xbf2c00c0
+0x00c10ff0 (+16 instr.) | 0x00c11150 (+0 instr.) | suppression | decalage +0x160
+      - 00c10ff0 int3 
+      - 00c10ff1 int3 
+      - 00c10ff2 int3 
+      - 00c10ff3 int3 
+0x00c122f0 (+0 instr.) | 0x00c12440 (+16 instr.) | insertion | decalage +0x150
+      + 00c12440 int3 
+      + 00c12441 int3 
+      + 00c12442 int3 
+      + 00c12443 int3 
+0x00c15d58 (+18 instr.) | 0x00c15eb8 (+18 instr.) | remplacement | decalage +0x160
+      - 00c15d58 int1 
+      - 00c15d59 pop esp
+      - 00c15d5a rol dword ptr [eax], 0xf4
+      - 00c15d5d push esi
+      + 00c15eb8 push ecx
+      + 00c15eb9 pop esi
+      + 00c15eba rol dword ptr [eax], 0x54
+      + 00c15ebd pop eax
+0x00c17418 (+10 instr.) | 0x00c17578 (+11 instr.) | remplacement | decalage +0x160
+      - 00c17418 mov ecx, 0x7700c172
+      - 00c1741d rol dword ptr [bx + si], 0xb9
+      - 00c17421 jb 0xc173e4
+      - 00c17423 add al, dl
+      + 00c17578 sbb dword ptr [ecx + eax*8], esi
+      + 00c1757c xlatb 
+      + 00c1757d push 0x741900c1
+      + 00c17582 rol dword ptr [eax], 0x30
+0x00c19a10 (+16 instr.) | 0x00c19b70 (+0 instr.) | suppression | decalage +0x160
+      - 00c19a10 int3 
+      - 00c19a11 int3 
+      - 00c19a12 int3 
+      - 00c19a13 int3 
+0x00c1d1e4 (+14 instr.) | 0x00c1d334 (+14 instr.) | remplacement | decalage +0x150
+      - 00c1d1e4 push cs
+      - 00c1d1e5 rol ecx, 1
+      - 00c1d1e7 add byte ptr [esi], cl
+      - 00c1d1e9 rol ecx, 1
+      + 00c1d334 pop esi
+      + 00c1d335 rol cl, cl
+      + 00c1d337 add byte ptr [esi - 0x2e], bl
+      + 00c1d33a rol dword ptr [eax], 0x5e
+0x00c1e188 (+14 instr.) | 0x00c1e2d8 (+16 instr.) | remplacement | decalage +0x150
+      - 00c1e188 jne 0xc1e15d
+      - 00c1e18a rol dword ptr [eax], 0x75
+      - 00c1e18d rol ecx, cl
+      - 00c1e18f add byte ptr [ebp - 0x2d], dh
+      + 00c1e2d8 .byte 0xc5
+      + 00c1e2d9 aam 0xc1
+      + 00c1e2db add ch, al
+      + 00c1e2dd aam 0xc1
+0x00c1f44c (+7 instr.) | 0x00c1f59c (+5 instr.) | remplacement | decalage +0x150
+      - 00c1f44c outsd dx, dword ptr [esi]
+      - 00c1f44d jmp 0xea5bf513
+      - 00c1f452 rol dword ptr [eax], 0xf0
+      - 00c1f455 jmp 0xea86f51b
+      + 00c1f59c mov edi, 0xea00c1ea
+      + 00c1f5a1 ljmp 0xc1:0xeb4000c1
+      + 00c1f5a8 adc eax, 0x8300c1eb
+      + 00c1f5ad jmp 0xc1f570
+0x00c2d700 (+10 instr.) | 0x00c2d850 (+9 instr.) | remplacement | decalage +0x150
+      - 00c2d700 rcl dh, 0xc2
+      - 00c2d703 add ah, al
+      - 00c2d705 salc 
+      - 00c2d706 ret 0xc800
+      + 00c2d850 adc al, bl
+      + 00c2d852 ret 0x1400
+      + 00c2d855 fadd st(2)
+      + 00c2d857 add byte ptr [eax], bl
+0x00c2f080 (+0 instr.) | 0x00c2f1d0 (+48 instr.) | insertion | decalage +0x150
+      + 00c2f1d0 int3 
+      + 00c2f1d1 int3 
+      + 00c2f1d2 int3 
+      + 00c2f1d3 int3 
+0x00c30fd0 (+16 instr.) | 0x00c31150 (+0 instr.) | suppression | decalage +0x180
+      - 00c30fd0 int3 
+      - 00c30fd1 int3 
+      - 00c30fd2 int3 
+      - 00c30fd3 int3 
+0x00c35e60 (+0 instr.) | 0x00c35fd0 (+16 instr.) | insertion | decalage +0x170
+      + 00c35fd0 int3 
+      + 00c35fd1 int3 
+      + 00c35fd2 int3 
+      + 00c35fd3 int3 
+0x00c37a90 (+197 instr.) | 0x00c37c10 (+196 instr.) | remplacement | decalage +0x180
+      - 00c37a90 mov bh, 0x75
+      - 00c37a92 ret 
+      - 00c37a93 add byte ptr [esi + 0x5500c376], al
+      - 00c37a99 ja 0xc37a5e
+      + 00c37c10 aaa 
+      + 00c37c11 ja 0xc37bd6
+      + 00c37c13 add byte ptr [esi], al
+      + 00c37c15 js 0xc37bda
+0x00c3edc8 (+6 instr.) | 0x00c3ef48 (+9 instr.) | remplacement | decalage +0x180
+      - 00c3edc8 jb 0xc3edb7
+      - 00c3edca ret 
+      - 00c3edcb add byte ptr [ebp - 0x48ff3c13], bl
+      - 00c3edd1 in eax, dx
+      + 00c3ef48 out dx, al
+      + 00c3ef4a ret 
+      + 00c3ef4b add byte ptr [0x3700c3ef], bl
+      + 00c3ef51 out dx, eax
+0x00c3ee60 (+9 instr.) | 0x00c3efe0 (+26 instr.) | remplacement | decalage +0x180
+      - 00c3ee60 in eax, dx
+      - 00c3ee62 ret 
+      - 00c3ee63 add byte ptr [0x3700c3ee], bl
+      - 00c3ee69 out dx, al
+      + 00c3efe0 jb 0xc3efd1
+      + 00c3efe2 ret 
+      + 00c3efe3 add byte ptr [ebp - 0x48ff3c11], bl
+      + 00c3efe9 out dx, eax
+0x00c42724 (+12 instr.) | 0x00c428b4 (+9 instr.) | remplacement | decalage +0x190
+      - 00c42724 xor al, 0x27
+      - 00c42726 les eax, ptr [eax]
+      - 00c42728 cmp al, 0x27
+      - 00c4272a les eax, ptr [eax]
+      + 00c428b4 les ebp, ptr [eax]
+      + 00c428b6 les eax, ptr [eax]
+      + 00c428b8 int3 
+      + 00c428b9 sub ah, al
+0x00c427d0 (+9 instr.) | 0x00c42960 (+9 instr.) | remplacement | decalage +0x190
+      - 00c427d0 loopne 0xc427f9
+      - 00c427d2 les eax, ptr [eax]
+      - 00c427d4 call 0xf8c4ec00
+      - 00c427d9 daa 
+      + 00c42960 jo 0xc4298b
+      + 00c42962 les eax, ptr [eax]
+      + 00c42964 js 0xc4298f
+      + 00c42966 les eax, ptr [eax]
+0x00c43aed (+53 instr.) | 0x00c43c7d (+52 instr.) | remplacement | decalage +0x190
+      - 00c43aed xor al, ah
+      - 00c43af0 add al, al
+      - 00c43af2 xor al, 0xc4
+      - 00c43af4 add byte ptr [edi + 0x37], ch
+      + 00c43c7d mov esi, 0x5000c433
+      + 00c43c82 les eax, ptr ss:[eax]
+      + 00c43c85 .byte 0xff
+      + 00c43c86 cmp ah, al
+0x00c46ed6 (+50 instr.) | 0x00c47066 (+51 instr.) | remplacement | decalage +0x190
+      - 00c46ed6 insd dword ptr es:[edi], dx
+      - 00c46ed7 push -0x3c
+      - 00c46ed9 add byte ptr [edx + ebp*2 + 0x6a9c00c4], cl
+      - 00c46ee0 les eax, ptr [eax]
+      + 00c47066 std 
+      + 00c47067 imul eax, esp, 0
+      + 00c4706a sbb al, 0x6c
+      + 00c4706c les eax, ptr [eax]
+0x00c47e41 (+11 instr.) | 0x00c47fd1 (+17 instr.) | remplacement | decalage +0x190
+      - 00c47e41 imul edi, dword ptr [ebp - 0x3c], 0xc47d6900
+      - 00c47e48 add byte ptr [edx + 0x7d], dh
+      - 00c47e4b les eax, ptr [eax]
+      - 00c47e4d jb 0xc47ecc
+      + 00c47fd1 stc 
+      + 00c47fd2 jle 0xc47f98
+      + 00c47fd4 add cl, bh
+      + 00c47fd6 jle 0xc47f9c
+0x00c48e92 (+31 instr.) | 0x00c49022 (+35 instr.) | remplacement | decalage +0x190
+      - 00c48e92 test dword ptr [ecx - 0x7635ff3c], ecx
+      - 00c48e98 les eax, ptr [eax]
+      - 00c48e9a ljmp 0:0xc487
+      - 00c48ea1 add byte ptr [eax], al
+      + 00c49022 adc eax, 0x5a00c48b
+      + 00c49027 mov eax, esp
+      + 00c49029 add byte ptr [edx - 0x77], bh
+      + 00c4902c les eax, ptr [eax]
+0x00c48eee (+4 instr.) | 0x00c4907e (+4 instr.) | remplacement | decalage +0x190
+      - 00c48eee lahf 
+      - 00c48eef .byte 0x8d
+      - 00c48ef0 les eax, ptr [eax]
+      - 00c48ef2 and byte ptr [esi - 0x7189ff3c], cl
+      + 00c4907e das 
+      + 00c4907f pop esp
+      + 00c49081 add byte ptr [eax + 0x600c48f], dh
+      + 00c49087 nop 
+0x00c49d95 (+0 instr.) | 0x00c49f25 (+1 instr.) | insertion | decalage +0x190
+      + 00c49f25 int3 
+0x00c4a42a (+7 instr.) | 0x00c4a5bb (+12 instr.) | remplacement | decalage +0x191
+      - 00c4a42a daa 
+      - 00c4a42b mov byte ptr [0xa3dc00c4], al
+      - 00c4a430 les eax, ptr [eax]
+      - 00c4a432 mul dword ptr [ebx - 0x5bf2ff3c]
+      + 00c4a5bb mov eax, 0x6d00c4a3
+      + 00c4a5c0 movsd dword ptr es:[edi], dword ptr [esi]
+      + 00c4a5c1 les eax, ptr [eax]
+      + 00c4a5c3 mov byte ptr [ebp - 0x5a61ff3c], ah
+0x00c4a8ea (+11 instr.) | 0x00c4aa7b (+16 instr.) | remplacement | decalage +0x191
+      - 00c4a8ea jbe 0xc4a894
+      - 00c4a8ec les eax, ptr [eax]
+      - 00c4a8ee jge 0xc4a898
+      - 00c4a8f0 les eax, ptr [eax]
+      + 00c4aa7b pop es
+      + 00c4aa7c stosb byte ptr es:[edi], al
+      + 00c4aa7d les eax, ptr [eax]
+      + 00c4aa7f push cs
+0x00c4b36f (+1 instr.) | 0x00c4b500 (+0 instr.) | suppression | decalage +0x191
+      - 00c4b36f int3 
+0x00c50703 (+14 instr.) | 0x00c50893 (+18 instr.) | remplacement | decalage +0x190
+      - 00c50703 sub al, byte ptr [0x5ab00c5]
+      - 00c50709 lds eax, ptr [eax]
+      - 00c5070b ret 
+      - 00c5070c add eax, 0x60900c5
+      + 00c50893 mov edx, 0x3b00c506
+      + 00c50898 pop es
+      + 00c50899 lds eax, ptr [eax]
+      + 00c5089b push ebx
+0x00c509e7 (+18 instr.) | 0x00c50b77 (+11 instr.) | remplacement | decalage +0x190
+      - 00c509e7 xlatb 
+      - 00c509e8 pop es
+      - 00c509e9 lds eax, ptr [eax]
+      - 00c509eb mov ebp, 0xd500c508
+      + 00c50b77 or ebp, eax
+      + 00c50b7a add byte ptr [ebp + 0xa], cl
+      + 00c50b7d lds eax, ptr [eax]
+      + 00c50b7f or al, ch
+0x00c50cbb (+13 instr.) | 0x00c50e4b (+13 instr.) | remplacement | decalage +0x190
+      - 00c50cbb mov ebx, 0xa100c50a
+      - 00c50cc0 or eax, ebp
+      - 00c50cc2 add byte ptr [ecx - 0xff3af5], bh
+      - 00c50cc8 or eax, ebp
+      + 00c50e4b dec ebx
+      + 00c50e4c or al, 0xc5
+      + 00c50e4e add byte ptr [ecx], dh
+      + 00c50e50 or eax, 0xd4900c5
+0x00c51662 (+14 instr.) | 0x00c517f2 (+9 instr.) | remplacement | decalage +0x190
+      - 00c51662 push ebx
+      - 00c51663 push ss
+      - 00c51664 lds eax, ptr [eax]
+      - 00c51666 dec ecx
+      + 00c517f2 jecxz 0xc5180b
+      + 00c517f4 lds eax, ptr [eax]
+      + 00c517f6 fst dword ptr [edi]
+      + 00c517f8 lds eax, ptr [eax]
+0x00c54da1 (+21 instr.) | 0x00c54f31 (+19 instr.) | remplacement | decalage +0x190
+      - 00c54da1 jbe 0xc54def
+      - 00c54da3 lds eax, ptr [eax]
+      - 00c54da5 mov byte ptr [ebp + eax*8], cl
+      - 00c54da9 xchg ebp, eax
+      + 00c54f31 push es
+      + 00c54f32 dec esi
+      + 00c54f33 lds eax, ptr [eax]
+      + 00c54f35 sbb byte ptr [esi - 0x3b], cl
+0x00c54ec5 (+22 instr.) | 0x00c55055 (+22 instr.) | remplacement | decalage +0x190
+      - 00c54ec5 loope 0xc54f14
+      - 00c54ec7 lds eax, ptr [eax]
+      - 00c54ec9 .byte 0xf0
+      - 00c54eca dec ebp
+      + 00c55055 jno 0xc550a6
+      + 00c55057 lds eax, ptr [eax]
+      + 00c55059 or byte ptr [edi - 0x3b], 0
+      + 00c5505d lea ecx, [edi - 0x3b]
+0x00c58dbf (+7 instr.) | 0x00c58f4f (+3 instr.) | remplacement | decalage +0x190
+      - 00c58dbf popfd 
+      - 00c58dc0 .byte 0x8d
+      - 00c58dc1 lds eax, ptr [eax]
+      - 00c58dc3 cmpsd dword ptr [esi], dword ptr es:[edi]
+      + 00c58f4f sub eax, 0x3700c58f
+      + 00c58f54 pop ebp
+      + 00c58f56 add byte ptr [ecx - 0x71], al
+0x00c58ebd (+8 instr.) | 0x00c5904d (+12 instr.) | remplacement | decalage +0x190
+      - 00c58ebd or byte ptr [esi - 0x7177ff3b], 0xc5
+      - 00c58ec4 add byte ptr [eax - 0x65ff3a72], dl
+      - 00c58eca mov es, ebp
+      - 00c58ecc add byte ptr [eax - 0x59ff3a72], ah
+      + 00c5904d adc byte ptr [eax - 0x6fe7ff3b], dl
+      + 00c59053 lds eax, ptr [eax]
+      + 00c59055 and byte ptr [eax - 0x6fd5ff3b], dl
+      + 00c5905b lds eax, ptr [eax]
+0x00c59646 (+7 instr.) | 0x00c597d6 (+11 instr.) | remplacement | decalage +0x190
+      - 00c59646 aaa 
+      - 00c59647 xchg esi, eax
+      - 00c59648 lds eax, ptr [eax]
+      - 00c5964a sub eax, 0x3200c596
+      + 00c597d6 .byte 0xc7
+      + 00c597d7 xchg edi, eax
+      + 00c597d8 lds eax, ptr [eax]
+      + 00c597da mov ebp, 0xc200c597
+0x00c5ba6a (+10 instr.) | 0x00c5bbfa (+10 instr.) | remplacement | decalage +0x190
+      - 00c5ba6a wait 
+      - 00c5ba6b mov eax, 0xb8e500c5
+      - 00c5ba70 lds eax, ptr [eax]
+      - 00c5ba72 mov eax, 0xb95f00c5
+      + 00c5bbfa sub edi, dword ptr [edx - 0x458aff3b]
+      + 00c5bc00 lds eax, ptr [eax]
+      + 00c5bc02 cmp byte ptr [edx - 0x4510ff3b], 0xc5
+      + 00c5bc09 add byte ptr [ecx - 0x45], dl
+0x00c67e63 (+0 instr.) | 0x00c67ff3 (+1 instr.) | insertion | decalage +0x190
+      + 00c67ff3 int3 
+0x00c6a19f (+1 instr.) | 0x00c6a330 (+0 instr.) | suppression | decalage +0x191
+      - 00c6a19f int3 
+0x00c766c0 (+0 instr.) | 0x00c76850 (+16 instr.) | insertion | decalage +0x190
+      + 00c76850 int3 
+      + 00c76851 int3 
+      + 00c76852 int3 
+      + 00c76853 int3 
+0x00ccff70 (+16 instr.) | 0x00cd0110 (+0 instr.) | suppression | decalage +0x1a0
+      - 00ccff70 int3 
+      - 00ccff71 int3 
+      - 00ccff72 int3 
+      - 00ccff73 int3 
+0x00cd4de0 (+0 instr.) | 0x00cd4f70 (+16 instr.) | insertion | decalage +0x190
+      + 00cd4f70 int3 
+      + 00cd4f71 int3 
+      + 00cd4f72 int3 
+      + 00cd4f73 int3 

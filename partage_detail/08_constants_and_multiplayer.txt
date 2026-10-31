@@ -1,0 +1,97 @@
+constants.txt, "DEV VALUES", THE MOD SYSTEM AND MULTIPLAYER
+==========================================================
+
+
+1. constants.txt
+----------------
+rom_0/scripts/constants.txt holds 308 settings; the engine knows 314. Replace it through a mod as a whole file (content/scripts/constants.txt); for a
+single changed line you still ship the complete file.
+
+How to read the DEFAULT of ANY engine constant, even one absent from the file (method validated against the published constants.txt):
+`c_application_constants::load()` (around 0x1002fa850) is a sequence of 58-byte blocks `lea rsi, <name string>` / `lea rdx, <destination>` /
+`call parse_value_u32|f32`. Scan .text for the RIP-relative reference to the name string, read the following `lea rdx`: the destination is in
+__DATA,__data (file offset = VA - 0x100000000), where the compiled default sits. On a 64-bit build with RIP-relative addressing a small script does it.
+On another build the idea is the same (name string -> code that references it -> destination).
+Hidden constants (known to the engine, not written in the file; adding them to the file WORKS): smoke_launcher_stream_life_min 3600, _life_max 5400
+(ticks), _scale_min 50.0, _scale_max 200.0 (f32), _duration 750, plus cloud_height. The engine knows only 314 constants and the file writes 308:
+there is NO hidden graphics lever. The only perf settings in the file: cloud_count 350, cloud_layer_count 5, cloud_size 550.
+Examples verified in game or in the binary:
+  - item_vehicle_wing_heavy_production_time 300 -> 150: Manta produced twice as fast (works; mapping chassis <-> unit constant: Manta = air_wing_heavy,
+    Albatross = air_wing_light, Seal = wheel_light, Walrus = wheel_medium, Bear = wheel_heavy, Mule = wheel_mule, Razorbill = rotor_light, Petrel =
+    rotor_heavy, Needlefish = ship_light, Swordfish = ship_heavy).
+  - wing_light_fuel_consumption 2, wing_heavy_fuel_consumption 5.
+  - turret_carrier_main_gun_salvo_count 5, turret_carrier_main_gun_capacity 20 (see below).
+  - smoke_launcher_stream_duration 750 ticks = ONE burst (not per ammo unit)
+TRAP (cost several failed attempts): do NOT raise an ammunition CAPACITY constant. In Carrier Command 2 a vehicle can only be deployed with FULL ammunition
+(e_loc_manual_vehicle_loadout_overview_3) and the HUD gauge is a % of the capacity: with capacity 400 and a small stock the gauge is almost empty all the time,
+the consumption looks 16x faster, and the aircraft may refuse to take off waiting for an impossible fill. Give margin through the STOCK, never the capacity.
+Another trap: changing a setting whose exact meaning is unknown (`duration` = length of the burst, not duration per unit: x4 consumption).
+
+What the engine does with the main-gun values (disassembled; symbols present):
+  - c_attachment_server_turret_carrier_main_gun::tick(): on trigger, if no salvo in progress ([this+0x164] == 0), loads [0x164] = salvo_count, then fires one shell
+    every 7 ticks (0x700000007 into [0x158],[0x15c]); at the last shell: get_turret_cooldown_time() (FIXED reload, not proportional to the number of shots).
+    Ammo [this+0x144], decremented per shot; at 0 in the middle of a salvo the salvo is abandoned + set_target_failed. There is NO "magazine full" condition to arm
+    or fire the ship's main gun.
+  - get_ammo_capacity() reads the constant; get_ammo_resupply_interval() = 0x384 = 900 ticks = 30 s per shell (heavy "Bear" gun: 120 ticks).
+    c_attachment_server_turret::tick_resupply: one shell per interval from the given inventory (the ship) while get_count(item) > 0. Item
+    e_inventory_item.ammo_160mm_artillery = 35. set_ammo_remaining clamps to the capacity.
+  - The same attachment definition (20, "NAVAL GUN") equips the Swordfish (79) and some Needlefish (77) of AI island defences and fleets, so they get the same
+    values: the setting is global.
+  - Lua reads neither salvo nor capacity; the only cosmetic defect after a change is the fixed 2x10 shell pictogram in screen_weapons_support.lua (lines ~221-224; number
+    and bar stay right).
+
+"Dev values" (class c_dev_value_server) are NOT in constants.txt: they are compiled in (AI cruise speed, dogfight speed, cruise altitude; see 05).
+
+
+2. THE MOD SYSTEM
+-----------------
+- A mod is a folder with `mod.xml` + `content/` that mirrors rom_0. A mod can replace far more than XML: the accepted extensions are hard-coded in the binary around
+  offset 0x2a4101f: xml, txtr, atlas, glsl, ogg, ttf, csv, anim, lua, txt. So shaders, textures, sounds and fonts are moddable too.
+- A mod replaces the WHOLE file (no merge by element); the last mod loaded wins. Two mods touching the same file conflict (the fix is to merge by hand).
+- Local mods: the game scans `<user data folder>/Carrier Command 2/mods/` (strings in the binary: "LOCAL MODS", e_loc_upp_local_mods, e_loc_no_local_mods_found). A path
+  put by hand in `active_mod_folders` of mods.xml is NOT enough for it to appear in the list. The game never writes local mod paths in mods.xml (active_mod_folders
+  holds only Workshop paths). Seen on Mac (not rigorously verified): a local mod stays enabled only for the session where it was ticked and is OFF again at the next launch; to make it
+  persistent it has to be a Workshop item (even private) one subscribes to.
+- Patch v1.5.18 of 2026-06-26: purely corrective, no new modding capability.
+- Fumigene / stream smoke example: the smoke that blocks the view is drawn by shaders/vision_blocker_smoke.glsl (uniform object_color); effect_smoke_trail.glsl = missile trails.
+  World Y = the altitude in metres shown by the HUD (vehicle_hud.lua passes camera_pos:y() to the altitude tape); sea at y = 0, stall at 2000 m.
+- Attachment slot types (`type` attribute in the chassis XML): t0 small/utility, t1 main turret, t2 aircraft nose, t3 wing pylon, t4 Albatross bay, t6 small slot (Albatross,
+  Petrel). The Manta has only t0/t2/t3 but can carry countermeasures and stream smoke launchers on 2 slots.
+
+
+3. MULTIPLAYER (read in the binary; NOT tested with a second player)
+--------------------------------------------------------------------
+- Joining players receive the modded files of the host automatically. c_mod_downloader_server::build_modded_files_list() walks the whole ROM; is_file_modded() reads the file in
+  mm_file_location slot type 2 AND type 3 and memcmp()s them; if they differ the file goes to the client (c_message_server_to_client_add_modded_file / mod_file_data; the
+  client asks with request_mod_file_download). The only blacklist, set in create(): /locale/lanapixel.ttf and /locale/localization.csv (everyone keeps their own language).
+- So everything that goes through the mod system (XML, constants.txt, Lua, glsl, textures, sounds) reaches the joining players without any install on their side.
+- Very probably type 2 = the base rom_0 and type 3 = the rom with mods on top: settings written DIRECTLY into rom_0 would not look "modded" and would NOT be sent [UNV]. For
+  multiplayer, ship things as a mod.
+- A patch of the executable is never transmitted. But the simulation runs on the host (c_*_server_* classes, e.g. c_attachment_server_turret_carrier_main_gun::tick): a patch of
+  the SERVER logic on the host probably affects everybody; display and HUD stay stock on the others' side [ASM].
+- Executable patches and the Workshop: the Workshop only distributes data files, never the program.
+- The game journal (game_log_*.jsonl, one JSON per line) is written by the program, not by Lua, and has 7 event types only: player_joined, player_left, chat, destroy_vehicle
+  (vehicle_id, vehicle_type, team, attacker_team), island_captured, team_win, team_lose. No position, no weapon, no damage, no player attached to a kill. Team 0 = AI, teams 1 and
+  2 are players in the sessions we looked at; do not hard-code two teams (player team numbers vary between sessions).
+
+
+4. UNIT TYPE NUMBERS (e_game_object_type, vehicle_type in logs; rom_0/scripts/library_enum.lua)
+------------------------------------------------------------------------------------------------
+     0 Carrier           16 Barge
+     2 Seal (light ground)    57 Lifeboat
+     4 Walrus (medium ground) 58 VirusBot
+     6 Bear (heavy ground)    59 Turret
+     8 Albatross (light wing) 64 Jetty / dry dock
+    10 Manta (HEAVY wing)     77 Needlefish (light ship)
+    12 Razorbill (light rotor) 79 Swordfish (heavy ship)
+    14 Petrel (heavy rotor)   88 Mule        97 Droid
+Pitfall: intuition is wrong about Manta and Petrel: the Manta is the heavy AEROPLANE (chassis_air_wing_heavy, mesh manta_plane), the Petrel is the heavy HELICOPTER
+(chassis_air_rotor_heavy, mesh largehelicopter, the one that does the airlift). Names for display: rom_0/locale/localization.csv (9 languages).
+
+
+5. SAVED STATE (format only)
+----------------------------
+The saved-game files are XML with SEVERAL roots (`meta`, `scene`, `vehicles`, `missiles`): wrap them before parsing. `<scene logic_tick=...>` has the game tick; `<vehicles>`
+holds `<v id definition_index team_id>`; vehicle_states hold dock_state; `<vehicles ... is_invulnerable is_infinite_ammo is_infinite_fuel>` are global cheat flags (one occurrence). The
+facility inventory (per island) lives at scene/tiles/tiles/t/facility/inventory/quantities/<q i=".." q="..">. A new game's starting stock is generated by the engine (no moddable file).
+The names of the saved fields come from the same parse_state_xml / get_state_data functions that are the best way to name members of structures (01, section 6).

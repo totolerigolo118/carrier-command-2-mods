@@ -1,0 +1,88 @@
+AI AIRCRAFT SPEED, ENGINES AND FUEL
+===================================
+
+Question that started it: AI-controlled Albatross and Manta "crawl at 50 % throttle". Answer found in the program: they have a hard
+FLOOR speed, and the setting that looks like it controls this is never read.
+
+MEASURED IN GAME (2026-10-25, headless session, 30 ticks per second, stock modes = ECO): an Albatross and a Manta sent to a waypoint 20 km away
+both cruise at about 120 m/s (120.1 and 121.7 m/s over 20 s), NOT at the 48 / 72 m/s floors. The throttle law below explains it: the target speed is
+T = S + a x (120 - S) with a = clamp((distance - 20) / 780, 0, ...), so beyond ~800 m from the waypoint a = 1 and T = 120 whatever the floor S is. THE FLOORS ONLY
+MATTER CLOSE TO THE WAYPOINT (loitering, escorting, final approach), which is where aircraft really "crawl". Consequence: the ECO / NORMAL / FLANK floors
+change the speed near the waypoint, but they do NOT change the cruise speed of a long transit (a floor above 120 even makes the speed DROP toward 120 with
+distance). To change transit speed, the literal 120 of the throttle law would have to be changed as well (not done). The in-flight test near a waypoint
+(modes ECO / NORMAL / FLANK) was started and then stopped; it has not been completed. (The two test aircraft were shot down by enemy defences after ~10 km.)
+
+
+1. WHAT FIXES THE SPEED
+-----------------------
+- "Dev values" of the server (class c_dev_value_server, constructor c_dev_value_server::c_dev_value_server()), NOT constants.txt:
+    vehicle_ai_wing_cruise_speed         = 120   (imm movl $0x42f00000 at 0x1000b17e9)
+    vehicle_ai_wing_dogfight_target_speed = 160  (0x1000b16db)
+    vehicle_ai_wing_cruise_altitude      = 200   (0x1000b17c4)
+    helicopters have their own set: vehicle_ai_rotor_*
+  They are read through `get_table()` + 0x98 + offset in c_dev_value_server (value = name + 8). `vehicle_ai_wing_cruise_speed` (+0xec0) and
+  `_cruise_altitude` (+0xe98) are NEVER read on the server side: only the client copy used by the intro cinematic. Changing them does nothing.
+- c_vehicle_server_wing::tick_control (0x1001c26c0). control_mode (vehicle +0x2a0): 0 = waypoints, 3 = setpoint imposed by the ship (the
+  landing pattern: this block is skipped), 1 = other.
+- Mode 0: get_waypoint_position_direction_speed (0x1001b78aa) returns a speed (0 in normal flight; the speed of the followed object if any), then:
+    0x1001c2b52  maxss [0x102869af0]   (48.0, floor of ALL aircraft)    bytes f3 0f 5f 0d 96 6f 6a 02
+    0x1001c2b5a  minss [0x102869b2c]   (144.0, cap)
+    0x1001c2b62  movss %xmm1, 0x2c8(%r13)   (target speed)
+    0x1001c2b6b  cmpl $0xa, 0x90(%r13)     (type 10 = chassis_air_wing_heavy = Manta)
+    0x1001c2b75  maxss [0x102869b30]   (72.0, Manta floor)             bytes f3 0f 5f 05 b3 6f 6a 02
+    0x1001c2b7d  minss [0x102869b2c]   (144.0)
+    0x1001c2b85  movss %xmm0, 0x2c8(%r13)
+  In normal flight the AI requests NO speed (0) and the program lifts the 0 to the floor: Albatross 48 m/s (173 km/h), Manta 72 m/s (259 km/h);
+  common cap 144 m/s. In dogfight the AI already aims at 160 (block 0x1001c6b62: same formula with
+  vehicle_ai_wing_dogfight_target_speed): nothing to change. In the landing pattern the speed is imposed at 80 m/s by the ship.
+- Throttle (normal flight, 0x1001c5da0 ... 0x1001c5de7): T = S + a x (120 - S) with S = 0x2c8 + a correction bounded to -10/+40 and
+  a = clamp((horizontal distance to the target point - 20) / 780, 0, ...); then throttle (0x3f4) += vehicle_ai_wing_throttle_stiffness x
+  ((T - v)/120 - dv). The upper bound of `a` is a reused register and was not identified. Observation of the player: ~50 % throttle at both floors,
+  so the AI stays at the floor [EST].
+- Commands (0x3e8 pitch, 0x3ec, 0x3f0, 0x3f4 throttle) x 0x2cc are clamped every tick (0x1001c5e3f: min (-1,-1,-1,0), max (1,1,1,1)): the throttle stays
+  in [0,1], so aiming at 144 = full throttle with no wind-up when it has to slow down afterwards.
+- Existing constants for a rip redirect: 60 0x102869a44, 64 0x102869aa4, 72 0x102869b30, 80 0x102869900, 96 0x102869c0c, 100 0x1028697ac,
+  120 0x1028697b8, 144 0x102869b2c, 150 0x1028698b8, 160 0x102869a90.
+- The same floor applies to ENEMY AI aircraft (same code) unless the team is tested.
+
+
+2. ENGINES, FUEL
+----------------
+- Engine: tick_force_emitter (0x1001a7aa2): the real level follows the demand at 0.05 per tick (vehicle_control_force_emitter_speed); force = 10 x
+  magnitude x level. Engine power: Albatross 50, Manta 100 (twice, same mass 1 t).
+- Fuel: c_vehicle_server_base::tick (the function starts at 0x100193768; the fuel code is at 0x100193a3c ... 0x100193aaa) burns max(|demand of the engines|) x get_fuel_consumption_rate x
+  fuel_consumption_multiplier (0.008) per tick. constants.txt: wing_light_fuel_consumption 2, wing_heavy_fuel_consumption 5. Tanks 800 (Albatross) and 1200
+  (Manta), +1000 per extra tank. So fuel use is proportional to engine power.
+- AI teams do not consume fuel (team +0x19 is_ai_controlled) [ASM].
+
+ESTIMATES (SUPERSEDED by the measurement above: cruise is ~120 m/s, so the "full throttle" speeds below are far too low; kept only as history) [EST]:
+                          stock (~50 %)        ~80 %               full throttle
+    Albatross speed       48 m/s (173 km/h)    ~61 m/s (220 km/h)  ~68 m/s (245 km/h)
+    Manta speed           72 m/s (259 km/h)    ~91 m/s (328 km/h)  ~102 m/s (367 km/h)
+    Albatross endurance   ~55 min              ~35 min             ~28 min
+    Manta endurance       ~33 min              ~21 min             ~17 min
+    distance on one fill  100 %                ~80 %               ~70 %
+  i.e. +27 % speed at 80 % and +41 % at full throttle; full throttle is SURE (aim at 144, which the aircraft cannot reach, the throttle sits at max),
+  the "80 %" level needs a target speed to be tuned in game.
+
+
+3. THE PATCH (module vitesse_escadrille, with the Lua bar vitesse_boutons)
+--------------------------------------------------------------------------
+Design chosen by the player: one mode for the whole squadron, three buttons ECO / NORMAL / FLANK shown at the bottom right of the vehicle control
+screens (Lua), enemy AI teams unchanged.
+- ECO = stock (48 / 72). NORMAL = 61 / 91 m/s (estimate of ~80 % throttle). FLANK = 144 (full throttle).
+- Program side (cave of 671 bytes, source workshop/outil/generateurs/vitesse_escadrille.c): the hook at 0x1001c2b4b in tick_control replaces the whole
+  `maxss/minss` block with the floor chosen from a per-team table of modes (16 bytes in the zero tail of an ImGui demo buffer, 0x1029e5680...);
+  a team that is AI-controlled, has no mode or an unknown mode gets the stock floors; xmm0/xmm1 and the 0x2c8 slot end exactly as in the stock code.
+  The aircraft's team: vehicle +0x260 -> team object, +0x14 = team number.
+- Lua -> program channel: first design = a message through print() intercepted by the program (two-way, repeated every few seconds so nothing is lost on load).
+  Final design (simpler): a NEW Lua function `cc2_vitesse(team [, mode])` that takes the place of the unused `dofile` in base_funcs (16-byte data patch,
+  see 01 section 3). `cc2_vitesse(team)` returns the team's mode (0 = not chosen yet); `cc2_vitesse(team, mode)` sets it (1 ECO, 2 NORMAL, 3 FLANK) and returns it.
+  The last mode is kept in a small text file next to the saved games and read at the first call.
+- Lua side (workshop/fichiers/vitesse_boutons/library_custom_6.lua): the bar is drawn on screen_veh_l/m/r/ll and the tacops_*_control screens of the replacement mod, in the lower right
+  corner (the map scale also lives there: y ~ h - 30 ... h - 16); clicks on the bar are not forwarded to the map; first time NORMAL.
+  Without the program module nothing is displayed.
+- Tests: logic of the 120 speed cases run under Rosetta (workshop/tests/test_vitesse_escadrille.py); the Lua bar outside the game (lupa).
+- In-game check still pending at the time of writing: same save, one Albatross sent to a far point in ECO then FLANK, time with the game clock and fuel
+  gauge, then tune NORMAL.
+- Multiplayer: simulation runs on the host; the mode only works for the host's own team [ASM].

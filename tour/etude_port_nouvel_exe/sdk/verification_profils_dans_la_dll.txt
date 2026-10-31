@@ -1,0 +1,36 @@
+Relecture des profils DANS la DLL compilee C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist/dinput8.dll (rien charge, rien lance)
+
+2 enregistrement(s) Profile trouve(s) :
+  build '1.5.18-win32' PE 0x6a36c177 taille 0x00af7000 vtable 0x00d34bc4 init/tick/end 0x00772fd0 0x0077ee10 0x0077eea0 site 0x004465ec fonctions 0x008cda70 0x008ce200 0x008ff6b0 0x00908220 0x00904a50 0x00904050 nilobject 0x00d03518
+  build '1.5.18-win32-6ae228f3' PE 0x6ae228f3 taille 0x00af7000 vtable 0x00d34bfc init/tick/end 0x007730c0 0x0077ef00 0x0077ef90 site 0x004465ec fonctions 0x008cdbc0 0x008ce350 0x008ff820 0x009083a0 0x00904bc0 0x009041c0 nilobject 0x00d03530
+profil ANCIEN identique a la source d'origine (tous champs) : OUI
+
+Layouts (world.c) trouves : 1.5.18-win32, 1.5.18-win32-6ae228f3
+Layout ANCIEN identique a la source d'origine (17 adresses) : OUI
+valeurs du profil et du layout NOUVEAUX lues dans la DLL = valeurs trouvees dans le nouvel exe (profil_sdk.py) : OUI (6 champs + 6 fonctions Lua + 17 adresses du layout)
+
+--- simulation de startup() sur les octets de chaque exe (le profil choisi = celui dont detect() reussit)
+carrier_command_ancien_original_1C9A01C3.exe | profil '1.5.18-win32' : ACCEPTE (LUA_SIGS 111111, site Lua OK, cellules de la table OK (relocalisees oui))
+      Layout '1.5.18-win32' : octets des crochets OK, 8 debuts de fonctions OK
+carrier_command_ancien_original_1C9A01C3.exe | profil '1.5.18-win32-6ae228f3' : refuse (detect: horodatage 0x6a36c177 / taille 0x00af7000 != 0x6ae228f3 / 0x00af7000)
+  => carrier_command_ancien_original_1C9A01C3.exe : profil(s) accepte(s) : ['1.5.18-win32']
+carrier_command_nouveau_steam_461E1262.exe | profil '1.5.18-win32' : refuse (detect: horodatage 0x6ae228f3 / taille 0x00af7000 != 0x6a36c177 / 0x00af7000)
+carrier_command_nouveau_steam_461E1262.exe | profil '1.5.18-win32-6ae228f3' : ACCEPTE (LUA_SIGS 111111, site Lua OK, cellules de la table OK (relocalisees oui))
+      Layout '1.5.18-win32-6ae228f3' : octets des crochets OK, 8 debuts de fonctions OK
+  => carrier_command_nouveau_steam_461E1262.exe : profil(s) accepte(s) : ['1.5.18-win32-6ae228f3']
+carrier_command_nouveau_patche_ascenseur_temps.exe | profil '1.5.18-win32' : refuse (detect: horodatage 0x6ae228f3 / taille 0x00af7000 != 0x6a36c177 / 0x00af7000)
+carrier_command_nouveau_patche_ascenseur_temps.exe | profil '1.5.18-win32-6ae228f3' : ACCEPTE (LUA_SIGS 111111, site Lua OK, cellules de la table OK (relocalisees oui))
+      Layout '1.5.18-win32-6ae228f3' : octets des crochets OK, 8 debuts de fonctions OK
+  => carrier_command_nouveau_patche_ascenseur_temps.exe : profil(s) accepte(s) : ['1.5.18-win32-6ae228f3']
+carrier_command_vr.exe | profil '1.5.18-win32' : refuse (detect: horodatage 0x6ae2287f / taille 0x00b05000 != 0x6a36c177 / 0x00af7000)
+carrier_command_vr.exe | profil '1.5.18-win32-6ae228f3' : refuse (detect: horodatage 0x6ae2287f / taille 0x00b05000 != 0x6ae228f3 / 0x00af7000)
+  => carrier_command_vr.exe : profil(s) accepte(s) : AUCUN (le SDK resterait inactif)
+dedicated_server.exe | profil '1.5.18-win32' : refuse (detect: horodatage 0x6ae22909 / taille 0x00653000 != 0x6a36c177 / 0x00af7000)
+dedicated_server.exe | profil '1.5.18-win32-6ae228f3' : refuse (detect: horodatage 0x6ae22909 / taille 0x00653000 != 0x6ae228f3 / 0x00af7000)
+  => dedicated_server.exe : profil(s) accepte(s) : AUCUN (le SDK resterait inactif)
+carrier_command_ancien_8E7FCBB6.exe | profil '1.5.18-win32' : ACCEPTE (LUA_SIGS 111111, site Lua OK, cellules de la table OK (relocalisees oui))
+      Layout '1.5.18-win32' : octets des crochets OK, 8 debuts de fonctions OK
+carrier_command_ancien_8E7FCBB6.exe | profil '1.5.18-win32-6ae228f3' : refuse (detect: horodatage 0x6a36c177 / taille 0x00af7000 != 0x6ae228f3 / 0x00af7000)
+  => carrier_command_ancien_8E7FCBB6.exe : profil(s) accepte(s) : ['1.5.18-win32']
+
+Aucun probleme.

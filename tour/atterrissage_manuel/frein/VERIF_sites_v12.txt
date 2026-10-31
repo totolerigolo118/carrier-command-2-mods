@@ -1,0 +1,34 @@
+====================================================================================================
+C:/Users/UTILISATEUR/Documents/cc2-patchs/tour/sauvegardes/carrier_command_1.5.18_original.exe : horodatage PE 0x6a36c177 -> ancien exe 1.5.18-win32
+  H1                                            0x7018ce  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H2                                            0x701a3d  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H3 (lecture seule)                            0x6ff0fb  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde A/B (lecture seule)                     0x6febda  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C/D (lecture seule)                     0x6febe7  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde E (lecture seule)                       0x6febc0  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C passee (lecture seule)                0x6fe788  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H5                                            0x6fe470  7 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde de la prise en charge (lecture seule)   0x6ff379  9 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  cible de H2                                   0x701a8a  push dword ptr [ebp - 0x204]  -> OK
+  cible de H5 (test de toucher)                 0x6ff20a  movss xmm2, dword ptr [ebp - 0x2e4]  -> OK
+  registres vivants a la cible de H5 (0x6ff20a) : ebx, edi, esi
+    -> H5 fournit edi (gestionnaire) et esi (navire) ; ebx = pile d'origine de la fonction, constant ; autres : aucun
+  pushes en attente juste avant H5 : 0 (0 = meme profondeur de pile que la cible)
+  BILAN ancien exe 1.5.18-win32 : TOUT EST SUR
+====================================================================================================
+C:/Users/UTILISATEUR/Documents/cc2-port-travail/carrier_command_nouveau_steam_461E1262.exe : horodatage PE 0x6ae228f3 -> nouvel exe 1.5.18-win32-6ae228f3
+  H1                                            0x7019de  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H2                                            0x701b4d  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H3 (lecture seule)                            0x6ff20b  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde A/B (lecture seule)                     0x6fecea  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C/D (lecture seule)                     0x6fecf7  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde E (lecture seule)                       0x6fecd0  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C passee (lecture seule)                0x6fe898  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H5                                            0x6fe580  7 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde de la prise en charge (lecture seule)   0x6ff489  9 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  cible de H2                                   0x701b9a  push dword ptr [ebp - 0x204]  -> OK
+  cible de H5 (test de toucher)                 0x6ff31a  movss xmm2, dword ptr [ebp - 0x2e4]  -> OK
+  registres vivants a la cible de H5 (0x6ff31a) : ebx, edi, esi
+    -> H5 fournit edi (gestionnaire) et esi (navire) ; ebx = pile d'origine de la fonction, constant ; autres : aucun
+  pushes en attente juste avant H5 : 0 (0 = meme profondeur de pile que la cible)
+  BILAN nouvel exe 1.5.18-win32-6ae228f3 : TOUT EST SUR

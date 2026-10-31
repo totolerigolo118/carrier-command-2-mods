@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onglet SPEED : 6 variantes</title>
+<style>
+:root { --fond: #07090a; --carte: #0e1213; --bord: #1f2a2b; --texte: #d8e4e4; --doux: #8fa3a3; --cyan: #10ffff; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fond); color: var(--texte); font: 15px/1.45 -apple-system, "Segoe UI", "Helvetica Neue", sans-serif; padding: 24px 16px 40px; }
+.page { max-width: 1240px; margin: 0 auto; }
+h1 { color: var(--cyan); font-size: 26px; margin: 0 0 6px; font-weight: 600; }
+.intro { color: var(--doux); max-width: 880px; margin: 0 0 14px; }
+.outils { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 0 0 22px; padding: 12px 14px; background: var(--carte); border: 1px solid var(--bord); border-radius: 10px; }
+.outils .groupe { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.outils .titre { color: var(--doux); font-size: 13.5px; }
+.outils button { background: #040c0c; color: var(--texte); border: 1px solid #3f3f3f; border-radius: 6px; padding: 6px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+.outils button.on { border-color: var(--cyan); color: var(--cyan); }
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+.var { background: var(--carte); border: 1px solid var(--bord); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.tete { display: flex; align-items: baseline; gap: 10px; }
+.num { font-size: 32px; color: var(--cyan); line-height: 1; min-width: 26px; font-weight: 700; }
+.nom { font-size: 17px; font-weight: 600; }
+svg { width: 100%; max-width: 420px; height: auto; display: block; margin: 0 auto; background: #000; border-radius: 4px; user-select: none;
+      font-family: ui-monospace, "Cascadia Mono", "Courier New", monospace; font-weight: 700; }
+svg .b { cursor: pointer; }
+svg .b:hover rect { stroke: #fff; }
+.conseil { font-size: 13.5px; color: var(--doux); }
+.conseil div { margin: 3px 0; }
+.plus { color: #7fe0a8; } .moins { color: #ff9a8a; }
+.note { margin-top: 22px; font-size: 13.5px; color: var(--doux); max-width: 880px; }
+.note b { color: var(--texte); }
+</style>
+</head>
+<body>
+<div class="page">
+<h1>L'onglet SPEED : 6 variantes</h1>
+<p class="intro">Même emplacement pour toutes : <b>sous la fenêtre LOADOUT</b> (à droite du panneau d'un avion), là où le jeu laisse de la place.
+On ne voit ici que la moitié droite de l'écran, agrandie. <b>Clique</b> dans les dessins pour changer de mode ; <b>change les couleurs et les mots</b>
+avec les boutons ci-dessous (ça s'applique aux 6 dessins). Rien ne commande un vrai avion.</p>
+
+<div class="outils">
+  <div class="groupe"><span class="titre">Couleurs</span><span id="b-pal"></span></div>
+  <div class="groupe"><span class="titre">Mots</span><span id="b-mots"></span></div>
+  <div class="groupe"><span class="titre">Autonomie estimée</span><span id="b-auto"></span></div>
+</div>
+
+<div class="grille" id="grille"></div>
+
+<p class="note"><b>Réponds avec :</b> le numéro de la variante (1 à 6), la lettre des couleurs (A, B ou C) et celle des mots (A, B ou C).
+Les durées d'autonomie sont des <b>exemples inventés</b> (les vrais chiffres viendront des mesures de l'étape 0). Le point fort « manette » :
+seules les variantes 2 et 6 se règlent avec gauche / droite ; les autres demandent de viser (souris) ou de descendre dans la liste.</p>
+</div>
+
+<script>
+const PAL = {
+  A: { nom: 'Vert · cyan · orange', c: ['#10ff7f', '#10ffff', '#ffb020'] },
+  B: { nom: 'Bleu · blanc · rouge', c: ['#4aa8ff', '#e8f0f0', '#ff5a4a'] },
+  C: { nom: 'Gris · cyan · magenta', c: ['#9aa8a8', '#10ffff', '#ff40d0'] },
+};
+const MOTS = {
+  A: { nom: 'ECO / NORMAL / FLANK', m: ['ECO', 'NORMAL', 'FLANK'], e: ['E', 'N', 'F'] },
+  B: { nom: 'ÉCO / NORMAL / MAX', m: ['ÉCO', 'NORMAL', 'MAX'], e: ['É', 'N', 'M'] },
+  C: { nom: 'LENT / NORMAL / RAPIDE', m: ['LENT', 'NORMAL', 'RAPIDE'], e: ['L', 'N', 'R'] },
+};
+const AUTO = [38, 21, 14];   // minutes, exemple inventé (Albatros)
+const ETAT = { pal: 'A', mots: 'A', auto: true, v: [1, 1, 1, 1, 1, 1] };
+
+const X0 = 172, Y0 = 99, W = 74;          // fenêtre SPEED : sous LOADOUT (x 172, largeur 74)
+const col = i => PAL[ETAT.pal].c[i];
+const mot = i => MOTS[ETAT.mots].m[i];
+const lettre = i => MOTS[ETAT.mots].e[i];
+
+function t(x, y, s, fill, anchor, size) {
+  return `<text x="${x}" y="${y}" fill="${fill || '#d8e4e4'}" text-anchor="${anchor || 'start'}" font-size="${size || 7}">${s}</text>`;
+}
+function r(x, y, w, h, fill, stroke) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${stroke ? `stroke="${stroke}" stroke-width="1"` : ''}/>`;
+}
+function fenetre(x, y, w, h, titre, actif) {
+  const c = actif ? '#1a7a7a' : '#12393b';
+  return r(x, y, w, h, '#050b0c', c) + r(x, y, w, 11, c) + t(x + w / 2, y + 8, titre, '#d8ffff', 'middle', 7);
+}
+function bouton(x, y, w, h, texte, actif, couleur, act, taille) {
+  return `<g class="b" data-a="${act}">` +
+    (actif ? r(x, y, w, h, couleur) : r(x, y, w, h, '#040c0c', '#3f3f3f')) +
+    t(x + w / 2, y + h / 2 + 2.6, texte, actif ? '#000' : '#bccccc', 'middle', taille || 7) + `</g>`;
+}
+function autonomie(x, y, i) {
+  if (!ETAT.auto) return '';
+  return t(x, y, 'AUTONOMIE ~' + AUTO[i] + ' min*', '#8fa3a3', 'start', 5.5);
+}
+
+/* décor commun : le panneau d'un avion, moitié droite */
+function decor(v) {
+  let s = r(0, 0, 256, 256, '#030708');
+  s += fenetre(10, 10, 157, 125, 'STATUS', true);
+  s += t(16, 30, 'HP', '#8fa3a3') + t(161, 30, '40/40', '#d8e4e4', 'end');
+  s += t(16, 42, 'FUEL', '#8fa3a3') + t(161, 42, '63%', '#10ff7f', 'end');
+  s += t(16, 54, 'AMMO', '#8fa3a3') + t(161, 54, '100%', '#10ff7f', 'end');
+  s += t(16, 70, 'ACTIONS', '#1a9a9a');
+  s += t(16, 84, '[x] Hold fire', '#8fa3a3') + t(16, 96, '[ ] Low light', '#8fa3a3') + t(16, 108, 'Center on vehicle', '#8fa3a3') + t(16, 120, 'Camera', '#8fa3a3');
+  s += fenetre(172, 10, 74, 84, 'LOADOUT', false);
+  s += r(178, 24, 26, 20, '#0d1a1c', '#2a4a4a') + r(210, 24, 26, 20, '#0d1a1c', '#2a4a4a') + r(178, 50, 26, 20, '#0d1a1c', '#2a4a4a') + r(210, 50, 26, 20, '#0d1a1c', '#2a4a4a');
+  return s;
+}
+
+/* ---- les 6 variantes : chacune dessine la fenêtre SPEED à partir de x = 172, y = 99 ---- */
+const VARIANTES = [
+  { nom: 'Liste de trois boutons', pour: 'Comme les autres listes du jeu : une ligne par mode, celle du mode actif allumée.',
+    plus: 'simple, cohérent avec le jeu, cible de 70 × 12', moins: 'la plus haute des variantes (occupe 60 unités)',
+    dessin(v) {
+      let s = fenetre(X0, Y0, W, 68, 'SPEED', true);
+      for (let i = 0; i < 3; i++) s += bouton(X0 + 2, Y0 + 14 + i * 14, W - 4, 12, mot(i), v === i, col(i), `${this.id}:${i}`);
+      s += autonomie(X0 + 4, Y0 + 63, v);
+      return s;
+    } },
+  { nom: 'Un seul bouton qui tourne', pour: 'Un clic fait passer au mode suivant (ECO → NORMAL → FLANK → ECO). La manette : un appui sur A.',
+    plus: 'très peu de place (30 unités), bouton large', moins: 'il faut cliquer parfois deux fois pour arriver au mode voulu',
+    dessin(v) {
+      let s = fenetre(X0, Y0, W, 40, 'SPEED', true);
+      s += bouton(X0 + 2, Y0 + 14, W - 4, 14, mot(v) + '  ›', true, col(v), `${this.id}:+`, 8);
+      s += autonomie(X0 + 4, Y0 + 36, v);
+      return s;
+    } },
+  { nom: 'Trois cases côte à côte', pour: 'Trois grosses lettres sur une ligne ; le nom complet du mode actif s\'écrit dessous.',
+    plus: 'compact (46 unités), on voit les trois choix d\'un coup', moins: 'cases de 22 × 16 : un peu plus petites à viser',
+    dessin(v) {
+      let s = fenetre(X0, Y0, W, 52, 'SPEED', true);
+      for (let i = 0; i < 3; i++) s += bouton(X0 + 3 + i * 23, Y0 + 14, 22, 16, lettre(i), v === i, col(i), `${this.id}:${i}`, 9);
+      s += t(X0 + W / 2, Y0 + 38, mot(v), col(v), 'middle', 8);
+      s += autonomie(X0 + 4, Y0 + 47, v);
+      return s;
+    } },
+  { nom: 'Curseur à trois crans', pour: 'Une barre avec trois crans ; un clic sur un cran y place le curseur (comme un réglage de volume).',
+    plus: 'on comprend tout de suite que c\'est « lent ↔ rapide »', moins: 'cible fine (barre de 6) sauf si l\'on clique à côté des crans',
+    dessin(v) {
+      let s = fenetre(X0, Y0, W, 52, 'SPEED', true);
+      s += r(X0 + 14, Y0 + 22, W - 28, 2, '#2a4a4a');
+      for (let i = 0; i < 3; i++) {
+        const cx = X0 + 14 + i * (W - 28) / 2;
+        s += `<g class="b" data-a="${this.id}:${i}">${r(cx - 11, Y0 + 14, 22, 20, 'transparent')}` +
+             `<circle cx="${cx}" cy="${Y0 + 23}" r="${v === i ? 5 : 3}" fill="${v === i ? col(i) : '#3f6a6a'}"/></g>`;
+        s += t(cx, Y0 + 36, mot(i), v === i ? col(i) : '#6f8a8a', 'middle', 5.5);
+      }
+      s += autonomie(X0 + 4, Y0 + 47, v);
+      return s;
+    } },
+  { nom: 'Gros boutons avec explication', pour: 'Chaque bouton porte le nom du mode et une courte phrase (« moins de gaz », « comme d\'habitude », « tout à fond »).',
+    plus: 'on sait ce que fait chaque mode sans rien lire d\'autre', moins: 'la plus encombrante (96 unités) ; texte tout petit',
+    dessin(v) {
+      const expl = ['moins de gaz', 'comme le jeu', 'gaz à fond'];
+      let s = fenetre(X0, Y0, W, 96, 'SPEED', true);
+      for (let i = 0; i < 3; i++) {
+        const y = Y0 + 14 + i * 24;
+        s += bouton(X0 + 2, y, W - 4, 22, '', v === i, col(i), `${this.id}:${i}`);
+        s += t(X0 + W / 2, y + 9, mot(i), v === i ? '#000' : '#d8e4e4', 'middle', 8);
+        s += t(X0 + W / 2, y + 17, expl[i], v === i ? '#000' : '#8fa3a3', 'middle', 5.5);
+      }
+      s += autonomie(X0 + 4, Y0 + 91, v);
+      return s;
+    } },
+  { nom: 'Flèches ‹ MODE ›', pour: 'Deux flèches de part et d\'autre du nom : gauche / droite change de mode, à la souris comme à la manette.',
+    plus: 'le seul vraiment naturel à la manette ; le plus compact avec la 2', moins: 'flèches de 14 × 14 : cibles moyennes ; un seul mode visible',
+    dessin(v) {
+      let s = fenetre(X0, Y0, W, 52, 'SPEED', true);
+      s += bouton(X0 + 2, Y0 + 14, 14, 14, '‹', false, '#fff', `${this.id}:-`, 10);
+      s += r(X0 + 18, Y0 + 14, W - 36, 14, col(v)) + t(X0 + W / 2, Y0 + 24, mot(v), '#000', 'middle', 8);
+      s += bouton(X0 + W - 16, Y0 + 14, 14, 14, '›', false, '#fff', `${this.id}:+`, 10);
+      for (let i = 0; i < 3; i++) s += r(X0 + 18 + i * ((W - 36) / 3), Y0 + 31, (W - 36) / 3 - 1, 3, v === i ? col(i) : '#1c2c2c');
+      s += autonomie(X0 + 4, Y0 + 47, v);
+      return s;
+    } },
+];
+VARIANTES.forEach((v, i) => v.id = 'v' + (i + 1));
+
+function dessiner() {
+  const g = document.getElementById('grille');
+  g.innerHTML = VARIANTES.map((vr, i) => {
+    const v = ETAT.v[i];
+    return `<section class="var"><div class="tete"><span class="num">${i + 1}</span><span class="nom">${vr.nom}</span></div>
+      <svg viewBox="104 0 152 204" aria-label="Variante ${i + 1}">${decor(v)}${vr.dessin(v)}</svg>
+      <div class="conseil"><div>${vr.pour}</div><div class="plus">+ ${vr.plus}</div><div class="moins">− ${vr.moins}</div></div></section>`;
+  }).join('');
+}
+
+function boutons() {
+  const b = (id, tab, cle, noms) => {
+    document.getElementById(id).innerHTML = Object.keys(tab).map(k =>
+      `<button data-o="${cle}:${k}" class="${ETAT[cle] === k ? 'on' : ''}">${k} · ${noms(tab[k])}</button>`).join(' ');
+  };
+  b('b-pal', PAL, 'pal', p => p.nom);
+  b('b-mots', MOTS, 'mots', m => m.nom);
+  document.getElementById('b-auto').innerHTML =
+    `<button data-o="auto:1" class="${ETAT.auto ? 'on' : ''}">montrée</button> <button data-o="auto:0" class="${ETAT.auto ? '' : 'on'}">cachée</button>`;
+}
+
+document.addEventListener('click', e => {
+  const o = e.target.closest('[data-o]');
+  if (o) {
+    const [cle, val] = o.dataset.o.split(':');
+    ETAT[cle] = cle === 'auto' ? val === '1' : val;
+    boutons(); dessiner(); return;
+  }
+  const a = e.target.closest('[data-a]');
+  if (!a) return;
+  const [id, arg] = a.dataset.a.split(':');
+  const i = parseInt(id.slice(1), 10) - 1;
+  if (arg === '+') ETAT.v[i] = (ETAT.v[i] + 1) % 3;
+  else if (arg === '-') ETAT.v[i] = (ETAT.v[i] + 2) % 3;
+  else ETAT.v[i] = parseInt(arg, 10);
+  dessiner();
+});
+boutons(); dessiner();
+</script>
+</body>
+</html>

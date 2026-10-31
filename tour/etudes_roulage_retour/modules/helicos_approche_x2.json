@@ -1,0 +1,26 @@
+{
+ "nom": "helicos_approche_x2",
+ "description": "approche des helicos x2 : le point vise est 100 m devant l'helico au lieu de 50 m (1 lecture redirigee)",
+ "avertissement": "Les helicos qui reviennent s'approchent environ 2 fois plus vite (visee a 100 m au lieu de 50 m). Les avions ne sont pas touches (la partie est reservee aux helicos, apres le test get_is_rotor). Valide sur le Mac avec le toucher pres de l'ascenseur ; SEUL, jamais vu. Jamais vu en jeu sur Windows avant la premiere mesure.",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11353600,
+  "horodatage_pe": "0x6a36c177",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "1C9A01C3007CB2BEC2A04D716812CF9F24C87EFA11056395C89DDD7D2C341026",
+ "sha256_patche": "FE81593C3E0C9AD2ADF147EC75B3902709858872CCC2D545B1FE8A51C13E3AC9",
+ "nb_changements": 1,
+ "changements": [
+  {
+   "va": 7332279,
+   "offset": 3134903,
+   "avant": "b879db00",
+   "apres": "e079db00",
+   "role": "partie helico de l'etat 3 (apres `call [vtable+0x4c]` / `test al,al` / `je 0x6fe436`) : `addss xmm2,[50.0]` (z vise = z + 50) -> `[100.0]`",
+   "reglage": "HELI_APPROACH_AIM_AHEAD_M",
+   "constante_va": 14383584
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aperçu barre vitesse</title>
+<style>
+@font-face { font-family: "LanaPixel"; src: local("LanaPixel"); }
+body { margin: 0; background: #07090a; color: #d8e4e4; font: 15px/1.45 -apple-system, "Helvetica Neue", sans-serif; padding: 24px 16px 40px; }
+.page { max-width: 1180px; margin: 0 auto; }
+h1 { font-family: "LanaPixel", monospace; font-weight: normal; color: #10ffff; font-size: 26px; margin: 0 0 6px; }
+p { color: #8fa3a3; max-width: 900px; }
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+.var { background: #0e1213; border: 1px solid #1f2a2b; border-radius: 10px; padding: 12px; }
+.var h2 { font-size: 16px; margin: 0 0 8px; font-weight: 600; }
+canvas { width: 100%; max-width: 512px; aspect-ratio: 1/1; image-rendering: pixelated; background: #000; border-radius: 4px; display: block; }
+</style></head><body><div class="page">
+<h1>Aperçu de la barre (calculé hors jeu)</h1>
+<p>Les rectangles et textes de la barre et de l'horloge sont exactement ceux que le script envoie à l'écran dans le
+test (écran de contrôle des véhicules de 256 × 256 points, grossi 2 fois). La carte et l'échelle (dessinée par
+Revolution juste au-dessus) sont simplifiées. Dans le jeu, la largeur des boutons suit la vraie police.</p>
+<div class="grille" id="g"></div></div>
+<script>
+const D = {"ECO": [["rect", 4, 239, 108, 13, 0, 0, 0, 210], ["texte", 8, 241, "TEMPS DE JEU  0:00.0", 100, 255, 255, 255, 255], ["rect", 143, 240, 113, 16, 0, 0, 0, 210], ["rect", 148, 244, 1, 7, 160, 200, 200, 255], ["rect", 145, 246, 7, 2, 160, 200, 200, 255], ["rect", 147, 250, 3, 1, 160, 200, 200, 255], ["rect", 155, 242, 23, 12, 16, 255, 127, 255], ["texte", 159, 244, "ECO", 19, 0, 0, 0, 255], ["rect", 180, 242, 38, 12, 4, 12, 12, 255], ["cadre", 180, 242, 38, 12, 63, 63, 63, 255], ["texte", 184, 244, "NORMAL", 34, 190, 204, 204, 255], ["rect", 220, 242, 33, 12, 4, 12, 12, 255], ["cadre", 220, 242, 33, 12, 255, 176, 32, 255], ["texte", 224, 244, "FLANK", 29, 190, 204, 204, 255]], "NORMAL": [["rect", 4, 239, 108, 13, 0, 0, 0, 210], ["texte", 8, 241, "TEMPS DE JEU  0:00.0", 100, 255, 255, 255, 255], ["rect", 143, 240, 113, 16, 0, 0, 0, 210], ["rect", 148, 244, 1, 7, 160, 200, 200, 255], ["rect", 145, 246, 7, 2, 160, 200, 200, 255], ["rect", 147, 250, 3, 1, 160, 200, 200, 255], ["rect", 155, 242, 23, 12, 4, 12, 12, 255], ["cadre", 155, 242, 23, 12, 63, 63, 63, 255], ["texte", 159, 244, "ECO", 19, 190, 204, 204, 255], ["rect", 180, 242, 38, 12, 16, 255, 255, 255], ["texte", 184, 244, "NORMAL", 34, 0, 0, 0, 255], ["rect", 220, 242, 33, 12, 4, 12, 12, 255], ["cadre", 220, 242, 33, 12, 255, 176, 32, 255], ["texte", 224, 244, "FLANK", 29, 190, 204, 204, 255]], "FLANK": [["rect", 4, 239, 108, 13, 0, 0, 0, 210], ["texte", 8, 241, "TEMPS DE JEU  0:00.0", 100, 255, 255, 255, 255], ["rect", 143, 240, 113, 16, 0, 0, 0, 210], ["rect", 148, 244, 1, 7, 160, 200, 200, 255], ["rect", 145, 246, 7, 2, 160, 200, 200, 255], ["rect", 147, 250, 3, 1, 160, 200, 200, 255], ["rect", 155, 242, 23, 12, 4, 12, 12, 255], ["cadre", 155, 242, 23, 12, 63, 63, 63, 255], ["texte", 159, 244, "ECO", 19, 190, 204, 204, 255], ["rect", 180, 242, 38, 12, 4, 12, 12, 255], ["cadre", 180, 242, 38, 12, 63, 63, 63, 255], ["texte", 184, 244, "NORMAL", 34, 190, 204, 204, 255], ["rect", 220, 242, 33, 12, 255, 176, 32, 255], ["texte", 224, 244, "FLANK", 29, 0, 0, 0, 255]]};
+const ILES = [[[30,60],[58,48],[80,62],[74,90],[44,96],[26,82]],[[170,40],[206,34],[226,58],[214,80],[182,76]],[[150,150],[180,140],[196,168],[176,196],[148,186]],[[40,170],[70,160],[86,182],[60,204],[34,196]]];
+function rgba(r,g,b,a){ return "rgba("+r+","+g+","+b+","+(a/255)+")"; }
+function dessiner(g, liste) {
+  g.fillStyle = "#000"; g.fillRect(0,0,256,256);
+  g.fillStyle = "#02090c"; g.fillRect(0,13,256,243);
+  g.fillStyle = "rgba(255,255,255,0.035)";
+  for (let x=0;x<256;x+=32) g.fillRect(x,13,1,243);
+  for (let y=13;y<256;y+=32) g.fillRect(0,y,256,1);
+  for (const ile of ILES) { g.beginPath(); ile.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y)); g.closePath(); g.fillStyle="#0b1a14"; g.fill(); g.strokeStyle="#3f3f3f"; g.stroke(); }
+  g.fillStyle="#101010"; g.fillRect(0,0,256,12); g.fillStyle="#3f3f3f"; g.fillRect(0,12,256,1);
+  g.fillStyle="#fff"; g.fillText("VEHICLE CONTROL", 4, 1);
+  g.fillStyle="#10ffff"; g.fillRect(118,150,4,12); g.fillRect(116,153,8,6);
+  // echelle de Revolution (approchee) : texte gris au-dessus, traits en bas
+  g.fillStyle="#3f3f3f"; g.textAlign="center"; g.fillText("2KM", 191, 226); g.textAlign="left";
+  g.fillStyle="#101010"; g.fillRect(141,236,1,4); g.fillRect(240,236,1,4); g.fillRect(191,238,1,2);
+  for (const c of liste) {
+    if (c[0]==="rect") { g.fillStyle=rgba(c[5],c[6],c[7],c[8]); g.fillRect(c[1],c[2],c[3],c[4]); }
+    else if (c[0]==="cadre") { g.strokeStyle=rgba(c[5],c[6],c[7],c[8]); g.strokeRect(c[1]+0.5,c[2]+0.5,c[3]-1,c[4]-1); }
+    else if (c[0]==="texte") { g.fillStyle=rgba(c[5],c[6],c[7],c[8]); g.fillText(c[3], c[1], c[2]-1); }
+  }
+}
+const grille = document.getElementById("g");
+document.fonts.load("11px LanaPixel").finally(() => {
+  for (const nom of ["ECO","NORMAL","FLANK"]) {
+    const div = document.createElement("div"); div.className = "var";
+    div.innerHTML = "<h2>Mode " + nom + "</h2>";
+    const c = document.createElement("canvas"); c.width = 256; c.height = 256; div.appendChild(c); grille.appendChild(div);
+    const g = c.getContext("2d"); g.imageSmoothingEnabled = false; g.textBaseline = "top"; g.font = "11px LanaPixel";
+    dessiner(g, D[nom]);
+  }
+});
+</script></body></html>

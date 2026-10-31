@@ -1,0 +1,33 @@
+; modes.ini (v2) : reglages du plugin cc2x_modes.dll (a copier dans %APPDATA%\Carrier Command 2\cc2x\modes.ini)
+; Relu toutes les 3 secondes : on peut le changer pendant que le jeu tourne. Sans fichier : OBSERVATION SEULE (rien n'est ecrit).
+; Valeurs mesurees le 28/10 (gaz appliques = gaz ecrit + environ 0,07 pour un plafond) :
+;   Albatros : 0,72 -> 80 m/s ; 0,93 -> 119 (croisiere IA) ; 1,00 -> 131
+;   Manta    : 0,47 -> 122 (croisiere IA) ; 0,77 -> 220 ; 1,00 -> 290
+; Par kilometre, aller plus vite consomme MOINS : ECO = plus de temps en l'air, pas plus de portee ; FLANK = vitesse et portee.
+[modes]
+; 0 = observer seulement (le plugin ne modifie rien) ; 1 = appliquer les modes ci-dessous. (ancien nom : eco_enabled)
+enabled=0
+
+; ---- ECO : plafond de la commande de gaz ----
+; numeros des avions en ECO, separes par des virgules (les numeros affiches dans les lignes [modes] / CC2MODES)
+eco_ids=
+; 1 = tous les avions de ton equipe (essai) ; ne mets JAMAIS en mode l'avion que tu pilotes a la main
+eco_all=0
+; plafond Albatros (0,55 a 1,0 ; 0,65 ecrit = environ 0,72 applique = environ 80 m/s)
+eco_cap_light=0.65
+; plafond Manta (0,30 a 1,0 ; sa croisiere n'utilise que 0,47 : en dessous de 0,40 ecrit il ralentit)
+eco_cap_heavy=0.35
+; pas de plafond a moins de ... metres du porte-avions de l'equipe (decollage, approche, circuit d'atterrissage)
+eco_free_zone_m=1500
+
+; ---- FLANK : plancher de la commande de gaz ----
+flank_ids=
+flank_all=0
+; plancher Albatros / Manta (0,50 a 1,0). 1,0 ecrit = environ 0,93 applique pour l'Albatros (deja sa croisiere !), davantage pour le Manta
+flank_floor_light=1.0
+flank_floor_heavy=1.0
+; pas de plancher a moins de ... metres du bateau : un avion rapide a besoin de place pour ralentir. Un ordre de retour arrete FLANK tout de suite.
+flank_free_zone_m=6000
+
+; une ligne d'observation par avion en vol toutes les ... secondes (0 = aucune)
+observe_s=5

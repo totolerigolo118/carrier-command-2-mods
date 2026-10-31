@@ -1,0 +1,183 @@
+ancien : horodatage 0x6a36c177 taille 0xaf7000 ; nouveau : horodatage 0x6ae228f3 taille 0xaf7000
+sections ancien : [('.text', '0x401000', '0x8d4adb'), ('.rdata', '0xcd6000', '0x146968'), ('.data', '0xe1d000', '0x3b87c'), ('_RDATA', '0xe59000', '0x2608'), ('.rsrc', '0xe5c000', '0x4aae0'), ('.reloc', '0xea7000', '0x4f1c4')]
+sections nouveau: [('.text', '0x401000', '0x8d4c7b'), ('.rdata', '0xcd6000', '0x146998'), ('.data', '0xe1d000', '0x3b87c'), ('_RDATA', '0xe59000', '0x2608'), ('.rsrc', '0xe5c000', '0x4aae0'), ('.reloc', '0xea7000', '0x4f1ec')]
+
+== CODE : une fenêtre de l'ancien exe, cherchée dans tout le code du nouveau
+server_init        ancien 0x00772fd0 -> nouveau 0x007730c0 (écart +0xf0), fenêtre 48 o, 1 seule correspondance
+      ref abs 0x00cb7e4d -> 0x00cb7fed (+0x1a0)
+      ref abs 0x00e1db44 -> 0x00e1db44 (+0x0)
+server_tick        ancien 0x0077ee10 -> nouveau 0x0077ef00 (écart +0xf0), fenêtre 49 o, 1 seule correspondance
+      ref rel 0x004152d0 -> 0x004152d0 (+0x0)
+      ref abs 0x00db70f8 -> 0x00db7130 (+0x38)
+      ref rel 0x0077ee56 -> 0x0077ef46 (+0xf0)
+      ref abs 0x00db79a0 -> 0x00db79d8 (+0x38)
+server_end         ancien 0x0077eea0 -> nouveau 0x0077ef90 (écart +0xf0), fenêtre 52 o, 1 seule correspondance
+      ref rel 0x00571b50 -> 0x00571ca0 (+0x150)
+      ref rel 0x00574ed0 -> 0x00575020 (+0x150)
+      ref rel 0x00587760 -> 0x005878b0 (+0x150)
+lua_site           ancien 0x004465ec -> nouveau 0x004465ec (écart +0x0), fenêtre 49 o, 1 seule correspondance
+      ref rel 0x00c3f86d -> 0x00c3f9fd (+0x190)
+f_index2addr       ancien 0x008cda70 -> nouveau 0x008cdbc0 (écart +0x150), fenêtre 51 o, 1 seule correspondance
+      ref rel 0x008cda84 -> 0x008cdbd4 (+0x150)
+      ref rel 0x008cdaad -> 0x008cdbfd (+0x150)
+      ref rel 0x008cda95 -> 0x008cdbe5 (+0x150)
+      ref rel 0x008cda9e -> 0x008cdbee (+0x150)
+f_auxsetstr        ancien 0x008ce200 -> nouveau 0x008ce350 (écart +0x150), fenêtre 49 o, 1 seule correspondance
+      ref rel 0x00908220 -> 0x009083a0 (+0x180)
+      ref rel 0x008ce222 -> 0x008ce372 (+0x150)
+      ref rel 0x008ce236 -> 0x008ce386 (+0x150)
+      ref rel 0x00904dc0 -> 0x00904f30 (+0x170)
+f_finishset        ancien 0x008ff6b0 -> nouveau 0x008ff820 (écart +0x170), fenêtre 49 o, 1 seule correspondance
+      ref rel 0x008ff71f -> 0x008ff88f (+0x170)
+f_luaS_new         ancien 0x00908220 -> nouveau 0x009083a0 (écart +0x180), fenêtre 52 o, 1 seule correspondance
+f_luaH_new         ancien 0x00904a50 -> nouveau 0x00904bc0 (écart +0x170), fenêtre 52 o, 1 seule correspondance
+      ref rel 0x009666e0 -> 0x00966850 (+0x170)
+f_luaC_step        ancien 0x00904050 -> nouveau 0x009041c0 (écart +0x170), fenêtre 49 o, 1 seule correspondance
+      ref rel 0x00904063 -> 0x009041d3 (+0x170)
+      ref rel 0x00904092 -> 0x00904202 (+0x170)
+f_vehicle_by_id    ancien 0x005ee6a0 -> nouveau 0x005ee7e0 (écart +0x140), fenêtre 48 o, 1 seule correspondance
+      ref rel 0x005ee6dd -> 0x005ee81d (+0x140)
+      ref rel 0x005ee6c1 -> 0x005ee801 (+0x140)
+f_tile_by_id       ancien 0x00631240 -> nouveau 0x00631350 (écart +0x110), fenêtre 49 o, 1 seule correspondance
+      ref rel 0x00631279 -> 0x00631389 (+0x110)
+      ref rel 0x00631261 -> 0x00631371 (+0x110)
+      ref rel 0x00631284 -> 0x00631394 (+0x110)
+f_tile_at          ancien 0x00631040 -> nouveau 0x00631150 (écart +0x110), fenêtre 49 o, 1 seule correspondance
+      ref rel 0x0063111b -> 0x0063122b (+0x110)
+f_request_landing  ancien 0x0062b4a0 -> nouveau 0x0062b5b0 (écart +0x110), fenêtre 48 o, 1 seule correspondance
+      ref rel 0x0062b6eb -> 0x0062b7fb (+0x110)
+      ref abs 0x00db9060 -> 0x00db9090 (+0x30)
+f_waypoints_clear  ancien 0x00854870 -> nouveau 0x008549a0 (écart +0x130), fenêtre 96 o, 1 seule correspondance
+      ref abs 0x00ccb070 -> 0x00ccb210 (+0x1a0)
+      ref abs 0x00e1db44 -> 0x00e1db44 (+0x0)
+      ref rel 0x008548f2 -> 0x00854a22 (+0x130)
+      ref rel 0x008548de -> 0x00854a0e (+0x130)
+      ref rel 0x00c4c592 -> 0x00c4c722 (+0x190)
+f_deque_grow       ancien 0x00860c90 -> nouveau 0x00860dc0 (écart +0x130), fenêtre 50 o, 1 seule correspondance
+      ref rel 0x00860d6b -> 0x00860e9b (+0x130)
+      ref rel 0x00860d5a -> 0x00860e8a (+0x130)
+      ref rel 0x00c4c5ac -> 0x00c4c73c (+0x190)
+h_waypoints        ancien 0x007781d4 -> nouveau 0x007782c4 (écart +0xf0), fenêtre 48 o, 1 seule correspondance
+h_hangar           ancien 0x0062ae8d -> nouveau 0x0062af9d (écart +0x110), fenêtre 52 o, 1 seule correspondance
+      ref rel 0x0062aead -> 0x0062afbd (+0x110)
+      ref rel 0x0062aefc -> 0x0062b00c (+0x110)
+      ref rel 0x0062aea0 -> 0x0062afb0 (+0x110)
+h_hangar_found     ancien 0x0062aefc -> nouveau 0x0062b00c (écart +0x110), fenêtre 48 o, 1 seule correspondance
+h_hangar_none      ancien 0x0062aead -> nouveau 0x0062afbd (écart +0x110), fenêtre 50 o, 1 seule correspondance
+      ref rel 0x0062a890 -> 0x0062a9a0 (+0x110)
+h_controller[0]    ancien 0x0063014f -> nouveau 0x0063025f (écart +0x110), fenêtre 50 o, 1 seule correspondance
+      ref rel 0x00630174 -> 0x00630284 (+0x110)
+      ref rel 0x006349b0 -> 0x00634ac0 (+0x110)
+      ref rel 0x006301f8 -> 0x00630308 (+0x110)
+h_controller[1]    ancien 0x00634981 -> nouveau 0x00634a91 (écart +0x110), fenêtre 48 o, 1 seule correspondance
+      ref rel 0x0063499c -> 0x00634aac (+0x110)
+      ref rel 0x006349b0 -> 0x00634ac0 (+0x110)
+h_spawn            ancien 0x00634f3d -> nouveau 0x0063504d (écart +0x110), fenêtre 50 o, 1 seule correspondance
+      ref rel 0x0062ca30 -> 0x0062cb40 (+0x110)
+      ref rel 0x00635035 -> 0x00635145 (+0x110)
+f_spawn            ancien 0x0062ca30 -> nouveau 0x0062cb40 (écart +0x110), fenêtre 96 o, 1 seule correspondance
+      ref abs 0x00ca5d6b -> 0x00ca5f0b (+0x1a0)
+      ref abs 0x00e1db44 -> 0x00e1db44 (+0x0)
+h_af_tick          ancien 0x0062b8f3 -> nouveau 0x0062ba03 (écart +0x110), fenêtre 48 o, 1 seule correspondance
+      ref rel 0x00628600 -> 0x00628710 (+0x110)
+      ref rel 0x0062b8d7 -> 0x0062b9e7 (+0x110)
+f_af_tick          ancien 0x00628600 -> nouveau 0x00628710 (écart +0x110), fenêtre 48 o, 1 seule correspondance
+      ref abs 0x00ca595c -> 0x00ca5afc (+0x1a0)
+      ref abs 0x00e1db44 -> 0x00e1db44 (+0x0)
+
+== DONNÉES : par le code de l'ancien exe qui y fait référence
+server_vtable ancien 0x00d34bc4 : 1 instruction(s) de code y font référence
+    depuis 0x835bc2 (-> 0x835cf2) : 0x00d34bfc
+  => valeurs nouvelles vues : {'0x00d34bfc': 1}
+nilobject ancien 0x00d03518 : 178 instruction(s) de code y font référence
+    depuis 0x44770f (-> 0x44770f) : 0x00d03530
+    depuis 0x5b54af (-> 0x5b55df) : 0x00d03530
+    depuis 0x5b5793 (-> 0x5b58c3) : 0x00d03530
+    depuis 0x5b5896 (-> 0x5b59c6) : 0x00d03530
+    depuis 0x5b5997 (-> 0x5b5ac7) : 0x00d03530
+    depuis 0x5b5ad3 (-> 0x5b5c03) : 0x00d03530
+    depuis 0x5b5c27 (-> 0x5b5d57) : 0x00d03530
+    depuis 0x5b5d73 (-> 0x5b5ea3) : 0x00d03530
+    depuis 0x5b5e9e (-> 0x5b5fce) : 0x00d03530
+    depuis 0x5b5fba (-> 0x5b60ea) : 0x00d03530
+    depuis 0x5b60d3 (-> 0x5b6203) : 0x00d03530
+    depuis 0x5b6404 (-> 0x5b6534) : 0x00d03530
+    depuis 0x5b64fb (-> 0x5b662b) : 0x00d03530
+    depuis 0x5b6898 (-> 0x5b69c8) : 0x00d03530
+    depuis 0x5b69ad (-> 0x5b6add) : 0x00d03530
+    depuis 0x5b932a (-> 0x5b945a) : 0x00d03530
+    depuis 0x5baac6 (-> 0x5babf6) : 0x00d03530
+    depuis 0x5bab99 (-> 0x5bacc9) : 0x00d03530
+    depuis 0x5badad (-> 0x5baedd) : 0x00d03530
+    depuis 0x5baec6 (-> 0x5baff6) : 0x00d03530
+    depuis 0x5bb054 (-> 0x5bb184) : 0x00d03530
+    depuis 0x5bb1ca (-> 0x5bb2fa) : 0x00d03530
+    depuis 0x5bb35f (-> 0x5bb48f) : 0x00d03530
+    depuis 0x5bb4fa (-> 0x5bb62a) : 0x00d03530
+    depuis 0x5bb67a (-> 0x5bb7aa) : 0x00d03530
+    depuis 0x5bb813 (-> 0x5bb943) : 0x00d03530
+    depuis 0x5bb9f0 (-> 0x5bbb20) : 0x00d03530
+    depuis 0x6bf918 (-> 0x6bfa28) : 0x00d03530
+    depuis 0x6e8442 (-> 0x6e8552) : 0x00d03530
+    depuis 0x788c5a (-> 0x788d5a) : 0x00d03530
+    depuis 0x788f36 (-> 0x789036) : 0x00d03530
+    depuis 0x7892dc (-> 0x7893dc) : 0x00d03530
+    depuis 0x78ff55 (-> 0x790045) : 0x00d03530
+    depuis 0x790250 (-> 0x790340) : 0x00d03530
+    depuis 0x7917c7 (-> 0x7918b7) : 0x00d03530
+    depuis 0x791cab (-> 0x791d8b) : 0x00d03530
+    depuis 0x793526 (-> 0x793606) : 0x00d03530
+    depuis 0x793632 (-> 0x793712) : 0x00d03530
+    depuis 0x7938a6 (-> 0x793986) : 0x00d03530
+    depuis 0x793a91 (-> 0x793b71) : 0x00d03530
+  => valeurs nouvelles vues : {'0x00d03530': 40}
+vt_rigid_dynamic ancien 0x00cdd478 : 2 instruction(s) de code y font référence
+    depuis 0x9cd1b6 (-> 0x9cd366) : 0x00cdd478
+    depuis 0x9cf068 (-> 0x9cf218) : 0x00cdd478
+  => valeurs nouvelles vues : {'0x00cdd478': 2}
+
+== CONTRÔLES
+table serveur ancien ['0x772fd0', '0x77ee10', '0x77eea0'] ; nouveau ['0x7730c0', '0x77ef00', '0x77ef90'] ; attendu (fonctions appariées) ['0x7730c0', '0x77ef00', '0x77ef90']
+  3 cases avant la table : ancien ['0xdc3144', '0x65', '0x6d69745f'] ; nouveau ['0xdc3194', '0x656d69', '0x745f6e6f']
+  le triplet (init, tick, end) apparié apparaît 1 fois dans le fichier nouveau
+nilobject : ancien 00000000000000000000000000000000 ; nouveau 00000000000000000000000000000000
+vtable PhysX (8 premières cases) : ancien ['0x9cd230', '0x9cfe70', '0x99cf10', '0x9cf5c0', '0x9d0ba0', '0x40c4f0', '0x9d0890', '0x9d1dc0']
+                                   nouveau ['0x9cd3e0', '0x9d0020', '0x99d0a0', '0x9cf770', '0x9d0d50', '0x40c4f0', '0x9d0a40', '0x9d1f70']
+LUA_SIGS f_index2addr  0x008cdbc0 : OK
+LUA_SIGS f_auxsetstr   0x008ce350 : OK
+LUA_SIGS f_finishset   0x008ff820 : OK
+LUA_SIGS f_luaS_new    0x009083a0 : OK
+LUA_SIGS f_luaH_new    0x00904bc0 : OK
+LUA_SIGS f_luaC_step   0x009041c0 : OK
+lua_site 0x004465ec : 6a20898564ffffff (attendu 6a20898564ffffff)
+
+== RÉSUMÉ (valeurs trouvées ici)
+  server_vtable      0x00d34bfc
+  nilobject          0x00d03530
+  vt_rigid_dynamic   0x00cdd478
+  server_init        0x007730c0
+  server_tick        0x0077ef00
+  server_end         0x0077ef90
+  lua_site           0x004465ec
+  f_index2addr       0x008cdbc0
+  f_auxsetstr        0x008ce350
+  f_finishset        0x008ff820
+  f_luaS_new         0x009083a0
+  f_luaH_new         0x00904bc0
+  f_luaC_step        0x009041c0
+  f_vehicle_by_id    0x005ee7e0
+  f_tile_by_id       0x00631350
+  f_tile_at          0x00631150
+  f_request_landing  0x0062b5b0
+  f_waypoints_clear  0x008549a0
+  f_deque_grow       0x00860dc0
+  h_waypoints        0x007782c4
+  h_hangar           0x0062af9d
+  h_hangar_found     0x0062b00c
+  h_hangar_none      0x0062afbd
+  h_controller[0]    0x0063025f
+  h_controller[1]    0x00634a91
+  h_spawn            0x0063504d
+  f_spawn            0x0062cb40
+  h_af_tick          0x0062ba03
+  f_af_tick          0x00628710

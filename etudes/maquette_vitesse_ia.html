@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vitesse de l'escadrille</title>
+<style>
+@font-face { font-family: "LanaPixel"; src: local("LanaPixel"); }
+:root { --fond: #07090a; --carte: #0e1213; --bord: #1f2a2b; --texte: #d8e4e4; --doux: #8fa3a3; --vert: #10ff7f; --cyan: #10ffff; --jaune: #ffb020; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fond); color: var(--texte); font: 15px/1.45 -apple-system, "Helvetica Neue", sans-serif; padding: 24px 16px 40px; }
+.page { max-width: 1180px; margin: 0 auto; }
+h1 { font-family: "LanaPixel", monospace; font-weight: normal; color: var(--cyan); font-size: 28px; margin: 0 0 6px; }
+.intro { color: var(--doux); max-width: 860px; margin: 0 0 8px; }
+.modes { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 10px 0 22px; font-size: 14px; }
+.modes span b { font-family: "LanaPixel", monospace; font-weight: normal; font-size: 17px; margin-right: 4px; }
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 18px; }
+.var { background: var(--carte); border: 1px solid var(--bord); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.tete { display: flex; align-items: baseline; gap: 10px; }
+.num { font-family: "LanaPixel", monospace; font-size: 30px; color: var(--cyan); line-height: 1; min-width: 26px; }
+.nom { font-size: 17px; font-weight: 600; }
+canvas { width: 100%; max-width: 512px; image-rendering: pixelated; image-rendering: crisp-edges; background: #000; border-radius: 4px; display: block; margin: 0 auto; }
+canvas.large { aspect-ratio: 1 / 1; }
+canvas.basse { aspect-ratio: 2 / 1; }
+.effet { font-size: 13.5px; color: var(--doux); min-height: 40px; }
+.effet b { color: var(--texte); font-weight: 600; }
+.detail { font-size: 13.5px; color: var(--doux); }
+.detail div { margin: 2px 0; }
+.plus { color: #7fe0a8; } .moins { color: #ff9a8a; }
+.note { margin-top: 22px; font-size: 13.5px; color: var(--doux); max-width: 860px; }
+</style>
+</head>
+<body>
+<div class="page">
+<h1>Vitesse de l'escadrille : 6 variantes</h1>
+<p class="intro">Un seul réglage pour tous tes avions (Albatros et Manta), dessiné sur un écran du bateau.
+<b>Clique sur les boutons dans les écrans</b> : les deux avions accélèrent sur la carte. Les avions ennemis ne
+changent pas. Réponds par un numéro, ou un mélange (« le 3 avec les couleurs du 1 »).</p>
+<div class="modes">
+  <span><b style="color:var(--vert)">ÉCO</b> vitesse du jeu d'origine (environ 50 % de puissance)</span>
+  <span><b style="color:var(--cyan)">NORMAL</b> environ 80 % de puissance</span>
+  <span><b style="color:var(--jaune)">À FOND</b> plein gaz</span>
+</div>
+<div class="grille" id="grille"></div>
+<p class="note">Dans le jeu, chaque écran fait 256 points de large ; la maquette le grossit 2 fois. L'horloge en
+bas à gauche est celle de l'atelier, déjà installée. Les km/h et les minutes d'autonomie sont des estimations
+(plein standard, sans réservoir en plus), à confirmer par un essai en jeu. Au lancement d'une partie, le mode
+choisi en dernier est remis tout seul.</p>
+</div>
+<script>
+const MODES = [
+  { nom: "ÉCO",    col: "#10ff7f", f: 1.00, alb: 173, man: 259, ta: 55, tm: 33, pct: "~50 %" },
+  { nom: "NORMAL", col: "#10ffff", f: 1.27, alb: 220, man: 328, ta: 35, tm: 21, pct: "~80 %" },
+  { nom: "À FOND", col: "#ffb020", f: 1.41, alb: 245, man: 367, ta: 28, tm: 17, pct: "100 %" },
+];
+const GRIS_FONCE = "#101010", GRIS_MOYEN = "#3f3f3f", SURLIGNE = "#104040", AMI = "#10ffff", ENNEMI = "#ff1010", BOUTON = "#040c0c";
+
+function txt(g, s, x, y, col, align) {
+  g.fillStyle = col; g.textAlign = align || "left"; g.fillText(s, x, y);
+}
+function rect(g, x, y, w, h, col) { g.fillStyle = col; g.fillRect(x, y, w, h); }
+function cadre(g, x, y, w, h, col) { g.strokeStyle = col; g.lineWidth = 1; g.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1); }
+function largeur(g, s) { return Math.ceil(g.measureText(s).width); }
+
+// petite icône d'avion (pixels) orientée vers angle a
+function avion(g, x, y, a, col) {
+  g.save(); g.translate(Math.round(x), Math.round(y)); g.rotate(a);
+  g.fillStyle = col;
+  g.fillRect(-1, -4, 2, 8); g.fillRect(-4, -1, 8, 2); g.fillRect(-2, 3, 4, 1);
+  g.restore();
+}
+function iconeAvion(g, x, y, col) { rect(g, x + 3, y, 1, 7, col); rect(g, x, y + 2, 7, 2, col); rect(g, x + 2, y + 6, 3, 1, col); }
+
+const ILES = [
+  [[30, 60], [58, 48], [80, 62], [74, 90], [44, 96], [26, 82]],
+  [[170, 40], [206, 34], [226, 58], [214, 80], [182, 76]],
+  [[150, 150], [180, 140], [196, 168], [176, 196], [148, 186]],
+  [[40, 170], [70, 160], [86, 182], [60, 204], [34, 196]],
+];
+function carte(g, W, H, y0, etat) {
+  rect(g, 0, 0, W, H, "#000");
+  rect(g, 0, y0, W, H - y0, "#02090c");
+  g.fillStyle = "rgba(255,255,255,0.035)";
+  for (let x = 0; x < W; x += 32) g.fillRect(x, y0, 1, H - y0);
+  for (let y = y0; y < H; y += 32) g.fillRect(0, y, W, 1);
+  for (const ile of ILES) {
+    g.beginPath(); ile.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath();
+    g.fillStyle = "#0b1a14"; g.fill(); g.strokeStyle = GRIS_MOYEN; g.stroke();
+  }
+  // porte-avions
+  rect(g, 118, 150, 4, 12, AMI); rect(g, 116, 153, 8, 6, AMI);
+  txt(g, "CRR", 126, 151, AMI);
+  // ennemi
+  g.fillStyle = ENNEMI; g.beginPath(); g.moveTo(196, 100); g.lineTo(200, 104); g.lineTo(196, 108); g.lineTo(192, 104); g.closePath(); g.fill();
+  // deux avions sur des boucles, vitesse selon le mode
+  const m = MODES[etat.mode];
+  const boucles = [ { cx: 120, cy: 118, rx: 84, ry: 58, nom: "A1", v: 1.0, ph: 0 }, { cx: 128, cy: 132, rx: 60, ry: 84, nom: "M1", v: 1.5, ph: 2.2 } ];
+  boucles.forEach((b, i) => {
+    const ang = etat.t[i];
+    const px = b.cx + b.rx * Math.cos(ang), py = b.cy + b.ry * Math.sin(ang);
+    // traînée : plus longue quand ça va vite
+    g.fillStyle = m.col;
+    const n = Math.round(4 * m.f * b.v);
+    for (let k = 1; k <= n; k++) {
+      const a2 = ang - k * 0.07 * m.f;
+      g.globalAlpha = 0.5 - k * 0.07;
+      g.fillRect(Math.round(b.cx + b.rx * Math.cos(a2)), Math.round(b.cy + b.ry * Math.sin(a2)), 1, 1);
+    }
+    g.globalAlpha = 1;
+    const dir = Math.atan2(b.ry * Math.cos(ang), -b.rx * Math.sin(ang)) + Math.PI / 2;
+    avion(g, px, py, dir, AMI);
+    txt(g, b.nom, Math.round(px) + 6, Math.round(py) - 4, AMI);
+  });
+}
+function entete(g, W, titre) {
+  rect(g, 0, 0, W, 12, GRIS_FONCE);
+  rect(g, 0, 12, W, 1, GRIS_MOYEN);
+  txt(g, titre, 4, 1, "#fff");
+}
+function horloge(g, H) {
+  const s = "J3 14:22";
+  const w = largeur(g, s) + 8;
+  g.fillStyle = "rgba(0,0,0,0.82)"; g.fillRect(4, H - 4 - 14, w, 14);
+  txt(g, s, 8, H - 4 - 13, "#fff");
+}
+function bouton(g, x, y, w, h, s, actif, col) {
+  rect(g, x, y, w, h, actif ? col : BOUTON);
+  cadre(g, x, y, w, h, actif ? col : GRIS_MOYEN);
+  txt(g, s, x + w / 2, y + Math.max(1, Math.floor((h - 11) / 2)), actif ? "#000" : "#bcc", "center");
+}
+function dans(x, y, r) { return x >= r[0] && x < r[0] + r[2] && y >= r[1] && y < r[1] + r[3]; }
+
+const VARIANTES = [
+  {
+    nom: "Barre de trois boutons en bas",
+    taille: [256, 256],
+    detail: ["Où : écran de contrôle des véhicules, en bas à droite, toujours visible.",
+             "Un clic sur le mode voulu.",
+             "<span class='plus'>+ on voit les trois choix d'un coup d'œil</span>",
+             "<span class='moins'>− prend une bande en bas de la carte</span>"],
+    zones() { return [[112, 238, 40, 14], [156, 238, 52, 14], [212, 238, 40, 14]]; },
+    dessiner(g, e) {
+      carte(g, 256, 256, 13, e); entete(g, 256, "CONTRÔLE DES VÉHICULES"); horloge(g, 256);
+      rect(g, 108, 224, 148, 32, "rgba(0,0,0,0.82)");
+      txt(g, "VITESSE ESCADRILLE", 112, 226, "#9aa");
+      const z = this.zones(); const noms = ["ÉCO", "NORMAL", "À FOND"];
+      z.forEach((r, i) => bouton(g, r[0], r[1], r[2], r[3], noms[i], e.mode === i, MODES[i].col));
+    },
+    clic(x, y, e) { this.zones().forEach((r, i) => { if (dans(x, y, r)) e.mode = i; }); },
+  },
+  {
+    nom: "Pastille qui change à chaque clic",
+    taille: [256, 256],
+    detail: ["Où : écran de contrôle des véhicules, dans la barre de titre, en haut à droite.",
+             "Chaque clic passe au mode suivant (Éco, Normal, À fond, Éco…).",
+             "<span class='plus'>+ ne cache rien de la carte</span>",
+             "<span class='moins'>− jusqu'à deux clics pour revenir en arrière</span>"],
+    zone: [168, 1, 86, 11],
+    dessiner(g, e) {
+      carte(g, 256, 256, 13, e); entete(g, 256, "CONTRÔLE DES VÉHICULES"); horloge(g, 256);
+      const m = MODES[e.mode], r = this.zone;
+      rect(g, r[0], r[1], r[2], r[3], m.col);
+      iconeAvion(g, r[0] + 3, r[1] + 2, "#000");
+      txt(g, m.nom, r[0] + 13, r[1], "#000");
+      // flèche « suivant » en pixels
+      const ax = r[0] + r[2] - 8, ay = r[1] + 3;
+      rect(g, ax, ay, 1, 5, "#000"); rect(g, ax + 1, ay + 1, 1, 3, "#000"); rect(g, ax + 2, ay + 2, 1, 1, "#000");
+      rect(g, ax + 3, ay, 1, 5, "#000"); rect(g, ax + 4, ay + 1, 1, 3, "#000"); rect(g, ax + 5, ay + 2, 1, 1, "#000");
+    },
+    clic(x, y, e) { if (dans(x, y, this.zone)) e.mode = (e.mode + 1) % 3; },
+  },
+  {
+    nom: "Manette de navire (télégraphe)",
+    taille: [256, 256],
+    detail: ["Où : écran de contrôle des véhicules, colonne à droite de la carte.",
+             "Un clic sur un cran : la poignée y saute, comme le télégraphe des machines d'un bateau.",
+             "<span class='plus'>+ se lit comme une vraie manette des gaz</span>",
+             "<span class='moins'>− mange une colonne étroite à droite</span>"],
+    crans: [58, 118, 178],
+    dessiner(g, e) {
+      carte(g, 256, 256, 13, e); entete(g, 256, "CONTRÔLE DES VÉHICULES"); horloge(g, 256);
+      rect(g, 194, 30, 62, 176, "rgba(0,0,0,0.82)");
+      txt(g, "ESCADR.", 225, 33, "#9aa", "center");
+      rect(g, 238, 48, 4, 142, GRIS_MOYEN);
+      const lab = ["À FOND", "NORMAL", "ÉCO"], idx = [2, 1, 0];
+      this.crans.forEach((cy, k) => {
+        const i = idx[k], actif = e.mode === i;
+        rect(g, 234, cy - 1, 12, 3, actif ? MODES[i].col : "#556");
+        txt(g, lab[k], 230, cy - 5, actif ? MODES[i].col : "#8a9", "right");
+      });
+      // poignée
+      const k = idx.indexOf(e.mode), cy = this.crans[k];
+      rect(g, 230, cy - 4, 20, 9, MODES[e.mode].col); cadre(g, 230, cy - 4, 20, 9, "#fff");
+      rect(g, 236, cy, 8, 1, "#000");
+    },
+    clic(x, y, e) {
+      if (x < 194) return;
+      const idx = [2, 1, 0];
+      this.crans.forEach((cy, k) => { if (Math.abs(y - cy) < 22) e.mode = idx[k]; });
+    },
+  },
+  {
+    nom: "Sur l'écran du trafic aérien",
+    taille: [256, 128],
+    detail: ["Où : l'écran du trafic aérien (au-dessus, au milieu), sous son titre. La carte des véhicules ne change pas.",
+             "Un clic sur le mode voulu ; la liste montre la vitesse de chaque avion en vol.",
+             "<span class='plus'>+ rien n'est ajouté sur l'écran où tu donnes les ordres</span>",
+             "<span class='moins'>− il faut lever les yeux vers un autre écran pour changer</span>"],
+    zones() { return [[66, 16, 52, 13], [122, 16, 64, 13], [190, 16, 60, 13]]; },
+    dessiner(g, e) {
+      rect(g, 0, 0, 256, 128, "#000");
+      cadre(g, 5, 5, 246, 118, GRIS_MOYEN);
+      rect(g, 6, 6, 244, 8, GRIS_FONCE);
+      txt(g, "TRAFIC AÉRIEN", 9, 4, "#fff");
+      txt(g, "ESCADRILLE", 9, 17, "#9aa");
+      const z = this.zones(); const noms = ["ÉCO", "NORMAL", "À FOND"];
+      z.forEach((r, i) => bouton(g, r[0], r[1], r[2], r[3], noms[i], e.mode === i, MODES[i].col));
+      rect(g, 6, 33, 244, 1, GRIS_MOYEN);
+      const m = MODES[e.mode];
+      const lignes = [["ALBATROS 1", "EN VOL", m.alb + " KM/H", AMI], ["MANTA 1", "EN VOL", m.man + " KM/H", AMI],
+                      ["ALBATROS 2", "FILE D'ATTENTE", "288 KM/H", "#cd08f6"], ["MANTA 2", "AU HANGAR", "—", "#889"]];
+      lignes.forEach((l, k) => {
+        const y = 38 + k * 14;
+        if (k % 2 === 0) rect(g, 6, y - 1, 244, 13, "rgba(255,255,255,0.03)");
+        iconeAvion(g, 10, y + 2, l[3]);
+        txt(g, l[0], 22, y, "#fff"); txt(g, l[1], 112, y, l[3]);
+        txt(g, l[2], 246, y, k < 2 ? m.col : "#889", "right");
+      });
+      // petite barre de puissance animée
+      const p = [0.5, 0.8, 1][e.mode];
+      txt(g, "PUISSANCE", 9, 100, "#9aa");
+      rect(g, 70, 103, 120, 6, "#111"); rect(g, 70, 103, Math.round(120 * p), 6, m.col);
+      txt(g, m.pct, 196, 100, m.col);
+    },
+    clic(x, y, e) { this.zones().forEach((r, i) => { if (dans(x, y, r)) e.mode = i; }); },
+  },
+  {
+    nom: "Panneau avec vitesse et autonomie",
+    taille: [256, 256],
+    detail: ["Où : écran de contrôle des véhicules, petit panneau en haut à droite.",
+             "Un clic sur une ligne. Chaque ligne dit ce que ça coûte : vitesses Albatros / Manta et temps en l'air.",
+             "<span class='plus'>+ on choisit en connaissant le prix en carburant</span>",
+             "<span class='moins'>− le plus grand : cache le coin haut droit de la carte</span>"],
+    lignes: [[134, 30, 120, 22], [134, 53, 120, 22], [134, 76, 120, 22]],
+    dessiner(g, e) {
+      carte(g, 256, 256, 13, e); entete(g, 256, "CONTRÔLE DES VÉHICULES"); horloge(g, 256);
+      rect(g, 132, 16, 124, 85, "rgba(0,0,0,0.88)");
+      cadre(g, 132, 16, 124, 85, GRIS_MOYEN);
+      txt(g, "VITESSE ESCADRILLE", 136, 17, "#9aa");
+      this.lignes.forEach((r, i) => {
+        const m = MODES[i], actif = e.mode === i;
+        rect(g, r[0], r[1], r[2], r[3] - 1, actif ? SURLIGNE : BOUTON);
+        if (actif) cadre(g, r[0], r[1], r[2], r[3] - 1, m.col);
+        rect(g, r[0] + 3, r[1] + 4, 3, 3, m.col);
+        txt(g, m.nom, r[0] + 9, r[1], actif ? m.col : "#cdd");
+        txt(g, m.ta + "/" + m.tm + " MIN", r[0] + r[2] - 3, r[1], actif ? "#fff" : "#8a9", "right");
+        txt(g, m.alb + " / " + m.man + " KM/H", r[0] + 9, r[1] + 10, actif ? "#fff" : "#8a9");
+      });
+    },
+    clic(x, y, e) { this.lignes.forEach((r, i) => { if (dans(x, y, r)) e.mode = i; }); },
+  },
+  {
+    nom: "Onglet repliable",
+    taille: [256, 256],
+    detail: ["Où : écran de contrôle des véhicules, petit onglet sur le bord gauche (sa couleur dit le mode).",
+             "Un clic ouvre le menu, un clic sur le mode le referme.",
+             "<span class='plus'>+ presque invisible le reste du temps, avec une phrase d'explication par mode</span>",
+             "<span class='moins'>− deux clics à chaque changement</span>"],
+    onglet: [0, 96, 14, 44],
+    menu: [16, 78, 168, 80],
+    lignesMenu() { return [[18, 94, 164, 20], [18, 115, 164, 20], [18, 136, 164, 20]]; },
+    dessiner(g, e) {
+      carte(g, 256, 256, 13, e); entete(g, 256, "CONTRÔLE DES VÉHICULES"); horloge(g, 256);
+      const o = this.onglet, m = MODES[e.mode];
+      rect(g, o[0], o[1], o[2], o[3], e.ouvert ? SURLIGNE : "rgba(0,0,0,0.85)");
+      cadre(g, o[0], o[1], o[2], o[3], m.col);
+      iconeAvion(g, 4, o[1] + 6, AMI);
+      rect(g, 5, o[1] + 20, 5, 5, m.col);
+      rect(g, 6, o[1] + 32, 1, 5, "#bcc"); rect(g, 7, o[1] + 33, 1, 3, "#bcc"); rect(g, 8, o[1] + 34, 1, 1, "#bcc");
+      if (!e.ouvert) return;
+      const r = this.menu;
+      rect(g, r[0], r[1], r[2], r[3], "rgba(0,0,0,0.92)"); cadre(g, r[0], r[1], r[2], r[3], GRIS_MOYEN);
+      txt(g, "VITESSE DE L'ESCADRILLE", r[0] + 4, r[1] + 2, "#9aa");
+      const phr = ["lent, autonomie max", "~80 % de puissance", "plein gaz, 2× moins long"];
+      this.lignesMenu().forEach((l, i) => {
+        const actif = e.mode === i;
+        rect(g, l[0], l[1], l[2], l[3] - 1, actif ? SURLIGNE : BOUTON);
+        rect(g, l[0] + 3, l[1] + 7, 4, 4, MODES[i].col);
+        txt(g, MODES[i].nom, l[0] + 11, l[1] + 4, actif ? MODES[i].col : "#cdd");
+        txt(g, phr[i], l[0] + l[2] - 3, l[1] + 4, actif ? "#fff" : "#8a9", "right");
+      });
+    },
+    clic(x, y, e) {
+      if (dans(x, y, this.onglet)) { e.ouvert = !e.ouvert; return; }
+      if (e.ouvert) {
+        this.lignesMenu().forEach((l, i) => { if (dans(x, y, l)) e.mode = i; });
+        e.ouvert = false;
+      }
+    },
+  },
+];
+
+const grille = document.getElementById("grille");
+const vues = VARIANTES.map((v, n) => {
+  const div = document.createElement("div"); div.className = "var";
+  div.innerHTML = `<div class="tete"><span class="num">${n + 1}</span><span class="nom">${v.nom}</span></div>`;
+  const c = document.createElement("canvas");
+  c.width = v.taille[0]; c.height = v.taille[1]; c.className = v.taille[1] === 256 ? "large" : "basse";
+  div.appendChild(c);
+  const effet = document.createElement("div"); effet.className = "effet"; div.appendChild(effet);
+  const det = document.createElement("div"); det.className = "detail";
+  det.innerHTML = v.detail.map(s => `<div>${s}</div>`).join("");
+  div.appendChild(det);
+  grille.appendChild(div);
+  const etat = { mode: 0, ouvert: false, t: [0, 2.2] };
+  const g = c.getContext("2d"); g.imageSmoothingEnabled = false; g.textBaseline = "top"; g.font = "11px LanaPixel";
+  function pos(ev) { const b = c.getBoundingClientRect(); return [(ev.clientX - b.left) * c.width / b.width, (ev.clientY - b.top) * c.height / b.height]; }
+  c.addEventListener("click", ev => { const [x, y] = pos(ev); v.clic(x, y, etat); });
+  return { v, g, etat, effet };
+});
+
+let avant = performance.now();
+function boucle(now) {
+  const dt = Math.min(0.05, (now - avant) / 1000); avant = now;
+  for (const { v, g, etat, effet } of vues) {
+    const f = MODES[etat.mode].f;
+    etat.t[0] += dt * 0.32 * f; etat.t[1] += dt * 0.42 * f;
+    g.font = "11px LanaPixel";
+    v.dessiner(g, etat);
+    const m = MODES[etat.mode];
+    const html = `Mode <b style="color:${m.col}">${m.nom}</b> : Albatros <b>${m.alb} km/h</b>, environ ${m.ta} min en l'air · Manta <b>${m.man} km/h</b>, environ ${m.tm} min`;
+    if (effet.innerHTML !== html) effet.innerHTML = html;
+  }
+  requestAnimationFrame(boucle);
+}
+document.fonts.load("11px LanaPixel").finally(() => requestAnimationFrame(boucle));
+</script>
+</body>
+</html>

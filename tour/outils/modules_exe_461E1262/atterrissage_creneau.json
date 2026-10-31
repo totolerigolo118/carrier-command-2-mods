@@ -1,0 +1,66 @@
+{
+ "nom": "atterrissage_creneau",
+ "description": "creneau de piste elargi : la piste peut etre donnee a l'avion pendant tout le virage arriere (3 sauts) [PORTE sur le build Steam du 28/10/2026 (461E1262...), horodatage 0x6ae228f3]",
+ "statut_portage": "SECONDAIRE : essaye en jeu sur l'ancien exe (essai 2 du 29/10, une seule partie, melange avec le cercle et pont_retour_x2) ; sur le nouvel exe, octets et desassemblage seulement.",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11354112,
+  "horodatage_pe": "0x6ae228f3",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A",
+ "sha256_patche": "DD55A1A54844250ACAF712D01C93AAB1F3DB27AB4B4B424BE890699A65A5FBC7",
+ "nb_changements": 3,
+ "changements": [
+  {
+   "va": 7346956,
+   "offset": 3149580,
+   "avant": "04010000",
+   "apres": "2a000000",
+   "role": "[NOUVEL EXE ; les adresses citees dans ce texte sont celles de l'ANCIEN exe] etat 1 du circuit (1re moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x007019fa]",
+   "reglage": "LANDING_GATE_STATE1",
+   "constante_va": 0,
+   "va_ancien": 7346684,
+   "offset_ancien": 3149308,
+   "avant_ancien": "04010000",
+   "apres_ancien": "2a000000",
+   "type": "rel32",
+   "retrouve_par": "contexte unique de 64+64 instructions ; identique sur 15251 avant / 288 apres",
+   "preuve": "saute au bloc « test de la piste » equivalent 0x00701b3a (contexte 64+64) au lieu de la sortie 0x00701c14"
+  },
+  {
+   "va": 7347781,
+   "offset": 3150405,
+   "avant": "cbfdffff",
+   "apres": "f1fcffff",
+   "role": "[NOUVEL EXE ; les adresses citees dans ce texte sont celles de l'ANCIEN exe] etat 2 (2e moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x00701d33]",
+   "reglage": "LANDING_GATE_STATE2",
+   "constante_va": 0,
+   "va_ancien": 7347509,
+   "offset_ancien": 3150133,
+   "avant_ancien": "cbfdffff",
+   "apres_ancien": "f1fcffff",
+   "type": "rel32",
+   "retrouve_par": "contexte unique de 64+64 instructions ; identique sur 15413 avant / 126 apres",
+   "preuve": "saute au bloc « test de la piste » equivalent 0x00701b3a (contexte 64+64) au lieu de la sortie 0x00701c14"
+  },
+  {
+   "va": 7347807,
+   "offset": 3150431,
+   "avant": "b1fdffff",
+   "apres": "d7fcffff",
+   "role": "[NOUVEL EXE ; les adresses citees dans ce texte sont celles de l'ANCIEN exe] passage etat 2 -> 3 : `jmp 0x701b04` (sortie) -> `jmp 0x701a2a` (test de la piste) [jmp 0x701b04 a 0x00701d4e]",
+   "reglage": "LANDING_GATE_STATE2_TO_3",
+   "constante_va": 0,
+   "va_ancien": 7347535,
+   "offset_ancien": 3150159,
+   "avant_ancien": "b1fdffff",
+   "apres_ancien": "d7fcffff",
+   "type": "rel32",
+   "retrouve_par": "contexte unique de 64+64 instructions ; identique sur 15418 avant / 121 apres",
+   "preuve": "saute au bloc « test de la piste » equivalent 0x00701b3a (contexte 64+64) au lieu de la sortie 0x00701c14"
+  }
+ ],
+ "avertissement": "Change le circuit d'attente des avions au retour pour les DEUX porte-avions (le code est le meme). Tout ou rien : les 3 changements vont ensemble. Jamais vu en jeu avant la premiere mesure."
+}

@@ -1,0 +1,88 @@
+FILE FORMATS: .mesh  .txtr  .atlas  .cphys  (+ the XML pieces that go with them)
+===============================================================================
+
+All of these were decoded by reading the files of the installed game (rom_0/) and checking against renders; no executable code is involved.
+All numbers are little-endian. Same files on every platform (rom_0 is shared), so this section applies to Windows as well.
+
+
+1. .mesh  (version 5)   rom_0/meshes/vehicles/<vehicle>/*.mesh and meshes/aircraft_carrier/...
+-----------------------------------------------------------------------------------------------
+    "mesh"                       4 bytes
+    u32 version (5), u32 n (1)
+    u16 length + name
+    u32 (23), u32 (0)
+    4 x (u16 length + texture path)       (see section 2: diffuse, AO, paint mask, 4th unused)
+    6 x float64                           bounding box min/max (use it as a check)
+    u32 size of the vertex block IN BYTES, stride 36 bytes:
+          3 x float32 position, 4 bytes RGBA, 2 x float32 UV, 3 x float32 normal        (UV BEFORE the normal)
+    u32 size of the index block IN BYTES; indices are u32
+MAIN PITFALL: the indices are 32 bits, not 16. Read as u16 every second value is zero and half the triangles silently degenerate: the file parses without an error
+but the geometry is wrong (symptom: welding the vertices removes exactly half of the triangles). Another pitfall found late: with UV and normal swapped the
+textures come out black (two normal components were read as UV).
+- Assembly: a vehicle is exploded into 13-26 pieces. Their placement matrices are in rom_0/game_objects/vehicle_chassis_*.xml, in a `<transform>` child of each
+  `<mesh>` (m00..m22 + tx, ty, tz). Level of detail: lod 0.
+- The game has Y UP. The coordinate system is LEFT-HANDED: importing game coordinates unchanged into Blender or an STL mirrors the ship (the island ends up on
+  starboard instead of port). What works: (x, y, z) -> (-x, -z, y) and write each triangle (a, c, b) to keep the faces outward. In game: -x = port,
+  +z = bow, y = up.
+- Pieces to leave out for a clean export: `additive` (contains NaN!), `blur`, `midspin` (rotating rotor discs), `particles`, `broken`.
+- Weld vertices by position before checking a mesh: UV seams duplicate vertices, which makes the mesh look wide open; after welding 4-8 % of border edges remain
+  (normal; slicers close them).
+- UV convention: (u, 1 - v) (verified by probing: hull flanks 129/255 matching against <= 48 for the three other conventions). UVs lie in [-1, 1], the texture repeat handles it.
+- Texture slots in the header: 1 diffuse, 2 AO (grey, 1 byte per pixel!), 3 paint mask (white = zone painted in the team colour), 4 unused.
+  Paint colours: meshes/vehicles/paint_flat_*.txtr (16 x 16): dark_grey (58, 54, 50), light_grey (177, 169, 161), navy (29, 43, 83) ...
+- Weapons: the chassis only has SLOTS (`<attachments>`, 14 for the carrier, with a transform). The turrets are in vehicle_attachment_carrier_turret_*.xml (pieces with ABSOLUTE
+  transforms in the frame of the slot: compose piece -> slot). Which weapon sits where: the Lua screens (screen_weapons_anti_missile.lua {1,2,3,4}, anti_air {5,6}, support {7,8})
+  index the slots in the order of the XML: 4 CIWS at the four corners (front/back left/right, the only ones with a limited rotation), 2 AA on starboard ports (side_right_b/a),
+  the 160 mm gun side_left_a, decoys side_left_b, cruise-missile silo side_left_c (against the island), camera mast_b (type 4), golf-ball radar mast_a (type 2, inferred, not
+  proven), torpedoes on side_torpedo_*, torpedo decoys back_torpedo. The 17 `<vehicle_attachment>` entries are PARKING PLACES, not weapons.
+- Carrier facts (from the meshes, game coordinates): 213 m long, hull 52 m wide (86 m with sponsons and the island), 74 m from keel to mast top, bow = +Z. Flight deck at Y = 19.5, laid on the hangar
+  (floor 8.2 m, same level as the lowered fore deck). Island on PORT: X in [-35, -19], Z in [-52, -4]. Runway axis x = -0.3, the 5 runway lights `runway_start_1..5` at Y = 20.25,
+  Z = -87.6 and X from -12.7 to +12.0. The elevator mesh `aircraft_carrier_lift` is in its UP position by default (top at y 20.0; constraint -9..0); its texture is only 128 x 128 px: enlarge it
+  without smoothing and without AO or the red frame bleeds over a metre. The runway marking is in the deck TEXTURES (white centre line, yellow bands, red frames around the elevators).
+  The largest upward-facing horizontal surface is NOT the flight deck (that is an inner floor of 7,000 m^2 at Y = -14.8): check levels with a render.
+  The hangar top (aircraft_carrier_hangar.mesh, Y max 19.9) forms the flight deck.
+- Counting: the carrier has 109 `<mesh>` tags at lod 0, 70 pieces after the filter above, 154,086 triangles. Vehicles: the Manta spans 12.26 m.
+
+
+2. .txtr
+--------
+Header (corrected after a first wrong guess; the full header matters):
+    bytes 0-3   "TXTR"
+    bytes 4-7   u32 version
+    byte  8     pixel type: 2 = RGBA (4 bytes per pixel), 1 = GREY (1 byte per pixel)
+    bytes 9-10  u16 width        bytes 11-12 u16 height
+    byte  15    number of mipmaps
+    bytes 19-22 u32 size in bytes of the base level
+    from byte 23: the pixels (level 0 first: that is what the extractors read)
+- NEVER guess the size from sqrt(bytes/4): read the header. The `_ao` shading textures are GREY: read as RGBA they become a blotchy noise (this produced a fake "camouflage").
+- UI sprite sheets are white with an alpha channel, so they can be TINTED (replace the RGB, keep the alpha).
+
+
+3. .atlas
+---------
+    "ATLA", u32 version, u32 number_of_surfaces, then per surface: u16 length + path.
+    u32 number_of_entries; per entry: u16 length + name, u32 surface index, 8 x float32: x0 x1 y0 y1 u0 u1 v0 v1.
+Example: rom_0/textures/screen_ui/index.atlas + index_surface_0.txtr (1024 x 1024): 459 UI sprites of 64 x 64, among them one icon per vehicle chassis:
+icon_chassis_wing_small (Albatross), wing_large (Manta), rotor_small (Razorbill), rotor_large (Petrel), wheel_small (Seal), wheel_medium (Walrus), wheel_large (Bear), wheel_mule (Mule),
+sea_ship_light (Needlefish), turret, deployable_droid. NO full-size version for the Swordfish (only 16 px). 13 icons exist at 64 x 64 (Albatross, Manta, Razorbill, Petrel, Seal, Walrus,
+Bear, Mule, Turret, Droid, Needlefish, Shuttle, Unknown); only 16 x 16 for VirusBot, Swordfish, Barge, Carrier, Lifeboat. Nothing bigger is stored. Nearest-neighbour upscaling keeps lines
+sharp; LANCZOS blurs.
+
+
+4. .cphys (collision)
+---------------------
+Header "cphy", version 1, number of pieces, then PhysX COOKED convex meshes (signatures `NXS\x01CVXM`, `ICE CLHL`). The carrier hull has 477 pieces
+(aircraft_carrier_hangar_physics.cphys, 234 KB). The elevator platform is one 432-byte box that can be copied with other coordinates. Making a hole in the deck would mean finding and
+re-cutting the hull pieces below it: without PhysX's cooking tool this is manual work.
+
+
+5. XML pieces that matter for the mechanisms
+--------------------------------------------
+rom_0/game_objects/vehicle_chassis_carrier.xml:
+  - bodies: hull (collision hangar_physics.cphys), lift (chassis_carrier_lift_phys.cphys), lift_personnel; constraints lift_constraint (type 0, course -9..0; drive_* ignored by the code) and
+    lift_personnel (type 4);
+  - paths: 47 nodes and 48 graph_link entries; those read by name by the code: see 02 section 4;
+  - aircraft bays vehicle_attachment air1..air8 (y 13.5), ground-vehicle places vehicle_attachment1..8, bay lights vehicle_bay_air_lift_light, buttons lift_tower_floor_*;
+  - nav mesh lift_aircraft attached to body 1;
+  - the screens (name, type, script_file_name, refresh_interval), see 06.
+Localisation: rom_0/locale/localization.csv (9 languages), font rom_0/locale/lanapixel.ttf (both excluded from the multiplayer mod sync).

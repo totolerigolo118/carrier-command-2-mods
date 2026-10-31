@@ -1,0 +1,140 @@
+FROM THE MAC BUILD TO A WINDOWS DLL: WHAT CARRIES OVER, WHAT DOES NOT, AND WHAT IS WORTH DOING
+==============================================================================================
+
+Written for someone who works on the Windows build with a DLL loaded in place of the system DirectInput 8 library (the game loads it first) and who
+bridges Lua and the engine. The author of these notes has NEVER seen the Windows executable. Everything below about Windows comes from the public README of
+a public community SDK (GPL-3.0), quoted as such, or is deduced and marked [UNV].
+
+
+1. WHAT THE PUBLIC SDK SAYS ABOUT THE WINDOWS TARGET (its README, not verified by us)
+------------------------------------------------------------------------------------
+- game build "1.5.18 Windows", executable `carrier_command.exe`, recognised by PE timestamp + image size against a table of profiles;
+- built with a bundled C compiler "for 32-bit Windows": THE WINDOWS EXECUTABLE IS PROBABLY 32-BIT x86 (hook addresses quoted there look like 0x004465ec);
+- proxy `dinput8.dll` loaded by GLFW (joystick support), game folder searched first, all five exports forwarded to the system DLL;
+- hooks: logic server vtable (init, tick, end), Lua environment creation (adds a global table to each Lua state), Lua 5.3 internals (index2addr, luaS_new, luaH_new...);
+  transactional patches (original bytes checked, overlaps refused, rollback);
+- a world API by named fields (vehicles, tiles / islands, airfields, hangars, waypoints, physics, events such as an airfield tick or the choice of a hangar slot).
+This tells us how to write the rest: the Mac executable is 64-bit and the Windows one is (probably) 32-bit.
+
+
+2. WHAT THIS MEANS FOR THE MAC NOTES (read this before reusing any number)
+--------------------------------------------------------------------------
+THE LOGIC CARRIES OVER (same source code, different compilers) [UNV but very likely]:
+  - state machines and their states (dock states, runway states, crane moves, the mode of the docking manager);
+  - formulas and VALUES (steps per tick, accelerations, caps, thresholds, delays in ticks, the energy shares and weights);
+  - names: functions, classes, saved field names, Lua API names, node and path names in the XML, e_* enums;
+  - everything about rom_0 data files (XML, Lua, shaders, textures, meshes, constants.txt): shared by all platforms.
+THE ADDRESSES AND OFFSETS DO NOT:
+  - x86-64 (Mac) vs x86-32 (Windows): all pointers are 8 bytes here and 4 there, so every structure containing a pointer has other offsets (dock_state at 0x220,
+    manager slots at 0x78..0x84, carrier fields at 0x15xx ...): treat the offsets of these notes as SEMANTIC LABELS ("the field that holds the crane's vehicle id"),
+    not as numbers to reuse. Alignment and padding differ too (and `long` is 8 bytes on the Mac, 4 on Windows).
+  - Instruction encoding: no RIP-relative addressing in 32-bit code; floats are read with an ABSOLUTE address (`movss xmm0, [abs32]`, `f3 0f 10 05 <abs32>`), or even with x87
+    instructions if the build is not SSE: the "redirect the constant" patch becomes "change the 4-byte absolute address", same idea, other bytes. The table in
+    10_patch_tables.txt documents the Mac encoding only.
+  - Calling convention and `this`: SysV on Mac (rdi, rsi, rdx, rcx, r8, r9) vs MSVC 32-bit (thiscall: `this` in ECX; cdecl / stdcall for functions): the C caves in workshop/outil/generateurs/ assume SysV
+    and must be rewritten (or written against the compiler you use); virtual-call indices and vtable layout may differ between the two C++ ABIs.
+  - Inlining: on the Mac `docking_manager_air::update` is ONE function of ~5,000 instructions with everything inlined (crane, taxi, landing, queues). The MSVC build may split
+    or inline otherwise; look for groups of constants, not for one function.
+  - MSVC puts float constants in literals named __real@3ccccccd in .rdata; negative values may not exist as constants (the compiler loads the positive and flips the sign
+    with xorps and a mask __xmm@80000000...): redirecting the positive read can then cover both bounds.
+
+
+3. HOW TO FIND THE SAME PLACES ON A BUILD WITHOUT SYMBOLS
+---------------------------------------------------------
+a) Float fingerprints (IEEE-754 bits, shown here big-endian; in the file they are little-endian):
+
+    value        bits         role (Mac build)                         doubled value / bits
+    0.4          0x3ECCCCCD   elevator/crane energy share              0.8     0x3F4CCCCD
+    0.025        0x3CCCCCCD   platform step per tick                   0.05    0x3D4CCCCD
+    -0.025       0xBCCCCCCD   platform step (lower bound)              -0.05   0xBD4CCCCD
+    0.001        0x3A83126F   platform dead zone (do not touch; helps recognise the place)
+    1/6          0x3E2AAAAB   crane horizontal step                    1/3     0x3EAAAAAB
+    -1/6         0xBE2AAAAB                                            -1/3    0xBEAAAAAB
+    1/30         0x3D088889   crane vertical step                      1/15    0x3D888889
+    -1/30        0xBD088889                                            -1/15   0xBD888889
+    0.04         0x3D23D70A   crane rotation step                      0.08    0x3DA3D70A
+    -0.04        0xBD23D70A                                            -0.08   0xBDA3D70A
+    0.05         0x3D4CCCCD   deck taxi acceleration                   0.1     0x3DCCCCCD
+    2.5          0x40200000   deck taxi speed cap                      5.0     0x40A00000
+    11.0 / 12.0  0x41300000 / 0x41400000   crane hook heights
+    30.0         0x41F00000   ticks per second in `t += v / (L x 30)`
+    0.01 / 0.1   0x3C23D70A / 0x3DCCCCCD   arrival thresholds
+    0.5          0x3F000000   take-off acceleration (no cap)
+    48.0 / 72.0 / 144.0   0x42400000 / 0x42900000 / 0x43100000   AI aircraft floor speeds (Albatross / Manta) and cap
+b) GROUPS of constants close together are better anchors than single values:
+    - 0.025 + 0.001 within a few dozen bytes (elevator platform step);
+    - 2.5 and 0.05 in pairs, 7 times (taxi blocks);
+    - 1/6 + 1/30 + 11.0/12.0 together (crane);
+    - the five energy shares 0.8, 0.2, 0.8, 0.6, 0.4 in one function (power manager build; 0.4 is the elevator/crane one);
+    - 48.0 then 144.0 then 72.0 then 144.0 around a compare with type 10 (the AI speed floors);
+    - 100^2 and the helicopter waiting point (-100, -240).
+c) STRINGS AS ANCHORS: names used by the code exist in every build.
+    - "lift_constraint" is looked up by name in the carrier's build function; "load_lift_lower", "runway_start", "runway_end", "lift_lower", "lift_upper", "hanger_center" are read by
+      name in the air docking manager's build function (the spelling "hanger_center" is the game's own);
+    - "vehicle_ai_wing_cruise_speed" and friends (dev values), the 314 constants of constants.txt (loader recipe in 08), the names of the Lua API functions in the Lua binding tables
+      (the ship screens have update_get_logic_tick, the frontend has update_get_time_ms).
+d) SAVED-STATE PARSERS: the best way to rebuild structure layouts. The function that reads a saved state ("parse_state_xml") reads each member BY NAME into `this + offset`. Find the string
+    ("docking_queue", "runway_state", "vehicle_id_crane", "crane_instructions", "docking_join_time", "vehicle_attachment_index_crane" ...), follow its reference, and read the destination
+    offset (on 32-bit: `push offset name` ... `lea ecx, [esi+offset]`). That gives you the layout of the Windows build with no guesswork.
+e) Cross-check by behaviour: in the stock game, deck taxi takes ~42 s after touchdown, the elevator takes 12 s for 9 m, the AI floor is 48 / 72 m/s, one aircraft gets the runway per
+    lap of the holding pattern. Measure in GAME time (update_get_logic_tick()/30).
+
+
+4. WHAT A DLL CHANGES COMPARED TO BYTE PATCHES AND CAVES
+-------------------------------------------------------
+- On the Mac everything that needed code had to be squeezed into a dead function (see 01 section 3) and compiled into a hand-linked blob. A DLL replaces all that with ordinary C and your toolchain.
+- Hooking a function at its ENTRY is not enough for most of what is in these notes: the interesting code is in the MIDDLE of very large functions (crane, taxi, landing states of
+  docking_manager_air::update; the AI speed floor in the middle of c_vehicle_server_wing::tick_control). You still need mid-function trampolines (replace whole instructions with a jump and replay
+  them; check that no jump of the game lands inside the replaced bytes) or, for values, constant redirects.
+- Better than redirecting a constant to another constant: redirect to a TUNABLE owned by the plugin (a small table of named floats: platform step, crane steps, taxi acceleration/cap, AI floors, energy shares, ...)
+  that Lua and the player can read and write at run time. This is the "standardised SDK" version of what was done here with fixed values.
+- In multiplayer the simulation runs on the host: only the host's tunables matter [ASM].
+
+
+5. RELATED CLASSES FOR ISLAND AIRFIELDS (names only; they were listed from the symbol table and NOT read)
+--------------------------------------------------------------------------------------------------------
+c_environment_tile_airfield_manager (+ its nested `hangar`): dock, undock, cancel_docking, update, tick_repair_vehicles, tick_resupply_vehicles, get_available_hangar_node, hangar::update,
+hangar::build_path_dock / build_path_undock, create_from_state_data / get_state_data (saved state: c_environment_tile_airfield_manager_state::hangar_state), plus c_enemy_spawner::spawn_plane,
+add_plane_to_hangar, get_chassis_hangar. The carrier's docking_manager_air follows the same family of ideas (queue + single-vehicle slots + paths built from graph links of the XML).
+Addresses on the Mac in 12_symbol_index.txt. What we know about the carrier side (queue semantics, slot meaning, taxi model) is in 02-04.
+
+
+6. WHAT IS WORTH DOING (gain / effort / risk of each item, from what was measured)
+----------------------------------------------------------------------------------
+    item                                     result                          effort (Mac)        notes
+    1  elevator + crane + deck taxi x2       launches -41 % [GAME]           34 float redirects, 1 session   best value / effort; energy share 0.4 -> 0.8 is the trade-off
+    2  helicopter approach x2 + touch near   4 helicopters -36 % [GAME]      4 sites, 1-2 sessions           shifting the touch point is the only delicate part
+       the elevator
+    3  landing pattern (wide slot + circle)  ~-30 % on 4 aircraft [EST]      10 sites, 1 session + queue simulation     risk: slower if one landing lasts 140-160 s; stock never measured
+    4  deck taxi x2 on return                -0:20 to -1:25 on 4 aircraft [EST]   3 sites, trivial           not yet measured
+    5  cancel a launch (2nd bay press)       window ~13-18 s [ASM]           cave of 932 bytes + 2 hooks, difficulty 5/10     needs saved-state reasoning; worst risk = stuck crane; check in game pending
+    6  AI speed modes ECO/NORMAL/FLANK       +27 % / +41 % speed [EST]       cave 671 bytes + Lua bar        also touches fuel use; check in game pending
+    7  CCTV image 512 x 512                  4x sharper, cosmetic            4 hooks, cave 439 bytes         check in game pending
+    8  shader without the old-TV effect      cosmetic, data file only        trivial, works on any platform
+    9  pilot UI 512 px                       rejected by the player          3 bytes
+   10  second elevator                       almost nothing (runway stays single)   9/10, 8-12 sessions    NOT worth it
+   11  release the runway earlier            collision risk                  refused                        the game destroys colliding vehicles
+   12  helicopters landing on the elevator   collided in test                abandoned                      kept as reference code
+   13  parking on deck                       only for prepared waves         8/10, 4-6 sessions             not worth it now
+The recurring lesson: the carrier's real bottleneck is the single RUNWAY slot (occupied from the grant until the aircraft is on the elevator), not the elevator.
+
+
+7. WISH LIST FOR A LUA-FACING SDK (ranked by value for the effort; all of this is currently impossible from stock Lua)
+----------------------------------------------------------------------------------------------------------------------
+    1. A tick that runs OUTSIDE the screens (stock Lua only runs while a screen is displayed): needed for any automation.
+    2. Read access to the docking manager: queue, slot contents (crane / elevator / runway / rotor take-off), dock_state, runway_state, mode; and events: runway granted, touchdown, stored, launch started.
+    3. Named TUNABLES (section 4): platform step, crane steps, taxi acceleration and cap, AI floor speeds, energy shares: get/set from Lua.
+    4. File output from Lua (an append-only log in the user folder) and `update_get_time_ms` in ship screens (today only the frontend has it): measuring and plotting.
+    5. Per-team AI speed modes (what the ECO / NORMAL / FLANK bar does), per-team, host-only.
+    6. Commands the player cannot give: choose a hangar slot (a hangar-choice hook exists in a public SDK for islands), press the physical bay buttons. (Launch and recall by id
+       already exist in Lua through waypoints, see 07 section 3.)
+    7. Screen texture sizes per screen type (the CCTV hack).
+Things I would NOT bother with: a 2nd elevator, parking on the deck, moving the pilot UI resolution.
+
+
+8. WHAT IS NOT KNOWN (honest list)
+----------------------------------
+- Everything about the Windows executable. The Mac build date is 2026-01-05 (md5 b0107170ddaf0245cbfee8a2d876aeb6); whether the Windows 1.5.18 code is the same version of the source is not known.
+- Whether struct field ORDER is identical across platforms (probable, not checked).
+- The CCTV, speed-mode and crane-cancel modules were installed on the Mac but NOT yet seen in game when these notes were written; the deck-taxi x2 and the landing-vs-stock gain are not measured.
+- Multiplayer behaviour of anything above: never tested with a second player.

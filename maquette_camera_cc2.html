@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vue de pilotage CC2</title>
+<style>
+@font-face { font-family: "LanaPixel"; src: local("LanaPixel"); }
+:root { --bg: #0b0f0d; --panneau: #121a16; --trait: #24342c; --texte: #d7e4dc; --doux: #8aa396; --vert: #10ff7f; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--texte); font: 15px/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+.page { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-family: "LanaPixel", monospace; font-weight: normal; color: var(--vert); font-size: 28px; margin: 0 0 6px; letter-spacing: .02em; }
+p { margin: 0 0 10px; max-width: 75ch; color: var(--doux); }
+p strong { color: var(--texte); }
+.grille { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+@media (max-width: 760px) { .grille { grid-template-columns: 1fr; } }
+figure { margin: 0; background: var(--panneau); border: 1px solid var(--trait); border-radius: 6px; padding: 10px; cursor: zoom-in; }
+figure.grand { grid-column: 1 / -1; cursor: zoom-out; }
+canvas { display: block; width: 100%; aspect-ratio: 16 / 10; border-radius: 3px; background: #000; }
+figcaption { display: flex; gap: 12px; align-items: baseline; margin-top: 8px; }
+.num { font-family: "LanaPixel", monospace; font-size: 30px; color: var(--vert); line-height: 1; min-width: 26px; }
+.titre { color: var(--texte); font-weight: 600; }
+.detail { color: var(--doux); font-size: 13.5px; }
+.note { margin-top: 22px; font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>VUE DE PILOTAGE : 6 VARIANTES</h1>
+  <p>Ce qui est flou quand tu pilotes ou que tu regardes par la caméra gimbal, c'est <strong>l'interface par-dessus l'image</strong> (viseur, échelles, textes) : le jeu la dessine dans une image de <strong>256 pixels de haut</strong>, puis l'agrandit sur tout l'écran, avec un effet « vieille télé » (grain, lignes, couleurs qui bavent, bords assombris). Le monde en 3D, lui, est déjà en pleine résolution.</p>
+  <p>Clique sur une variante pour l'agrandir. Réponds-moi avec un numéro, ou un mélange (« le 5 avec les bords du 3 »).</p>
+  <div class="grille" id="grille"></div>
+  <p class="note">Simulation : le paysage est un décor dessiné pour la page, l'interface imite celle du jeu (sa police, ses couleurs, ses placements en pixels), et l'effet reprend le vrai programme d'effet du jeu. Dans le jeu, une interface plus fine a des textes et des repères plus petits à l'écran, comme ici : c'est le prix de la netteté.</p>
+</div>
+
+<script>
+const VARIANTES = [
+  { h: 256, vign: 1, aber: 1, grain: 1, lisse: 0, titre: "D'origine", detail: "Interface en 256 pixels, effet vieille télé complet. C'est ce que tu as aujourd'hui." },
+  { h: 256, vign: 0, aber: 0, grain: 0, lisse: 0, titre: "Sans effet", detail: "Même interface, sans grain, lignes, bavures ni bords assombris. Mêmes tailles qu'aujourd'hui." },
+  { h: 384, vign: 1, aber: 0, grain: 0, lisse: 0, titre: "1,5× plus fine, effet allégé", detail: "Interface en 384 pixels, on garde seulement les bords assombris. Textes 1,5× plus petits." },
+  { h: 512, vign: 1, aber: 1, grain: 1, lisse: 0, titre: "2× plus fine, effet gardé", detail: "Interface en 512 pixels avec l'effet complet, en plus fin. Textes 2× plus petits." },
+  { h: 512, vign: 0, aber: 0, grain: 0, lisse: 0, titre: "2× plus fine, sans effet", detail: "Interface en 512 pixels, image propre. Textes 2× plus petits." },
+  { h: 768, vign: 0, aber: 0, grain: 0, lisse: 1, titre: "3× plus fine, lissée", detail: "Interface en 768 pixels, sans effet, pixels lissés. Textes 3× plus petits." },
+];
+
+// ---------- decor 3D (pleine resolution, comme dans le jeu)
+function decor(L, H) {
+  const c = document.createElement("canvas"); c.width = L; c.height = H;
+  const g = c.getContext("2d");
+  const hz = Math.round(H * 0.56);
+  let d = g.createLinearGradient(0, 0, 0, hz);
+  d.addColorStop(0, "#4f78a3"); d.addColorStop(1, "#c4d3dd");
+  g.fillStyle = d; g.fillRect(0, 0, L, hz);
+  g.fillStyle = "rgba(255,255,255,0.55)";
+  for (const [x, y, r] of [[0.18, 0.18, 0.09], [0.26, 0.16, 0.07], [0.7, 0.25, 0.11], [0.8, 0.22, 0.08], [0.5, 0.1, 0.06]]) {
+    g.beginPath(); g.ellipse(x * L, y * H, r * L, r * H * 0.35, 0, 0, 7); g.fill();
+  }
+  d = g.createLinearGradient(0, hz, 0, H);
+  d.addColorStop(0, "#2d5470"); d.addColorStop(1, "#0d2130");
+  g.fillStyle = d; g.fillRect(0, hz, L, H - hz);
+  g.strokeStyle = "rgba(200,225,240,0.18)"; g.lineWidth = Math.max(1, H / 500);
+  for (let i = 0; i < 60; i++) {
+    const y = hz + Math.pow(i / 60, 1.8) * (H - hz), a = 6 + i * 0.6;
+    g.beginPath();
+    for (let x = 0; x <= L; x += 8) g.lineTo(x, y + Math.sin(x / (40 + i * 3) + i) * a * 0.15);
+    g.stroke();
+  }
+  g.fillStyle = "#3d5245";
+  g.beginPath(); g.moveTo(L * 0.05, hz); g.lineTo(L * 0.12, hz - H * 0.05); g.lineTo(L * 0.2, hz - H * 0.025);
+  g.lineTo(L * 0.27, hz - H * 0.06); g.lineTo(L * 0.36, hz); g.fill();
+  g.fillStyle = "#3a4148";                                  // navire au loin (la cible)
+  const nx = L * 0.67, ny = hz - 1;
+  g.fillRect(nx - L * 0.03, ny - H * 0.008, L * 0.06, H * 0.008);
+  g.fillRect(nx - L * 0.004, ny - H * 0.02, L * 0.01, H * 0.013);
+  return c;
+}
+
+// ---------- interface, dessinee en pixels du jeu (positions fixes autour du centre, comme vehicle_hud.lua)
+function interfaceJeu(h) {
+  const w = Math.round(h * 1.6), c = document.createElement("canvas"); c.width = w; c.height = h;
+  const g = c.getContext("2d");
+  g.imageSmoothingEnabled = false; g.textBaseline = "top"; g.font = "11px LanaPixel";
+  const V = "rgb(0,255,0)", B = "#ffffff", OK = "rgb(16,255,127)", J = "rgb(255,255,0)";
+  const cx = Math.round(w / 2), cy = Math.round(h / 2);
+  const ligne = (x, y, l, e, col) => { g.fillStyle = col; g.fillRect(x, y, l, e); };
+  const texte = (s, x, y, col, centre) => { g.fillStyle = col; g.fillText(s, Math.round(centre ? x - g.measureText(s).width / 2 : x), y); };
+  // viseur
+  ligne(cx - 14, cy, 9, 1, V); ligne(cx + 6, cy, 9, 1, V); ligne(cx, cy - 14, 1, 9, V); ligne(cx, cy + 6, 1, 9, V);
+  // echelle d'assiette
+  for (const k of [-2, -1, 1, 2]) {
+    const y = cy + k * 26;
+    ligne(cx - 60, y, 38, 1, V); ligne(cx + 23, y, 38, 1, V);
+    texte(String(Math.abs(k) * 10), cx - 76, y - 5, V); texte(String(Math.abs(k) * 10), cx + 65, y - 5, V);
+  }
+  // cap en haut
+  for (let i = -10; i <= 10; i++) ligne(cx + i * 8, 22, 1, i % 4 === 0 ? 6 : 3, V);
+  for (const [i, s] of [[-8, "330"], [-4, "345"], [0, "N"], [4, "015"], [8, "030"]]) texte(s, cx + i * 8, 30, V, true);
+  ligne(cx, 14, 1, 6, B);
+  // altitude a droite, vitesse a gauche
+  for (const [x, valeur, cote] of [[cx + 112, 1250, 1], [cx - 112, 212, -1]]) {
+    ligne(x, cy - 60, 1, 121, V);
+    for (let j = -6; j <= 6; j++) ligne(cote > 0 ? x : x - 4, cy + j * 10, 5, 1, V);
+    for (const j of [-3, 3]) texte(String(valeur - j * (cote > 0 ? 10 : 2)), cote > 0 ? x + 8 : x - 32, cy + j * 10 - 5, V);
+    g.strokeStyle = B; g.lineWidth = 1;
+    g.strokeRect((cote > 0 ? x + 6 : x - 38) + 0.5, cy - 7.5, 32, 14);
+    texte(String(valeur), cote > 0 ? x + 9 : x - 35, cy - 5, B);
+  }
+  // cible encadree
+  const tx = Math.round(w * 0.67), ty = Math.round(h * 0.56) - 4;
+  for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    ligne(tx + sx * 9 - (sx > 0 ? 4 : 0), ty + sy * 7, 5, 1, J); ligne(tx + sx * 9, ty + sy * 7 - (sy > 0 ? 4 : 0), 1, 5, J);
+  }
+  texte("BEAR  2,4 KM", tx + 14, ty - 12, J);
+  // arme active, a gauche (10, h/2 - 80) comme render_attachment_info
+  texte("CANON 30 MM", 10, cy - 80, B);
+  texte("MUN. 120/200", 10, cy - 68, V);
+  ligne(10, cy - 54, 60, 3, "rgb(64,64,64)"); ligne(10, cy - 54, 36, 3, OK);
+  // ligne d'etat en bas (10, h - 20)
+  texte("ALT 1250 M   VIT 212 KM/H   CARBURANT 78 %", 10, h - 20, V);
+  return c;
+}
+
+// ---------- WebGL : decor puis interface passee dans l'effet du jeu (screen_crt_hud.glsl)
+const VS = "attribute vec2 p; varying vec2 uv; void main(){ uv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }";
+const FS_DECOR = "precision mediump float; varying vec2 uv; uniform sampler2D t; void main(){ gl_FragColor = texture2D(t, uv); }";
+const FS_CRT = `precision mediump float;
+varying vec2 uv;
+uniform sampler2D texture_color, texture_noise;
+uniform vec2 screen_resolution;
+uniform float animation_time, animation_rand, u_vign, u_aber, u_grain;
+void main() {
+  // reprise de rom_0/shaders/screen_crt_hud.glsl (luminosite 1, deformation 0, comme le jeu pour l'interface)
+  float crt_effect_factor = u_aber;
+  float screen_warp_power = 0.1;
+  vec2 pixel_size = vec2(1.0 / screen_resolution.x, 1.0 / screen_resolution.y);
+  const float pi = 3.14159265359;
+  float vignette_x = pow(abs(sin(uv.x * pi)), screen_warp_power);
+  float vignette_y = pow(abs(sin(uv.y * pi)), screen_warp_power);
+  float vignette_factor = mix(1.0, vignette_x * vignette_y, u_vign);
+  vec2 w = uv;
+  float scanline_brightness = sin(animation_time * 5.0 + w.y * 50.0) * 0.5 + 0.5;
+  float uv_shift = (pixel_size.x * 0.3) * crt_effect_factor;
+  vec2 coord_r = vec2(clamp(w.x - uv_shift, 0.0, 1.0), w.y);
+  vec2 coord_b = vec2(clamp(w.x + uv_shift, 0.0, 1.0), w.y);
+  vec2 noise_to_pixel_scale = screen_resolution / vec2(256.0);
+  float noise_sample = texture2D(texture_noise, (w + vec2(animation_rand)) * noise_to_pixel_scale).r;
+  float noise_sample_2 = texture2D(texture_noise, ((w + vec2(animation_rand)) * 10.0) * noise_to_pixel_scale).r;
+  vec2 coord_noise_offset = vec2(noise_sample_2 * 0.0005 * crt_effect_factor);
+  float r = texture2D(texture_color, coord_r + coord_noise_offset).r;
+  float g = texture2D(texture_color, w + coord_noise_offset).g;
+  float b = texture2D(texture_color, coord_b + coord_noise_offset).b;
+  float a = texture2D(texture_color, w + coord_noise_offset).a;
+  vec3 backlight_color = vec3(0.02, 0.025, 0.04) * 5.0 * crt_effect_factor;
+  vec3 col = vec3(mix(backlight_color.r, 1.0, r), mix(backlight_color.g, 1.0, g), mix(backlight_color.b, 1.0, b));
+  vec4 color_out = vec4(col, a);
+  color_out += vec4(noise_sample) * (0.025 + 0.025 * scanline_brightness) * u_grain;
+  if (vignette_factor < 0.2) color_out = vec4(0.0, 0.0, 0.0, 1.0);
+  else color_out = mix(color_out, vec4(0.0, 0.0, 0.0, 1.0), 1.0 - pow(max(vignette_factor - 0.2, 0.0), 0.2));
+  gl_FragColor = color_out;
+}`;
+
+function programme(gl, fs) {
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, VS], [gl.FRAGMENT_SHADER, fs]]) {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.linkProgram(p); return p;
+}
+function texture(gl, source, lisse, repete) {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  if (source instanceof Uint8Array) gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 256, 256, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, source);
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+  const f = lisse ? gl.LINEAR : gl.NEAREST, wr = repete ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, f); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, f);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wr); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wr);
+  return t;
+}
+
+const bruit = new Uint8Array(256 * 256);
+for (let i = 0; i < bruit.length; i++) bruit[i] = Math.random() * 255;
+const scenes = [];
+
+function construire() {
+  const grille = document.getElementById("grille");
+  VARIANTES.forEach((v, i) => {
+    const fig = document.createElement("figure");
+    fig.innerHTML = `<canvas></canvas><figcaption><span class="num">${i + 1}</span><span><span class="titre">${v.titre}</span><br><span class="detail">${v.detail}</span></span></figcaption>`;
+    fig.addEventListener("click", () => { fig.classList.toggle("grand"); requestAnimationFrame(redimensionner); });
+    grille.appendChild(fig);
+    const cv = fig.querySelector("canvas");
+    const gl = cv.getContext("webgl", { premultipliedAlpha: false, antialias: false });
+    if (!gl) { fig.querySelector(".detail").textContent += " (WebGL indisponible dans ce navigateur)"; return; }
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const hud = interfaceJeu(v.h);
+    scenes.push({ v, cv, gl, pDecor: programme(gl, FS_DECOR), pCrt: programme(gl, FS_CRT), tHud: texture(gl, hud, v.lisse, false),
+                  tBruit: texture(gl, bruit, true, true), tDecor: null, hud });
+  });
+  redimensionner();
+}
+
+function redimensionner() {
+  for (const s of scenes) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const L = Math.round(s.cv.clientWidth * dpr), H = Math.round(L / 1.6);
+    if (s.cv.width === L) continue;
+    s.cv.width = L; s.cv.height = H;
+    s.tDecor = texture(s.gl, decor(L, H), true, false);
+  }
+}
+
+function dessiner(t) {
+  for (const s of scenes) {
+    const gl = s.gl; if (!s.tDecor) continue;
+    gl.viewport(0, 0, s.cv.width, s.cv.height);
+    for (const [p, unite] of [[s.pDecor, 0], [s.pCrt, 1]]) {
+      gl.useProgram(p);
+      const loc = gl.getAttribLocation(p, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      if (p === s.pDecor) {
+        gl.disable(gl.BLEND); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, s.tDecor);
+        gl.uniform1i(gl.getUniformLocation(p, "t"), 0);
+      } else {
+        gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, s.tHud);
+        gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, s.tBruit);
+        const u = (n) => gl.getUniformLocation(p, n);
+        gl.uniform1i(u("texture_color"), 0); gl.uniform1i(u("texture_noise"), 1);
+        gl.uniform2f(u("screen_resolution"), s.hud.width, s.hud.height);
+        gl.uniform1f(u("animation_time"), t / 1000); gl.uniform1f(u("animation_rand"), Math.random());
+        gl.uniform1f(u("u_vign"), s.v.vign); gl.uniform1f(u("u_aber"), s.v.aber); gl.uniform1f(u("u_grain"), s.v.grain);
+      }
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+  }
+}
+
+const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function boucle(t) { dessiner(t); if (!calme) setTimeout(() => requestAnimationFrame(boucle), 33); }
+window.addEventListener("resize", () => { redimensionner(); dessiner(performance.now()); });
+document.fonts.load("11px LanaPixel").then(() => { construire(); requestAnimationFrame(boucle); });
+</script>
+</body>
+</html>

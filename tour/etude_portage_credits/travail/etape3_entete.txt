@@ -1,0 +1,54 @@
+===== carrier_command_ORIGINAL_1C9A01C3.exe 1C9A01C3
+e_lfanew 0x128 ; sections : table de 0x220 a 0x310 (6 sections x 40 octets)
+SizeOfHeaders 0x400 ; DllCharacteristics 0x8140 (DYNAMIC_BASE=True, NX=True) ; Characteristics 0x122 (RELOCS_STRIPPED=False)
+CheckSum 0x0 ; horodatage 0x6a36c177 ; nb dossiers de donnees  16
+   dossier export               rva 0xa1ac10 taille 0x84
+   dossier import               rva 0xa1ac94 taille 0xc8
+   dossier ressources           rva 0xa5c000 taille 0x4aae0
+   dossier reloc                rva 0xaa7000 taille 0x4f1c4
+   dossier debug                rva 0x9bdba8 taille 0x70
+   dossier tls                  rva 0x9bdd00 taille 0x18
+   dossier load_config          rva 0x9bdc18 taille 0x40
+   dossier IAT                  rva 0x8d6000 taille 0x52c
+fin des dossiers de donnees : 0x220
+octets 0x2f0..0x3ff : c4f104000070aa0000f20400004ca80000000000000000000000000040000042000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+octets non nuls entre 0x310 et 0x3ff : []
+4 octets a 0x310 : 00000000
+signature numerique (dossier 4) : non
+section de la VA 0x400310 : EN-TETE
+===== carrier_command_PATCHE_8E7FCBB6.exe 8E7FCBB6
+e_lfanew 0x128 ; sections : table de 0x220 a 0x310 (6 sections x 40 octets)
+SizeOfHeaders 0x400 ; DllCharacteristics 0x8140 (DYNAMIC_BASE=True, NX=True) ; Characteristics 0x122 (RELOCS_STRIPPED=False)
+CheckSum 0x0 ; horodatage 0x6a36c177 ; nb dossiers de donnees  16
+   dossier export               rva 0xa1ac10 taille 0x84
+   dossier import               rva 0xa1ac94 taille 0xc8
+   dossier ressources           rva 0xa5c000 taille 0x4aae0
+   dossier reloc                rva 0xaa7000 taille 0x4f1c4
+   dossier debug                rva 0x9bdba8 taille 0x70
+   dossier tls                  rva 0x9bdd00 taille 0x18
+   dossier load_config          rva 0x9bdc18 taille 0x40
+   dossier IAT                  rva 0x8d6000 taille 0x52c
+fin des dossiers de donnees : 0x220
+octets 0x2f0..0x3ff : c4f104000070aa0000f20400004ca80000000000000000000000000040000042898888bd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+octets non nuls entre 0x310 et 0x3ff : ['0x310', '0x311', '0x312', '0x313']
+4 octets a 0x310 : 898888bd
+signature numerique (dossier 4) : non
+section de la VA 0x400310 : EN-TETE
+===== carrier_command_NOUVEAU_461E1262.exe 461E1262
+e_lfanew 0x128 ; sections : table de 0x220 a 0x310 (6 sections x 40 octets)
+SizeOfHeaders 0x400 ; DllCharacteristics 0x8140 (DYNAMIC_BASE=True, NX=True) ; Characteristics 0x122 (RELOCS_STRIPPED=False)
+CheckSum 0x0 ; horodatage 0x6ae228f3 ; nb dossiers de donnees  16
+   dossier export               rva 0xa1ac40 taille 0x84
+   dossier import               rva 0xa1acc4 taille 0xc8
+   dossier ressources           rva 0xa5c000 taille 0x4aae0
+   dossier reloc                rva 0xaa7000 taille 0x4f1ec
+   dossier debug                rva 0x9bdbd8 taille 0x70
+   dossier tls                  rva 0x9bdd40 taille 0x18
+   dossier load_config          rva 0x9bdc48 taille 0x40
+   dossier IAT                  rva 0x8d6000 taille 0x52c
+fin des dossiers de donnees : 0x220
+octets 0x2f0..0x3ff : ecf104000070aa0000f20400004ea80000000000000000000000000040000042000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+octets non nuls entre 0x310 et 0x3ff : []
+4 octets a 0x310 : 00000000
+signature numerique (dossier 4) : non
+section de la VA 0x400310 : EN-TETE

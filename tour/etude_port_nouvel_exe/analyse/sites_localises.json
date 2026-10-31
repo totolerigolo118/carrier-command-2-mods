@@ -1,0 +1,1760 @@
+{
+ "resultats": [
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 4195088,
+   "offset_ancien": 784,
+   "avant": "00000000",
+   "apres": "898888bd",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "statut": "sur",
+   "type": "cave_entete",
+   "va_nouveau": 4195088,
+   "offset_nouveau": 784,
+   "contexte": "bourrage nul de l'en-tete : 0x310-0x400 dans les deux exe, octets du champ = 00000000"
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7250081,
+   "offset_ancien": 3052705,
+   "avant": "cdcccc3e",
+   "apres": "cdcc4c3f",
+   "reglage": "CP_T_ENERGY_SHARE",
+   "statut": "sur",
+   "type": "imm",
+   "va_nouveau": 7250353,
+   "offset_nouveau": 3052977,
+   "instruction_ancien": "0x006ea09e mov dword ptr [edi + 8], 0x3ecccccd",
+   "instruction_nouveau": "0x006ea1ae mov dword ptr [edi + 8], 0x3ecccccd",
+   "fenetre": 64,
+   "etendue_avant": 523,
+   "etendue_apres": 6348,
+   "decalage": 272,
+   "references_dans_fenetre": 2,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 523 avant / 6348 apres",
+   "instruction_site_ancien": "dword ptr [edi + 8], 0x3ecccccd",
+   "mn": "mov",
+   "taille_ins": 7,
+   "champ_dans_ins": 3,
+   "est_reloc_nouveau": false
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7313425,
+   "offset_ancien": 3116049,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "reglage": "CP_T_TAXI_CAP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7313697,
+   "offset_nouveau": 3116321,
+   "instruction_ancien": "0x006f980d movss xmm2, dword ptr [0xdb76c8]",
+   "instruction_nouveau": "0x006f991d movss xmm2, dword ptr [0xdb7700]",
+   "fenetre": 64,
+   "etendue_avant": 7672,
+   "etendue_apres": 7867,
+   "decalage": 272,
+   "references_dans_fenetre": 4,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 7672 avant / 7867 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb76c8]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14382792,
+   "cible_nouveau": 14382848,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 2.5,
+   "valeur_lue_nouveau": 2.5
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7313477,
+   "offset_ancien": 3116101,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7313749,
+   "offset_nouveau": 3116373,
+   "instruction_ancien": "0x006f9841 addss xmm0, dword ptr [0xdb71d0]",
+   "instruction_nouveau": "0x006f9951 addss xmm0, dword ptr [0xdb7208]",
+   "fenetre": 64,
+   "etendue_avant": 7684,
+   "etendue_apres": 7855,
+   "decalage": 272,
+   "references_dans_fenetre": 4,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 7684 avant / 7855 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb71d0]",
+   "mn": "addss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381520,
+   "cible_nouveau": 14381576,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.05000000074505806,
+   "valeur_lue_nouveau": 0.05000000074505806
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7320270,
+   "offset_ancien": 3122894,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7320542,
+   "offset_nouveau": 3123166,
+   "instruction_ancien": "0x006fb2ca addss xmm0, dword ptr [0xdb71d0]",
+   "instruction_nouveau": "0x006fb3da addss xmm0, dword ptr [0xdb7208]",
+   "fenetre": 64,
+   "etendue_avant": 9227,
+   "etendue_apres": 6312,
+   "decalage": 272,
+   "references_dans_fenetre": 9,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 9227 avant / 6312 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb71d0]",
+   "mn": "addss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381520,
+   "cible_nouveau": 14381576,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.05000000074505806,
+   "valeur_lue_nouveau": 0.05000000074505806
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7320297,
+   "offset_ancien": 3122921,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "reglage": "CP_T_TAXI_CAP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7320569,
+   "offset_nouveau": 3123193,
+   "instruction_ancien": "0x006fb2e5 movss xmm1, dword ptr [0xdb76c8]",
+   "instruction_nouveau": "0x006fb3f5 movss xmm1, dword ptr [0xdb7700]",
+   "fenetre": 64,
+   "etendue_avant": 9232,
+   "etendue_apres": 6307,
+   "decalage": 272,
+   "references_dans_fenetre": 9,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 9232 avant / 6307 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb76c8]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14382792,
+   "cible_nouveau": 14382848,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 2.5,
+   "valeur_lue_nouveau": 2.5
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7326634,
+   "offset_ancien": 3129258,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7326906,
+   "offset_nouveau": 3129530,
+   "instruction_ancien": "0x006fcba6 addss xmm0, dword ptr [0xdb71d0]",
+   "instruction_nouveau": "0x006fccb6 addss xmm0, dword ptr [0xdb7208]",
+   "fenetre": 64,
+   "etendue_avant": 10977,
+   "etendue_apres": 4562,
+   "decalage": 272,
+   "references_dans_fenetre": 8,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 10977 avant / 4562 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb71d0]",
+   "mn": "addss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381520,
+   "cible_nouveau": 14381576,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.05000000074505806,
+   "valeur_lue_nouveau": 0.05000000074505806
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7326642,
+   "offset_ancien": 3129266,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "reglage": "CP_T_TAXI_CAP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7326914,
+   "offset_nouveau": 3129538,
+   "instruction_ancien": "0x006fcbae movss xmm1, dword ptr [0xdb76c8]",
+   "instruction_nouveau": "0x006fccbe movss xmm1, dword ptr [0xdb7700]",
+   "fenetre": 64,
+   "etendue_avant": 10978,
+   "etendue_apres": 4561,
+   "decalage": 272,
+   "references_dans_fenetre": 8,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 10978 avant / 4561 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb76c8]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14382792,
+   "cible_nouveau": 14382848,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 2.5,
+   "valeur_lue_nouveau": 2.5
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7327310,
+   "offset_ancien": 3129934,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7327582,
+   "offset_nouveau": 3130206,
+   "instruction_ancien": "0x006fce4a addss xmm0, dword ptr [0xdb71d0]",
+   "instruction_nouveau": "0x006fcf5a addss xmm0, dword ptr [0xdb7208]",
+   "fenetre": 64,
+   "etendue_avant": 11115,
+   "etendue_apres": 4424,
+   "decalage": 272,
+   "references_dans_fenetre": 8,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 11115 avant / 4424 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb71d0]",
+   "mn": "addss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381520,
+   "cible_nouveau": 14381576,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.05000000074505806,
+   "valeur_lue_nouveau": 0.05000000074505806
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7327318,
+   "offset_ancien": 3129942,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "reglage": "CP_T_TAXI_CAP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7327590,
+   "offset_nouveau": 3130214,
+   "instruction_ancien": "0x006fce52 movss xmm3, dword ptr [0xdb76c8]",
+   "instruction_nouveau": "0x006fcf62 movss xmm3, dword ptr [0xdb7700]",
+   "fenetre": 64,
+   "etendue_avant": 11116,
+   "etendue_apres": 4423,
+   "decalage": 272,
+   "references_dans_fenetre": 8,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 11116 avant / 4423 apres",
+   "instruction_site_ancien": "xmm3, dword ptr [0xdb76c8]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14382792,
+   "cible_nouveau": 14382848,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 2.5,
+   "valeur_lue_nouveau": 2.5
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7330005,
+   "offset_ancien": 3132629,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7330277,
+   "offset_nouveau": 3132901,
+   "instruction_ancien": "0x006fd8d1 addss xmm0, dword ptr [0xdb71d0]",
+   "instruction_nouveau": "0x006fd9e1 addss xmm0, dword ptr [0xdb7208]",
+   "fenetre": 64,
+   "etendue_avant": 11698,
+   "etendue_apres": 3841,
+   "decalage": 272,
+   "references_dans_fenetre": 6,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 11698 avant / 3841 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb71d0]",
+   "mn": "addss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381520,
+   "cible_nouveau": 14381576,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.05000000074505806,
+   "valeur_lue_nouveau": 0.05000000074505806
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7330032,
+   "offset_ancien": 3132656,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "reglage": "CP_T_TAXI_CAP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7330304,
+   "offset_nouveau": 3132928,
+   "instruction_ancien": "0x006fd8ec movss xmm3, dword ptr [0xdb76c8]",
+   "instruction_nouveau": "0x006fd9fc movss xmm3, dword ptr [0xdb7700]",
+   "fenetre": 64,
+   "etendue_avant": 11702,
+   "etendue_apres": 3837,
+   "decalage": 272,
+   "references_dans_fenetre": 6,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 11702 avant / 3837 apres",
+   "instruction_site_ancien": "xmm3, dword ptr [0xdb76c8]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14382792,
+   "cible_nouveau": 14382848,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 2.5,
+   "valeur_lue_nouveau": 2.5
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7331253,
+   "offset_ancien": 3133877,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7331525,
+   "offset_nouveau": 3134149,
+   "instruction_ancien": "0x006fddb1 movss xmm2, dword ptr [0xdb71d0]",
+   "instruction_nouveau": "0x006fdec1 movss xmm2, dword ptr [0xdb7208]",
+   "fenetre": 64,
+   "etendue_avant": 11969,
+   "etendue_apres": 3570,
+   "decalage": 272,
+   "references_dans_fenetre": 8,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 11969 avant / 3570 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb71d0]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381520,
+   "cible_nouveau": 14381576,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.05000000074505806,
+   "valeur_lue_nouveau": 0.05000000074505806
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7331261,
+   "offset_ancien": 3133885,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "reglage": "CP_T_TAXI_CAP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7331533,
+   "offset_nouveau": 3134157,
+   "instruction_ancien": "0x006fddb9 movss xmm5, dword ptr [0xdb76c8]",
+   "instruction_nouveau": "0x006fdec9 movss xmm5, dword ptr [0xdb7700]",
+   "fenetre": 64,
+   "etendue_avant": 11970,
+   "etendue_apres": 3569,
+   "decalage": 272,
+   "references_dans_fenetre": 8,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 11970 avant / 3569 apres",
+   "instruction_site_ancien": "xmm5, dword ptr [0xdb76c8]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14382792,
+   "cible_nouveau": 14382848,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 2.5,
+   "valeur_lue_nouveau": 2.5
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7338600,
+   "offset_ancien": 3141224,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "reglage": "CP_T_TAXI_CAP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7338872,
+   "offset_nouveau": 3141496,
+   "instruction_ancien": "0x006ffa64 movss xmm5, dword ptr [0xdb76c8]",
+   "instruction_nouveau": "0x006ffb74 movss xmm5, dword ptr [0xdb7700]",
+   "fenetre": 64,
+   "etendue_avant": 13521,
+   "etendue_apres": 2018,
+   "decalage": 272,
+   "references_dans_fenetre": 6,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 13521 avant / 2018 apres",
+   "instruction_site_ancien": "xmm5, dword ptr [0xdb76c8]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14382792,
+   "cible_nouveau": 14382848,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 2.5,
+   "valeur_lue_nouveau": 2.5
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7338735,
+   "offset_ancien": 3141359,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7339007,
+   "offset_nouveau": 3141631,
+   "instruction_ancien": "0x006ffaeb addss xmm0, dword ptr [0xdb71d0]",
+   "instruction_nouveau": "0x006ffbfb addss xmm0, dword ptr [0xdb7208]",
+   "fenetre": 64,
+   "etendue_avant": 13546,
+   "etendue_apres": 1993,
+   "decalage": 272,
+   "references_dans_fenetre": 6,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 13546 avant / 1993 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb71d0]",
+   "mn": "addss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381520,
+   "cible_nouveau": 14381576,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.05000000074505806,
+   "valeur_lue_nouveau": 0.05000000074505806
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7343910,
+   "offset_ancien": 3146534,
+   "avant": "2472db00",
+   "apres": "580bce00",
+   "reglage": "CP_T_CRANE_H",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344182,
+   "offset_nouveau": 3146806,
+   "instruction_ancien": "0x00700f22 movss xmm2, dword ptr [0xdb7224]",
+   "instruction_nouveau": "0x00701032 movss xmm2, dword ptr [0xdb725c]",
+   "fenetre": 64,
+   "etendue_avant": 14668,
+   "etendue_apres": 871,
+   "decalage": 272,
+   "references_dans_fenetre": 9,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14668 avant / 871 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb7224]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381604,
+   "cible_nouveau": 14381660,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.1666666716337204,
+   "valeur_lue_nouveau": 0.1666666716337204
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7343921,
+   "offset_ancien": 3146545,
+   "avant": "147cdb00",
+   "apres": "a4e4ce00",
+   "reglage": "CP_T_CRANE_H_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344193,
+   "offset_nouveau": 3146817,
+   "instruction_ancien": "0x00700f2d movss xmm1, dword ptr [0xdb7c14]",
+   "instruction_nouveau": "0x0070103d movss xmm1, dword ptr [0xdb7c4c]",
+   "fenetre": 64,
+   "etendue_avant": 14670,
+   "etendue_apres": 869,
+   "decalage": 272,
+   "references_dans_fenetre": 9,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14670 avant / 869 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7c14]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384148,
+   "cible_nouveau": 14384204,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.1666666716337204,
+   "valeur_lue_nouveau": -0.1666666716337204
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344002,
+   "offset_ancien": 3146626,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344274,
+   "offset_nouveau": 3146898,
+   "instruction_ancien": "0x00700f7e movss xmm1, dword ptr [0xdb7be4]",
+   "instruction_nouveau": "0x0070108e movss xmm1, dword ptr [0xdb7c1c]",
+   "fenetre": 64,
+   "etendue_avant": 14686,
+   "etendue_apres": 853,
+   "decalage": 272,
+   "references_dans_fenetre": 11,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14686 avant / 853 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7be4]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384100,
+   "cible_nouveau": 14384156,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.03333333507180214,
+   "valeur_lue_nouveau": -0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344026,
+   "offset_ancien": 3146650,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "reglage": "CP_T_CRANE_V",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344298,
+   "offset_nouveau": 3146922,
+   "instruction_ancien": "0x00700f96 movss xmm2, dword ptr [0xdb71bc]",
+   "instruction_nouveau": "0x007010a6 movss xmm2, dword ptr [0xdb71f4]",
+   "fenetre": 64,
+   "etendue_avant": 14690,
+   "etendue_apres": 849,
+   "decalage": 272,
+   "references_dans_fenetre": 11,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14690 avant / 849 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb71bc]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381500,
+   "cible_nouveau": 14381556,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.03333333507180214,
+   "valeur_lue_nouveau": 0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344181,
+   "offset_ancien": 3146805,
+   "avant": "2472db00",
+   "apres": "580bce00",
+   "reglage": "CP_T_CRANE_H",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344453,
+   "offset_nouveau": 3147077,
+   "instruction_ancien": "0x00701031 movss xmm2, dword ptr [0xdb7224]",
+   "instruction_nouveau": "0x00701141 movss xmm2, dword ptr [0xdb725c]",
+   "fenetre": 64,
+   "etendue_avant": 14720,
+   "etendue_apres": 819,
+   "decalage": 272,
+   "references_dans_fenetre": 13,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14720 avant / 819 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb7224]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381604,
+   "cible_nouveau": 14381660,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.1666666716337204,
+   "valeur_lue_nouveau": 0.1666666716337204
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344192,
+   "offset_ancien": 3146816,
+   "avant": "147cdb00",
+   "apres": "a4e4ce00",
+   "reglage": "CP_T_CRANE_H_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344464,
+   "offset_nouveau": 3147088,
+   "instruction_ancien": "0x0070103c movss xmm1, dword ptr [0xdb7c14]",
+   "instruction_nouveau": "0x0070114c movss xmm1, dword ptr [0xdb7c4c]",
+   "fenetre": 64,
+   "etendue_avant": 14722,
+   "etendue_apres": 817,
+   "decalage": 272,
+   "references_dans_fenetre": 13,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14722 avant / 817 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7c14]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384148,
+   "cible_nouveau": 14384204,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.1666666716337204,
+   "valeur_lue_nouveau": -0.1666666716337204
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344259,
+   "offset_ancien": 3146883,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344531,
+   "offset_nouveau": 3147155,
+   "instruction_ancien": "0x0070107f movss xmm1, dword ptr [0xdb7be4]",
+   "instruction_nouveau": "0x0070118f movss xmm1, dword ptr [0xdb7c1c]",
+   "fenetre": 64,
+   "etendue_avant": 14735,
+   "etendue_apres": 804,
+   "decalage": 272,
+   "references_dans_fenetre": 13,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14735 avant / 804 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7be4]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384100,
+   "cible_nouveau": 14384156,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.03333333507180214,
+   "valeur_lue_nouveau": -0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344294,
+   "offset_ancien": 3146918,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "reglage": "CP_T_CRANE_V",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344566,
+   "offset_nouveau": 3147190,
+   "instruction_ancien": "0x007010a2 movss xmm2, dword ptr [0xdb71bc]",
+   "instruction_nouveau": "0x007011b2 movss xmm2, dword ptr [0xdb71f4]",
+   "fenetre": 64,
+   "etendue_avant": 14741,
+   "etendue_apres": 798,
+   "decalage": 272,
+   "references_dans_fenetre": 13,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14741 avant / 798 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb71bc]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381500,
+   "cible_nouveau": 14381556,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.03333333507180214,
+   "valeur_lue_nouveau": 0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344420,
+   "offset_ancien": 3147044,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "reglage": "CP_T_CRANE_V",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344692,
+   "offset_nouveau": 3147316,
+   "instruction_ancien": "0x00701120 movss xmm2, dword ptr [0xdb71bc]",
+   "instruction_nouveau": "0x00701230 movss xmm2, dword ptr [0xdb71f4]",
+   "fenetre": 64,
+   "etendue_avant": 14764,
+   "etendue_apres": 775,
+   "decalage": 272,
+   "references_dans_fenetre": 14,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14764 avant / 775 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb71bc]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381500,
+   "cible_nouveau": 14381556,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.03333333507180214,
+   "valeur_lue_nouveau": 0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344428,
+   "offset_ancien": 3147052,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344700,
+   "offset_nouveau": 3147324,
+   "instruction_ancien": "0x00701128 movss xmm1, dword ptr [0xdb7be4]",
+   "instruction_nouveau": "0x00701238 movss xmm1, dword ptr [0xdb7c1c]",
+   "fenetre": 64,
+   "etendue_avant": 14765,
+   "etendue_apres": 774,
+   "decalage": 272,
+   "references_dans_fenetre": 14,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14765 avant / 774 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7be4]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384100,
+   "cible_nouveau": 14384156,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.03333333507180214,
+   "valeur_lue_nouveau": -0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344566,
+   "offset_ancien": 3147190,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "reglage": "CP_T_CRANE_V",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344838,
+   "offset_nouveau": 3147462,
+   "instruction_ancien": "0x007011b2 movss xmm2, dword ptr [0xdb71bc]",
+   "instruction_nouveau": "0x007012c2 movss xmm2, dword ptr [0xdb71f4]",
+   "fenetre": 64,
+   "etendue_avant": 14794,
+   "etendue_apres": 745,
+   "decalage": 272,
+   "references_dans_fenetre": 12,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14794 avant / 745 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb71bc]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381500,
+   "cible_nouveau": 14381556,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.03333333507180214,
+   "valeur_lue_nouveau": 0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344574,
+   "offset_ancien": 3147198,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344846,
+   "offset_nouveau": 3147470,
+   "instruction_ancien": "0x007011ba movss xmm1, dword ptr [0xdb7be4]",
+   "instruction_nouveau": "0x007012ca movss xmm1, dword ptr [0xdb7c1c]",
+   "fenetre": 64,
+   "etendue_avant": 14795,
+   "etendue_apres": 744,
+   "decalage": 272,
+   "references_dans_fenetre": 12,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14795 avant / 744 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7be4]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384100,
+   "cible_nouveau": 14384156,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.03333333507180214,
+   "valeur_lue_nouveau": -0.03333333507180214
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344665,
+   "offset_ancien": 3147289,
+   "avant": "c471db00",
+   "apres": "ec71db00",
+   "reglage": "CP_T_CRANE_ROT",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344937,
+   "offset_nouveau": 3147561,
+   "instruction_ancien": "0x00701215 movss xmm2, dword ptr [0xdb71c4]",
+   "instruction_nouveau": "0x00701325 movss xmm2, dword ptr [0xdb71fc]",
+   "fenetre": 64,
+   "etendue_avant": 14815,
+   "etendue_apres": 724,
+   "decalage": 272,
+   "references_dans_fenetre": 11,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14815 avant / 724 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb71c4]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381508,
+   "cible_nouveau": 14381564,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.03999999910593033,
+   "valeur_lue_nouveau": 0.03999999910593033
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7344677,
+   "offset_ancien": 3147301,
+   "avant": "ec7bdb00",
+   "apres": "fc7bdb00",
+   "reglage": "CP_T_CRANE_ROT_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7344949,
+   "offset_nouveau": 3147573,
+   "instruction_ancien": "0x00701221 movss xmm1, dword ptr [0xdb7bec]",
+   "instruction_nouveau": "0x00701331 movss xmm1, dword ptr [0xdb7c24]",
+   "fenetre": 64,
+   "etendue_avant": 14817,
+   "etendue_apres": 722,
+   "decalage": 272,
+   "references_dans_fenetre": 11,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14817 avant / 722 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7bec]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384108,
+   "cible_nouveau": 14384164,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.03999999910593033,
+   "valeur_lue_nouveau": -0.03999999910593033
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7363604,
+   "offset_ancien": 3166228,
+   "avant": "b071db00",
+   "apres": "d071db00",
+   "reglage": "CP_T_PLATFORM_STEP",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7363876,
+   "offset_nouveau": 3166500,
+   "instruction_ancien": "0x00705c10 movss xmm3, dword ptr [0xdb71b0]",
+   "instruction_nouveau": "0x00705d20 movss xmm3, dword ptr [0xdb71e8]",
+   "fenetre": 64,
+   "etendue_avant": 2224,
+   "etendue_apres": 954,
+   "decalage": 272,
+   "references_dans_fenetre": 5,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 2224 avant / 954 apres",
+   "instruction_site_ancien": "xmm3, dword ptr [0xdb71b0]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14381488,
+   "cible_nouveau": 14381544,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 0.02500000037252903,
+   "valeur_lue_nouveau": 0.02500000037252903
+  },
+  {
+   "module": "ascenseur_x2",
+   "va_ancien": 7363646,
+   "offset_ancien": 3166270,
+   "avant": "e07bdb00",
+   "apres": "f07bdb00",
+   "reglage": "CP_T_PLATFORM_STEP_NEG",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7363918,
+   "offset_nouveau": 3166542,
+   "instruction_ancien": "0x00705c3a maxss xmm1, dword ptr [0xdb7be0]",
+   "instruction_nouveau": "0x00705d4a maxss xmm1, dword ptr [0xdb7c18]",
+   "fenetre": 64,
+   "etendue_avant": 2232,
+   "etendue_apres": 946,
+   "decalage": 272,
+   "references_dans_fenetre": 5,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 2232 avant / 946 apres",
+   "instruction_site_ancien": "xmm1, dword ptr [0xdb7be0]",
+   "mn": "maxss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14384096,
+   "cible_nouveau": 14384152,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": -0.02500000037252903,
+   "valeur_lue_nouveau": -0.02500000037252903
+  },
+  {
+   "module": "atterrissage_cercle",
+   "va_ancien": 7345023,
+   "offset_ancien": 3147647,
+   "avant": "00001644",
+   "apres": "0000e1c4",
+   "reglage": "LANDING_CIRCLE_FRONT_CENTER_Z",
+   "statut": "sur",
+   "type": "imm",
+   "va_nouveau": 7345295,
+   "offset_nouveau": 3147919,
+   "instruction_ancien": "0x00701379 mov dword ptr [ebp - 0x2a4], 0x44160000",
+   "instruction_nouveau": "0x00701489 mov dword ptr [ebp - 0x2a4], 0x44160000",
+   "fenetre": 64,
+   "etendue_avant": 14888,
+   "etendue_apres": 651,
+   "decalage": 272,
+   "references_dans_fenetre": 9,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 14888 avant / 651 apres",
+   "instruction_site_ancien": "dword ptr [ebp - 0x2a4], 0x44160000",
+   "mn": "mov",
+   "taille_ins": 10,
+   "champ_dans_ins": 6,
+   "est_reloc_nouveau": false
+  },
+  {
+   "module": "atterrissage_cercle",
+   "va_ancien": 7347550,
+   "offset_ancien": 3150174,
+   "avant": "707adb00",
+   "apres": "547edb00",
+   "reglage": "LANDING_CIRCLE_STATE3_END",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7347822,
+   "offset_nouveau": 3150446,
+   "instruction_ancien": "0x00701d5b comiss xmm0, dword ptr [0xdb7a70]",
+   "instruction_nouveau": "0x00701e6b comiss xmm0, dword ptr [0xdb7aa8]",
+   "fenetre": 64,
+   "etendue_avant": 15420,
+   "etendue_apres": 119,
+   "decalage": 272,
+   "references_dans_fenetre": 5,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 15420 avant / 119 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb7a70]",
+   "mn": "comiss",
+   "taille_ins": 7,
+   "champ_dans_ins": 3,
+   "cible_ancien": 14383728,
+   "cible_nouveau": 14383784,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 600.0,
+   "valeur_lue_nouveau": 600.0
+  },
+  {
+   "module": "atterrissage_cercle",
+   "va_ancien": 7348050,
+   "offset_ancien": 3150674,
+   "avant": "707adb00",
+   "apres": "547edb00",
+   "reglage": "LANDING_CIRCLE_STATE5_END",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7348322,
+   "offset_nouveau": 3150946,
+   "instruction_ancien": "0x00701f4e movss xmm0, dword ptr [0xdb7a70]",
+   "instruction_nouveau": "0x0070205e movss xmm0, dword ptr [0xdb7aa8]",
+   "fenetre": 20,
+   "etendue_avant": 15516,
+   "etendue_apres": 23,
+   "decalage": 272,
+   "references_dans_fenetre": 1,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 20+20 instructions ; identique sur 15516 avant / 23 apres",
+   "instruction_site_ancien": "xmm0, dword ptr [0xdb7a70]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14383728,
+   "cible_nouveau": 14383784,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 600.0,
+   "valeur_lue_nouveau": 600.0
+  },
+  {
+   "module": "atterrissage_creneau",
+   "va_ancien": 7346684,
+   "offset_ancien": 3149308,
+   "avant": "04010000",
+   "apres": "2a000000",
+   "reglage": "LANDING_GATE_STATE1",
+   "statut": "sur",
+   "type": "rel32",
+   "va_nouveau": 7346956,
+   "offset_nouveau": 3149580,
+   "instruction_ancien": "0x007019fa jbe 0x701b04",
+   "instruction_nouveau": "0x00701b0a jbe 0x701c14",
+   "fenetre": 64,
+   "etendue_avant": 15251,
+   "etendue_apres": 288,
+   "decalage": 272,
+   "references_dans_fenetre": 7,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 15251 avant / 288 apres",
+   "instruction_site_ancien": "0x701b04",
+   "mn": "jbe",
+   "taille_ins": 6,
+   "champ_dans_ins": 2,
+   "cible_ancien": 7346948,
+   "cible_nouveau": 7347220
+  },
+  {
+   "module": "atterrissage_creneau",
+   "va_ancien": 7347509,
+   "offset_ancien": 3150133,
+   "avant": "cbfdffff",
+   "apres": "f1fcffff",
+   "reglage": "LANDING_GATE_STATE2",
+   "statut": "sur",
+   "type": "rel32",
+   "va_nouveau": 7347781,
+   "offset_nouveau": 3150405,
+   "instruction_ancien": "0x00701d33 jbe 0x701b04",
+   "instruction_nouveau": "0x00701e43 jbe 0x701c14",
+   "fenetre": 64,
+   "etendue_avant": 15413,
+   "etendue_apres": 126,
+   "decalage": 272,
+   "references_dans_fenetre": 5,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 15413 avant / 126 apres",
+   "instruction_site_ancien": "0x701b04",
+   "mn": "jbe",
+   "taille_ins": 6,
+   "champ_dans_ins": 2,
+   "cible_ancien": 7346948,
+   "cible_nouveau": 7347220
+  },
+  {
+   "module": "atterrissage_creneau",
+   "va_ancien": 7347535,
+   "offset_ancien": 3150159,
+   "avant": "b1fdffff",
+   "apres": "d7fcffff",
+   "reglage": "LANDING_GATE_STATE2_TO_3",
+   "statut": "sur",
+   "type": "rel32",
+   "va_nouveau": 7347807,
+   "offset_nouveau": 3150431,
+   "instruction_ancien": "0x00701d4e jmp 0x701b04",
+   "instruction_nouveau": "0x00701e5e jmp 0x701c14",
+   "fenetre": 64,
+   "etendue_avant": 15418,
+   "etendue_apres": 121,
+   "decalage": 272,
+   "references_dans_fenetre": 5,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 15418 avant / 121 apres",
+   "instruction_site_ancien": "0x701b04",
+   "mn": "jmp",
+   "taille_ins": 5,
+   "champ_dans_ins": 1,
+   "cible_ancien": 7346948,
+   "cible_nouveau": 7347220
+  },
+  {
+   "module": "helicos_approche_x2",
+   "va_ancien": 7332279,
+   "offset_ancien": 3134903,
+   "avant": "b879db00",
+   "apres": "e079db00",
+   "reglage": "HELI_APPROACH_AIM_AHEAD_M",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7332551,
+   "offset_nouveau": 3135175,
+   "instruction_ancien": "0x006fe1b3 addss xmm2, dword ptr [0xdb79b8]",
+   "instruction_nouveau": "0x006fe2c3 addss xmm2, dword ptr [0xdb79f0]",
+   "fenetre": 64,
+   "etendue_avant": 12192,
+   "etendue_apres": 3347,
+   "decalage": 272,
+   "references_dans_fenetre": 6,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 12192 avant / 3347 apres",
+   "instruction_site_ancien": "xmm2, dword ptr [0xdb79b8]",
+   "mn": "addss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14383544,
+   "cible_nouveau": 14383600,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 50.0,
+   "valeur_lue_nouveau": 50.0
+  },
+  {
+   "module": "pont_retour_x2",
+   "va_ancien": 7331245,
+   "offset_ancien": 3133869,
+   "avant": "8c79db00",
+   "apres": "3079db00",
+   "reglage": "RETURN_TAXI_TICKS_PER_SECOND",
+   "statut": "sur",
+   "type": "abs",
+   "va_nouveau": 7331517,
+   "offset_nouveau": 3134141,
+   "instruction_ancien": "0x006fdda9 movss xmm7, dword ptr [0xdb798c]",
+   "instruction_nouveau": "0x006fdeb9 movss xmm7, dword ptr [0xdb79c4]",
+   "fenetre": 64,
+   "etendue_avant": 11968,
+   "etendue_apres": 3571,
+   "decalage": 272,
+   "references_dans_fenetre": 8,
+   "references_differentes": 0,
+   "differences": [],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 11968 avant / 3571 apres",
+   "instruction_site_ancien": "xmm7, dword ptr [0xdb798c]",
+   "mn": "movss",
+   "taille_ins": 8,
+   "champ_dans_ins": 4,
+   "cible_ancien": 14383500,
+   "cible_nouveau": 14383556,
+   "est_reloc_nouveau": true,
+   "valeur_lue_ancien": 30.0,
+   "valeur_lue_nouveau": 30.0
+  },
+  {
+   "module": "temps_x2",
+   "va_ancien": 8608971,
+   "offset_ancien": 4411595,
+   "avant": "0000803f",
+   "apres": "00000040",
+   "reglage": "SERVER_SPEED_FACTOR",
+   "statut": "sur",
+   "type": "imm",
+   "va_nouveau": 8609275,
+   "offset_nouveau": 4411899,
+   "instruction_ancien": "0x00835cc5 mov dword ptr [edi + 0x140], 0x3f800000",
+   "instruction_nouveau": "0x00835df5 mov dword ptr [edi + 0x140], 0x3f800000",
+   "fenetre": 64,
+   "etendue_avant": 1445,
+   "etendue_apres": 67242,
+   "decalage": 304,
+   "references_dans_fenetre": 5,
+   "references_differentes": 2,
+   "differences": [
+    "0x00835bc2 : constante differente d02f7700 / c0307700",
+    "0x00835c51 : constante differente e0c95500 / 00cb5500"
+   ],
+   "contexte": "contexte unique de 64+64 instructions ; identique sur 1445 avant / 67242 apres",
+   "instruction_site_ancien": "dword ptr [edi + 0x140], 0x3f800000",
+   "mn": "mov",
+   "taille_ins": 10,
+   "champ_dans_ins": 6,
+   "est_reloc_nouveau": false
+  }
+ ],
+ "problemes": [],
+ "carte_abs": {
+  "0x00d1c7b0": [
+   "0x00d1c7a8"
+  ],
+  "0x00d1c738": [
+   "0x00d1c738"
+  ],
+  "0x00db7418": [
+   "0x00db7450"
+  ],
+  "0x00db76c8": [
+   "0x00db7700"
+  ],
+  "0x00db71d0": [
+   "0x00db7208"
+  ],
+  "0x00db71f8": [
+   "0x00db7230"
+  ],
+  "0x00db798c": [
+   "0x00db79c4"
+  ],
+  "0x00db70f8": [
+   "0x00db7130"
+  ],
+  "0x00d22598": [
+   "0x00d225a4"
+  ],
+  "0x00db7e08": [
+   "0x00db7e40"
+  ],
+  "0x00db71a0": [
+   "0x00db71d8"
+  ],
+  "0x00d22584": [
+   "0x00d22590"
+  ],
+  "0x00d22570": [
+   "0x00d2257c"
+  ],
+  "0x00d225b0": [
+   "0x00d225b4"
+  ],
+  "0x00db8dc0": [
+   "0x00db8df0"
+  ],
+  "0x00d225c4": [
+   "0x00d225d0"
+  ],
+  "0x00db7e30": [
+   "0x00db7e68"
+  ],
+  "0x00db7e40": [
+   "0x00db7e78"
+  ],
+  "0x00db7b04": [
+   "0x00db7b3c"
+  ],
+  "0x00701fa8": [
+   "0x007020b8"
+  ],
+  "0x00db7e0c": [
+   "0x00db7e44"
+  ],
+  "0x00701fbc": [
+   "0x007020cc"
+  ],
+  "0x00db7224": [
+   "0x00db725c"
+  ],
+  "0x00db7c14": [
+   "0x00db7c4c"
+  ],
+  "0x00db7be4": [
+   "0x00db7c1c"
+  ],
+  "0x00db71bc": [
+   "0x00db71f4"
+  ],
+  "0x00db790c": [
+   "0x00db7944"
+  ],
+  "0x00db7908": [
+   "0x00db7940"
+  ],
+  "0x00db7758": [
+   "0x00db7790"
+  ],
+  "0x00db71c4": [
+   "0x00db71fc"
+  ],
+  "0x00db7bec": [
+   "0x00db7c24"
+  ],
+  "0x00db7dc8": [
+   "0x00db7e00"
+  ],
+  "0x00db71b0": [
+   "0x00db71e8"
+  ],
+  "0x00db7be0": [
+   "0x00db7c18"
+  ],
+  "0x00db8d90": [
+   "0x00db8dc0"
+  ],
+  "0x00db715c": [
+   "0x00db7194"
+  ],
+  "0x00db7dd8": [
+   "0x00db7e10"
+  ],
+  "0x00db7630": [
+   "0x00db7668"
+  ],
+  "0x00db7a94": [
+   "0x00db7acc"
+  ],
+  "0x00db7808": [
+   "0x00db7840"
+  ],
+  "0x00db80e0": [
+   "0x00db8110"
+  ],
+  "0x00db7e54": [
+   "0x00db7e8c"
+  ],
+  "0x00db7a70": [
+   "0x00db7aa8"
+  ],
+  "0x00db7a24": [
+   "0x00db7a5c"
+  ],
+  "0x00db7e50": [
+   "0x00db7e88"
+  ],
+  "0x00701fd0": [
+   "0x007020e0"
+  ],
+  "0x00db7e58": [
+   "0x00db7e90"
+  ],
+  "0x00db7a8c": [
+   "0x00db7ac4"
+  ],
+  "0x00db77a0": [
+   "0x00db77d8"
+  ],
+  "0x00db72cc": [
+   "0x00db7304"
+  ],
+  "0x00db79b8": [
+   "0x00db79f0"
+  ],
+  "0x00db79ec": [
+   "0x00db7a24"
+  ],
+  "0x00db7660": [
+   "0x00db7698"
+  ],
+  "0x00d34bc4": [
+   "0x00d34bfc"
+  ],
+  "0x00d83630": [
+   "0x00d83680"
+  ],
+  "0x00d25f64": [
+   "0x00d25f94"
+  ],
+  "0x0043b1d0": [
+   "0x0043b1d0"
+  ],
+  "0x005fee10": [
+   "0x005fef30"
+  ]
+ },
+ "carte_rel": {
+  "0x00844710": [
+   "0x00844840"
+  ],
+  "0x00412b30": [
+   "0x00412b30"
+  ],
+  "0x00c424c0": [
+   "0x00c42650"
+  ],
+  "0x0063f360": [
+   "0x0063f460"
+  ],
+  "0x00c4c592": [
+   "0x00c4c722"
+  ],
+  "0x005ee6a0": [
+   "0x005ee7e0"
+  ],
+  "0x006f9cb6": [
+   "0x006f9dc6"
+  ],
+  "0x006f9ba4": [
+   "0x006f9cb4"
+  ],
+  "0x006f9b90": [
+   "0x006f9ca0"
+  ],
+  "0x006f9cbd": [
+   "0x006f9dcd"
+  ],
+  "0x004e95e0": [
+   "0x004e96b0"
+  ],
+  "0x004e7430": [
+   "0x004e7500"
+  ],
+  "0x006fb9df": [
+   "0x006fbaef"
+  ],
+  "0x008629d0": [
+   "0x00862b00"
+  ],
+  "0x006fb3ba": [
+   "0x006fb4ca"
+  ],
+  "0x006fb9e6": [
+   "0x006fbaf6"
+  ],
+  "0x00844440": [
+   "0x00844570"
+  ],
+  "0x006fb8ef": [
+   "0x006fb9ff"
+  ],
+  "0x00844410": [
+   "0x00844540"
+  ],
+  "0x00411750": [
+   "0x00411750"
+  ],
+  "0x005a2770": [
+   "0x005a28a0"
+  ],
+  "0x004117b0": [
+   "0x004117b0"
+  ],
+  "0x006f8580": [
+   "0x006f8690"
+  ],
+  "0x005eb3f0": [
+   "0x005eb530"
+  ],
+  "0x00844340": [
+   "0x00844470"
+  ],
+  "0x008443a0": [
+   "0x008444d0"
+  ],
+  "0x006fccf7": [
+   "0x006fce07"
+  ],
+  "0x006fccf0": [
+   "0x006fce00"
+  ],
+  "0x00844530": [
+   "0x00844660"
+  ],
+  "0x006fcc8f": [
+   "0x006fcd9f"
+  ],
+  "0x00870700": [
+   "0x00870820"
+  ],
+  "0x006f82c0": [
+   "0x006f83d0"
+  ],
+  "0x0040fb60": [
+   "0x0040fb60"
+  ],
+  "0x006fd04f": [
+   "0x006fd15f"
+  ],
+  "0x0040ad50": [
+   "0x0040ad50"
+  ],
+  "0x006fcfec": [
+   "0x006fd0fc"
+  ],
+  "0x006fce1a": [
+   "0x006fcf2a"
+  ],
+  "0x006fd060": [
+   "0x006fd170"
+  ],
+  "0x0063f570": [
+   "0x0063f670"
+  ],
+  "0x005ec9f0": [
+   "0x005ecb30"
+  ],
+  "0x006fcf88": [
+   "0x006fd098"
+  ],
+  "0x0040dc40": [
+   "0x0040dc40"
+  ],
+  "0x005e9c10": [
+   "0x005e9d50"
+  ],
+  "0x004e71e0": [
+   "0x004e72b0"
+  ],
+  "0x0040f430": [
+   "0x0040f430"
+  ],
+  "0x0040e0e0": [
+   "0x0040e0e0"
+  ],
+  "0x004e7020": [
+   "0x004e70f0"
+  ],
+  "0x006fd5c6": [
+   "0x006fd6d6"
+  ],
+  "0x006fdb46": [
+   "0x006fdc56"
+  ],
+  "0x0040ff10": [
+   "0x0040ff10"
+  ],
+  "0x0040dd30": [
+   "0x0040dd30"
+  ],
+  "0x006fdd90": [
+   "0x006fdea0"
+  ],
+  "0x00844260": [
+   "0x00844390"
+  ],
+  "0x00700bff": [
+   "0x00700d0f"
+  ],
+  "0x006ffa6c": [
+   "0x006ffb7c"
+  ],
+  "0x0040fcc0": [
+   "0x0040fcc0"
+  ],
+  "0x004e4b20": [
+   "0x004e4bf0"
+  ],
+  "0x0040ffa0": [
+   "0x0040ffa0"
+  ],
+  "0x0040ae90": [
+   "0x0040ae90"
+  ],
+  "0x00700dc5": [
+   "0x00700ed5"
+  ],
+  "0x00700d2f": [
+   "0x00700e3f"
+  ],
+  "0x00700ddc": [
+   "0x00700eec"
+  ],
+  "0x00700c0b": [
+   "0x00700d1b"
+  ],
+  "0x00860c90": [
+   "0x00860dc0"
+  ],
+  "0x005ec1e0": [
+   "0x005ec320"
+  ],
+  "0x00701267": [
+   "0x00701377"
+  ],
+  "0x006ebd50": [
+   "0x006ebe60"
+  ],
+  "0x008443f0": [
+   "0x00844520"
+  ],
+  "0x00850670": [
+   "0x008507a0"
+  ],
+  "0x0040db30": [
+   "0x0040db30"
+  ],
+  "0x0070125a": [
+   "0x0070136a"
+  ],
+  "0x00701132": [
+   "0x00701242"
+  ],
+  "0x00701163": [
+   "0x00701273"
+  ],
+  "0x006ebd20": [
+   "0x006ebe30"
+  ],
+  "0x00701321": [
+   "0x00701431"
+  ],
+  "0x0070131a": [
+   "0x0070142a"
+  ],
+  "0x0040e780": [
+   "0x0040e780"
+  ],
+  "0x0040ea40": [
+   "0x0040ea40"
+  ],
+  "0x0040f730": [
+   "0x0040f730"
+  ],
+  "0x005e8680": [
+   "0x005e87c0"
+  ],
+  "0x005ec2c0": [
+   "0x005ec400"
+  ],
+  "0x007081e0": [
+   "0x007082f0"
+  ],
+  "0x006ec090": [
+   "0x006ec1a0"
+  ],
+  "0x0040e340": [
+   "0x0040e340"
+  ],
+  "0x004113e0": [
+   "0x004113e0"
+  ],
+  "0x0040f1f0": [
+   "0x0040f1f0"
+  ],
+  "0x0040fa40": [
+   "0x0040fa40"
+  ],
+  "0x0040fe10": [
+   "0x0040fe10"
+  ],
+  "0x005570a0": [
+   "0x005571c0"
+  ],
+  "0x0040d700": [
+   "0x0040d700"
+  ],
+  "0x00701610": [
+   "0x00701720"
+  ],
+  "0x00701f88": [
+   "0x00702098"
+  ],
+  "0x0040d5a0": [
+   "0x0040d5a0"
+  ],
+  "0x0040d410": [
+   "0x0040d410"
+  ],
+  "0x0040d470": [
+   "0x0040d470"
+  ],
+  "0x0040d5d0": [
+   "0x0040d5d0"
+  ],
+  "0x0040d570": [
+   "0x0040d570"
+  ],
+  "0x00701b04": [
+   "0x00701c14"
+  ],
+  "0x00844310": [
+   "0x00844440"
+  ],
+  "0x00701b14": [
+   "0x00701c24"
+  ],
+  "0x00c3f454": [
+   "0x00c3f5e4"
+  ],
+  "0x00701f7d": [
+   "0x0070208d"
+  ],
+  "0x0040d3e0": [
+   "0x0040d3e0"
+  ],
+  "0x0040e120": [
+   "0x0040e120"
+  ],
+  "0x0040d690": [
+   "0x0040d690"
+  ],
+  "0x006fe187": [
+   "0x006fe297"
+  ],
+  "0x005ec8b0": [
+   "0x005ec9f0"
+  ],
+  "0x005ec130": [
+   "0x005ec270"
+  ],
+  "0x006fe0f0": [
+   "0x006fe200"
+  ],
+  "0x006fe436": [
+   "0x006fe546"
+  ],
+  "0x0097a6fd": [
+   "0x0097a87d"
+  ],
+  "0x00414890": [
+   "0x00414890"
+  ],
+  "0x00c3fc3d": [
+   "0x00c3fdcd"
+  ],
+  "0x00826db0": [
+   "0x00826ec0"
+  ]
+ }
+}

@@ -1,0 +1,16 @@
+DLL importees: ancien 9 nouveau 9 | DLL seulement dans un des deux: []
+fonctions importees: ancien 322 nouveau 322
+=> table des imports identique
+  motif dinput8                ancien 1  nouveau 1
+  motif cc2x                   ancien 0  nouveau 0
+  motif VirtualProtect         ancien 0  nouveau 0
+  motif IsDebuggerPresent      ancien 1  nouveau 1
+  motif CheckRemoteDebugger    ancien 0  nouveau 0
+  motif MinHook                ancien 0  nouveau 0
+  motif CryptHash              ancien 0  nouveau 0
+  motif BCrypt                 ancien 0  nouveau 0
+  motif WinVerifyTrust         ancien 0  nouveau 0
+  motif tamper                 ancien 0  nouveau 0
+  motif integrity              ancien 0  nouveau 0
+  motif checksum               ancien 0  nouveau 0
+  motif anti                   ancien 20  nouveau 20

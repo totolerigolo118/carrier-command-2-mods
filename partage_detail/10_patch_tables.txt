@@ -1,0 +1,669 @@
+PATCH TABLES (one block per module; every site: address, function, bytes before / after)
+=======================================================================================
+
+Build: Mac executable build_mac, x86_64, md5 b0107170ddaf0245cbfee8a2d876aeb6 (2026-01-05). Addresses are virtual addresses (file offset = address - 0x100000000).
+Bytes are listed in FILE order (little-endian values: 0x3ecccccd appears as cdcccc3e).
+THESE TABLES ARE FOR THE MAC ENCODING ONLY. A 32-bit Windows build has other addresses, other instruction encodings and other structure offsets: see 11.
+
+SITE KINDS
+  RIP   an SSE instruction that reads a float constant at a RIP-relative address; the patch changes the 4-byte displacement so it reads another constant that
+        already exists in the pool. Shown: the instruction, the constant read before and after (address, value, IEEE bits), the 8 (or 7) bytes before / after.
+  IMM   raw bytes replaced in place (an immediate, a branch target, or whole instructions replaced by `jmp cave` + nop padding). Shown: the ORIGINAL instructions
+        (disassembled from the unmodified build), their bytes, and the patched bytes with the decoded jump target.
+  CAVE  code added inside the dead body of ImGui::ShowDemoWindow (0x10005af39 .. 0x100061c00). The original bytes there are not listed (they are dead library code); the
+        added code is not listed as hex when it is long or embeds a file path: it is compiled from the C / assembly source named in the block (see workshop/outil/generateurs/).
+  DATA  a data table entry (the Lua base library function table).
+"in <function>" = the function containing the address according to the symbol table (the Mac build keeps its names).
+What of the original program is reproduced here: only the short instruction sequences at the patched sites (5 to 70 bytes each) that you need to recognise the place, nothing else.
+The shipped modules also check that every site holds either ALL its original bytes or ALL its patched bytes before touching anything (see 01, section 2).
+
+DATA-FILE MODULES (no address; they replace a file of rom_0):
+  effet_tele         shaders/screen_crt_hud.glsl replaced by a variant whose old-TV effect weight is always 0 (original sha256 ceadab0a21459350b0e75a3467fafd98ab7efb8eade5aaa1eec1458db83775f8)
+  horloge            scripts/library_custom_1.lua   (stock file is EMPTY; sha256 e3b0c442...b855 = empty file)   workshop/fichiers/horloge/
+  journal            scripts/library_custom_4.lua   (stock file empty)    workshop/fichiers/journal/
+  releve             scripts/library_custom_5.lua   (stock file empty)    workshop/fichiers/releve/
+  vitesse_boutons    scripts/library_custom_6.lua   (stock file empty)    workshop/fichiers/vitesse_boutons/
+
+PROGRAM MODULES, summary:
+  ascenseur_x2           34 sites   energy 0.4 -> 0.8, elevator step, crane steps, deck taxi acceleration and cap                       [GAME: launches -41 %]
+  atterrissage           10 sites   wide runway slot + circular holding pattern                                                         [GAME: 4 aircraft in 7:28; stock not measured]
+  pont_retour_x2          3 sites   deck taxi x2 on return                                                                              [EST]
+  helicos_approche_x2     1 site    helicopter aim distance 50 -> 100 m                                                                 [GAME: with the next one, -36 %]
+  helicos_pres_ascenseur  4 sites   helicopter touchdown near the elevator
+  cctv_net                5 sites   CCTV image 512 x 512 (1 cave + 4 hooks)                                                              [installed, in-game check pending]
+  grue_annulation         3 sites   cancel a crane launch with the 2nd bay press (1 cave + 2 hooks)                                      [installed, in-game check pending]
+  vitesse_escadrille      3 sites   AI aircraft speed modes (1 cave + 1 hook + 1 data entry)                                           [installed, in-game check pending]
+  ecriture_releve         3 sites   Lua print() to a file (1 cave + 2 hooks)                                                           [installed; tested off game; no real session recorded yet]
+  (reserve) interface_x2  2 sites   pilot UI 512 px high                                                                              [rejected by the player]
+  (reserve) helicos_ascenseur 4 sites  helicopters landing on the elevator                                                            [collided in game; abandoned]
+Sites touched by two modules: none (the tool refuses overlaps).
+
+
+====================================================================================================
+MODULE ascenseur_x2 - elevator, crane and deck taxi x2, elevator/crane energy share x2
+====================================================================================================
+Validated in game: 4 aircraft launched in 3:50 game time (stock) -> 2:15 (patched), x1.70.
+All 34 sites are "redirect a read-only float constant": the disp32 of the instruction is changed so that it reads
+another constant that ALREADY exists in __TEXT,__const with exactly the doubled value. Shared constants are never edited.
+Not touched on purpose: take-off run (addss 0.5, no cap), arrival thresholds 0.1 / 0.01, the divps by (1/6, 1/30).
+
+Sites: 34
+
+  --- POWER: share of the elevator/crane system 0.4 -> 0.8 (c_vehicle_carrier_server_power_manager::build)
+  0x10019f0ad  in c_vehicle_carrier_server_power_manager::build
+      original code (11 bytes):
+          10019f0ad: movl $0x3ecccccd, 0x118(%r15) ## imm = 0x3ECCCCCD
+      before : 41c78718010000cdcccc3e
+      after  : 41c78718010000cdcc4c3f
+
+  --- ELEVATOR PLATFORM: step per tick 0.025 -> 0.05 m (c_vehicle_server_carrier::tick_server_type)
+  0x10019455a  in c_vehicle_server_carrier::tick_server_type
+      insn   : maxss 0x26d5502(%rip), %xmm1 ## 0x102869a64
+      const  : [0x102869a64] = -0.025 0xBCCCCCCD  ->  [0x10286995c] = -0.05 0xBD4CCCCD
+      before : f30f5f0d02556d02
+      after  : f30f5f0dfa536d02
+
+  0x100194562  in c_vehicle_server_carrier::tick_server_type
+      insn   : minss 0x26d540e(%rip), %xmm1 ## 0x102869978
+      const  : [0x102869978] = 0.025 0x3CCCCCCD  ->  [0x1028697a4] = 0.05 0x3D4CCCCD
+      before : f30f5d0d0e546d02
+      after  : f30f5d0d3a526d02
+
+  0x100194583  in c_vehicle_server_carrier::tick_server_type
+      insn   : divss 0x26d53ed(%rip), %xmm3 ## 0x102869978
+      const  : [0x102869978] = 0.025 0x3CCCCCCD  ->  [0x1028697a4] = 0.05 0x3D4CCCCD
+      before : f30f5e1ded536d02
+      after  : f30f5e1d19526d02
+
+  --- HANGAR CRANE: horizontal 1/6 -> 1/3, vertical 1/30 -> 1/15, rotation 0.04 -> 0.08 per tick (docking_manager_air::update)
+  0x1001ae8bc  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb210(%rip), %xmm7 ## 0x102869ad4
+      const  : [0x102869ad4] = -0.166667 0xBE2AAAAB  ->  [0x102869750] = -0.333333 0xBEAAAAAB
+      before : f30f103d10b26b02
+      after  : f30f103d8cae6b02
+
+  0x1001aea04  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb0c8(%rip), %xmm7 ## 0x102869ad4
+      const  : [0x102869ad4] = -0.166667 0xBE2AAAAB  ->  [0x102869750] = -0.333333 0xBEAAAAAB
+      before : f30f103dc8b06b02
+      after  : f30f103d44ad6b02
+
+  0x1001ae8c8  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bae8c(%rip), %xmm2 ## 0x10286975c
+      const  : [0x10286975c] = 0.166667 0x3E2AAAAB  ->  [0x1028b232c] = 0.333333 0x3EAAAAAB
+      before : f30f10158cae6b02
+      after  : f30f10155c3a7002
+
+  0x1001aea10  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bad44(%rip), %xmm3 ## 0x10286975c
+      const  : [0x10286975c] = 0.166667 0x3E2AAAAB  ->  [0x1028b232c] = 0.333333 0x3EAAAAAB
+      before : f30f101d44ad6b02
+      after  : f30f101d14397002
+
+  0x1001ae8d4  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : maxss 0x26bb0fc(%rip), %xmm6 ## 0x1028699d8
+      const  : [0x1028699d8] = -0.0333333 0xBD088889  ->  [0x102869c7c] = -0.0666667 0xBD888889
+      before : f30f5f35fcb06b02
+      after  : f30f5f35a0b36b02
+
+  0x1001ae968  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : maxss 0x26bb068(%rip), %xmm3 ## 0x1028699d8
+      const  : [0x1028699d8] = -0.0333333 0xBD088889  ->  [0x102869c7c] = -0.0666667 0xBD888889
+      before : f30f5f1d68b06b02
+      after  : f30f5f1d0cb36b02
+
+  0x1001aea1c  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : maxss 0x26bafb4(%rip), %xmm6 ## 0x1028699d8
+      const  : [0x1028699d8] = -0.0333333 0xBD088889  ->  [0x102869c7c] = -0.0666667 0xBD888889
+      before : f30f5f35b4af6b02
+      after  : f30f5f3558b26b02
+
+  0x1001aeab8  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : maxss 0x26baf18(%rip), %xmm3 ## 0x1028699d8
+      const  : [0x1028699d8] = -0.0333333 0xBD088889  ->  [0x102869c7c] = -0.0666667 0xBD888889
+      before : f30f5f1d18af6b02
+      after  : f30f5f1dbcb16b02
+
+  0x1001aeba7  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : maxss 0x26bae29(%rip), %xmm3 ## 0x1028699d8
+      const  : [0x1028699d8] = -0.0333333 0xBD088889  ->  [0x102869c7c] = -0.0666667 0xBD888889
+      before : f30f5f1d29ae6b02
+      after  : f30f5f1dcdb06b02
+
+  0x1001ae8dc  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : minss 0x26bb0f0(%rip), %xmm6 ## 0x1028699d4
+      const  : [0x1028699d4] = 0.0333333 0x3D088889  ->  [0x102869b80] = 0.0666667 0x3D888889
+      before : f30f5d35f0b06b02
+      after  : f30f5d359cb26b02
+
+  0x1001ae970  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb05c(%rip), %xmm1 ## 0x1028699d4
+      const  : [0x1028699d4] = 0.0333333 0x3D088889  ->  [0x102869b80] = 0.0666667 0x3D888889
+      before : f30f100d5cb06b02
+      after  : f30f100d08b26b02
+
+  0x1001aea24  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : minss 0x26bafa8(%rip), %xmm6 ## 0x1028699d4
+      const  : [0x1028699d4] = 0.0333333 0x3D088889  ->  [0x102869b80] = 0.0666667 0x3D888889
+      before : f30f5d35a8af6b02
+      after  : f30f5d3554b16b02
+
+  0x1001aeac0  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26baf0c(%rip), %xmm1 ## 0x1028699d4
+      const  : [0x1028699d4] = 0.0333333 0x3D088889  ->  [0x102869b80] = 0.0666667 0x3D888889
+      before : f30f100d0caf6b02
+      after  : f30f100db8b06b02
+
+  0x1001aebaf  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bae1d(%rip), %xmm1 ## 0x1028699d4
+      const  : [0x1028699d4] = 0.0333333 0x3D088889  ->  [0x102869b80] = 0.0666667 0x3D888889
+      before : f30f100d1dae6b02
+      after  : f30f100dc9af6b02
+
+  0x1001aeb2b  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : maxss 0x26baed1(%rip), %xmm1 ## 0x102869a04
+      const  : [0x102869a04] = -0.04 0xBD23D70A  ->  [0x102869974] = -0.08 0xBDA3D70A
+      before : f30f5f0dd1ae6b02
+      after  : f30f5f0d41ae6b02
+
+  0x1001aeb33  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bac95(%rip), %xmm3 ## 0x1028697d0
+      const  : [0x1028697d0] = 0.04 0x3D23D70A  ->  [0x10286986c] = 0.08 0x3DA3D70A
+      before : f30f101d95ac6b02
+      after  : f30f101d31ad6b02
+
+  --- DECK TAXI: acceleration 0.05 -> 0.1 per tick and speed cap 2.5 -> 5.0 m/s (7 blocks of docking_manager_air::update)
+  0x1001ad6f9  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addss 0x26bc0a3(%rip), %xmm4 ## 0x1028697a4
+      const  : [0x1028697a4] = 0.05 0x3D4CCCCD  ->  [0x1028697b0] = 0.1 0x3DCCCCCD
+      before : f30f5825a3c06b02
+      after  : f30f5825afc06b02
+
+  0x1001adf35  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addss 0x26bb867(%rip), %xmm4 ## 0x1028697a4
+      const  : [0x1028697a4] = 0.05 0x3D4CCCCD  ->  [0x1028697b0] = 0.1 0x3DCCCCCD
+      before : f30f582567b86b02
+      after  : f30f582573b86b02
+
+  0x1001ae02a  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addss 0x26bb772(%rip), %xmm4 ## 0x1028697a4
+      const  : [0x1028697a4] = 0.05 0x3D4CCCCD  ->  [0x1028697b0] = 0.1 0x3DCCCCCD
+      before : f30f582572b76b02
+      after  : f30f58257eb76b02
+
+  0x1001ae104  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addss 0x26bb698(%rip), %xmm4 ## 0x1028697a4
+      const  : [0x1028697a4] = 0.05 0x3D4CCCCD  ->  [0x1028697b0] = 0.1 0x3DCCCCCD
+      before : f30f582598b66b02
+      after  : f30f5825a4b66b02
+
+  0x1001ae2c1  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addss 0x26bb4db(%rip), %xmm3 ## 0x1028697a4
+      const  : [0x1028697a4] = 0.05 0x3D4CCCCD  ->  [0x1028697b0] = 0.1 0x3DCCCCCD
+      before : f30f581ddbb46b02
+      after  : f30f581de7b46b02
+
+  0x1001ae6e0  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addss 0x26bb0bc(%rip), %xmm4 ## 0x1028697a4
+      const  : [0x1028697a4] = 0.05 0x3D4CCCCD  ->  [0x1028697b0] = 0.1 0x3DCCCCCD
+      before : f30f5825bcb06b02
+      after  : f30f5825c8b06b02
+
+  0x1001b010f  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addss 0x26b968d(%rip), %xmm4 ## 0x1028697a4
+      const  : [0x1028697a4] = 0.05 0x3D4CCCCD  ->  [0x1028697b0] = 0.1 0x3DCCCCCD
+      before : f30f58258d966b02
+      after  : f30f582599966b02
+
+  0x1001ad701  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bc0b3(%rip), %xmm2 ## 0x1028697bc
+      const  : [0x1028697bc] = 2.5 0x40200000  ->  [0x10286976c] = 5 0x40A00000
+      before : f30f1015b3c06b02
+      after  : f30f101563c06b02
+
+  0x1001adf41  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb873(%rip), %xmm2 ## 0x1028697bc
+      const  : [0x1028697bc] = 2.5 0x40200000  ->  [0x10286976c] = 5 0x40A00000
+      before : f30f101573b86b02
+      after  : f30f101523b86b02
+
+  0x1001ae036  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb77e(%rip), %xmm2 ## 0x1028697bc
+      const  : [0x1028697bc] = 2.5 0x40200000  ->  [0x10286976c] = 5 0x40A00000
+      before : f30f10157eb76b02
+      after  : f30f10152eb76b02
+
+  0x1001ae110  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb6a4(%rip), %xmm2 ## 0x1028697bc
+      const  : [0x1028697bc] = 2.5 0x40200000  ->  [0x10286976c] = 5 0x40A00000
+      before : f30f1015a4b66b02
+      after  : f30f101554b66b02
+
+  0x1001ae2cd  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb4e7(%rip), %xmm4 ## 0x1028697bc
+      const  : [0x1028697bc] = 2.5 0x40200000  ->  [0x10286976c] = 5 0x40A00000
+      before : f30f1025e7b46b02
+      after  : f30f102597b46b02
+
+  0x1001ae6e8  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bb0cc(%rip), %xmm2 ## 0x1028697bc
+      const  : [0x1028697bc] = 2.5 0x40200000  ->  [0x10286976c] = 5 0x40A00000
+      before : f30f1015ccb06b02
+      after  : f30f10157cb06b02
+
+  0x1001b0117  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26b969d(%rip), %xmm2 ## 0x1028697bc
+      const  : [0x1028697bc] = 2.5 0x40200000  ->  [0x10286976c] = 5 0x40A00000
+      before : f30f10159d966b02
+      after  : f30f10154d966b02
+
+
+====================================================================================================
+MODULE atterrissage - faster aircraft landings (wide runway slot + circular holding pattern)
+====================================================================================================
+Function: docking_manager_air::update, aircraft holding pattern (helicopters are not concerned).
+Stock behaviour: an aircraft is only given the runway at ONE tick per lap (at the bottom of the rear turn, the "gate",
+about 3 km behind the ship), once per 12.3 km lap (154 s at 80 m/s).
+Setting B: (a) the runway can be granted anywhere on the rear turn (about 2.7 km, 35 s of flight): three jumps are
+redirected to the grant block at 0x1001af914; (b) the front turn is made on the same circle as the rear turn
+(centre (-1000, -1800) in ship coordinates, radius 1200 m): lap 7.5 km / 94 s.
+Measured: 4 aircraft stored in 7:28 game time, one runway grant every 1:31, 0 failed approaches (stock not measured on
+the real game; the queue simulation in workshop/outil/generateurs/ estimates 154-158 s per aircraft stock vs 91 s measured).
+
+Sites: 10
+
+  0x1001af900  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (6 bytes):
+          1001af900: jbe 0x1001afb05
+      before : 0f86ff010000
+      after  : 0f860e000000
+      note   : state 1: test the runway at every tick (jbe target 0x1001afb05 -> 0x1001af914)
+
+  0x1001af85b  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (6 bytes):
+          1001af85b: jbe 0x1001afb05
+      before : 0f86a4020000
+      after  : 0f86b3000000
+      note   : state 2: test the runway during the rest of the rear turn (same redirection)
+
+  0x1001af867  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (5 bytes):
+          1001af867: jmp 0x1001afb05
+      before : e999020000
+      after  : e9a8000000   (jmp 0x1001af914)
+      note   : state 2 -> 3 transition: test the runway too (jmp 0x1001afb05 -> 0x1001af914)
+
+  0x1001af785  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addps 0x26bc134(%rip), %xmm1 ## 0x10286b8c0
+      const  : [0x10286b8c0] = (1000, -600, 0, 0)   ->  [0x10286b920] = (1000, 1800, 0, 0) 
+      before : 0f580d34c16b02
+      after  : 0f580d94c16b02
+      note   : state 4: turn centre (-1000, 600) -> (-1000, -1800)  [addps with a packed (x, z) constant]
+
+  0x1001af7d4  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addps 0x26bc125(%rip), %xmm4 ## 0x10286b900
+      const  : [0x10286b900] = (-1000, 600, 0, 0)   ->  [0x10286b930] = (-1000, -1800, 0, 0) 
+      before : 0f582525c16b02
+      after  : 0f582555c16b02
+      note   : state 4: same, offset back to ship coordinates
+
+  0x1001afa98  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addps 0x26bbe21(%rip), %xmm1 ## 0x10286b8c0
+      const  : [0x10286b8c0] = (1000, -600, 0, 0)   ->  [0x10286b920] = (1000, 1800, 0, 0) 
+      before : 0f580d21be6b02
+      after  : 0f580d81be6b02
+      note   : state 5: same as 0x1001af785
+
+  0x1001afae7  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : addps 0x26bbe12(%rip), %xmm4 ## 0x10286b900
+      const  : [0x10286b900] = (-1000, 600, 0, 0)   ->  [0x10286b930] = (-1000, -1800, 0, 0) 
+      before : 0f582512be6b02
+      after  : 0f582542be6b02
+      note   : state 5: same as 0x1001af7d4
+
+  0x1001af870  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26b9f5c(%rip), %xmm1 ## 0x1028697d4
+      const  : [0x1028697d4] = 600 0x44160000  ->  [0x102869adc] = -1800 0xC4E10000
+      before : f30f100d5c9f6b02
+      after  : f30f100d64a26b02
+      note   : state 3: end of the straight line z > 600 -> z > -1800
+
+  0x1001afaf2  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26b9cda(%rip), %xmm1 ## 0x1028697d4
+      const  : [0x1028697d4] = 600 0x44160000  ->  [0x102869adc] = -1800 0xC4E10000
+      before : f30f100dda9c6b02
+      after  : f30f100de29f6b02
+      note   : state 5: end of the front turn z < 600 -> z < -1800
+
+  0x1001af87b  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (4 bytes):
+          1001af87b: addss %xmm1, %xmm0
+      before : f30f58c1
+      after  : f30f5cc1
+      note   : state 3: addss -> subss so the target stays 1800 m ahead of the aircraft (z - (-1800)) instead of z + 600
+
+
+====================================================================================================
+MODULE pont_retour_x2 - deck taxi x2 after touchdown (aircraft and helicopters)
+====================================================================================================
+Function: docking_manager_air::update, runway states 5, 6 and 7. Each tick the progress along a taxi leg grows by
+v / (L x 30); here v / (L x 15) for these three legs only (constant 30.0 -> 15.0, already present).
+The runway is still reserved until the aircraft is on the elevator, exactly as in the stock game: no new collision risk.
+Deck time after touchdown ~42 s -> ~22 s (computed; in-game measurement still to do).
+
+Sites: 3
+
+  0x1001b0824  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : mulss 0x26b906c(%rip), %xmm1 ## 0x102869898
+      const  : [0x102869898] = 30 0x41F00000  ->  [0x1028699cc] = 15 0x41700000
+      before : f30f590d6c906b02
+      after  : f30f590da0916b02
+      note   : state 5: backing up along the runway from the forward end to taxi_a (~125 m)
+
+  0x1001ae07c  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : mulss 0x26bb814(%rip), %xmm1 ## 0x102869898
+      const  : [0x102869898] = 30 0x41F00000  ->  [0x1028699cc] = 15 0x41700000
+      before : f30f590d14b86b02
+      after  : f30f590d48b96b02
+      note   : state 6: taxi_a -> lift_upper_wait (~17 m)
+
+  0x1001b0831  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : mulss 0x26b905f(%rip), %xmm1 ## 0x102869898
+      const  : [0x102869898] = 30 0x41F00000  ->  [0x1028699cc] = 15 0x41700000
+      before : f30f590d5f906b02
+      after  : f30f590d93916b02
+      note   : state 7: lift_upper_wait -> elevator platform (15.5 m)
+
+
+====================================================================================================
+MODULE helicos_approche_x2 - helicopter approach to the runway twice as fast
+====================================================================================================
+In the stock game a landing helicopter aims at a point 50 m ahead of itself on the runway axis (at most z = 52);
+the autopilot corrects the error at 0.1 per metre, hence ~5 m/s and ~1:00 of approach. Here the point is 100 m ahead
+(the constant 100.0 is read instead of 50.0): ~10 m/s on the long straight, same final approach.
+Instruction located right after the get_is_rotor test (0x1001ad3e1), so aircraft are not concerned.
+
+Sites: 1
+
+  0x1001ad3ef  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bc4b5(%rip), %xmm0 ## 0x1028698ac
+      const  : [0x1028698ac] = 50 0x42480000  ->  [0x1028697ac] = 100 0x42C80000
+      before : f30f1005b5c46b02
+      after  : f30f1005b5c36b02
+      note   : aim distance ahead of the helicopter 50 -> 100 m
+
+
+====================================================================================================
+MODULE helicos_pres_ascenseur - helicopters touch down near the elevator (z = -40) instead of mid-runway
+====================================================================================================
+Stock (helicopter part of the approach): target height = 0.5 x (7 - z) clamped to [-2, 80] (7 = mid-runway), aim point at
+most z = runway_start + 120 = 52; the helicopter touches at z = 7..30 then taxis 55-80 m back to taxi_a (z = -44).
+Here, for helicopters only: target height = 0.5 x (-40 - z) (same slope; a 3-instruction cave subtracts 23.5 before the
+-2.0 clamp), aim point at most runway_start + 48 = -20, gear down and landing state at < 70 m from mid-runway (z > -63)
+instead of 20 m.
+Measured with helicopter_approach_x2: 4 helicopters 6:52 -> 4:22 game time (-36 %), approach 1:00 -> 0:28, 0 failed.
+
+Sites: 4
+
+  0x1001ad3fc  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26bc3b4(%rip), %xmm1 ## 0x1028697b8
+      const  : [0x1028697b8] = 120 0x42F00000  ->  [0x102869af0] = 48 0x42400000
+      before : f30f100db4c36b02
+      after  : f30f100decc66b02
+      note   : aim point at most z = runway_start + 120 -> + 48 (constant 120.0 -> 48.0)
+
+  0x1001b1066  in c_vehicle_server_carrier::docking_manager_air::update
+      insn   : movss 0x26b87ce(%rip), %xmm0 ## 0x10286983c
+      const  : [0x10286983c] = 20 0x41A00000  ->  [0x1028698a0] = 70 0x428C0000
+      before : f30f1005ce876b02
+      after  : f30f100532886b02
+      note   : gear-down threshold 20.0 -> 70.0
+
+  0x100061b80  CODE CAVE inside dead code of ImGui::ShowDemoWindow, 28 bytes
+      before : not listed (original dead code of the game)
+      after  : f30f5c0d10000000f30f5f0dc07c8002e9edb91400
+      note   : subss [23.5],%xmm1 ; maxss [-2.0],%xmm1 ; jmp 0x1001ad582  (21 bytes of code; the 28-byte region continues with padding)
+
+  0x1001ad57a  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (8 bytes):
+          1001ad57a: maxss 0x26bc2ce(%rip), %xmm1 ## 0x102869850
+      before : f30f5f0dcec26b02
+      after  : e90146ebff909090   (jmp 0x100061b80 + 3 padding byte(s))
+      note   : maxss [-2.0],%xmm1 -> jmp cave (height target shifted by 23.5 m)
+
+
+====================================================================================================
+MODULE cctv_net - CCTV screen image 512 x 512 instead of 128 x 128
+====================================================================================================
+Only the screen whose script is scripts/screen_cctv.lua changes; the other 34 screens of type 0 keep 128 x 128. The UI
+stays in 128 script units drawn 4x bigger; glScissor follows the same scale. Four places jump into one cave (439 bytes
+of assembly, source workshop/outil/generateurs/cctv_net.s with SIZE = 512). The scale lives in a variable that only dead demo code used
+(0x102a2a864, __bss, 4 bytes). See 06_screens_hud_cctv.txt.
+
+Sites: 5
+
+  0x100061800  CODE CAVE inside dead code of ImGui::ShowDemoWindow, 439 bytes
+      before : not listed (original dead code of the game)
+      after  : not listed as hex; compiled from workshop/outil/generateurs/cctv_net.s
+      note   : cave A-D, source workshop/outil/generateurs/cctv_net.s
+
+  0x1000ad74f  in c_game_object_client::create_lite
+      original code (45 bytes):
+          1000ad74f: movslq 0x60(%rax,%rcx), %rax
+          1000ad754: movl $0x80, %r9d
+          1000ad75a: movl $0x80, %r8d
+          1000ad760: cmpq $0x5, %rax
+          1000ad764: ja 0x1000ad77c
+          1000ad766: leaq 0x2803d03(%rip), %rcx ## 0x1028b1470
+          1000ad76d: movl (%rcx,%rax,4), %r9d
+          1000ad771: leaq 0x2803d10(%rip), %rcx ## 0x1028b1488
+          1000ad778: movl (%rcx,%rax,4), %r8d
+      before : 486344086041b98000000041b8800000004883f8057716488d0d033d8002448b0c81488d0d103d8002448b0481
+      after  : e9ac40fbff90909090909090909090909090909090909090909090909090909090909090909090909090909090   (jmp 0x100061800 + 40 padding byte(s))
+      note   : A  create_lite: image size by screen type (tables 0x1028b1470 heights / 0x1028b1488 widths) -> jmp _cctv_a (0x100061800)
+
+  0x10021ce70  in c_frontend_renderer::render_screen
+      original code (21 bytes):
+          10021ce70: movl 0x20(%r14), %ecx
+          10021ce74: xorps %xmm0, %xmm0
+          10021ce77: cvtsi2ss %rcx, %xmm0
+          10021ce7c: movl 0x24(%r14), %ecx
+          10021ce80: cvtsi2ss %rcx, %xmm2
+      before : 418b4e200f57c0f3480f2ac1418b4e24f3480f2ad1
+      after  : e9064ae4ff90909090909090909090909090909090   (jmp 0x10006187b + 16 padding byte(s))
+      note   : B  render_screen: width/height of the UI camera -> jmp _cctv_b (0x10006187b)
+
+  0x10015e662  in c_ui::element_clip::render
+      original code (70 bytes):
+          10015e662: movss 0x270b0e2(%rip), %xmm0 ## 0x10286974c
+          10015e66a: movss 0x14(%rdi), %xmm1
+          10015e66f: addss %xmm0, %xmm1
+          10015e673: roundss $0x9, %xmm1, %xmm1
+          10015e679: cvttss2si %xmm1, %ecx
+          10015e67d: addss 0x10(%rdi), %xmm0
+          10015e682: roundss $0x9, %xmm0, %xmm0
+          10015e688: cvttss2si %xmm0, %edx
+          10015e68c: xorps %xmm0, %xmm0
+          10015e68f: roundss $0x9, 0xc(%rdi), %xmm0
+          10015e696: cvttss2si %xmm0, %esi
+          10015e69a: xorps %xmm0, %xmm0
+          10015e69d: roundss $0x9, 0x8(%rdi), %xmm0
+          10015e6a4: cvttss2si %xmm0, %edi
+      before : f30f1005e2b07002f30f104f14f30f58c8660f3a0ac909f30f2cc9f30f584710660f3a0ac009f30f2cd00f57c0660f3a0a470c09f30f2cf00f57c0660f3a0a470809f30f2cf8
+      after  : e96932f0ff9090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090909090   (jmp 0x1000618d0 + 65 padding byte(s))
+      note   : C  c_ui::element_clip::render: glScissor rectangle computation -> jmp _cctv_c (0x1000618d0)
+
+  0x10021cf13  in c_frontend_renderer::render_screen
+      original code (5 bytes):
+          10021cf13: movl $0xb44, %edi ## imm = 0xB44
+      before : bf440b0000
+      after  : e9744ae4ff   (jmp 0x10006198c)
+      note   : D  render_screen: movl $0xb44,%edi (argument of the glEnable call right after the UI render; 0xb44 = GL_CULL_FACE, used only as a convenient place) -> jmp _cctv_d (0x10006198c): scale reset to 0
+
+
+====================================================================================================
+MODULE grue_annulation - cancel the launch of an aircraft already taken by the hangar crane (2nd press of the bay button)
+====================================================================================================
+Stock: a 2nd press of the bay button only cancels while the aircraft still waits in the launch queue, which the crane
+empties almost immediately. Here a 2nd press while the crane handles the aircraft sends it back to its bay:
+  - crane not yet hooked: it goes up and returns to rest, the aircraft never moved;
+  - hooked and not yet rotated: crane goes up, carries it above its bay, puts it down, returns.
+Too late (nothing changes): being rotated (right-hand bays), already released above the elevator, on the elevator, on deck.
+Code cave in C (932 bytes, source workshop/outil/generateurs/grue_annulation.c) + 2 hooks. See 02_power_elevator_crane_taxi.txt.
+
+Sites: 3
+
+  0x100061200  CODE CAVE inside dead code of ImGui::ShowDemoWindow, 932 bytes
+      before : not listed (original dead code of the game)
+      after  : not listed as hex; compiled from workshop/outil/generateurs/grue_annulation.c
+      note   : cave: _ag_a (hook A entry, offset 0) and _ag_b (hook B entry, +0x30) + C function annuler_grue
+
+  0x1001a8c01  in c_vehicle_server_carrier::docking_manager_air::undock
+      original code (13 bytes):
+          1001a8c01: cmpl $0x7, 0x220(%r14)
+          1001a8c09: jne 0x1001a8c0e
+          1001a8c0b: movl %ebx, 0x28(%rdi)
+      before : 4183be20020000077503895f28
+      after  : e9fa85ebff9090909090909090   (jmp 0x100061200 + 8 padding byte(s))
+      note   : docking_manager_air::undock: cmpl $7,0x220(%r14) ; jne ; movl %ebx,0x28(%rdi) -> jmp _ag_a
+
+  0x1001ad9ad  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (5 bytes):
+          1001ad9ad: cmpl $0x0, 0x18(%r14)
+      before : 41837e1800
+      after  : e97e38ebff   (jmp 0x100061230)
+      note   : docking_manager_air::update, end of crane in launch mode: cmpl $0,0x18(%r14) -> jmp _ag_b
+
+
+====================================================================================================
+MODULE vitesse_escadrille - AI aircraft cruise speed chosen from a screen (ECO / NORMAL / FLANK)
+====================================================================================================
+Stock: flying to a point, the AI aims at a FLOOR speed (Albatross 48 m/s, Manta 72 m/s, common cap 144).
+Here the floor depends on a mode stored per team (1 ECO = stock, 2 NORMAL = 61 / 91 m/s (estimate ~80 % throttle),
+3 FLANK = 144 m/s = full throttle); AI-controlled teams (enemies) are left at stock. Mode set from Lua by a new function
+cc2_vitesse(team [, mode]) that REPLACES the unused "dofile" entry of the Lua base library table (base_funcs).
+Last mode kept in a small text file next to the saved games. Source workshop/outil/generateurs/vitesse_escadrille.c (671 bytes).
+
+Sites: 3
+
+  0x10005d000  CODE CAVE inside dead code of ImGui::ShowDemoWindow, 671 bytes
+      before : not listed (original dead code of the game)
+      after  : not listed as hex; compiled from workshop/outil/generateurs/vitesse_escadrille.c
+      note   : cave: _vit_plancher (asm) at +0, Lua function vit_lua at +0x80, name string "cc2_vitesse" at +0x200 (offsets given by the linker)
+
+  0x1001c2b4b  in c_vehicle_server_wing::tick_control
+      original code (67 bytes):
+          1001c2b4b: movss (%rbx), %xmm0
+          1001c2b4f: movaps %xmm0, %xmm1
+          1001c2b52: maxss 0x26a6f96(%rip), %xmm1 ## 0x102869af0
+          1001c2b5a: minss 0x26a6fca(%rip), %xmm1 ## 0x102869b2c
+          1001c2b62: movss %xmm1, 0x2c8(%r13)
+          1001c2b6b: cmpl $0xa, 0x90(%r13)
+          1001c2b73: jne 0x1001c2b8e
+          1001c2b75: maxss 0x26a6fb3(%rip), %xmm0 ## 0x102869b30
+          1001c2b7d: minss 0x26a6fa7(%rip), %xmm0 ## 0x102869b2c
+          1001c2b85: movss %xmm0, 0x2c8(%r13)
+      before : f30f10030f28c8f30f5f0d966f6a02f30f5d0dca6f6a02f3410f118dc80200004183bd900000000a7519f30f5f05b36f6a02f30f5d05a76f6a02f3410f1185c8020000
+      after  : e9b0a4e9ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc   (jmp 0x10005d000 + 62 padding byte(s))
+      note   : c_vehicle_server_wing::tick_control, control_mode 0: target speed bounded to [48|72, 144] -> jmp _vit_plancher (rest is int3 padding)
+
+  0x1029dd310  DATA (base_funcs[] entry of the Lua base library: { "dofile", luaB_dofile } -> { "cc2_vitesse", vit_lua }; 8-byte unslid pointers)
+      before : 0e979702010000008caa830201000000
+      after  : 00d205000100000080d0050001000000
+      as u64 : 0x10297970e 0x10283aa8c  ->  0x10005d200 0x10005d080
+
+
+====================================================================================================
+MODULE ecriture_releve - Lua print() written to a file instead of stdout (needed because stdout is lost when Steam starts the game)
+====================================================================================================
+Two instructions of luaB_print load the GOT entry of __stdoutp; each becomes a call into a tiny cave. At the first print()
+the cave fopen()s (append) a text file in the game's user folder and returns that FILE* instead of stdout (fallback: stdout).
+The FILE* lives in a variable that only dead demo code used (0x102a2a828, 8 bytes). The path is embedded as data in the
+cave (hard-coded absolute path, fopen does not expand ~): see workshop/outil/generateurs/ecriture_releve.s.
+
+Sites: 3
+
+  0x100061a00  CODE CAVE inside dead code of ImGui::ShowDemoWindow, 165 bytes
+      before : not listed (original dead code of the game)
+      after  : not listed as hex; compiled from workshop/outil/generateurs/ecriture_releve.s
+      note   : cave _rv_r12 (+0, loads %r12) and _rv_rbx (+0xd, loads %rbx) + path string; source workshop/outil/generateurs/ecriture_releve.s
+
+  0x10283aed0  in _luaB_print
+      original code (7 bytes):
+          10283aed0: movq 0x163119(%rip), %r12 ## 0x10299dff0
+      before : 4c8b2519311600
+      after  : e82b6b82fd6690   (call 0x100061a00 + 2 padding byte(s))
+      note   : luaB_print: movq GOT(__stdoutp),%r12 (before the arguments) -> call _rv_r12 (+ 2-byte nop)
+
+  0x10283af78  in _luaB_print
+      original code (7 bytes):
+          10283af78: movq 0x163071(%rip), %rbx ## 0x10299dff0
+      before : 488b1d71301600
+      after  : e8906a82fd6690   (call 0x100061a0d + 2 padding byte(s))
+      note   : luaB_print: movq GOT(__stdoutp),%rbx (final "\n" and fflush) -> call _rv_rbx (+ 2-byte nop)
+
+
+====================================================================================================
+MODULE interface_x2 - (held in reserve, never kept) pilot HUD interface drawn 512 px high instead of 256
+====================================================================================================
+The pilot HUD UI (reticle, scales, text of vehicle_hud.lua) is drawn into the render target hud_ui_target, 256 px high
+(width = screen aspect x 256), created in c_frontend_renderer::update. This patch makes it 512 px high: the Lua places
+elements in fixed pixels, so everything is half the size on screen but twice as sharp. The 3D world is NOT affected
+(already full resolution). Cost: ~nothing (2D). 384.0 (0x10286973c) and 512.0 (0x102869b58) exist as constants; 768.0 does not.
+
+Sites: 2
+
+  0x1001ed3f4  in c_frontend_renderer::update
+      original code (6 bytes):
+          1001ed3f4: movl $0x100, %r9d ## imm = 0x100
+      before : 41b900010000
+      after  : 41b900020000
+      note   : movl $0x100,%r9d : target height 256 -> 512
+
+  0x1001ed3b7  in c_frontend_renderer::update
+      insn   : mulss 0x267c585(%rip), %xmm0 ## 0x102869944
+      const  : [0x102869944] = 256 0x43800000  ->  [0x102869b58] = 512 0x44000000
+      before : f30f590585c56702
+      after  : f30f590599c76702
+
+
+====================================================================================================
+MODULE helicos_ascenseur - (EXPERIMENT, abandoned) helicopters landing directly on the elevator platform
+====================================================================================================
+Cave of 5.5 KB (source workshop/outil/generateurs/helicos_ascenseur.c, built by workshop/outil/generateurs/generer_helicos_ascenseur.py which is also the
+mini-linker used by the other caves) + 3 hooks in docking_manager_air::update. An "elevator lane" (manager slot 0x84,
+unused during returns) takes one helicopter from the queue at a time: it flies above the platform, lands on it and goes
+down at once while others land on the runway. In game (2026-10-24) the first helicopter used the lane (runway given at
+0:10, on the platform at 0:52) but two helicopters collided (probably the one descending on the platform and one waiting
+at lift_upper_wait, 15.5 m away, rotors). The game destroys colliding vehicles. Abandoned; no crash of the game itself.
+
+Sites: 4
+
+  0x10005af40  CODE CAVE inside dead code of ImGui::ShowDemoWindow, 5536 bytes
+      before : not listed (original dead code of the game)
+      after  : not listed as hex; compiled from workshop/outil/generateurs/helicos_ascenseur.c
+      note   : cave (hooks _hl_h1 at +0, _hl_h2 at +0x160, _hl_h3 at +0x180 in the original link)
+
+  0x1001acd94  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (12 bytes):
+          1001acd94: movq %r13, -0x70(%rbp)
+          1001acd98: cmpl $-0x1, 0x80(%r14)
+      before : 4c896d904183be80000000ff
+      after  : e9a7e1eaff90909090909090   (jmp 0x10005af40 + 7 padding byte(s))
+      note   : entry of the "returns" mode: movq %r13,-0x70(%rbp) ; cmpl $-1,0x80(%r14) -> jmp _hl_h1
+
+  0x1001ad7af  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (5 bytes):
+          1001ad7af: jmp 0x1001ae780
+      before : e9cc0f0000
+      after  : e9ecd8eaff   (jmp 0x10005b0a0)
+      note   : exit of the "returns" mode: jmp 0x1001ae780 -> jmp _hl_h2
+
+  0x1001ae071  in c_vehicle_server_carrier::docking_manager_air::update
+      original code (11 bytes):
+          1001ae071: cmpl $-0x1, 0x7c(%r14)
+          1001ae076: je 0x1001b151b
+      before : 41837e7cff0f849f340000
+      after  : e94ad0eaff909090909090   (jmp 0x10005b0c0 + 6 padding byte(s))
+      note   : taxi 6 -> 7: cmpl $-1,0x7c(%r14) ; je 0x1001b151b -> jmp _hl_h3
+

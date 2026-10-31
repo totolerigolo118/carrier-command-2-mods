@@ -1,0 +1,259 @@
+{
+ "valeurs": {
+  "server_init": {
+   "ancien": 7811024,
+   "nouveau": 7811264,
+   "alignement": "egal",
+   "corps": "1974 instr. identiques, 1er ret a l'instr. 477",
+   "octets_ancien": "558bec6aff684d7e",
+   "octets_nouveau": "558bec6aff68ed7f",
+   "remarque": ""
+  },
+  "server_tick": {
+   "ancien": 7859728,
+   "nouveau": 7859968,
+   "alignement": "egal",
+   "corps": "3991 instr. identiques, 1er ret a l'instr. 43",
+   "octets_ancien": "558bec83e4f85153",
+   "octets_nouveau": "558bec83e4f85153",
+   "remarque": ""
+  },
+  "server_end": {
+   "ancien": 7859872,
+   "nouveau": 7860112,
+   "alignement": "egal",
+   "corps": "3939 instr. identiques, 1er ret a l'instr. 148",
+   "octets_ancien": "558bec83e4f85153",
+   "octets_nouveau": "558bec83e4f85153",
+   "remarque": ""
+  },
+  "f_index2addr": {
+   "ancien": 9230960,
+   "nouveau": 9231296,
+   "alignement": "egal",
+   "corps": "475 instr. identiques, 1er ret a l'instr. 9",
+   "octets_ancien": "8b411485d27e0dc1",
+   "octets_nouveau": "8b411485d27e0dc1",
+   "remarque": ""
+  },
+  "f_auxsetstr": {
+   "ancien": 9232896,
+   "nouveau": 9233232,
+   "alignement": "egal",
+   "corps": "806 instr. identiques, 1er ret a l'instr. 45",
+   "octets_ancien": "558bec83ec085356",
+   "octets_nouveau": "558bec83ec085356",
+   "remarque": ""
+  },
+  "f_finishset": {
+   "ancien": 9434800,
+   "nouveau": 9435168,
+   "alignement": "egal",
+   "corps": "952 instr. identiques, 1er ret a l'instr. 121",
+   "octets_ancien": "558bec83e4f883ec",
+   "octets_nouveau": "558bec83e4f883ec",
+   "remarque": ""
+  },
+  "f_luaS_new": {
+   "ancien": 9470496,
+   "nouveau": 9470880,
+   "alignement": "egal",
+   "corps": "642 instr. identiques, 1er ret a l'instr. 72",
+   "octets_ancien": "558bec83ec08538b",
+   "octets_nouveau": "558bec83ec08538b",
+   "remarque": ""
+  },
+  "f_luaH_new": {
+   "ancien": 9456208,
+   "nouveau": 9456576,
+   "alignement": "egal",
+   "corps": "451 instr. identiques, 1er ret a l'instr. 22",
+   "octets_ancien": "568b711033d26a20",
+   "octets_nouveau": "568b711033d26a20",
+   "remarque": ""
+  },
+  "f_luaC_step": {
+   "ancien": 9453648,
+   "nouveau": 9454016,
+   "alignement": "signature+voisin",
+   "corps": "284 instr. identiques, 1er ret a l'instr. 42",
+   "octets_ancien": "538bd956578b7b10",
+   "octets_nouveau": "538bd956578b7b10",
+   "remarque": "entree dans une table de sauts du .text : trouvee par ses 8 octets (une seule occurrence a +-0x400 de la suite egale voisine, decalage 0x170)"
+  },
+  "lua_site": {
+   "ancien": 4482540,
+   "nouveau": 4482540,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "6a20898564ffffff",
+   "octets_nouveau": "6a20898564ffffff",
+   "remarque": ""
+  },
+  "server_vtable": {
+   "ancien": 13847492,
+   "nouveau": 13847548
+  },
+  "nilobject": {
+   "ancien": 13645080,
+   "nouveau": 13645104,
+   "references": 178,
+   "valeurs_vues": {
+    "0xd03530": 178
+   }
+  },
+  "vt_rigid_dynamic": {
+   "ancien": 13489272,
+   "nouveau": 13489272,
+   "references": 2,
+   "valeurs_vues": {
+    "0xcdd478": 2
+   }
+  },
+  "f_vehicle_by_id": {
+   "ancien": 6219424,
+   "nouveau": 6219744,
+   "alignement": "egal",
+   "corps": "3559 instr. identiques, 1er ret a l'instr. 34",
+   "octets_ancien": "558bec51538bd933",
+   "octets_nouveau": "558bec51538bd933",
+   "remarque": ""
+  },
+  "f_tile_by_id": {
+   "ancien": 6492736,
+   "nouveau": 6493008,
+   "alignement": "egal",
+   "corps": "4000 instr. identiques, 1er ret a l'instr. 34",
+   "octets_ancien": "558bec51538bd933",
+   "octets_nouveau": "558bec51538bd933",
+   "remarque": ""
+  },
+  "f_tile_at": {
+   "ancien": 6492224,
+   "nouveau": 6492496,
+   "alignement": "egal",
+   "corps": "4000 instr. identiques, 1er ret a l'instr. 71",
+   "octets_ancien": "558bec83e4f883ec",
+   "octets_nouveau": "558bec83e4f883ec",
+   "remarque": ""
+  },
+  "f_request_landing": {
+   "ancien": 6468768,
+   "nouveau": 6469040,
+   "alignement": "egal",
+   "corps": "2744 instr. identiques, 1er ret a l'instr. 101",
+   "octets_ancien": "558bec83ec188b41",
+   "octets_nouveau": "558bec83ec188b41",
+   "remarque": ""
+  },
+  "f_waypoints_clear": {
+   "ancien": 8734832,
+   "nouveau": 8735136,
+   "alignement": "egal",
+   "corps": "4000 instr. identiques, 1er ret a l'instr. 60",
+   "octets_ancien": "558bec6aff6870b0",
+   "octets_nouveau": "558bec6aff6810b2",
+   "remarque": ""
+  },
+  "f_deque_grow": {
+   "ancien": 8785040,
+   "nouveau": 8785344,
+   "alignement": "egal",
+   "corps": "4000 instr. identiques, 1er ret a l'instr. 71",
+   "octets_ancien": "558bec83ec0c538b",
+   "octets_nouveau": "558bec83ec0c538b",
+   "remarque": ""
+  },
+  "f_spawn": {
+   "ancien": 6474288,
+   "nouveau": 6474560,
+   "alignement": "egal",
+   "corps": "949 instr. identiques, 1er ret a l'instr. 946",
+   "octets_ancien": "538bdc83ec0883e4",
+   "octets_nouveau": "538bdc83ec0883e4",
+   "remarque": ""
+  },
+  "f_af_tick": {
+   "ancien": 6456832,
+   "nouveau": 6457104,
+   "alignement": "egal",
+   "corps": "4000 instr. identiques, 1er ret a l'instr. 2266",
+   "octets_ancien": "538bdc83ec0883e4",
+   "octets_nouveau": "538bdc83ec0883e4",
+   "remarque": ""
+  },
+  "h_waypoints": {
+   "ancien": 7832020,
+   "nouveau": 7832260,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "ffb050010000",
+   "octets_nouveau": "ffb050010000",
+   "remarque": ""
+  },
+  "h_hangar": {
+   "ancien": 6467213,
+   "nouveau": 6467485,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "8b576c33c0",
+   "octets_nouveau": "8b576c33c0",
+   "remarque": ""
+  },
+  "h_hangar_found": {
+   "ancien": 6467324,
+   "nouveau": 6467596,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "8b8db4feffffffb5",
+   "octets_nouveau": "8b8db4feffffffb5",
+   "remarque": ""
+  },
+  "h_hangar_none": {
+   "ancien": 6467245,
+   "nouveau": 6467517,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "8b85b4feffff8db7",
+   "octets_nouveau": "8b85b4feffff8db7",
+   "remarque": ""
+  },
+  "h_controller[0]": {
+   "ancien": 6488399,
+   "nouveau": 6488671,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "8b018b4010ffd0",
+   "octets_nouveau": "8b018b4010ffd0",
+   "remarque": ""
+  },
+  "h_controller[1]": {
+   "ancien": 6506881,
+   "nouveau": 6507153,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "8b078b4010ffd0",
+   "octets_nouveau": "8b078b4010ffd0",
+   "remarque": ""
+  },
+  "h_spawn": {
+   "ancien": 6508349,
+   "nouveau": 6508621,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "e8ee7affff80bbd0",
+   "octets_nouveau": "e8ee7affff80bbd0",
+   "remarque": ""
+  },
+  "h_af_tick": {
+   "ancien": 6469875,
+   "nouveau": 6470147,
+   "alignement": "egal",
+   "corps": "",
+   "octets_ancien": "e808cdffff463b77",
+   "octets_nouveau": "e808cdffff463b77",
+   "remarque": ""
+  }
+ },
+ "problemes": []
+}

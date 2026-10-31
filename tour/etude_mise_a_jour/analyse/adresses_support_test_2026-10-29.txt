@@ -1,0 +1,3 @@
+Test lecture seule du 2026-10-29 (HTTP, sans cookie, sans donnees envoyees) :
+https://geometa.co.uk/support/carriercommand/sign_in -> 404 | redirige vers: 
+https://geometa.co.uk/support_sign_in -> 302 | redirige vers: https://geometa.co.uk/feedback_sign_in

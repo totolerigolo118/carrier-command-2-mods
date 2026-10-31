@@ -1,0 +1,191 @@
+
+==== C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist/dinput8.dll
+taille 268288, sha256 E1DE25D53A5588BDA62269D6D93335ACB9F32EA555AC9274FE7973C19D6225D7
+machine 0x14c (i386=0x14c), PE32=True, DLL=True, horodatage 0x74a495d8, somme 0x0, base 0x10000000, taille image 0x2e0000, entrée 0xb560
+sous-système 2, DllCharacteristics 0x140 (ASLR=True NX=True)
+  section .text    rva 0x001000 vs 0x034baf brut 0x034c00  R-X
+  section .rdata   rva 0x036000 vs 0x00535e brut 0x005400  R--
+  section .buildid rva 0x03c000 vs 0x00005c brut 0x000200  R--
+  section .data    rva 0x03d000 vs 0x29a800 brut 0x000400  RW-
+  section .tls     rva 0x2d8000 vs 0x000008 brut 0x000200  RW-
+  section .reloc   rva 0x2d9000 vs 0x001c90 brut 0x001e00  R--
+  section /4       rva 0x2db000 vs 0x004b44 brut 0x004c00  R--
+  répertoires non vides : [('export', '0x3aa38', 193), ('import', '0x3aafc', 180), ('relocations', '0x2d9000', 7312), ('débogage', '0x3c000', 56), ('TLS', '0x37530', 24), ('IAT', '0x3ace0', 304)]
+  surplus après la dernière section : 512
+  TLS : {'debut': '0x102d8000', 'fin': '0x102d8004', 'rappels': ['0x1000b6d0', '0x1000b750']}
+  débogage : [(2, '0x74a495d8', 36, 238648, "b'RSDS' dinput8.pdb"), (16, '0x74a495d8', 0, 0, '')]
+  exports (dinput8.dll) : [('DirectInput8Create', 1, '0x10f0'), ('DllCanUnloadNow', 2, '0x1130'), ('DllGetClassObject', 3, '0x1170'), ('DllRegisterServer', 4, '0x11b0'), ('DllUnregisterServer', 5, '0x11f0')]
+  import api-ms-win-crt-math-l1-1-0.dll (1) : atan2
+  import api-ms-win-crt-private-l1-1-0.dll (3) : strrchr, strstr, wcsrchr
+  import api-ms-win-crt-runtime-l1-1-0.dll (7) : _execute_onexit_table, _exit, _initialize_onexit_table, _initterm, _initterm_e, _register_onexit_function, abort
+  import api-ms-win-crt-stdio-l1-1-0.dll (7) : __acrt_iob_func, __stdio_common_vfprintf, __stdio_common_vsprintf, __stdio_common_vswprintf, fclose, fopen, fwrite
+  import api-ms-win-crt-string-l1-1-0.dll (8) : _wcsicmp, strcmp, strlen, strncmp, wcscat, wcscpy, wcslen, wcsncpy
+  import api-ms-win-crt-utility-l1-1-0.dll (1) : qsort
+  import KERNEL32.dll (39) : CloseHandle, CreateDirectoryW, CreateFileW, DeleteCriticalSection, DeleteFileA, EnterCriticalSection, FindClose, FindFirstFileW, FindNextFileW, FlushInstructionCache, GetCurrentProcess, GetEnvironmentVariableW, GetFileAttributesW, GetFileSize, GetLastError, GetLocalTime, GetModuleFileNameA, GetModuleFileNameW, GetModuleHandleExW, GetModuleHandleW, GetPrivateProfileIntA, GetProcAddress, GetProcessHeap, GetSystemDirectoryW, HeapAlloc, HeapFree, InitOnceExecuteOnce, InitializeCriticalSection, LeaveCriticalSection, LoadLibraryExW, LoadLibraryW, MultiByteToWideChar, ReadFile, Sleep, TlsGetValue, VirtualAlloc, VirtualProtect, VirtualQuery, WideCharToMultiByte
+  import api-ms-win-crt-heap-l1-1-0.dll (2) : calloc, free
+
+==== C:/Program Files (x86)/Steam/steamapps/common/Carrier Command 2/dinput8.dll
+taille 267264, sha256 184B144D6E2BB868FFEB7D45ECD463F8919E64732E3B5681A16165363EBA0982
+machine 0x14c (i386=0x14c), PE32=True, DLL=True, horodatage 0xd238b596, somme 0x0, base 0x10000000, taille image 0x2e0000, entrée 0xb2d0
+sous-système 2, DllCharacteristics 0x140 (ASLR=True NX=True)
+  section .text    rva 0x001000 vs 0x03491f brut 0x034a00  R-X
+  section .rdata   rva 0x036000 vs 0x00518e brut 0x005200  R--
+  section .buildid rva 0x03c000 vs 0x00005c brut 0x000200  R--
+  section .data    rva 0x03d000 vs 0x29a800 brut 0x000400  RW-
+  section .tls     rva 0x2d8000 vs 0x000008 brut 0x000200  RW-
+  section .reloc   rva 0x2d9000 vs 0x001c20 brut 0x001e00  R--
+  section /4       rva 0x2db000 vs 0x004b4c brut 0x004c00  R--
+  répertoires non vides : [('export', '0x3a868', 193), ('import', '0x3a92c', 180), ('relocations', '0x2d9000', 7200), ('débogage', '0x3c000', 56), ('TLS', '0x37360', 24), ('IAT', '0x3ab10', 304)]
+  surplus après la dernière section : 512
+  TLS : {'debut': '0x102d8000', 'fin': '0x102d8004', 'rappels': ['0x1000b440', '0x1000b4c0']}
+  débogage : [(2, '0xd238b596', 36, 237624, "b'RSDS' dinput8.pdb"), (16, '0xd238b596', 0, 0, '')]
+  exports (dinput8.dll) : [('DirectInput8Create', 1, '0x10f0'), ('DllCanUnloadNow', 2, '0x1130'), ('DllGetClassObject', 3, '0x1170'), ('DllRegisterServer', 4, '0x11b0'), ('DllUnregisterServer', 5, '0x11f0')]
+  import api-ms-win-crt-math-l1-1-0.dll (1) : atan2
+  import api-ms-win-crt-private-l1-1-0.dll (3) : strrchr, strstr, wcsrchr
+  import api-ms-win-crt-runtime-l1-1-0.dll (7) : _execute_onexit_table, _exit, _initialize_onexit_table, _initterm, _initterm_e, _register_onexit_function, abort
+  import api-ms-win-crt-stdio-l1-1-0.dll (7) : __acrt_iob_func, __stdio_common_vfprintf, __stdio_common_vsprintf, __stdio_common_vswprintf, fclose, fopen, fwrite
+  import api-ms-win-crt-string-l1-1-0.dll (8) : _wcsicmp, strcmp, strlen, strncmp, wcscat, wcscpy, wcslen, wcsncpy
+  import api-ms-win-crt-utility-l1-1-0.dll (1) : qsort
+  import KERNEL32.dll (39) : CloseHandle, CreateDirectoryW, CreateFileW, DeleteCriticalSection, DeleteFileA, EnterCriticalSection, FindClose, FindFirstFileW, FindNextFileW, FlushInstructionCache, GetCurrentProcess, GetEnvironmentVariableW, GetFileAttributesW, GetFileSize, GetLastError, GetLocalTime, GetModuleFileNameA, GetModuleFileNameW, GetModuleHandleExW, GetModuleHandleW, GetPrivateProfileIntA, GetProcAddress, GetProcessHeap, GetSystemDirectoryW, HeapAlloc, HeapFree, InitOnceExecuteOnce, InitializeCriticalSection, LeaveCriticalSection, LoadLibraryExW, LoadLibraryW, MultiByteToWideChar, ReadFile, Sleep, TlsGetValue, VirtualAlloc, VirtualProtect, VirtualQuery, WideCharToMultiByte
+  import api-ms-win-crt-heap-l1-1-0.dll (2) : calloc, free
+
+==== C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist_verif/dinput8.dll
+taille 268288, sha256 F41CF5FAA285ABA8EDB1623186455749AB60D73BBF17A459C163BC85A777BD04
+machine 0x14c (i386=0x14c), PE32=True, DLL=True, horodatage 0x2aa0b38a, somme 0x0, base 0x10000000, taille image 0x2e0000, entrée 0xb560
+sous-système 2, DllCharacteristics 0x140 (ASLR=True NX=True)
+  section .text    rva 0x001000 vs 0x034baf brut 0x034c00  R-X
+  section .rdata   rva 0x036000 vs 0x00535e brut 0x005400  R--
+  section .buildid rva 0x03c000 vs 0x00005c brut 0x000200  R--
+  section .data    rva 0x03d000 vs 0x29a800 brut 0x000400  RW-
+  section .tls     rva 0x2d8000 vs 0x000008 brut 0x000200  RW-
+  section .reloc   rva 0x2d9000 vs 0x001c90 brut 0x001e00  R--
+  section /4       rva 0x2db000 vs 0x004b44 brut 0x004c00  R--
+  répertoires non vides : [('export', '0x3aa38', 193), ('import', '0x3aafc', 180), ('relocations', '0x2d9000', 7312), ('débogage', '0x3c000', 56), ('TLS', '0x37530', 24), ('IAT', '0x3ace0', 304)]
+  surplus après la dernière section : 512
+  TLS : {'debut': '0x102d8000', 'fin': '0x102d8004', 'rappels': ['0x1000b6d0', '0x1000b750']}
+  débogage : [(2, '0x2aa0b38a', 36, 238648, "b'RSDS' dinput8.pdb"), (16, '0x2aa0b38a', 0, 0, '')]
+  exports (dinput8.dll) : [('DirectInput8Create', 1, '0x10f0'), ('DllCanUnloadNow', 2, '0x1130'), ('DllGetClassObject', 3, '0x1170'), ('DllRegisterServer', 4, '0x11b0'), ('DllUnregisterServer', 5, '0x11f0')]
+  import api-ms-win-crt-math-l1-1-0.dll (1) : atan2
+  import api-ms-win-crt-private-l1-1-0.dll (3) : strrchr, strstr, wcsrchr
+  import api-ms-win-crt-runtime-l1-1-0.dll (7) : _execute_onexit_table, _exit, _initialize_onexit_table, _initterm, _initterm_e, _register_onexit_function, abort
+  import api-ms-win-crt-stdio-l1-1-0.dll (7) : __acrt_iob_func, __stdio_common_vfprintf, __stdio_common_vsprintf, __stdio_common_vswprintf, fclose, fopen, fwrite
+  import api-ms-win-crt-string-l1-1-0.dll (8) : _wcsicmp, strcmp, strlen, strncmp, wcscat, wcscpy, wcslen, wcsncpy
+  import api-ms-win-crt-utility-l1-1-0.dll (1) : qsort
+  import KERNEL32.dll (39) : CloseHandle, CreateDirectoryW, CreateFileW, DeleteCriticalSection, DeleteFileA, EnterCriticalSection, FindClose, FindFirstFileW, FindNextFileW, FlushInstructionCache, GetCurrentProcess, GetEnvironmentVariableW, GetFileAttributesW, GetFileSize, GetLastError, GetLocalTime, GetModuleFileNameA, GetModuleFileNameW, GetModuleHandleExW, GetModuleHandleW, GetPrivateProfileIntA, GetProcAddress, GetProcessHeap, GetSystemDirectoryW, HeapAlloc, HeapFree, InitOnceExecuteOnce, InitializeCriticalSection, LeaveCriticalSection, LoadLibraryExW, LoadLibraryW, MultiByteToWideChar, ReadFile, Sleep, TlsGetValue, VirtualAlloc, VirtualProtect, VirtualQuery, WideCharToMultiByte
+  import api-ms-win-crt-heap-l1-1-0.dll (2) : calloc, free
+
+==== C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist_ref/dinput8.dll
+taille 267264, sha256 B1122032422299AFB342593DF2A0DC097AB127E22E3D4B559D68B39A5AFAFD37
+machine 0x14c (i386=0x14c), PE32=True, DLL=True, horodatage 0x1c7cd64b, somme 0x0, base 0x10000000, taille image 0x2e0000, entrée 0xb2d0
+sous-système 2, DllCharacteristics 0x140 (ASLR=True NX=True)
+  section .text    rva 0x001000 vs 0x03491f brut 0x034a00  R-X
+  section .rdata   rva 0x036000 vs 0x00518e brut 0x005200  R--
+  section .buildid rva 0x03c000 vs 0x00005c brut 0x000200  R--
+  section .data    rva 0x03d000 vs 0x29a800 brut 0x000400  RW-
+  section .tls     rva 0x2d8000 vs 0x000008 brut 0x000200  RW-
+  section .reloc   rva 0x2d9000 vs 0x001c20 brut 0x001e00  R--
+  section /4       rva 0x2db000 vs 0x004b4c brut 0x004c00  R--
+  répertoires non vides : [('export', '0x3a868', 193), ('import', '0x3a92c', 180), ('relocations', '0x2d9000', 7200), ('débogage', '0x3c000', 56), ('TLS', '0x37360', 24), ('IAT', '0x3ab10', 304)]
+  surplus après la dernière section : 512
+  TLS : {'debut': '0x102d8000', 'fin': '0x102d8004', 'rappels': ['0x1000b440', '0x1000b4c0']}
+  débogage : [(2, '0x1c7cd64b', 36, 237624, "b'RSDS' dinput8.pdb"), (16, '0x1c7cd64b', 0, 0, '')]
+  exports (dinput8.dll) : [('DirectInput8Create', 1, '0x10f0'), ('DllCanUnloadNow', 2, '0x1130'), ('DllGetClassObject', 3, '0x1170'), ('DllRegisterServer', 4, '0x11b0'), ('DllUnregisterServer', 5, '0x11f0')]
+  import api-ms-win-crt-math-l1-1-0.dll (1) : atan2
+  import api-ms-win-crt-private-l1-1-0.dll (3) : strrchr, strstr, wcsrchr
+  import api-ms-win-crt-runtime-l1-1-0.dll (7) : _execute_onexit_table, _exit, _initialize_onexit_table, _initterm, _initterm_e, _register_onexit_function, abort
+  import api-ms-win-crt-stdio-l1-1-0.dll (7) : __acrt_iob_func, __stdio_common_vfprintf, __stdio_common_vsprintf, __stdio_common_vswprintf, fclose, fopen, fwrite
+  import api-ms-win-crt-string-l1-1-0.dll (8) : _wcsicmp, strcmp, strlen, strncmp, wcscat, wcscpy, wcslen, wcsncpy
+  import api-ms-win-crt-utility-l1-1-0.dll (1) : qsort
+  import KERNEL32.dll (39) : CloseHandle, CreateDirectoryW, CreateFileW, DeleteCriticalSection, DeleteFileA, EnterCriticalSection, FindClose, FindFirstFileW, FindNextFileW, FlushInstructionCache, GetCurrentProcess, GetEnvironmentVariableW, GetFileAttributesW, GetFileSize, GetLastError, GetLocalTime, GetModuleFileNameA, GetModuleFileNameW, GetModuleHandleExW, GetModuleHandleW, GetPrivateProfileIntA, GetProcAddress, GetProcessHeap, GetSystemDirectoryW, HeapAlloc, HeapFree, InitOnceExecuteOnce, InitializeCriticalSection, LeaveCriticalSection, LoadLibraryExW, LoadLibraryW, MultiByteToWideChar, ReadFile, Sleep, TlsGetValue, VirtualAlloc, VirtualProtect, VirtualQuery, WideCharToMultiByte
+  import api-ms-win-crt-heap-l1-1-0.dll (2) : calloc, free
+
+==== comparaisons (nouvelle E1DE25D5 contre posée 184B144D)
+imports identiques : True
+exports identiques : True
+TLS identique : False
+sections (nom, droits) identiques : True
+tailles de section nouvelle - posée : [('.text', 656), ('.rdata', 464), ('.buildid', 0), ('.data', 0), ('.tls', 0), ('.reloc', 112), ('/4', -8)]
+répertoires vides/non vides identiques : True
+chaînes ASCII (>=5) : nouvelle 639, posée 633
+  présentes seulement dans la nouvelle : [' 0J0\\0l0', '#0T0^0u0', '(^_[]', '0 0-02070=0I0N0U0n0t0', '0&0.060>0F0N0T0^0d0i0', '0+0A0W0m0', '021t15?A?o?', '0;0C0c0', '0>0R0', '0>0_0v0~0', '0^_[]', '1!1<1', '1"1\'1S1h1x1', '1#1,1:1?1F1o1x1', '1#191G1', '1)111@1', '1)2|2', '1,1=1G1M1R1f1r1w1', '1.141>1D1L1T1\\1d1l1t1|1', '1.5.18-win32-6ae228f3', '1/1C1O1a1m1y1', '1/1C1W1', '11161M1R1d1i1', '131D1P1U1k1r1y1', '151A1H1^1u1', '1R1a1', '2 2%292P2U2i2', '2 3,3', '2(232<2N2X2]2d2r2|2', '24292Q2V2n2s2', '252T2_2', '2:3B3', '2;2V2o2u2z2', '2C2Z2y2', '2M2S2X2k2', '2W2]2w2}2', '2e316', '3 3&3+3]3v3', '3"3,333<3J3O3V3', '3#3+373?3i3', '3$3+3:3A3]3', '3$3,343<3D3L3T3Z3d3n3t3y3', '3$313', '3&3.363u3', '3(3C3V3a3o3{3', '3*3/3G3U3Z3q3', '3/3I3S3X3s3x3', '3/464x4U6f6', '3=3C3I3i3', '3A4U4', '3[4a4x4~4', '3`3|6', '4 565>5x5', '4#4I4a4w4}4', '4(404w4', '4(4L4\\4v4', '4*4F4S4_4j4', '4+4:4N4', '4,414H4M4v4{4', '4,444h4', '4.4F4^4o4', '4.4H4e4}4', '4.4u4', '41464M4q4', '465D5e5m5', '4X4d4p4|4', '4[6c6z7', '4h9g:', '5 5$5(5,5054585<5H5L5P5', '5 52585n5z5', '5!6P6', '5#5)5;5C5K5S5[5c5k5s5y5', '5%505>5H5Y5d5', '5%6?6G6O6s6', '5)5J5W5`5r5', '5)6/656:6@6E6x6~6', '5*50585B5M5c5m5w5~5', '50575K5V5]5q5|5', '555;5G5M5S5a5', '565;5P5g5l5', '5:5T5l5r5w5', '5>5F5N5k5q5w5}5', '5J6Z6', '5b8s8', '6!6)61696A6J6P6V6h6n6s6y6', '6"6,6=6B6P6Y6d6s6}6', '6$6*6/696d6n6w6}6-7', '6+6>6J6`6p6', '6-6R6Y6r6', '6/7?7l7', '697\\7l7', '6:6E6^6', '6;7J7Z7_7n7', '6A6V6p6v6', '6K6Q6V6i6', '6_6g6', '6e7m7', '7"7*7I7{7', '7#7(7F7W7', '7&7F7L7S7Z7_7e7', '7)898', '7+72797>7E7', '7,737B7V7b7', '707d7q7y7', '788<8@8D8H8L8P8T8X8\\8`8d8h8l8p8t8x8|8', '797B7_7~7', '7=7L7R7Y7^7e7q7w7', '7?8d8', '7W8a8j8r8', '8%8-858=8E8M8U8]8c8m8s8|8', '8&8J8f83>;>i>', '8(8/8H8O8c8', '8(878]8', '8+8:8?8N8', '8/8<8A8P8a8f8~8', '838C8S8c8|8', '8G8s8', '8N9^9k9', '8U8x8', '8q9{9', '9!9R9b9', '9"9m9', '9#9Y9', '9$9,949<9D9L9T9\\9d9l9t9z9', '9%9*9>9U9Z9n9', '9&949a9', '9)919_9f9w9', '90:O:d:i:}:', '939E9L9X9]9v9{9', '93:V:y:', '95s5o:', '9?9c9', '9?>E>', '9Q9e9', "9R:#<'<-<1<7<;<C<J=", ': :$:(:,:0:4:8:<:@:D:H:L:P:T:X:\\:`:d:h:l:p:t:x:|:', ': :1:6:E:V:`:u:z:', ':":8:K:w:', ':":f:r:~:', ':%:+:1:7:=:C:I:O:U:[:a:g:m:s:y:', ':&;R;b;', ':(:.:B:H:M:c:k:s:{:', ':*;Q;t;', ':,:8:H:h:z:', ':.;6;', ':1;7;=;P;V;\\;f;l;', ':>;U;Z;q;', ':A;g;x;', ':K:k:x:', ':U;};', ':|<4=', ":}M'LLD PDB.", '; =&=', ";!;';-;3;9;?;E;K;Q;W;];c;i;o;u;{;", ';%;);E;L;S;e;|;', ';*<(=z=X>', ';2;7;K;b;g;{;', ';9;C;I;O;U;^;d;m;s;};', ';<;f;l;', ';H;Z;y;', '<!<(<6<C<K<U<d<k<', '<!<1<7<A<H<L<U<h<w<', '<"<><J<e<m<u<', '<$<5<:<I<X<z<', '<&<,<^<', '<&<0<:<D<N<X<b<l<', "<'<0<6<P<V<\\<j<o<|<", "<'<8<=<L<]<b<q<", '<-=>=i={=', '<3=H>', '<5<N<T<Y<^<d<n<x<', '<<<D<L<T<', '<@=V=\\=a=x=', '<D<W<', '<J<R<j<r<z<', '="=.=4=<=R=]=h=', '=$>.>a>s>{>', '=$>G>O>W>|>', '=%=>=W=^=e=y=', '=&=N=V=^=f=', "='=K=[=", '=(=2=6=<=B=H=L=R=V=\\=`=f=j=p=t=z=~=', '=)>H>', '=*=/=F=]=b=y=', '=/=4=L=Q=i=n=', '=/=V=i=', '=F=T=Y=v=}=', '> ?`?', '>!>A>]>', '>!?`?p?', '>#>2>Q>`>u>z>', '>$>(>.>2>8><>B>F>L>P>V>Z>`>d>j>n>t>x>~>', '>%>.>5>>>O>U>f>', '>&>y>', '>(>A>`>h>', '>.>R>X>]>p>', '>/?;?', '>0>8>l>', '>4>9>Q>V>n>s>', '>;>C>K>b>o>w>', '>=>_>', '? ?$?(?,?0?4?8?<?@?D?H?L?P?T?X?\\?`?d?h?l?p?t?x?|?', '?!?9?>?V?[?s?x?', '?#?)?.?`?}?', '?#?/???K?W?c?o?', '?(?9?A?F?L?S?', '?*?1?>?K?d?j?z?', '?-?>?C?W?n?s?', '?-?C?O?T?n?|?', '?4?>?o?', '?7?u?', '?8?I?Q?o?w?', 'F1N1V1^1j1r1', 'I4l4t4y4', 'RSDSag', 'ZD$Pf', 't;h+p', 'tJVh8p', 'tUVhwr', 't`Vhrr']
+  présentes seulement dans la posée    : ['$0E0O0U0_0i0o0y0', '/0T0h0N9V9^9', '0 0%090P0U0d0u0z0', '0 1;1C1K1S1', '0"0)0?0V0n0', '0"121p1', "0'0Q0", '0(00060H0P0X0`0h0p0x0', '0*0H0g0', '0,0G0b0}0', '0.080=0D0R0\\0c0l0z0', '001>1O1g1{1', '010Q0u0~0', '060>0F0]0n0v0', '0<0d0k0y0', '0A1l1|1', '1!1)11191E1M1w1', '1!171=1C1T1', '1"1O1m1|1', '1*1/161_1h1s1|1', '1+1H1Y1c1i1n1', '1-1<1A1W1^1e1l1', '11161M1q1', '172K2', '1:1@1X1r1', '1:2B2J2R2^2f2', '1D1g1o1w1', '2 2(20282@2H2Q2W2]2g2m2s2}2', '2!2(2A2G2M2', '2#2,2>2H2M2T2b2l2s2|2', '2$2*2o2}2', '2%2E2^2u2z2', '2(242@2', '202C2b2x2', '203S3l3}3', '222H2d2', '222O2]2g2m2w2}2', '272M2S2o2z2', '273I3Q3Y3x3', '2<2A2I2[2', '2<3@3D3H3L3P3T3X3\\3`3d3h3l3x3|3', '2?2K2[2o2~8', '2I3]3n3', '3 4Q4', '3 6(60686@6P7T7X7\\7`7d7h7', '3!353E3Q3', '3"3(3.383K3h3p3v3|3', '3"4i4', '3#3,3:3?3F3l3', '3#3?3D3S3', '3%3+3>3D3J3]3', '3%3-353=3C3I3S3Y3b3h3m3s3', "3'4J4d4j4q4", '3+434c4', '3-333:3P3V3[3q3y3', '3=3B3x3', '3>3I3W3a3r3', '3D4s4', '3W5_5', '3d3l3', '4!4>4D4I4O4l4', '4!5@5P5h5', '4#454E4', '4$4-434=4C4K4U4l4', '4$t>h', '4*42484J4R4Z4b4j4r4z4', '42484@4F4N4T4\\4c4i4', '4C4K4', '4D4L4T4x4', '4H5P5', '5 5F5L5Q5g5v5{5', '5 6(6t6|6', '5 6*6<6F6T6l6w6', '5"5/555;5D5i5n5', '5$5A5K5Y5_5i5u5}5', '5$5b5j5', "5'51575F5S5]5g5n5s5z5", "5'5W5r5", '5+636', '5-5:5?5S5`5e5y5', '596U6i6', '5=5^5f5~5', '5G6z6', '5K5R5', '5\\6585;', '6 7(7<7D7', '6#6*686>6M6c6m6w6~6', '6$6?6E6T6[6', '6$6J6i6y6', '6%666;6J6Y6b6r6', '6%6Y6m6y6', '6/7?7n7', '656:6N6e6j6~6', '656;6@6X6u6', '6:6@6J6R6a6z6', '6?6K6', '6G6w6', '6H7Z7p7', '7#8O8[8c8k8', '7%7*7>7U7Z7', '7%797>7M7^7h7|7', '7)7/7:7C7M7Y7f7k7', '7*727:7B7J7R7Z7b7j7s7y7', '7,7K7i7', '717P7^7', '718>8`8i8', '737;7E7h7w7', '8 8$8(8,8084888<8@8D8H8L8P8T8X8\\8`8d8h8l8p8t8x8|8', '8 878<8S8j8o8', "8!8'8T8a8f8q8", '8"8(828@8E8K8', '8%8+81878=8C8I8O8U8[8a8g8m8s8y8', '8&868B8N8q8', '8)8?8L8a8x8', '8+8B8G8[8r8w8', '8-8<8L8T8', '8.9K9U9o9y9', '899?9G9v9', '8Q9[9v9{9', '8]9~9', '8j8F9', '9!959:9E9^9r9w9', '9"9)9?9f9y9', '9%979H9', '9%9T9\\9f9', '9%:-:[:', '9&9.969>9F9N9V9^9g9m9s9}9', '9)9I9d9', '9+909G9^9c9r9', '9+9D9X9l9', '92979K9b9l9', '93:;:C:K:}:', '9~:+?', ': :$:(:,:0:4:8:<:@:D:X:', ':!:?:G:Q:j:', ':!;-;q;{;', ':":1:B:G:V:g:l:', ':$:D:L:n:', ':*:I:v:', ':.:6:<:H:l:t:|:', ':.:9:B:]:f:', ':.:::?:Y:^:', ':5;E;g;p;', ':D:[:', ':K;Y;b;', ':e:r:', ':g:{:', ';";,;6;@;J;T;^;h;r;|;', ';(<H<T<l<', ';*;M;q;};', ';*;|;', ';+;^;q;', ';,;2;9;X;^;d;t;y;', ';0;5;M;R;j;o;', ';4;9;Q;h;m;', ';B;k;s;{;', ';F;T;Y;y;', '<"<2<V<x<', '<"<=<B<j<y<', '<#<0<=<J<s<', '<%<-<3<E<S<[<c<k<s<{<', '<%<E<J<r<x<', '<&<,<1<H<]<c<h<~<', '<4<<<F<k<s<{<', '<5<:<R<W<o<t<', '<<=g=', '<><W<^<e<~<', '<J=(>z>', '<PQh`c', '<S<g<{<', '<X<p<', '= =$=*=.=4=8=>=B=H=L=R=V=\\=`=f=j=p=t=z=~=', '= =>=E=K=U=[=', "='=/=?=G=c=", "='=>=C=W=d=i=", '=(=E=T=Z=d=l=t=z=', '=)=8===g=', '=+=0===C=H=', '=,=7=I=p=', '=3=>=X=', '=8=R=Z=r=~=', '=H=L=P=T=X=\\=`=d=h=l=p=t=x=|=', '=K=S=c=', '=r=}=', '>#>/>4>C>K>W>\\>n>s>', '>#>/>5>', '>$>(>.>2>=>E>M>U>]>e>m>u>}>', ">'>/>?>s>", '>,>9>_>m>', '>.>C>I>N>r>', '>3>N>e>k>p>', '>5>K>a>w>', '>@>c>k>t>', '>A>1?', '>B>^>k>s>{>', '>G>Y>x>', '>Q>j>', '?!?(?/?D?\\?t?', '?!?*?3?M?R?j?o?', '?#?(?8?I?`?e?y?', '?%?3?@?J?V?[?q?v?|?', "?'?9?K?W?\\?", '?,?M?S?Y?v?', '?-?7?@?L?', '?<?P?d?', 'C1P1X1`1', 'G1/7[7', 'LLD PDB.', 'RSDSdZ', 'ZD$@f', '`7h7 8$8(8,8L8P8', 't;h[n', 'tJVhhn', 't_j\\V']
+chaînes UTF-16 (>=5) : nouvelle 11, posée 11 ; seulement nouvelle : [] ; seulement posée : []
+
+-- C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist_verif/dinput8.dll contre posée : octets différents : tailles différentes (268288 / 267264)
+
+-- C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist_ref/dinput8.dll contre posée : octets différents : 20 ['0x80', '0x81', '0x82', '0x83', '0x3a004', '0x3a005', '0x3a006', '0x3a007', '0x3a020', '0x3a021', '0x3a022', '0x3a023', '0x3a03c', '0x3a03d', '0x3a03e', '0x3a03f', '0x3a040', '0x3a041', '0x3a042', '0x3a043']
+
+source : 2 profil(s) ['1.5.18-win32', '1.5.18-win32-6ae228f3'], 2 layout(s) ['1.5.18-win32', '1.5.18-win32-6ae228f3']
+
+==== tables dans C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist/dinput8.dll
+PROFILES : 2 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x3531c, build "1.5.18-win32" : 17 champs, écarts avec la source : aucun
+  [1] fichier 0x35360, build "1.5.18-win32-6ae228f3" : 17 champs, écarts avec la source : aucun
+LAYOUTS : 2 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x35acc, build "1.5.18-win32" : 90 champs, écarts avec la source : aucun
+  [1] fichier 0x35c34, build "1.5.18-win32-6ae228f3" : 90 champs, écarts avec la source : aucun
+
+==== tables dans C:/Program Files (x86)/Steam/steamapps/common/Carrier Command 2/dinput8.dll
+PROFILES : 1 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x3511c, build "1.5.18-win32" : 17 champs, écarts avec la source : aucun
+LAYOUTS : 1 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x35858, build "1.5.18-win32" : 90 champs, écarts avec la source : aucun
+
+==== tables dans C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist_verif/dinput8.dll
+PROFILES : 2 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x3531c, build "1.5.18-win32" : 17 champs, écarts avec la source : aucun
+  [1] fichier 0x35360, build "1.5.18-win32-6ae228f3" : 17 champs, écarts avec la source : aucun
+LAYOUTS : 2 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x35acc, build "1.5.18-win32" : 90 champs, écarts avec la source : aucun
+  [1] fichier 0x35c34, build "1.5.18-win32-6ae228f3" : 90 champs, écarts avec la source : aucun
+
+==== tables dans C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist_ref/dinput8.dll
+PROFILES : 1 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x3511c, build "1.5.18-win32" : 17 champs, écarts avec la source : aucun
+LAYOUTS : 1 élément(s) dans la DLL, 2 dans la source
+  [0] fichier 0x35858, build "1.5.18-win32" : 90 champs, écarts avec la source : aucun
+
+==== code : Carrier Command 2 (65644 instr.) contre dist (65850 instr.), adresses internes masquées : 408 bloc(s) différent(s)
+  (les 3 premiers blocs pour exemple ; le détail fonction par fonction est dans comparer_fonctions_dll.py)
+  replace  A[828:829] (0x10001a56)  B[828:829] (0x10001a56)
+      A: push ebx
+      A: push edi
+      A: push esi
+      A: mov eax, 0x1c38
+      A: call ADR
+      B: push ebx
+      B: push edi
+      B: push esi
+      B: mov eax, 0x1c50
+      B: call ADR
+  replace  A[835:840] (0x10001a73)  B[835:838] (0x10001a73)
+      A: mov edx, dword ptr [eax + 0x3c]
+      A: mov ecx, dword ptr [eax + edx + 8]
+      A: mov eax, dword ptr [eax + edx + 0x50]
+      A: mov edx, ecx
+      A: xor edx, 0x6a36c177
+      A: mov esi, eax
+      A: xor esi, 0xaf7000
+      A: or esi, edx
+      A: jne ADR
+      B: mov edx, dword ptr [eax + 0x3c]
+      B: mov ecx, dword ptr [eax + edx + 8]
+      B: mov eax, dword ptr [eax + edx + 0x50]
+      B: cmp ecx, 0x6ae228f3
+      B: je ADR
+      B: cmp ecx, 0x6a36c177
+      B: jne ADR
+  replace  A[841:842] (0x10001a8b)  B[839:843] (0x10001a8b)
+      A: xor esi, 0xaf7000
+      A: or esi, edx
+      A: jne ADR
+      A: mov dword ptr [ADR], ADR
+      A: push 0
+      B: je ADR
+      B: cmp ecx, 0x6a36c177
+      B: jne ADR
+      B: mov edx, ADR
+      B: cmp eax, 0xaf7000
+      B: jne ADR
+      B: mov dword ptr [ADR], edx
+      B: push 0

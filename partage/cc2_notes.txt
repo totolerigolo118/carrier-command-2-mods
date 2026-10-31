@@ -1,0 +1,1286 @@
+CARRIER COMMAND 2 - NOTES FROM PATCHING THE MAC BUILD  (file 1 of 3: cc2_notes.txt)
+Contains PART 00 to PART 09 and PART 11. PART 10 and PART 12 are in cc2_reference.txt; the source code is in cc2_sources.txt.
+
+
+####################################################################################################
+# PART 00 - READ ME FIRST: scope, files, conventions
+####################################################################################################
+
+CARRIER COMMAND 2 - NOTES FROM PATCHING THE MAC BUILD
+=====================================================
+
+What this is: working notes, patch tables and source code from patching the MAC executable of Carrier Command 2 directly (not through Lua mods), written to be
+useful to someone who works on the Windows build with a DLL. The work was done by one person with an AI assistant; every claim is tagged with how it
+was checked (below). Nothing in these files is a copy of the game: no executable, no game asset, no shader, no save file. The only pieces of the original program
+quoted are short instruction sequences (5-70 bytes) at the patched places, so that the same places can be recognised elsewhere.
+
+READ FIRST: part 11, section 2. The Mac build is x86-64 and the Windows 1.5.18 build is (according to the public README of a community SDK)
+32-bit x86. Addresses, instruction encodings and structure OFFSETS therefore do not carry over. What carries over (very probably) is the logic, the values, the names
+and every data file. Offsets in these notes should be read as labels for "the field that holds ...", not as numbers to reuse.
+
+
+FILES (three plain text files, no archive)
+-----------------------------------------
+  cc2_notes.txt        file 1 of 3 (this one): PART 00 (this text) to PART 09, and PART 11
+                         00 read me first             01 the Mac binary, the constants-pool rule, code caves in dead code, linker, tests, structure layouts
+                         02 energy, elevator platform, hangar crane (5 moves), deck taxi model, how to cancel a launch
+                         03 dock states, the single runway slot, the aircraft holding pattern, landing measurements, why the runway cannot be freed earlier
+                         04 helicopters: stock landing, the two patches kept (-36 %), the failed "land on the elevator" test, second elevator study
+                         05 why AI aircraft crawl (hard floor speeds), dev values, engines and fuel, the ECO / NORMAL / FLANK patch
+                         06 the 256-px pilot UI target, one-image-per-screen ship screens, the CCTV 512 x 512 patch
+                         07 Lua version and libraries, library_custom hooks, functions seen, what Lua can and cannot command
+                         08 constants.txt and how to read engine defaults, mod system, how mods reach joining players, unit type numbers
+                         09 .mesh, .txtr, .atlas, .cphys, carrier geometry, relevant XML
+                         11 from Mac to a Windows DLL: fingerprints to find the same places, what is worth doing, wish list for a Lua-facing SDK
+  cc2_reference.txt    file 2 of 3: PART 10 (EVERY patch: site address, function, bytes before / after, constants before / after)
+                         and PART 12 (function names with Mac addresses: docking managers, airfield manager, power manager, renderer, Lua binding ...)
+  cc2_sources.txt      file 3 of 3: all the source code, each file introduced by a line  ##### FILE: path #####  (code caves in C and assembly, generators and
+                         linker, patch tool, four Lua modules, off-game tests). The path names written workshop/... in the notes are those section names.
+
+
+CONVENTIONS
+-----------
+Evidence tags used in the notes:
+  [GAME]  measured or seen in the running game (times are GAME time: update_get_logic_tick() / 30, because a stopwatch is meaningless when the machine slows down)
+  [ASM]   read from the disassembly and re-read after patching; not (yet) seen in game
+  [EST]   estimate or computed from a model; not measured
+  [UNV]   hypothesis not verified
+Addresses: virtual addresses of the Mac executable build_mac, md5 b0107170ddaf0245cbfee8a2d876aeb6 (2026-01-05); file offset = address - 0x100000000.
+Names: C++ names come from the symbol table (the Mac build is not stripped). Some names are the game's own spelling ("hanger_center", "Albatross"/"Albatros").
+Ship frame: x to starboard, z to the bow, y up, metres; the game runs at 30 ticks per second; angles in radians.
+Hex bytes are listed in file order (little-endian values).
+Unit names: Albatross = light aeroplane, Manta = HEAVY aeroplane, Razorbill = light helicopter, Petrel = heavy helicopter (08, section 4).
+"The player" = the person who played and tested.
+
+
+MODULE NAMES (French; they appear in the tables, the sources and the notes)
+---------------------------------------------------------------------------
+  ascenseur_x2             elevator x2 (with crane and deck taxi)        grue_annulation           crane: cancel a launch
+  atterrissage             landing (pattern)                             pont_retour_x2            deck taxi x2 on return ("pont" = deck)
+  helicos_approche_x2      helicopters: approach x2                      helicos_pres_ascenseur    helicopters: touch down near the elevator
+  helicos_ascenseur        helicopters landing on the elevator           vitesse_escadrille        squadron speed (the executable part)
+  vitesse_boutons          speed buttons (the Lua bar)                   cctv_net                  sharper CCTV ("net" = sharp)
+  ecriture_releve          write the log (print() into a file)           releve                    recorder (log of performance data)
+  horloge                  clock                                         journal                   landing journal
+  effet_tele               TV effect (the shader variant)                interface_x2              pilot UI x2
+Tags inside the scripts: "programme" = executable patch, "fichier" = data-file module; actif / retire / abime = active / removed / damaged.
+
+
+WHAT WAS DONE, AT A GLANCE (details and status in parts 10 and 11)
+------------------------------------------------------------
+  elevator + crane + deck taxi x2, energy share 0.4 -> 0.8         launches -41 % [GAME]            34 float redirects
+  helicopters: approach x2 and touchdown near the elevator          -36 % [GAME]                      4 sites
+  aircraft landing pattern (wide runway slot + circle)              4 aircraft in 7:28 [GAME]; stock not measured   10 sites
+  deck taxi x2 on return                                            deck -> hangar 0:51 -> 0:32 per aircraft [GAME, one run]   3 sites
+  cancel a crane launch (2nd press of the bay button)               installed, [ASM] + host test      cave 932 bytes + 2 hooks
+  AI aircraft speed modes ECO / NORMAL / FLANK                      Lua function seen working in game; effect only NEAR waypoints (cruise is ~120 m/s in every mode, measured)   cave 671 bytes + Lua bar
+  CCTV screen 512 x 512 (4 hooks, 1 cave)                           installed, [ASM] + host test
+  Lua print() to a file; game clock; landing journal; recorder      all seen working in game [GAME] (recorder and print-to-file in a loaded session on 2026-10-25)
+  shader without the old-TV effect (data file)                      works on any platform
+  rejected / abandoned: pilot UI 512 px (cosmetic choice), helicopters landing on the elevator (collision), second elevator (not worth it), runway released earlier (collision risk)
+
+
+THE SOURCES (cc2_sources.txt)
+-----------------------------
+The file lists the sources in this order: the code caves (C and assembly), the Lua modules, the generators and the mini-linker, the patch tool, the simulation, the tests.
+The path of each file mirrors the layout of the original working folder, so that the relative paths inside the scripts still make sense if you split the file back into
+files. The folder names are French: outil = tool, generateurs = generators, fichiers = files (data-file modules), sauvegarde = backup, modules_en_reserve = modules held
+in reserve.
+  workshop/outil/patchs_cc2.py                 the patch tool: modules of type "programme" (RETOUCHES = "imm" / "rip" rows) and "fichier" (file replacement); all safety checks
+  workshop/outil/generateurs/*.c *.s           SOURCE OF THE CODE CAVES: grue_annulation.c, vitesse_escadrille.c, cctv_net.s, ecriture_releve.s, helicos_ascenseur.c (abandoned experiment)
+  workshop/outil/generateurs/generer_*.py      generators: compile a cave with clang, link it themselves at its address (generer_helicos_ascenseur.py holds the mini-linker and the table of
+                                               game addresses), and write the patch tables from the disassembly (generer_atterrissage.py, generer_pont_retour.py, generer_cctv_net.py ...)
+  workshop/outil/generateurs/simuler_file_atterrissage.py     simulation of the landing queue (gate, window, lap, landing duration)
+  workshop/fichiers/<module>/library_custom_N.lua            the four Lua modules (clock, landing journal, recorder, speed bar)
+  workshop/tests/                              off-game tests (disassembly re-read, caves executed on a fake manager under Rosetta, Lua under lupa)
+The scripts need a copy of the ORIGINAL executable at sauvegarde/build_mac_origine (not included), clang, objdump and, for the Lua tests, Python with `lupa`. They have only been
+run on macOS. Do not run the tools or tests against a game folder you care about without reading them first: they are written to refuse unknown arguments and a game that is
+running, but they do patch files.
+Generated modules (outil/modules/*.py in the original folder) are not included: PART 10 is their readable form.
+Some names inside the scripts are still French (variables, labels, tags such as "programme", "fichier", "actif", "retire"); comments and messages are in English.
+
+
+####################################################################################################
+# PART 01 - THE MAC BINARY AND THE PATCHING METHOD
+####################################################################################################
+
+CARRIER COMMAND 2 - THE MAC BINARY AND THE PATCHING METHOD
+==========================================================
+
+What this file covers: what the Mac executable looks like, why it is easy to read, how byte patches and code
+"caves" were made safely, and how everything was tested. Read 00_README.txt first for the conventions
+([GAME] / [ASM] / [EST] / [UNV] tags, address and coordinate conventions).
+
+
+1. THE BINARY
+-------------
+- File: carriercommand.app/Contents/MacOS/build_mac. Mach-O, x86_64 ONLY (no arm64 slice): on Apple Silicon it runs
+  under Rosetta 2. Graphics API: OpenGL.
+- Analysed build: md5 b0107170ddaf0245cbfee8a2d876aeb6, dated 2026-01-05. Every address in these notes is a
+  virtual address of THIS file. File offset = virtual address - 0x100000000 for the whole file (checked by the patch
+  tool on every site). Nothing is slid at patch time: addresses written into data are plain unslid values (dyld
+  rebases them at load time).
+- NOT STRIPPED: `nm` + `c++filt` give about 44,600 text symbols. That is the "Rosetta stone" of this project: the C++
+  function names tell what the code does. Roughly: 42 MB of machine code, of which ~37 MB are free libraries (PhysX,
+  Lua 5.3.5, ImGui); the game itself is about 7,300 `c_` functions + 1,700 engine `mm_` functions + ~4,500 not
+  classified, ~13,000 functions / ~5 MB.
+- NOT SIGNED: nothing to re-sign after patching; Steam does not verify the files at launch (only on "verify
+  integrity", which restores the original).
+- Naming conventions you will see:
+    c_vehicle_server_*          simulation side (runs on the host / single player)
+    c_vehicle_client_*          display side (what other players see)
+    c_environment_tile_*        islands (tiles), airfields, defences
+    mm_*                        engine layer (vectors, strings, physics, renderer)
+    e_*                         enums (e_vehicle_dock_state, e_crane_state, e_elevator_state ...)
+    parse_state_xml / get_state_data   (de)serialisation of the saved state; the XML field names that these
+                                functions use are the best way to name structure members (see section 6).
+- Slicing the disassembly: `objdump -d --start-address=0x... --stop-address=0x... build_mac`. To get the bounds of a
+  function, sort `nm` output by address. A single call on the whole file is huge; work in slices.
+- The game simulation runs at 30 ticks per second. Server classes run on the host: a patch to the SIMULATION of a
+  host benefits the players who join; their display stays stock [ASM; not tried with a second player].
+
+
+2. THE GOLDEN RULE FOR CONSTANTS: NEVER EDIT A SHARED CONSTANT
+--------------------------------------------------------------
+Float constants live in a pool (__TEXT,__const, around 0x102869720...) shared by hundreds of instructions
+(for example 0.05 has 148 references in the whole binary, only 7 of which are in the function we care about; 2.5 has 11
+references, 7 in that function). So a "change the speed" patch never edits the value. It edits the DISPLACEMENT of
+the few instructions that matter, so that they read ANOTHER constant that already exists with the wanted value.
+
+Encoding (type "rip" in the tables of part 10 (in cc2_reference.txt)): an SSE instruction with a RIP-relative memory operand,
+e.g. `f3 0f 59 0d <disp32>` = mulss disp32(%rip),%xmm1. The disp32 is the LAST 4 bytes of the instruction and
+    new_disp32 = address_of_new_constant - (address_of_instruction + instruction_length).
+On this build every wanted value already existed in the pool (doubles of the stock values, 15.0, 100.0 ...), so
+nothing had to be added or moved. Useful existing constants (addresses valid for this build only):
+
+    0x10286976c = 5.0      0x1028697a4 = 0.05     0x1028697b0 = 0.1      0x1028697b4 = 10.0
+    0x1028697ac = 100.0    0x1028697b8 = 120.0    0x1028697bc = 2.5      0x1028697f4 = 0.15
+    0x102869898 = 30.0     0x1028699cc = 15.0     0x102869b2c = 144.0    0x102869af0 = 48.0
+    0x102869b30 = 72.0     0x102869a44 = 60.0     0x102869aa4 = 64.0     0x102869900 = 80.0
+    0x102869c0c = 96.0     0x1028698b8 = 150.0    0x102869a90 = 160.0    0x1028698ac = 50.0
+    0x102869850 = -2.0     0x10286973c = 384.0    0x102869b58 = 512.0    0x102869944 = 256.0
+    (768.0 does NOT exist in the pool)
+
+Type "imm" patches replace a few raw bytes: an immediate (e.g. `movl $0x3ecccccd,0x118(%r15)` -> $0x3f4ccccd), a branch
+target, or a whole instruction by a `jmp` into a code cave.
+
+Safety rules of the patch tool (workshop/outil/patchs_cc2.py), worth copying in any tool:
+  - refuse if the game is running;
+  - refuse if the file is not EXACTLY the analysed build (md5), after reconstructing the original in memory;
+  - each site must contain either ALL its original bytes or ALL its patched bytes (otherwise: damaged / game updated
+    -> touch nothing);
+  - refuse two patches that touch the same bytes;
+  - write through a temporary file, replace, re-read and compare; keep a copy of the original.
+  - for "rip" sites the tool checks `new_value == factor x old_value` with an EXACT float comparison.
+
+
+3. CODE CAVES: ADDING REAL CODE
+-------------------------------
+When a constant is not enough (conditions, loops, new Lua functions) we add code.
+
+Where: the body of  ImGui::ShowDemoWindow(bool*)  (0x10005af39 -> 0x100061c00, ~27 KB). It is the Dear ImGui demo
+window: dead code. No `call` and no address of it anywhere in the program (checked by scanning), so nothing else can
+reach it. It is in __TEXT, so it is executable, and Rosetta runs it (verified in game on 2026-10-24, first with the
+helicopter module). 11 KB of padding at the start of the Mach-O header (0xF40..0x3BD0) is also executable and was kept
+as a plan B.
+
+Writable scratch memory: statics of the same demo code, only read by dead code:
+    0x102a2a828  8 bytes   (a FILE* kept by the print-to-file patch)
+    0x102a2a864  4 bytes, __bss   (the CCTV scale)
+    0x1029e5680 .. 0x1029e5692     end of the buffer ShowDemoWindowWidgets()::text, __data, zeros in the file,
+                                   16 KB read only by the demo (the per-team speed modes)
+  others: `nm -m | grep ShowExample`. Rule: check that no address you use is read outside 0x10005af39..0x100061c00.
+
+Occupation map of the cave (so that modules never overlap):
+    0x10005af40 .. 0x10005c4e0   helicos_ascenseur (experiment, abandoned; 5,536 bytes)
+    0x10005d000 .. 0x10005d29f   vitesse_escadrille (reserved to 0x10005d400)
+    0x100061200 .. 0x1000615a4   grue_annulation (reserved to 0x100061600)
+    0x100061800 .. 0x1000619b7   cctv_net (reserved to 0x100061a00)
+    0x100061a00 .. 0x100061aa5   ecriture_releve (code + file path)
+    0x100061b80 .. 0x100061b9c   helicos_pres_ascenseur
+
+How a cave is built (workshop/outil/generateurs/generer_helicos_ascenseur.py is also the mini-linker used by the others):
+  1. Write the logic in C (or assembly, for places where you do not know which registers are live).
+  2. Compile with  clang -arch x86_64 -O2 -c -ffreestanding -fno-builtin -fno-stack-protector
+     -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-exceptions -fno-math-errno -mno-red-zone -fno-common
+     -Wall -Wextra -Werror . Sections taken from the object: __text, __literal4/8/16, __const.
+  3. The generator links the object itself at the target address: it resolves the relocations (BRANCH, SIGNED,
+     SIGNED_1/2/4) against a table `JEU` of game functions and data (names -> addresses, e.g. mm_string constructors,
+     operator new, set_attachment_transform ...), because the game functions are called directly by absolute address.
+  4. Output = one "imm" patch for the cave bytes + one "imm" patch per hook.
+Hooks: a hook REPLACES WHOLE INSTRUCTIONS with `jmp cave` (5 bytes) + `nop` padding. Two conditions:
+  - no jump of the game may land in the middle of the replaced bytes (verified from the list of all jump targets of
+    the function);
+  - the cave starts by REPLAYING the replaced instructions (with rip-relative operands re-encoded) and ends with a `jmp`
+    back to the first instruction after them.
+Calling C from a cave: keep the stack 16-byte aligned (the hooks push/pop an odd number of registers, count them) and
+save every register the surrounding code still needs (caller-saved registers, and xmm registers if they are live:
+`docking_manager_air::update` is ~5,000 instructions with everything inlined, you do not know what is live). Where
+that is unknown, write the cave in assembly using only registers that the replaced code overwrites right after.
+New Lua functions without touching `print`: the table of the Lua base library `base_funcs` (0x1029dd310) contains
+{ "dofile", luaB_dofile }. Neither the game nor the Lua mods installed use dofile, so that entry was REPLACED by
+{ "cc2_vitesse", vit_lua } (name string and function in the cave). `loadfile` is free too. This is the recipe for adding a
+Lua function without hooking anything: 16 bytes of data.
+
+
+4. HOW EACH PATCH WAS TESTED (and what the tags mean)
+-----------------------------------------------------
+  a. Disassembly: every patched site is re-read with objdump AFTER being applied; every call, jump and rip-relative
+     operand in a cave is re-read too. "Sites read exactly twice the old value" for the
+     float redirects.
+  b. Round trip: apply then restore = file identical to the byte.
+  c. Logic tests of a cave, off game: compile the C logic as a normal host program (with -DESSAI) around a FAKE manager
+     structure and run it (under Rosetta on Apple Silicon). See workshop/tests/essai_grue_annulation.c and
+     workshop/tests/test_grue_annulation.py (120 cases for the speed cave: workshop/tests/test_vitesse_escadrille.py).
+  d. Lua modules: run under Lua 5.3 outside the game (Python `lupa`) with fake game functions (workshop/tests/test_*.py).
+  e. In game, with measurements in GAME time, not wall-clock: the Mac running the author's tests slowed down to 50-72 %
+     of real time during a session, so a stopwatch is useless. The in-game clock (workshop/fichiers/horloge/library_custom_1.lua) shows
+     update_get_logic_tick()/30.
+  f. One modification tested at a time; never test on the real game files with scripts (an accident happened: a shell
+     variable holding several options was not split by zsh and the tool acted on the real game; the tool now refuses any
+     argument it does not understand).
+
+
+5. LIMITS AND CAVEATS
+---------------------
+- Everything has to be redone after a game update (new build -> new addresses).
+- A patch in a shared function also affects the AI carriers (they run the same code), unless the cave tests the team.
+- Multiplayer: executable patches are never sent to other players; see part 08.
+- Aircraft and vehicles that are "in the middle of something" when a patch is removed: the elevator/crane/landing patches
+  are designed so that removing them never leaves the carrier stuck (see 02 and 03 for each risk).
+
+
+6. CROSS-CHECK OF NAMES: "WHAT WAS THE FIELD CALLED?"
+------------------------------------------------------
+The most useful trick for naming structure members: the saved-state parser. For example
+`c_vehicle_server_carrier::docking_manager_air::parse_state_xml` (0x100199dde) reads each saved member by name
+("mode", "runway_state", "docking_queue", "vehicle_id_crane", "crane_instructions", "docking_join_time" ...) into
+`this + offset`. Following the `lea` of the name string and the `lea`/`add` of the destination gives you the member
+offset. The name strings exist in every build, and the XML save format is the same on every platform: that is how
+you can rediscover the structure on a build WITHOUT symbols (see part 11).
+
+
+7. STRUCTURES IN ONE PLACE (Mac x86_64 offsets, [ASM])
+------------------------------------------------------
+docking_manager_air  (this = carrier + 0x15e8):
+    0x00 mode (0 idle, 1 returns, 2 launches)     0x04 elevator state for the screens
+    0x08 crane_instructions ring buffer (ptr 0x08, capacity 0x10, start 0x14, count 0x18)
+    0x20 is_crane_lifting      0x24 runway_state      0x28 id released from "hold at launch" (NOT saved)
+    0x48 docking_queue (12-byte elements: id, wait state, timer)       0x60 undocking_queue
+    0x78 vehicle_id_crane   0x7c vehicle_id_lift   0x80 vehicle_id_runway   0x84 vehicle_id_rotor_takeoff   (-1 = empty)
+    0x88 0x8c 0x90 0x94  bay index of those four (vehicle_attachment_index_*)
+    0x98 node hanger_center (not saved)  0xa0 lift_lower  0xa4 lift_upper  0xa8 runway_start  0xac runway_end
+    0xb0 paths_crane (+0x18 progress = 0xc8, +0x1c speed = 0xcc)   0xd0 paths_lift   0xf0 paths_runway (progress 0x108,
+    speed 0x10c)   0x110 docking_join_time (approach timer)   0x118 landing frame (mat34_f64)
+carrier (c_vehicle_server_carrier):
+    0x14e0 physics link of `lift_constraint` (found by name in ::build 0x100193022)
+    0x1218 energy   0x1518 elevator height (-9 down .. 0 up)   0x1520 levels   0x152c offset   0x1538 setpoint (0 down, 1 up)
+    0x153c / 0x1544 crane x / z   0x1540 hook height (12 up, 11 down)   0x1548 crane rotation (0 or pi)
+    0x1f0 + 0x70 x bay  = the bay slots (attachments) of the carrier
+vehicle (c_vehicle_server base):
+    0x220 dock_state    0x260 team pointer (c_team_server: +0x14 number, +0x19 is_ai_controlled, +0x1a is_neutral)
+    0x2a0 control_mode (0 waypoints, 1 other, 3 imposed setpoint)   0x2a8/0x2b0/0x2b8 target (double, world)
+    0x2c0/0x2c4 direction   0x2c8 target speed   0x2cc power   0x3e8..0x3f4 commands (pitch.., 0x3f4 = throttle)
+    0xd0 wheels (contact when +0 >= 0.01 and +4 <= 0.1)    0x90 definition type (10 = heavy wing = Manta)
+    virtual calls: 0xa0 = get_is_rotor, 0x108 = undock, 0x138(1) = gear / landing state
+These offsets belong to the Mac x86_64 layout (8-byte pointers, Itanium C++ ABI). A 32-bit Windows build cannot have
+the same offsets: see part 11 before reusing any of them.
+
+
+####################################################################################################
+# PART 02 - ENERGY, ELEVATOR, HANGAR CRANE, DECK TAXI, CANCEL A LAUNCH
+####################################################################################################
+
+CARRIER: ENERGY, ELEVATOR, HANGAR CRANE, DECK TAXI
+===================================================
+
+All of this is the SERVER side of the carrier (the simulation). Names and addresses: Mac build (see 00_README).
+Result in game [GAME]: launching 4 aircraft takes 3:50 stock and 2:15 with the x2 patch set (x1.70, -41 %, game time,
+same save, same place).
+
+WHY XML MODS NEVER WORKED: the lift speed is NOT read from `lift_constraint` (`drive_max_delta_velocity`, `drive_*`) in
+rom_0/game_objects/vehicle_chassis_carrier.xml. The CODE advances the setpoint of the platform by a fixed step per tick and
+then places the physical piece itself. The same goes for the crane and for taxi speeds. `vel_a` / `vel_b` of the
+`graph_link` entries are very probably the TANGENTS of the path curves, not speeds, which is why "taxi speed" mods fail
+too. constants.txt contains none of these values. Hence byte patches.
+
+
+1. ENERGY SHARING
+-----------------
+c_vehicle_carrier_server_power_manager::build (0x10019eeb8) and ::tick (0x1001b3fdc).
+
+Five systems, laid out from this+0x90 with a stride of 0x28 bytes. Each has a maximum "share" (at +0x10 inside the
+system) and sub-systems { demand, weight, allocated } (three floats):
+
+    system              offset   share   sub-systems (weights)
+    repair              0x90     0.8     8   (4, then 1 x 7)
+    propulsion          0xb8     0.8     1
+    weapons             0xe0     0.6     10  (1 each)
+    ELEVATOR / CRANE    0x108    0.4     2   (1 and 1): #0 = elevator platform, #1 = hangar crane
+    radar               0x130    0.2     1
+
+Rule: desire of a system = SUM(demand x weight) / SUM(weight) x share. If the sum of all desires exceeds 1 everything is scaled
+down proportionally. allocated(sub-system) = demand x (allocated / desire). Platform and crane move by
+"step x allocated". Deck taxiing does NOT depend on energy.
+
+Build immediates (in ::build): movl $0x3f4ccccd (0.8), $0x3e4ccccd (0.2), $0x3f4ccccd (0.8), $0x3f19999a (0.6) and then
+`movl $0x3ecccccd, 0x118(%r15)` (0.4 = the elevator/crane share, at 0x10019f0ad). The "x2 energy" patch is that one
+immediate: 0x3ECCCCCD -> 0x3F4CCCCD.
+
+
+2. ELEVATOR PLATFORM
+--------------------
+c_vehicle_server_carrier::tick_server_type (the function starts at 0x1001944d2; the platform code is at 0x100194523 ... 0x100194641):
+
+    target = levels[target_index]                (0 = up, -9 = down)
+    delta  = clamp(target - position, -0.025, +0.025)      <- step per tick (0.75 m/s)
+    demand = clamp(|delta| / 0.025, 0, 1) if |delta| > 0.001 else 0
+    sub-system[0].demand = demand
+    alloc  = clamp(sub-system[0].allocated, 0, 1)
+    if alloc > 0: position += delta x alloc
+    then set_attachment_transform_b puts the physical platform at `position`.
+
+Machine code: `maxss [-0.025]`, `minss [0.025]`, `ucomiss [0.001]`, `divss [0.025]` in a row. Patch: the three reads of
++-0.025 -> +-0.05 (0.001 untouched). 9 m: 12 s -> 6 s with full power.
+The pose is done by the code, so a 2nd elevator would need new code (see part 04, "second elevator").
+Platform geometry: collision = ONE box (x 21..33, y 19..20, z -45.5..-18.2: 12 x 27 m), course -9..0 m.
+
+
+3. HANGAR CRANE
+---------------
+Inside c_vehicle_server_carrier::docking_manager_air::update (0x1001accd8 -> 0x1001b2618, ~5,000 instructions).
+Crane state: carrier+0x153c/0x1544 (x, z), 0x1540 (hook height: 12 up, 11 down), 0x1548 (rotation, 0 or pi).
+A ring of `e_crane_state` values ("crane_instructions") is executed one by one; a jump table at 0x1001b25ec has the five
+"moves" (the first of the list runs, then is removed):
+
+    n  address      move
+    1  0x1001ae858  go above the bay 0x88 (z first, then x)
+    2  0x1001ae9a1  return to rest above the elevator (node 0x98; x first, then z)
+    3  0x1001aea82  rotate: towards pi if (mode == 2) == "holding an aircraft", else towards 0
+    4  0x1001aea99  if holding nothing: go down to 11 and grab (0x20 = 1), then up to 12
+    5  0x1001ae949  if holding: go down to 11 and release (0x20 = 0), then up to 12
+
+Per axis and per tick: d = clamp(target - pos, -max, +max); pos += d x allocated(sub-system 1). Demand =
+max(|dxz| / (1/6), |dy| / (1/30)) through a `divps` by the vector (1/6, 1/30, 0, 0). Stock steps: 1/6 m horizontal
+(5 m/s), 1/30 m vertical (1 m/s), rotation 0.04 rad per tick; arrival when |d| < 0.01 (< 0.04 for rotation).
+Heights 11.0 (0x41300000) and 12.0 (0x41400000). With the x2 patch: 1/3, 1/15, 0.08 (the divps was left as is: the demand
+saturates at 1, no visible effect).
+
+LAUNCH (mode 2; blocks 0x1001acea1 -> 0x1001ad84d -> 0x1001b0eb1): if the undocking queue is not empty and the crane is
+free (0x78 == -1), the crane takes the first aircraft: 0x78 = id, removed from the queue, instruction list =
+[1, 4, 2, 5], or [1, 4, 2, 3, 5, 3] for bays where the aircraft must be turned (the right-hand bays, x = +13:
+probably 2, 4, 6, 8). A `load_lift_lower` path is created, the brake is applied, vehicle +0x21c = 1,
+dock_state = 3. If the aircraft is not ready (get_is_undock_ready) it goes back to the end of the queue.
+During the whole carrying the aircraft STAYS stored in its bay slot (carrier + 0x1f0 + 0x70 x bay): while the crane holds
+it (0x20 == 1) the game only moves the transform of that slot to follow the hook (0x1001aec07 -> set_attachment_transform).
+So the aircraft cannot get "lost".
+End of crane (0x1001ad9ad): list empty, elevator free and down (< -8.5): the aircraft taxis on `load_lift_lower`
+(0x1001ae272 -> 0x1001b10ce), then onto the elevator (0x1001b15bb: 0x7c = id, 0x78 = -1); the elevator rises; at the top:
+runway, or "hold at launch" (dock_state 7).
+RETURNS (mode 1, 0x1001b1164): the crane takes the aircraft from the elevator; list [4, 1, 5, 2] or [3, 4, 3, 1, 5, 2];
+dock_state = 4 from the pick-up; list empty -> 0x78 = -1 (0x1001ad769).
+The mode only changes when the four slots (0x78..0x84) are empty (back to 0 at 0x1001ae780): a carrier is EITHER in
+returns mode OR in launch mode, never both; returns have priority. The crane runs its list in every mode (0x1001ae787).
+"Preparing the next aircraft while the elevator is busy" is already done by the game (separate slots 0x78 and 0x7c).
+
+
+4. DECK TAXI (aircraft on paths)
+--------------------------------
+7 blocks of the same model in docking_manager_air::update (launch and return legs):
+
+    remaining = (1 - t) x L          (L = length of the leg)
+    v = min(v + 0.05, 2.5)           acceleration 1.5 m/s^2, cap 2.5 m/s
+        (last leg only: v = min(v, remaining) -> braking)
+    if remaining < 0.1 (or 0.01): next leg
+    else t += v / (L x 30)
+
+The speed carries over from one leg to the next; braking only on the last leg. Final braking is exponential (time constant
+1 s, ~3.2 s per leg), which is why doubling both acceleration and cap gives x1.7 and not x2.
+Doubling: the 7 `addss [0.05]` -> 0.1 (0x1028697b0) and the 7 reads of 2.5 -> 5.0 (0x10286976c).
+NOT touched on purpose: the take-off run (an `addss 0.5` without cap, 0x1001b02c8), the arrival thresholds 0.1/0.01 (making
+them bigger makes aircraft "jump").
+Path graph (rom_0/game_objects/vehicle_chassis_carrier.xml): 47 nodes, 48 links. The code only uses 6 links by name:
+`runway`, `runway_lift`, `runway_reverse_a`, `runway_reverse_b`, `lift_top_reverse`, `load_lift_lower` (`runway_reverse` is
+never read), and the nodes `hanger_center`, `lift_lower`, `lift_upper`, `runway_start`, `runway_end`
+(read by name in docking_manager_air::build, 0x1001a02ca). Stock launch path lengths: hangar -> elevator 27.5 m, elevator
+exit 15.5 m, turn 17 m, to runway start 24 m = ~84 m ~ 42 s per aircraft.
+Deck plan (ship frame, metres): runway on the axis x = 0 from `runway_start` (z -68, aft) to `runway_end` (z 82, bow);
+`taxi_a` (0, -44) is ON the runway; `lift_upper_wait` (12, -32); elevator platform `lift_upper` (27.5, -32), box x 21..33.
+Flight deck y = 20; the 8 aircraft bays air1..air8 are in the hangar at y 13.5; there is no parking place on the deck.
+Take-off roll then ~56 m from elevator to the runway end.
+
+Return taxi after touchdown ("deck taxi x2" patch): the progress of each of the 3 return legs (states 5, 6, 7) advances by
+v/(L x 30) per tick; the three `mulss [30.0]` at 0x1001b0824, 0x1001ae07c, 0x1001b0831 were redirected to 15.0 (0x1028699cc).
+See part 03.
+
+
+5. CANCEL A LAUNCH ALREADY TAKEN BY THE CRANE (module grue_annulation)
+----------------------------------------------------------------------
+Demand n. 20652 on the game's public issue tracker. Status: written, tested off game, installed; in-game check pending [ASM, host test].
+How the bay button works (stock): physical button `vehicle_control_air_bay_N` (help text veh_con_button_deploy_air).
+c_vehicle_carrier_server_vehicle_control::tick (0x1001b2e18): on the rising edge on an occupied bay it calls virtual 0x108 =
+c_vehicle_server_carrier::undock (0x100193eaa), WITHOUT looking at the aircraft state, which hands over to
+docking_manager_air::undock (0x1001a8bd4). That function is a TOGGLE:
+  - aircraft in the crane (0x78), elevator (0x7c), runway (0x80) or rotor take-off (0x84): if dock_state == 7 (hold at launch)
+    -> 0x28 = id ("go"); otherwise NOTHING;
+  - aircraft in the landing queue (0x48): nothing;
+  - aircraft already in the undocking queue (0x60): cancel_undocking (0x1001a8dfa);
+  - otherwise: appended to the undocking queue, dock_state = 2.
+cancel_undocking only works if the aircraft is still in the undocking queue: it removes it, dock_state = 4, clears its
+waypoints (mm_vector<c_vehicle_waypoint_data>::clear on +0x1d0, reset_waypoint_path) and tells the map (virtual 0 of the map
+with id, +0x300, +0x1d0, +0x1e8). As soon as the crane takes the aircraft it is no longer in the queue, so cancel finds nothing.
+The AI carrier only calls undock on aircraft whose dock_state is 4 (checks at 0x100109ef5 and 0x10010dfb0): never concerned.
+The patch (module grue_annulation): hook A at 0x1001a8c01 (13 bytes `cmpl $7,0x220(%r14) / jne / movl %ebx,0x28(%rdi)`, no
+jump in the middle) -> jmp cave. The cave replays the original if dock_state == 7, else calls
+annuler_grue(manager rdi, aircraft r14, map rcx). It only acts if mode == 2, 0x78 == this aircraft and dock_state == 3:
+  - not yet hooked (0x20 == 0 and a 4 left in the list): list = [5, 2] (a 5 without aircraft = simple lift-up),
+    0x78 = 0x88 = -1; the aircraft never moved;
+  - held (0x20 == 1) and not turned (|0x1548| < 0.01): list = [4, 1, 5, 2] (4 while holding = go up, 1 = go to the bay,
+    5 = put down, 2 = back to rest), 0x78 kept until the end;
+  - otherwise (already turning, released above the elevator, taxiing, on the elevator): NOTHING, as in the stock game.
+  In the first two cases: dock_state = 4, +0x21c = 0, waypoints cleared and the map told (same calls as cancel_undocking).
+  The list is rewritten with start = count = 0 then mm_vector<e_crane_state>::push_back (0x10019a450).
+Hook B at 0x1001ad9ad (5 bytes `cmpl $0,0x18(%r14)`; 4 jumps arrive there, none in the middle; launch mode only): pure assembly
+(no C call: the live xmm registers are unknown): if the list is empty, 0x78 != -1 and the aircraft in 0x78 has dock_state == 4
+-> 0x78 = 0x88 = -1. Then replay the cmpl and return to 0x1001ad9b2. That case does not exist in the stock game (in mode 2 the
+only "dock_state = 4" written in the function is the storing one, in mode 1), so the test relies on a SAVED state: a return
+interrupted by a save resumes after loading.
+Window with the x2 elevator: ~13 s for near bays, ~18 s for far bays (double without the x2 patch).
+Risks listed, with their parades: (1) crane stuck (worst case: hook B never fires -> 0x78 stays taken: no launch, and the
+hangar stays in mode 2 so no landing either): condition kept simple, tested on a fake manager; removing the module is enough
+(the stock code then passes the aircraft to the elevator and launches it); (2) aircraft released in the air: B waits for the
+empty list; (3) aircraft lost: impossible (it never leaves its bay slot); (4) upside-down: cancel refused once |rotation| > 0.01;
+(5) triple press: nothing; (6) game update: the tool refuses. An extension to cancel on the elevator is 8/10 difficulty (needs the
+lift to go down in mode 2, taxi BACKWARDS, which does not exist, and a crane re-take; deadlock risk): not done.
+
+
+6. MEASUREMENTS AND WHAT THEY MEAN
+----------------------------------
+[GAME] 4 aircraft launched (A1, A2, A5, A6; same save, ship stopped), game time: stock 3:50, x2 patch 2:15 (34 s per
+aircraft instead of 57.5 s). Simulated before the test: x1.5-1.8.
+[EST] ship stopped matters: energy is shared with propulsion and weapons.
+
+
+####################################################################################################
+# PART 03 - DOCKING STATES, THE RUNWAY SLOT, THE AIRCRAFT LANDING QUEUE
+####################################################################################################
+
+DOCKING STATES, THE RUNWAY AND THE AIRCRAFT LANDING QUEUE
+=========================================================
+
+All in c_vehicle_server_carrier::docking_manager_air::update (0x1001accd8 -> 0x1001b2618) unless stated otherwise.
+Ship frame: x to starboard, z to the bow, y up (metres); 30 ticks per second. Offsets of the manager: see
+part 01 section 7.
+
+
+1. e_vehicle_dock_state  (vehicle + 0x220)
+------------------------------------------
+    0 flying       1 landing        2 launch requested    3 launching (crane / elevator / runway)
+    4 in the hangar     5 in the landing queue     6 taxiing back after touchdown
+    7 hold at launch (probably the red "wait at launch" button; not verified)
+Other vehicle fields used by the docking code: 0x2a0 control_mode (0 = waypoints, 1 = other, 3 = setpoint imposed by the ship),
+0x2a8 target position (double), 0x2c8 target speed. virtual 0xa0 = get_is_rotor (helicopter?).
+"Hold at launch" already exists in the game (red button): the aircraft at the head waits at the aft end of the runway
+(dock_state 7, test at 0x1001b0185; only the aircraft whose id is in manager+0x28 leaves).
+
+
+2. THE LANDING QUEUE FOR AIRCRAFT (fixed wings)
+-----------------------------------------------
+The holding pattern (code 0x1001af631 ... 0x1001afc63, jump table 0x1001b2600), ship frame: an anticlockwise OVAL of 12.3 km:
+    state 0   straight line x = -2200 going aft
+    states 1-2  rear turn, centre (-1000, -1800), radius 1200
+    state 3   straight line x = 200 going forward until z = 600
+    states 4-5  front turn, centre (-1000, 600)
+Imposed speed 80 m/s (lap = 154 s), altitude 120 + 20 x rank in the queue.
+
+THE BOTTLENECK: the runway is given at ONE moment only, the tick of the transition state 1 -> 2 (bottom of the rear turn,
+the "gate" at about (-1000, -3000)), and only if mode == 1, the runway is free and the aircraft is within 1000 m of the gate
+(block at 0x1001af914). Otherwise: one more lap. The runway is released ONLY when the aircraft is on the elevator (swap of the
+slots 0x80 <-> 0x7c at 0x1001ae183). So the runway is occupied during the approach AND during the deck taxi.
+Hard-coded delays: a queue entry is abandoned after 7201 ticks without passing the gate; an approach is FAILED (the aircraft
+goes back to the queue at state 3) if docking_join_time > 3600 ticks (2 min), or the angle > 0.45 rad between 50 and 400 m from
+the runway end, or the runway end is overshot, or there is no free bay. Final approach: the target is on the axis 240 m ahead
+of the aircraft, imposed speed 18 x (1 - progress) + autopilot correction bounded to -10/+40.
+
+Runway states (jump table 0x1001b25d8, index = state - 3):
+
+    state  what the aircraft does                                              where / duration (x2 elevator patch)
+    3      approach                                                              in the air behind the ship (journal: 0:49)
+    4      "rails": rolls along the runway to the END (99 % of the path to z 82) on the axis
+    5      BACKS UP along the whole runway from the front (z ~ 81) to taxi_a (z -44), ~125 m   28.5 s, on the axis
+    6      taxi_a -> lift_upper_wait (~17 m diagonal)                            7.1 s
+    7      lift_upper_wait -> platform (15.5 m); waits for the elevator up and free   6.8 s
+    total computed 42 s; measured: the runway frees 38-41 s after the touchdown [GAME]
+Touchdown test (common to aircraft and helicopters, 0x1b1f5c...0x1b2058): speed relative to the ship < 10 m/s AND all wheels in
+contact. The aircraft is then attached to the ship (its future hangar slot, +0x90) and the state goes to 5.
+Where the runway slot is TAKEN: aircraft: block of the gate 0x1001af914, `mov %eax,0x80(%r14)` at 0x1001af95c, then state 3 at
+0x1001af963; helicopters: 0x1001adb23. Where it is RELEASED: end of state 7 (0x1001ae183); failed approach (0x1001b254a);
+vehicle gone / mode change (0x1001ad624, 0x1001ae753).
+
+Simulation of the queue (gate, window, lap, landing duration O): workshop/outil/generateurs/simuler_file_atterrissage.py.
+
+
+3. WHAT WAS CHANGED AND WHAT WAS MEASURED
+-----------------------------------------
+Module "atterrissage" (setting B = wide runway slot + circular pattern; 10 sites, see part 10 (in cc2_reference.txt)):
+  (a) the runway can be granted on the whole rear turn (~2.7 km, ~35 s of flight): the three jumps that skip the grant block now land in it;
+  (b) the front turn uses the same circle as the rear turn (centre (-1000, -1800), r 1200): lap 7.5 km = 94 s instead of 154 s.
+Measured with the x2 elevator patch [GAME]: 4 aircraft stored in 7:28 game time (first entry in the queue -> 4th in the hangar);
+runway given at 1:22, 3:00, 4:20, 5:56 (one every 1:31); approach 0:49; deck -> hangar 0:51; 0 failed approaches; the runway
+frees ~38-41 s after touchdown, i.e. it is occupied ~88 s per aircraft.
+Simulation with 88 s of occupancy: stock 154-158 s per aircraft (one oval lap), setting B 98-104 s, measured 91 s. Estimated gain ~3 min
+on 4 aircraft (~-30 %) [EST]: the stock game was NOT measured on the real game.
+Caution found by simulation: setting B is SLOWER if a landing lasts ~140-160 s (the next aircraft arrives too early and makes
+another lap); then setting A alone (wide slot only) is better. Setting A alone is the first 3 sites of the table.
+Deck taxi x2 ("pont_retour_x2", 3 sites): occupancy ~88 s -> ~68 s computed; expected -0:20 (grouped aircraft) to -1:25
+(spread); not yet measured in game [EST].
+
+WHY NOT RELEASE THE RUNWAY EARLIER: the aircraft stays on the runway axis for ~29 of the 42 s (state 5 backs up straight toward the
+next arriving aircraft). The first position off the axis is lift_upper_wait (12 m from the axis, aircraft turned 90 degrees, nose
+at x ~ 6 m) while the wings of the aircraft that lands extend several metres from the axis: no margin. The only clearly safe place
+is the platform, which is exactly where the game releases the runway. Doing it anyway needs a cave (slot 0x80 is also the one
+that drives the taxi) for ~7 s per aircraft and a real collision risk: refused.
+The game destroys vehicles that collide (seen on 2026-10-24 with helicopters).
+Idea B, "aircraft parked on the deck ready to launch" (public tracker demand 2023): there is NO parking place anywhere except the 8
+hangar bays; it would need new places on the deck (x ~ 18-33, z -18..80, 2-4 places at best), a cave of several KB, a way to treat
+parked aircraft as "in the hangar" after a load, and the runway kept free during returns. Difficulty 8/10, 4-6 sessions; gain
+only for a wave prepared in advance (4 launches ~2:15 -> ~1:00-1:15 estimated). Not done.
+"True x2": shorten the last braking of every taxi leg (not done; estimated a few seconds per aircraft).
+Ground vehicles and ships use docking_manager_surface (update at 0x1001aa404, NOT inlined, same model 0.05 / 2.5 / 0.1, about 5 sites)
+and docking_manager_lifeboat; a "taxi x2" for them is a small job (2-3/10) but was not done.
+
+
+4. THE GAME'S OWN DOCKING MANAGERS (names, for your reference)
+--------------------------------------------------------------
+    c_vehicle_server_carrier::docking_manager_air        (aircraft; build 0x1001a02ca; update 0x1001accd8; dock/undock/cancel_*)
+    c_vehicle_server_carrier::docking_manager_surface    (ground vehicles + ships, rear crane; update 0x1001aa404)
+    c_vehicle_server_carrier::docking_manager_lifeboat
+    c_vehicle_server_drydock::docking_manager_carrier    (dry dock)
+    c_lift_tower_controller
+    c_environment_tile_airfield_manager (+ ::hangar)     ISLAND airfields: dock, undock, cancel_docking, update, tick_repair_vehicles,
+                                                         tick_resupply_vehicles, get_available_hangar_node, hangar::build_path_dock /
+                                                         build_path_undock (full list with addresses in part 12 (in cc2_reference.txt))
+Saved state: docking_manager_air::parse_state_xml reads, among others, mode, runway_state, docking_queue (queue_vehicle: id,
+e_wing_queue_state, timer), docking_join_time, vehicle_id_crane/lift/runway/rotor_takeoff, vehicle_attachment_index_*,
+crane_instructions, is_crane_lifting, undocking_queue, paths_crane/lift/runway. Because these are saved, the cave logic can rely
+on them after a load.
+
+Data model facts useful for any Lua tooling: aircraft lists seen by ship screens include what the fog hides
+(get_is_visible() == false); screen_landing.lua already draws the queue (get_docking_vehicles; helicopters and aircraft apart).
+
+
+####################################################################################################
+# PART 04 - HELICOPTERS AND THE SECOND-ELEVATOR STUDY
+####################################################################################################
+
+HELICOPTERS ON THE CARRIER (and the "second elevator" study)
+============================================================
+
+Razorbill = light rotor (e_game_object_type 12), Petrel = heavy rotor (14, it can carry a vehicle: it drops it just before
+touching down). Same function as aircraft: docking_manager_air::update, with a helicopter-specific part (test `get_is_rotor`,
+virtual 0xa0, at 0x1001ad3e1). Offsets of the manager: part 01 section 7.
+Ship frame: x to starboard, z to the bow, deck at y = 20.
+
+
+1. HOW THE GAME LANDS A HELICOPTER (stock)
+------------------------------------------
+The manager has ONE slot per stage (a slot holds the id of a single vehicle): queue 0x48 (aircraft AND helicopters, one common
+queue), runway 0x80, elevator 0x7c, crane 0x78, rotor take-off 0x84 (used by launches only).
+
+ 1. WAIT: helicopters hold a fixed point behind the ship, x = -100, z = -240 - 60 x rank, altitude 80
+    (0x1001af4af ... 0x1001af551). The first one gets the runway when it is within 100 m of the first place (0x1001adadc;
+    constants (-100, -240) at 0x10286b880, 100^2 at 0x10286998c) AND the runway is free.
+ 2. APPROACH (runway state 3, helicopter part 0x1001ad3ef ... 0x1001ad61f then 0x1001b102e): the helicopter aims at a point on the
+    runway axis 50 m ahead of itself (at most z = 52 = runway_start + 120) and descends according to the distance to the MIDDLE of the
+    runway (z = 7): target height = 0.5 x (7 - z), clamped to [-2, 80] m. Within 20 m of the middle: gear down, landing state.
+    The autopilot corrects the position error at 0.1 per metre, hence only ~5 m/s toward the point and ~1:00 of approach.
+ 3. TOUCHDOWN (0x1001b1f5c ... 0x1001b2058, common with aircraft): speed relative to the ship < 10 m/s and all wheels in contact. The
+    helicopter is attached to the ship (its future hangar slot, +0x90), state -> 5. No "rails" for helicopters (state 4 is the aircraft one).
+ 4. DECK TAXI in 3 legs, speed restarting from 0 on each leg (so three brakings): state 5 from the touchdown point (z ~ 7..30) to taxi_a
+    (0, -44); state 6 taxi_a -> lift_upper_wait (12, -32); wait until the elevator is up and free; state 7 -> lift_upper (27.5, -32).
+    About 90-110 m in all.
+ 5. END OF STATE 7 (0x1001ae13a ... 0x1001ae231): the helicopter enters the elevator slot and the RUNWAY IS FINALLY RELEASED (swap 0x80 <->
+    0x7c at 0x1001ae183). The next helicopter cannot start its approach before that.
+ 6. Elevator down -> taxi from the bottom of the elevator to the centre of the hangar (27.5 m) -> the crane takes it -> the elevator
+    rises at once (0x1001ad6a4 ..., 0x1001b1164).
+Helicopters TAKE OFF directly from the platform (slot 0x84, 0x1001ae3c1); only landing uses the runway.
+Wider fact: the runway (slot 0x80, with the single runway state 0x24, single path 0xf0, progress 0x108, speed 0x10c, single reserved
+place 0x90 and single approach timer 0x110) is the real bottleneck of the carrier, not the elevator; the manager structure ends near
+0x178 and the next object follows right away, so there is no room for a second slot without moving things.
+A helicopter that waits too long (> 3600 ticks) is sent back to the queue like a failed approach.
+
+Why you cannot move the touch point by a simple setting: the distance to mid-runway also drives the whole aircraft landing (descent
+slope at 0x1001b1be6, thresholds 800/200/400 m): changing the constant breaks aircraft.
+
+
+2. MODULES KEPT (validated in game, 2026-10-24) [GAME]
+------------------------------------------------------
+  helicos_approche_x2: the aim distance 50 -> 100 m (constant 100.0 read instead of 50.0 at 0x1001ad3ef): ~10 m/s instead of ~5.
+  helicos_pres_ascenseur: touch near the elevator (z ~ -40) instead of mid-runway:
+      - aim point at most z = runway_start + 48 (-20) instead of + 120 (constant at 0x1001ad3fc, 120.0 -> 48.0)
+      - gear-down / landing state within 70 m of mid-runway instead of 20 m (0x1001b1066, 20.0 -> 70.0)
+      - target height = 0.5 x (-40 - z): a 21-byte cave that subtracts 23.5 before the -2.0 clamp, branched from 0x1001ad57a.
+Measurements (game time, 4 helicopters = 2 Razorbill then 2 Petrel, launched then recalled at once, ship stopped):
+
+            reference (stock, with elevator x2 and aircraft landing patches)      approach x2 + touch near the elevator
+  heli   runway  deck   hangar  approach  deck->hangar                 runway  deck   hangar  approach  deck->hangar
+   1      0:49   1:49   2:28     1:00       0:39                         1:04   1:34   2:04     0:30       0:30
+   2      2:16   3:21   4:06     1:05       0:45                         1:52   2:22   2:51     0:30       0:29
+   3      3:54   4:52   5:29     0:58       0:37                         2:39   3:06   3:37     0:27       0:31
+   4      5:17   6:13   6:52     0:56       0:39                         3:25   3:51   4:22     0:26       0:31
+  FINISHED in 6:52 (runway every 1:29, 0 failed)                       FINISHED in 4:22 (-36 %, runway every 0:47, approach 0:28, 0 failed)
+  From the first runway grant to the last stored: 6:03 -> 3:18 (-45 %). The next runway grant comes 17-19 s after each touchdown
+  (25-33 s before). One run each, ship stopped. The player finds the touch "slightly aft"; nothing was changed.
+
+
+3. EXPERIMENT THAT FAILED: landing directly on the elevator platform (module helicos_ascenseur, source in workshop/outil/generateurs/)
+--------------------------------------------------------------------------------------------------------------------
+Idea: helicopters already TAKE OFF from the platform; make them LAND on it too, in an "elevator lane" (slot 0x84, free during returns),
+so a helicopter lands on the platform while an aircraft uses the runway. Cave of 5.5 KB + 3 hooks (entry of returns mode 0x1001acd94,
+exit 0x1001ad7af, taxi 6 -> 7 at 0x1001ae071). Planned behaviour: aim at lift_upper (27.5, 20, -32) turned like the platform
+(objects are rotated 90 degrees there: m02 = -1, m20 = 1), hover ~15 m above while the platform is not up and free (slot 0x7c == -1 and
+carrier+0x1518 ~ 0), skip the roll by jumping into the existing end of state 7 (0x1001ae13a), fall back to the runway if the
+landing fails.
+Result in game (2026-10-24): the first helicopter used the lane well (runway at 0:10, on the platform at 0:52, approach 0:42), but two
+helicopters COLLIDED: the game logged destroy_vehicle of a Razorbill (type 12) with no shooter at 06:26:19 UTC. No game crash.
+Probable cause (not verified): the one descending onto the platform (x = 27.5) and one waiting at lift_upper_wait (x = 12, 15.5 m away) with
+their rotors. The game destroys vehicles that touch. The idea was dropped, the code is kept as reference. A variant with TWO landing places
+on the deck (8/10) would not beat the lane.
+
+
+4. SECOND ELEVATOR: STUDY AND VERDICT (not done, 9/10, not worth it)
+--------------------------------------------------------------------
+Inventory:
+- rom_0/game_objects/vehicle_chassis_carrier.xml physical bodies: `hull` (collision meshes/aircraft_carrier/aircraft_carrier_hangar_physics.cphys, 234 KB),
+  `lift` (meshes/chassis_carrier_lift_phys.cphys = ONE box x 21..33, y 19..20, z -45.5..-18.2: a 12 x 27 m platform) and `lift_personnel`.
+  Constraints: `lift_constraint` (type 0, course -9..0) and `lift_personnel` (type 4); the `drive_*` settings do nothing (the code imposes the position).
+- Meshes really used: aircraft_carrier_shell/aircraft_carrier_lift.mesh (platform), aircraft_carrier_hangar.mesh (deck + hangar), gantry_crane*.mesh (crane).
+  chassis_carrier.mesh, chassis_carrier_phys.cphys, chassis_carrier_lift.mesh and chassis_carrier_crane* are NOT referenced by any file (leftovers).
+- Navigation mesh `lift_aircraft` is attached to body n. 1 (the platform).
+- Program: ONE elevator hard-coded in the carrier (position 0x1518, levels 0x1520, setpoint 0x1538, offset 0x152c, energy 0x1218, physics link 0x14e0 found
+  by the name `lift_constraint` in ::build 0x100193022): a 2nd constraint in the XML would simply be ignored. ONE crane, ONE manager with ONE elevator slot (0x7c).
+- Client side: the client does not receive the platform height in clear; it reads the crane / elevator states (e_crane_state, e_elevator_state, for the
+  screens) in parse_state (0x10011b954) and the pieces' positions through the general body mechanism (get_body_transform). A 2nd platform would
+  probably be shown to other players without client changes [UNV]; the ship screens would only show elevator 1.
+Bricks and difficulty: hole in the deck + platform + well in the hangar (3D) 7/10; collisions 8/10 (477 PhysX cooked convex pieces to re-cut: no cooking
+tool); body + constraint in the XML 3/10 but useless without code; paths 2/10; logic (two elevators, crane sharing, energy, save) 9/10; multiplayer 5/10.
+Verdict: possible in theory, 8-12 sessions on Mac and again 3-5 on another platform, and the GAIN IS SMALL: the runway stays single, the elevator is not
+what slows aircraft. Cheaper alternatives: x3 elevator (2/10, little gain), two aircraft on the platform (6/10).
+The one real benefit (a path of their own for helicopters) is what the lane tried to give.
+
+
+####################################################################################################
+# PART 05 - AI AIRCRAFT SPEED, ENGINES AND FUEL
+####################################################################################################
+
+AI AIRCRAFT SPEED, ENGINES AND FUEL
+===================================
+
+Question that started it: AI-controlled Albatross and Manta "crawl at 50 % throttle". Answer found in the program: they have a hard
+FLOOR speed, and the setting that looks like it controls this is never read.
+
+MEASURED IN GAME (2026-10-25, headless session, 30 ticks per second, stock modes = ECO): an Albatross and a Manta sent to a waypoint 20 km away
+both cruise at about 120 m/s (120.1 and 121.7 m/s over 20 s), NOT at the 48 / 72 m/s floors. The throttle law below explains it: the target speed is
+T = S + a x (120 - S) with a = clamp((distance - 20) / 780, 0, ...), so beyond ~800 m from the waypoint a = 1 and T = 120 whatever the floor S is. THE FLOORS ONLY
+MATTER CLOSE TO THE WAYPOINT (loitering, escorting, final approach), which is where aircraft really "crawl". Consequence: the ECO / NORMAL / FLANK floors
+change the speed near the waypoint, but they do NOT change the cruise speed of a long transit (a floor above 120 even makes the speed DROP toward 120 with
+distance). To change transit speed, the literal 120 of the throttle law would have to be changed as well (not done). The in-flight test near a waypoint
+(modes ECO / NORMAL / FLANK) was started and then stopped; it has not been completed. (The two test aircraft were shot down by enemy defences after ~10 km.)
+
+
+1. WHAT FIXES THE SPEED
+-----------------------
+- "Dev values" of the server (class c_dev_value_server, constructor c_dev_value_server::c_dev_value_server()), NOT constants.txt:
+    vehicle_ai_wing_cruise_speed         = 120   (imm movl $0x42f00000 at 0x1000b17e9)
+    vehicle_ai_wing_dogfight_target_speed = 160  (0x1000b16db)
+    vehicle_ai_wing_cruise_altitude      = 200   (0x1000b17c4)
+    helicopters have their own set: vehicle_ai_rotor_*
+  They are read through `get_table()` + 0x98 + offset in c_dev_value_server (value = name + 8). `vehicle_ai_wing_cruise_speed` (+0xec0) and
+  `_cruise_altitude` (+0xe98) are NEVER read on the server side: only the client copy used by the intro cinematic. Changing them does nothing.
+- c_vehicle_server_wing::tick_control (0x1001c26c0). control_mode (vehicle +0x2a0): 0 = waypoints, 3 = setpoint imposed by the ship (the
+  landing pattern: this block is skipped), 1 = other.
+- Mode 0: get_waypoint_position_direction_speed (0x1001b78aa) returns a speed (0 in normal flight; the speed of the followed object if any), then:
+    0x1001c2b52  maxss [0x102869af0]   (48.0, floor of ALL aircraft)    bytes f3 0f 5f 0d 96 6f 6a 02
+    0x1001c2b5a  minss [0x102869b2c]   (144.0, cap)
+    0x1001c2b62  movss %xmm1, 0x2c8(%r13)   (target speed)
+    0x1001c2b6b  cmpl $0xa, 0x90(%r13)     (type 10 = chassis_air_wing_heavy = Manta)
+    0x1001c2b75  maxss [0x102869b30]   (72.0, Manta floor)             bytes f3 0f 5f 05 b3 6f 6a 02
+    0x1001c2b7d  minss [0x102869b2c]   (144.0)
+    0x1001c2b85  movss %xmm0, 0x2c8(%r13)
+  In normal flight the AI requests NO speed (0) and the program lifts the 0 to the floor: Albatross 48 m/s (173 km/h), Manta 72 m/s (259 km/h);
+  common cap 144 m/s. In dogfight the AI already aims at 160 (block 0x1001c6b62: same formula with
+  vehicle_ai_wing_dogfight_target_speed): nothing to change. In the landing pattern the speed is imposed at 80 m/s by the ship.
+- Throttle (normal flight, 0x1001c5da0 ... 0x1001c5de7): T = S + a x (120 - S) with S = 0x2c8 + a correction bounded to -10/+40 and
+  a = clamp((horizontal distance to the target point - 20) / 780, 0, ...); then throttle (0x3f4) += vehicle_ai_wing_throttle_stiffness x
+  ((T - v)/120 - dv). The upper bound of `a` is a reused register and was not identified. Observation of the player: ~50 % throttle at both floors,
+  so the AI stays at the floor [EST].
+- Commands (0x3e8 pitch, 0x3ec, 0x3f0, 0x3f4 throttle) x 0x2cc are clamped every tick (0x1001c5e3f: min (-1,-1,-1,0), max (1,1,1,1)): the throttle stays
+  in [0,1], so aiming at 144 = full throttle with no wind-up when it has to slow down afterwards.
+- Existing constants for a rip redirect: 60 0x102869a44, 64 0x102869aa4, 72 0x102869b30, 80 0x102869900, 96 0x102869c0c, 100 0x1028697ac,
+  120 0x1028697b8, 144 0x102869b2c, 150 0x1028698b8, 160 0x102869a90.
+- The same floor applies to ENEMY AI aircraft (same code) unless the team is tested.
+
+
+2. ENGINES, FUEL
+----------------
+- Engine: tick_force_emitter (0x1001a7aa2): the real level follows the demand at 0.05 per tick (vehicle_control_force_emitter_speed); force = 10 x
+  magnitude x level. Engine power: Albatross 50, Manta 100 (twice, same mass 1 t).
+- Fuel: c_vehicle_server_base::tick (the function starts at 0x100193768; the fuel code is at 0x100193a3c ... 0x100193aaa) burns max(|demand of the engines|) x get_fuel_consumption_rate x
+  fuel_consumption_multiplier (0.008) per tick. constants.txt: wing_light_fuel_consumption 2, wing_heavy_fuel_consumption 5. Tanks 800 (Albatross) and 1200
+  (Manta), +1000 per extra tank. So fuel use is proportional to engine power.
+- AI teams do not consume fuel (team +0x19 is_ai_controlled) [ASM].
+
+ESTIMATES (SUPERSEDED by the measurement above: cruise is ~120 m/s, so the "full throttle" speeds below are far too low; kept only as history) [EST]:
+                          stock (~50 %)        ~80 %               full throttle
+    Albatross speed       48 m/s (173 km/h)    ~61 m/s (220 km/h)  ~68 m/s (245 km/h)
+    Manta speed           72 m/s (259 km/h)    ~91 m/s (328 km/h)  ~102 m/s (367 km/h)
+    Albatross endurance   ~55 min              ~35 min             ~28 min
+    Manta endurance       ~33 min              ~21 min             ~17 min
+    distance on one fill  100 %                ~80 %               ~70 %
+  i.e. +27 % speed at 80 % and +41 % at full throttle; full throttle is SURE (aim at 144, which the aircraft cannot reach, the throttle sits at max),
+  the "80 %" level needs a target speed to be tuned in game.
+
+
+3. THE PATCH (module vitesse_escadrille, with the Lua bar vitesse_boutons)
+--------------------------------------------------------------------------
+Design chosen by the player: one mode for the whole squadron, three buttons ECO / NORMAL / FLANK shown at the bottom right of the vehicle control
+screens (Lua), enemy AI teams unchanged.
+- ECO = stock (48 / 72). NORMAL = 61 / 91 m/s (estimate of ~80 % throttle). FLANK = 144 (full throttle).
+- Program side (cave of 671 bytes, source workshop/outil/generateurs/vitesse_escadrille.c): the hook at 0x1001c2b4b in tick_control replaces the whole
+  `maxss/minss` block with the floor chosen from a per-team table of modes (16 bytes in the zero tail of an ImGui demo buffer, 0x1029e5680...);
+  a team that is AI-controlled, has no mode or an unknown mode gets the stock floors; xmm0/xmm1 and the 0x2c8 slot end exactly as in the stock code.
+  The aircraft's team: vehicle +0x260 -> team object, +0x14 = team number.
+- Lua -> program channel: first design = a message through print() intercepted by the program (two-way, repeated every few seconds so nothing is lost on load).
+  Final design (simpler): a NEW Lua function `cc2_vitesse(team [, mode])` that takes the place of the unused `dofile` in base_funcs (16-byte data patch,
+  see 01 section 3). `cc2_vitesse(team)` returns the team's mode (0 = not chosen yet); `cc2_vitesse(team, mode)` sets it (1 ECO, 2 NORMAL, 3 FLANK) and returns it.
+  The last mode is kept in a small text file next to the saved games and read at the first call.
+- Lua side (workshop/fichiers/vitesse_boutons/library_custom_6.lua): the bar is drawn on screen_veh_l/m/r/ll and the tacops_*_control screens of the replacement mod, in the lower right
+  corner (the map scale also lives there: y ~ h - 30 ... h - 16); clicks on the bar are not forwarded to the map; first time NORMAL.
+  Without the program module nothing is displayed.
+- Tests: logic of the 120 speed cases run under Rosetta (workshop/tests/test_vitesse_escadrille.py); the Lua bar outside the game (lupa).
+- In-game check still pending at the time of writing: same save, one Albatross sent to a far point in ECO then FLANK, time with the game clock and fuel
+  gauge, then tune NORMAL.
+- Multiplayer: simulation runs on the host; the mode only works for the host's own team [ASM].
+
+
+####################################################################################################
+# PART 06 - SCREENS, THE 256-PX PILOT UI AND THE CCTV SCREEN
+####################################################################################################
+
+SCREENS, THE PILOT HUD (256 px UI) AND THE CCTV SCREEN
+======================================================
+
+Renderer: c_frontend_renderer. OpenGL. Mac addresses (see 00_README).
+
+
+1. THE 3D VIEW IS FULL RESOLUTION, THE PILOT UI IS NOT
+------------------------------------------------------
+Render targets `gbuffer`, `post` and `depth` have the size of the window (c_frontend_renderer::update, 0x1001ecdc2). The INTERFACE of the
+pilot view (reticle, scales, text drawn by vehicle_hud.lua) goes into a separate target `hud_ui_target` which is only 256 PIXELS HIGH
+(width = screen aspect ratio x 256):
+    0x1001ed3f4  movl $0x100, %r9d      bytes 41 b9 00 01 00 00     (height 256)
+    0x1001ed3b7  mulss [256.0], %xmm1   (constant at 0x102869944)    (width = aspect x 256)
+filtering mode "0" (probably nearest). Then pass_hud_ui (0x1002143da) puts it on the screen with c_material_screen_crt_hud =
+shaders/screen_crt_hud.glsl (brightness 1, distortion 0, effect 1). pass_overlay_ui (loading screens overlay) uses the same effect.
+The Lua places the interface in FIXED PIXELS, so more pixels = smaller elements on screen. Cost of a taller target: almost nothing (2D).
+Constants that exist for a "rip" redirect: 384.0 (0x10286973c) and 512.0 (0x102869b58); 768.0 does not exist.
+A module `interface_x2` (3 bytes: 256 -> 512 high, see part 10 (in cc2_reference.txt)) was written and tested and then REJECTED by the player (he wants the same
+element sizes); kept in reserve.
+
+The "old TV" look (grain, lines, colour bleeding, dark edges) of the pilot view and the gimbal camera is shaders/screen_crt_hud.glsl, a normal
+moddable file (effect strength uniform `crt_effect_factor`; the file ships as part of the game and is replaceable through the mod system, so it works
+on any platform). The variant chosen by the player ("no effect, same sizes"): keep the stock code in the file but multiply the effect contribution by a
+weight that is always 0 (for example `step(1e30, animation_time)`), so that the compiled shader still has all its 15 active uniforms (the engine looks
+for them; removing code that uses one of them makes the engine miss it). The shader compiles under WebGL 2 as a sanity check.
+shaders/screen_crt.glsl is the effect of the ship's screens (not touched). The uniform `resolution_scale` of post.glsl is set by the engine (not studied).
+
+
+2. SHIP SCREENS: ONE IMAGE PER SCREEN
+-------------------------------------
+Every screen of the ship has ONE image (background + the Lua interface), created in c_game_object_client::create_lite (0x1000ad572; loop over the
+screens of the object: count at +0xd0, elements of 0x230 bytes):
+
+    1000ad74f  movslq 0x60(%rax,%rcx),%rax      ; screen type (XML type=; the definition has elements of 0x78 bytes)
+    1000ad754  movl $0x80,%r9d                  ; default height (type > 5)
+    1000ad75a  movl $0x80,%r8d                  ; default width
+    1000ad760  cmpq $5,%rax ; ja 1000ad77c
+    1000ad766  lea 0x1028b1470 -> r9d = height[type]   u32 table: 128, 128, 256, 256, 192, 32
+    1000ad771  lea 0x1028b1488 -> r8d = width[type]    u32 table: 128, 256, 512, 256, 256, 64
+    1000ad798  call mm_resource_handle_target::create(..., 2 (colour), 8, width, height, filter 0, name)
+
+The table is read nowhere else. TYPE 0 = 128 x 128 = 35 screens in the XML files, including screen_veh_top_r (the CCTV). Changing the table would change all of them,
+so the change has to pick the CCTV screen out in code.
+Screen definition (0x78 bytes): 0x00 name, 0x10 display_name_loc, 0x18 script_file_name (mm_string: text pointer at 0x18, LENGTH at 0x20), 0x28 body_index, 0x2c
+seat_index, 0x30 transform, 0x60 type, 0x64 refresh_interval, 0x68 help_tag.
+Image filtering (create_surface_mipmap 0x1000ae850): RGBA8, MAG = GL_NEAREST (hence the big squares up close), MIN = GL_NEAREST_MIPMAP_LINEAR, mipmaps
+regenerated after each draw (generate_mipmap 0x10021cf2c): from far away you see mipmaps, no flicker even with a large image.
+The Lua script receives the size from OTHER (float) tables: c_vehicle_client_base::tick_screens (the function starts at 0x10011de36; the sizes are passed from about 0x10011e363): widths 0x1028b1b54, heights 0x1028b1b3c, default
+128.0 at 0x10286988c. They were left alone: screen_cctv.lua (and the library_custom files) keep seeing 128 x 128, nothing in the script assumes more
+(borders 5, bar 18, texts in fixed points, all relative to 128). The mouse goes through the screen type, not through the image.
+
+Drawing a screen: c_frontend_renderer::pass_screens (0x10020ccae) -> render_screen (0x10021cc14), target = the screen image:
+  1. render_command_screen_background (0x10021d088): background of type 9 (= camera, update_set_screen_background_type(9)) at 0x10021d1c1 ... 0x10021d911:
+     mm_camera::build with the aspect ratio of the image, frustum, then mm_material_basic_texture for each object. Works at any size. It is a SIMPLIFIED
+     3D render: only what is within 200 m (the carrier and what sits on or near it), WITH textures but WITHOUT lighting, shadows, sea, effects. So making the image
+     bigger does not change the number of objects drawn (what costs CPU, especially via Rosetta); it only increases the pixels to colour, which the GPU does
+     quickly for such a simple render.
+  2. Camera of the interface (0x10021ce70 ... 0x10021ce99): orthographic (type 2), width = image.w (+0x20), height = image.h (+0x24). With a 1024 image the interface
+     would be drawn in a corner, 8 times too small: must be forced to 128 x 128 for the CCTV screen.
+  3. Interface: `callq *0x20(%rax)` at 0x10021cf10 (= c_ui::element_container::render). Windows clip with c_ui::element_clip::render (0x10015e658) = glScissor(x, y, w, h)
+     (stub 0x10286807c, then glEnable 0xC11) with the script units TAKEN AS POINTS OF THE IMAGE: must be multiplied by the scale while the CCTV screen is drawn.
+     element_clip is shared with the pilot HUD, the pause menu and the overlay.
+  4. Lines `update_ui_line` are real GL lines of 1 point (render_lines): they would become 4-8 times thinner; the CCTV script draws none (only the `checkbox` and
+     `divider` of library_ui.lua do).
+  Ship screen effect: c_material_screen_crt::render (0x10022633e) passes `screen_resolution` = size of the image (0x1002263b4); in screen_crt.glsl the fringes = 0.3
+  image point, grain = size/256, scanlines independent. So fringes and grain get finer with a bigger image, scanlines unchanged.
+
+Screens named in vehicle_chassis_carrier.xml: screen_veh_l / _m / _r (vehicle control), screen_veh_top_m (air traffic), screen_veh_top_r (CCTV, script
+scripts/screen_cctv.lua), holomap_screen ... A replacement mod (installed by some players) replaces the vehicle control screens (screen_veh_l/m/r/ll, screen_veh_captchair,
+tacops_left/middle/right_control, sidebar_1) and draws the map scale at the bottom right.
+
+
+3. THE CCTV PATCH (module cctv_net, 512 x 512)
+----------------------------------------------
+Demand n. 1499 on the game's public issue tracker ("128x128 -> 256x256"). Chosen: 512 x 512 (4x finer; 1024 was proposed and refused: 64x the pixels).
+    cost table: 128 -> 16 K pixels; 512 -> 262 K (x16, ~2.5 MB of video memory more); 1024 -> 1 M (x64, ~10 MB). Beyond 1024 nothing to gain: the
+    screen never exceeds ~1000 points high on the display.
+Four hooks into ONE cave of 439 bytes (source workshop/outil/generateurs/cctv_net.s, SIZE = 512 set by the generator):
+  A  create_lite 0x1000ad754 ... 0x1000ad77c: if script_file_name == "scripts/screen_cctv.lua" (length 23, compared 8+8+7 bytes), width = height = SIZE;
+     otherwise the original code is replayed.
+  B  render_screen 0x10021ce70 ...: if the image is SIZE x SIZE: camera of the interface = 128 x 128 (128.0 exists: 0x10286988c) and scale = SIZE/128 in a free
+     variable (0x102a2a864); otherwise scale 0.
+  C  element_clip::render 0x10015e662 ... 0x10015e6a4: x, y, w, h x scale.
+  D  render_screen 0x10021cf13 (`movl $0xb44,%edi`, the argument of the glEnable right after the interface render): scale reset to 0 (the pilot view, pause and
+     overlay use element_clip too).
+Registers used: only those that the replaced code overwrites right after (A: rax rcx rdx r8 r9; B: rcx xmm0 xmm2; C: xmm0-xmm3 ecx edx esi edi; D: edi).
+Only the CCTV screen changes (also with the replacement mod, same script); frame, texts and buttons keep their size (interface in 128 units drawn 4x bigger).
+Status: installed; tested off game with objdump + the caves executed under Rosetta in a test program imitating the four places (27 cases);
+in-game check was still pending when these notes were written. Things to look at: both cameras finer; frame, "1/2", < > buttons and bottom text in place and complete;
+other ship screens, pilot view and pause menu unchanged.
+
+
+####################################################################################################
+# PART 07 - LUA: HOOKS, FUNCTIONS, LIMITS
+####################################################################################################
+
+LUA: WHAT THE GAME EXPOSES, HOW TO HOOK IT, WHAT IS MISSING
+===========================================================
+
+The game embeds Lua 5.3.5. Libraries loaded: base (including print), debug, math, string, table, utf8. NO io, NO os.
+`print` is luaB_print (0x10283ae97) and writes to stdout, which is lost when Steam starts the game (hence the print-to-file patch,
+workshop/outil/generateurs/ecriture_releve.s). All the scripts of the ship are Lua (rom_0/scripts/*.lua, one per screen); the game journal is NOT produced by Lua.
+
+
+1. HOOKS THAT EXIST IN THE STOCK GAME
+-------------------------------------
+- `library_custom_0.lua` ... `library_custom_9.lua`: empty files shipped with the game, loaded into EVERY screen context AFTER the screen script
+  (also in the pilot HUD, the pause menu, the overlay and the main menu; c_screen_lua_libs::get_scripts). All share the same global environment, so you can
+  monkey-patch: wrap `update` (and `begin_load`) at file level. Mods may replace them through the mod system; several can exist at once in different slots,
+  check which ones a user already has.
+- Hooking one particular screen: wrap `begin_load` (a global from library_util.lua, called by the `begin()` of every screen) and test `begin_get_screen_name()`.
+  Screen names (vehicle_chassis_carrier.xml): screen_veh_l/m/r = vehicle control, screen_veh_top_m = air traffic, screen_veh_top_r = CCTV, holomap_screen, ...
+  PITFALL (a real accident): wrap with `...` and table.pack / table.unpack. `vehicle_hud.lua` defines
+  `update(screen_w, screen_h, tick_fraction, delta_time, local_peer_id, vehicle, map_data)` (7 parameters), `overlay.lua` has 4: a wrapper that forwards only
+  3 arguments broke the pilot HUD. The pilot HUD has no `begin_get_screen_name`; it is recognised by `debug.getinfo(update).nparams == 7`.
+- Replacement mods keep `begin()` -> `begin_load()` (check this before relying on the screen-name hook).
+- Mods replace WHOLE files (no merging by element); the last loaded wins. The Lua of mods can extend a function without replacing a whole script only through
+  the library_custom mechanism above.
+
+
+2. FUNCTIONS SEEN (not an exhaustive list; read from the binary and the shipped scripts)
+-----------------------------------------------------------------------------------------
+Time:
+  update_get_logic_tick()          present in ship screens (c_screen_lua_callback::bind); the game runs at 30 ticks/s, so game seconds = tick / 30
+  update_get_time_since_epoch()    seconds, real time; present in ship screens
+  update_get_time_ms()             ABSENT in ship screens: only bound in the frontend (c_screen_frontend_api::bind and c_ui_frontend_interactions::bind)
+Other ship-screen functions: update_get_missile_count, update_get_projectile_count, update_get_screen_state_active, update_get_is_focus_local, update_ui_line
+(c_ui::bind_lua_api), update_get_screen_team_id, update_get_screen_vehicle() (the ship itself).
+World lists: update_get_map_vehicle_count / _by_index / _by_id; update_get_tile_count / update_get_tile_by_index(i). The vehicle and missile lists include what the
+fog hides (vehicle:get_is_visible() == false).
+Vehicle: get_dock_state(), get_dock_parent_id(), get_definition_index() (e_game_object_type.chassis_air_wing_light/heavy, _rotor_light/heavy ...), get_is_visible().
+Tiles: tile:get(), tile:get_team_control(), tile:get_facility_inventory_count(idx), tile:get_facility_production_queue_item_type(idx),
+tile:set_facility_add_production_queue_item(idx, n) (the game uses it in screen_inventory.lua, buttons +1/+10/+100/+1000).
+Enumerations are readable in rom_0/scripts/library_enum.lua (e_game_object_type, e_inventory_item ...).
+`get_is_controller_peer` does NOT exist in this version.
+Pilot HUD (vehicle_hud.lua): `update(screen_w, screen_h, tick_fraction, delta_time, local_peer_id, vehicle, map_data)`.
+Vehicle control screens have refresh_interval="1" in the XML (the update frequency was not verified; the landing journal flags a screen frozen for more than 5 s).
+
+
+3. WHAT THE LUA API CAN COMMAND (from the shipped scripts and the binary)
+------------------------------------------------------------------------
+Command-capable but only for ACTIONS EQUIVALENT TO A PLAYER ACTION: movement and attack orders (vehicle:add_waypoint, set_waypoint_attack_target_*, clear waypoints,
+set target vehicle), production queues (set_facility_add_production_queue_item), loadouts (carrier:set_attached_vehicle_attachment(bay, slot, def),
+set_attached_vehicle_*), repairs, go-codes, launching the carrier.
+NOT available: spawn, destroy, teleport, set currency, set hit points; no background tick (Lua only runs while a screen / terminal is displayed); no file I/O.
+Launching and recalling DO exist in Lua, through waypoints: the map screen (scripts/screen_vehicle_control.lua) launches a docked child vehicle with
+`child:clear_waypoints(); child:clear_attack_target(); child:add_waypoint(x, z)` and recalls it by dragging it onto a friendly vehicle:
+`v:clear_waypoints(); v:add_waypoint(<position of the carrier>); v:set_target_vehicle(waypoint_id, carrier_id)` [read in the shipped script, then TESTED IN GAME on 2026-10-25: 4 aircraft launched by add_waypoint
+were all airborne after 4048 ticks = 2:15 game time, exactly the time measured by hand with the bay buttons, and the same 4 recalled by add_waypoint + set_target_vehicle
+were all stored again with no failed approach, so waypoints take the same docking pipeline as the buttons]. The physical bay
+buttons are a second path that Lua cannot press.
+Menu commands from Lua: `update_ui_event("load_game", slot_index)` (slots from `update_get_save_slots()`: slot_index, display_name, save_name, time), also
+"host_load_game", "new_game_campaign", "quit_to_menu", "quit_game", "save_game", "set_game_setting", "chat" ... (the same strings are in the executable:
+"load_game %u", "host_load_game %u", "quit_game", ...).
+This is the gap that a native extension (DLL) fills: a tick outside the screens, world access, file output, commands the player cannot give.
+Candidate functions to expose, by value, are listed in part 11.
+
+
+4. LUA MODULES WRITTEN DURING THIS WORK (all in workshop/fichiers/<module>/, plain library_custom_N.lua files)
+---------------------------------------------------------------------------------------
+  library_custom_1.lua  game clock "GAME TIME h:mm:ss.s" = update_get_logic_tick()/30, bottom left of the vehicle control screens (hooked with
+                        begin_load + begin_get_screen_name). Purpose: measure in game time. Changes nothing else.
+  library_custom_4.lua  landing journal: times (game time) of the runway grant, touchdown and storage of every aircraft/helicopter that comes back, total,
+                        spacing between grants, failed approaches, "screen frozen" alert. It polls v:get_dock_state() of the vehicles whose
+                        get_dock_parent_id() is the ship: 5 = in the landing queue, 1 = landing (= runway granted), 6 = touchdown on the deck,
+                        4 = stored in the hangar, 0 = flying. A "return" starts when a vehicle enters the queue while nothing is in progress and
+                        ends when all are stored.
+  library_custom_5.lua  performance recorder: every 10 s each screen prints one line `CC2R1 E ... FIN` (real time, game tick, screen, number of update calls,
+                        shown, player on it, number of mod print() discarded) and a few screens print `CC2R1 D ...` every 5 s (units per team and type, missiles,
+                        shells, hidden units, piloted vehicle...). Needs the print-to-file patch (otherwise stdout is lost).
+  library_custom_6.lua  ECO / NORMAL / FLANK bar; calls the new Lua function cc2_vitesse (needs the program module vitesse_escadrille).
+Test recipe outside the game: Lua 5.3 in Python (`lupa`, `import lupa.lua53`) with fake `update_*` functions: workshop/tests/test_horloge.py, test_journal.py, test_releve.py,
+test_vitesse_boutons.py (run them with --lua53).
+Note: the recorder tags (CC2R1 ...) are the format read by the plotting tool that is not included.
+
+
+####################################################################################################
+# PART 08 - constants.txt, DEV VALUES, MOD SYSTEM, MULTIPLAYER, UNIT NUMBERS
+####################################################################################################
+
+constants.txt, "DEV VALUES", THE MOD SYSTEM AND MULTIPLAYER
+==========================================================
+
+
+1. constants.txt
+----------------
+rom_0/scripts/constants.txt holds 308 settings; the engine knows 314. Replace it through a mod as a whole file (content/scripts/constants.txt); for a
+single changed line you still ship the complete file.
+
+How to read the DEFAULT of ANY engine constant, even one absent from the file (method validated against the published constants.txt):
+`c_application_constants::load()` (around 0x1002fa850) is a sequence of 58-byte blocks `lea rsi, <name string>` / `lea rdx, <destination>` /
+`call parse_value_u32|f32`. Scan .text for the RIP-relative reference to the name string, read the following `lea rdx`: the destination is in
+__DATA,__data (file offset = VA - 0x100000000), where the compiled default sits. On a 64-bit build with RIP-relative addressing a small script does it.
+On another build the idea is the same (name string -> code that references it -> destination).
+Hidden constants (known to the engine, not written in the file; adding them to the file WORKS): smoke_launcher_stream_life_min 3600, _life_max 5400
+(ticks), _scale_min 50.0, _scale_max 200.0 (f32), _duration 750, plus cloud_height. The engine knows only 314 constants and the file writes 308:
+there is NO hidden graphics lever. The only perf settings in the file: cloud_count 350, cloud_layer_count 5, cloud_size 550.
+Examples verified in game or in the binary:
+  - item_vehicle_wing_heavy_production_time 300 -> 150: Manta produced twice as fast (works; mapping chassis <-> unit constant: Manta = air_wing_heavy,
+    Albatross = air_wing_light, Seal = wheel_light, Walrus = wheel_medium, Bear = wheel_heavy, Mule = wheel_mule, Razorbill = rotor_light, Petrel =
+    rotor_heavy, Needlefish = ship_light, Swordfish = ship_heavy).
+  - wing_light_fuel_consumption 2, wing_heavy_fuel_consumption 5.
+  - turret_carrier_main_gun_salvo_count 5, turret_carrier_main_gun_capacity 20 (see below).
+  - smoke_launcher_stream_duration 750 ticks = ONE burst (not per ammo unit)
+TRAP (cost several failed attempts): do NOT raise an ammunition CAPACITY constant. In Carrier Command 2 a vehicle can only be deployed with FULL ammunition
+(e_loc_manual_vehicle_loadout_overview_3) and the HUD gauge is a % of the capacity: with capacity 400 and a small stock the gauge is almost empty all the time,
+the consumption looks 16x faster, and the aircraft may refuse to take off waiting for an impossible fill. Give margin through the STOCK, never the capacity.
+Another trap: changing a setting whose exact meaning is unknown (`duration` = length of the burst, not duration per unit: x4 consumption).
+
+What the engine does with the main-gun values (disassembled; symbols present):
+  - c_attachment_server_turret_carrier_main_gun::tick(): on trigger, if no salvo in progress ([this+0x164] == 0), loads [0x164] = salvo_count, then fires one shell
+    every 7 ticks (0x700000007 into [0x158],[0x15c]); at the last shell: get_turret_cooldown_time() (FIXED reload, not proportional to the number of shots).
+    Ammo [this+0x144], decremented per shot; at 0 in the middle of a salvo the salvo is abandoned + set_target_failed. There is NO "magazine full" condition to arm
+    or fire the ship's main gun.
+  - get_ammo_capacity() reads the constant; get_ammo_resupply_interval() = 0x384 = 900 ticks = 30 s per shell (heavy "Bear" gun: 120 ticks).
+    c_attachment_server_turret::tick_resupply: one shell per interval from the given inventory (the ship) while get_count(item) > 0. Item
+    e_inventory_item.ammo_160mm_artillery = 35. set_ammo_remaining clamps to the capacity.
+  - The same attachment definition (20, "NAVAL GUN") equips the Swordfish (79) and some Needlefish (77) of AI island defences and fleets, so they get the same
+    values: the setting is global.
+  - Lua reads neither salvo nor capacity; the only cosmetic defect after a change is the fixed 2x10 shell pictogram in screen_weapons_support.lua (lines ~221-224; number
+    and bar stay right).
+
+"Dev values" (class c_dev_value_server) are NOT in constants.txt: they are compiled in (AI cruise speed, dogfight speed, cruise altitude; see 05).
+
+
+2. THE MOD SYSTEM
+-----------------
+- A mod is a folder with `mod.xml` + `content/` that mirrors rom_0. A mod can replace far more than XML: the accepted extensions are hard-coded in the binary around
+  offset 0x2a4101f: xml, txtr, atlas, glsl, ogg, ttf, csv, anim, lua, txt. So shaders, textures, sounds and fonts are moddable too.
+- A mod replaces the WHOLE file (no merge by element); the last mod loaded wins. Two mods touching the same file conflict (the fix is to merge by hand).
+- Local mods: the game scans `<user data folder>/Carrier Command 2/mods/` (strings in the binary: "LOCAL MODS", e_loc_upp_local_mods, e_loc_no_local_mods_found). A path
+  put by hand in `active_mod_folders` of mods.xml is NOT enough for it to appear in the list. The game never writes local mod paths in mods.xml (active_mod_folders
+  holds only Workshop paths). Seen on Mac (not rigorously verified): a local mod stays enabled only for the session where it was ticked and is OFF again at the next launch; to make it
+  persistent it has to be a Workshop item (even private) one subscribes to.
+- Patch v1.5.18 of 2026-06-26: purely corrective, no new modding capability.
+- Fumigene / stream smoke example: the smoke that blocks the view is drawn by shaders/vision_blocker_smoke.glsl (uniform object_color); effect_smoke_trail.glsl = missile trails.
+  World Y = the altitude in metres shown by the HUD (vehicle_hud.lua passes camera_pos:y() to the altitude tape); sea at y = 0, stall at 2000 m.
+- Attachment slot types (`type` attribute in the chassis XML): t0 small/utility, t1 main turret, t2 aircraft nose, t3 wing pylon, t4 Albatross bay, t6 small slot (Albatross,
+  Petrel). The Manta has only t0/t2/t3 but can carry countermeasures and stream smoke launchers on 2 slots.
+
+
+3. MULTIPLAYER (read in the binary; NOT tested with a second player)
+--------------------------------------------------------------------
+- Joining players receive the modded files of the host automatically. c_mod_downloader_server::build_modded_files_list() walks the whole ROM; is_file_modded() reads the file in
+  mm_file_location slot type 2 AND type 3 and memcmp()s them; if they differ the file goes to the client (c_message_server_to_client_add_modded_file / mod_file_data; the
+  client asks with request_mod_file_download). The only blacklist, set in create(): /locale/lanapixel.ttf and /locale/localization.csv (everyone keeps their own language).
+- So everything that goes through the mod system (XML, constants.txt, Lua, glsl, textures, sounds) reaches the joining players without any install on their side.
+- Very probably type 2 = the base rom_0 and type 3 = the rom with mods on top: settings written DIRECTLY into rom_0 would not look "modded" and would NOT be sent [UNV]. For
+  multiplayer, ship things as a mod.
+- A patch of the executable is never transmitted. But the simulation runs on the host (c_*_server_* classes, e.g. c_attachment_server_turret_carrier_main_gun::tick): a patch of
+  the SERVER logic on the host probably affects everybody; display and HUD stay stock on the others' side [ASM].
+- Executable patches and the Workshop: the Workshop only distributes data files, never the program.
+- The game journal (game_log_*.jsonl, one JSON per line) is written by the program, not by Lua, and has 7 event types only: player_joined, player_left, chat, destroy_vehicle
+  (vehicle_id, vehicle_type, team, attacker_team), island_captured, team_win, team_lose. No position, no weapon, no damage, no player attached to a kill. Team 0 = AI, teams 1 and
+  2 are players in the sessions we looked at; do not hard-code two teams (player team numbers vary between sessions).
+
+
+4. UNIT TYPE NUMBERS (e_game_object_type, vehicle_type in logs; rom_0/scripts/library_enum.lua)
+------------------------------------------------------------------------------------------------
+     0 Carrier           16 Barge
+     2 Seal (light ground)    57 Lifeboat
+     4 Walrus (medium ground) 58 VirusBot
+     6 Bear (heavy ground)    59 Turret
+     8 Albatross (light wing) 64 Jetty / dry dock
+    10 Manta (HEAVY wing)     77 Needlefish (light ship)
+    12 Razorbill (light rotor) 79 Swordfish (heavy ship)
+    14 Petrel (heavy rotor)   88 Mule        97 Droid
+Pitfall: intuition is wrong about Manta and Petrel: the Manta is the heavy AEROPLANE (chassis_air_wing_heavy, mesh manta_plane), the Petrel is the heavy HELICOPTER
+(chassis_air_rotor_heavy, mesh largehelicopter, the one that does the airlift). Names for display: rom_0/locale/localization.csv (9 languages).
+
+
+5. SAVED STATE (format only)
+----------------------------
+The saved-game files are XML with SEVERAL roots (`meta`, `scene`, `vehicles`, `missiles`): wrap them before parsing. `<scene logic_tick=...>` has the game tick; `<vehicles>`
+holds `<v id definition_index team_id>`; vehicle_states hold dock_state; `<vehicles ... is_invulnerable is_infinite_ammo is_infinite_fuel>` are global cheat flags (one occurrence). The
+facility inventory (per island) lives at scene/tiles/tiles/t/facility/inventory/quantities/<q i=".." q="..">. A new game's starting stock is generated by the engine (no moddable file).
+The names of the saved fields come from the same parse_state_xml / get_state_data functions that are the best way to name members of structures (01, section 6).
+
+
+####################################################################################################
+# PART 09 - FILE FORMATS
+####################################################################################################
+
+FILE FORMATS: .mesh  .txtr  .atlas  .cphys  (+ the XML pieces that go with them)
+===============================================================================
+
+All of these were decoded by reading the files of the installed game (rom_0/) and checking against renders; no executable code is involved.
+All numbers are little-endian. Same files on every platform (rom_0 is shared), so this section applies to Windows as well.
+
+
+1. .mesh  (version 5)   rom_0/meshes/vehicles/<vehicle>/*.mesh and meshes/aircraft_carrier/...
+-----------------------------------------------------------------------------------------------
+    "mesh"                       4 bytes
+    u32 version (5), u32 n (1)
+    u16 length + name
+    u32 (23), u32 (0)
+    4 x (u16 length + texture path)       (see section 2: diffuse, AO, paint mask, 4th unused)
+    6 x float64                           bounding box min/max (use it as a check)
+    u32 size of the vertex block IN BYTES, stride 36 bytes:
+          3 x float32 position, 4 bytes RGBA, 2 x float32 UV, 3 x float32 normal        (UV BEFORE the normal)
+    u32 size of the index block IN BYTES; indices are u32
+MAIN PITFALL: the indices are 32 bits, not 16. Read as u16 every second value is zero and half the triangles silently degenerate: the file parses without an error
+but the geometry is wrong (symptom: welding the vertices removes exactly half of the triangles). Another pitfall found late: with UV and normal swapped the
+textures come out black (two normal components were read as UV).
+- Assembly: a vehicle is exploded into 13-26 pieces. Their placement matrices are in rom_0/game_objects/vehicle_chassis_*.xml, in a `<transform>` child of each
+  `<mesh>` (m00..m22 + tx, ty, tz). Level of detail: lod 0.
+- The game has Y UP. The coordinate system is LEFT-HANDED: importing game coordinates unchanged into Blender or an STL mirrors the ship (the island ends up on
+  starboard instead of port). What works: (x, y, z) -> (-x, -z, y) and write each triangle (a, c, b) to keep the faces outward. In game: -x = port,
+  +z = bow, y = up.
+- Pieces to leave out for a clean export: `additive` (contains NaN!), `blur`, `midspin` (rotating rotor discs), `particles`, `broken`.
+- Weld vertices by position before checking a mesh: UV seams duplicate vertices, which makes the mesh look wide open; after welding 4-8 % of border edges remain
+  (normal; slicers close them).
+- UV convention: (u, 1 - v) (verified by probing: hull flanks 129/255 matching against <= 48 for the three other conventions). UVs lie in [-1, 1], the texture repeat handles it.
+- Texture slots in the header: 1 diffuse, 2 AO (grey, 1 byte per pixel!), 3 paint mask (white = zone painted in the team colour), 4 unused.
+  Paint colours: meshes/vehicles/paint_flat_*.txtr (16 x 16): dark_grey (58, 54, 50), light_grey (177, 169, 161), navy (29, 43, 83) ...
+- Weapons: the chassis only has SLOTS (`<attachments>`, 14 for the carrier, with a transform). The turrets are in vehicle_attachment_carrier_turret_*.xml (pieces with ABSOLUTE
+  transforms in the frame of the slot: compose piece -> slot). Which weapon sits where: the Lua screens (screen_weapons_anti_missile.lua {1,2,3,4}, anti_air {5,6}, support {7,8})
+  index the slots in the order of the XML: 4 CIWS at the four corners (front/back left/right, the only ones with a limited rotation), 2 AA on starboard ports (side_right_b/a),
+  the 160 mm gun side_left_a, decoys side_left_b, cruise-missile silo side_left_c (against the island), camera mast_b (type 4), golf-ball radar mast_a (type 2, inferred, not
+  proven), torpedoes on side_torpedo_*, torpedo decoys back_torpedo. The 17 `<vehicle_attachment>` entries are PARKING PLACES, not weapons.
+- Carrier facts (from the meshes, game coordinates): 213 m long, hull 52 m wide (86 m with sponsons and the island), 74 m from keel to mast top, bow = +Z. Flight deck at Y = 19.5, laid on the hangar
+  (floor 8.2 m, same level as the lowered fore deck). Island on PORT: X in [-35, -19], Z in [-52, -4]. Runway axis x = -0.3, the 5 runway lights `runway_start_1..5` at Y = 20.25,
+  Z = -87.6 and X from -12.7 to +12.0. The elevator mesh `aircraft_carrier_lift` is in its UP position by default (top at y 20.0; constraint -9..0); its texture is only 128 x 128 px: enlarge it
+  without smoothing and without AO or the red frame bleeds over a metre. The runway marking is in the deck TEXTURES (white centre line, yellow bands, red frames around the elevators).
+  The largest upward-facing horizontal surface is NOT the flight deck (that is an inner floor of 7,000 m^2 at Y = -14.8): check levels with a render.
+  The hangar top (aircraft_carrier_hangar.mesh, Y max 19.9) forms the flight deck.
+- Counting: the carrier has 109 `<mesh>` tags at lod 0, 70 pieces after the filter above, 154,086 triangles. Vehicles: the Manta spans 12.26 m.
+
+
+2. .txtr
+--------
+Header (corrected after a first wrong guess; the full header matters):
+    bytes 0-3   "TXTR"
+    bytes 4-7   u32 version
+    byte  8     pixel type: 2 = RGBA (4 bytes per pixel), 1 = GREY (1 byte per pixel)
+    bytes 9-10  u16 width        bytes 11-12 u16 height
+    byte  15    number of mipmaps
+    bytes 19-22 u32 size in bytes of the base level
+    from byte 23: the pixels (level 0 first: that is what the extractors read)
+- NEVER guess the size from sqrt(bytes/4): read the header. The `_ao` shading textures are GREY: read as RGBA they become a blotchy noise (this produced a fake "camouflage").
+- UI sprite sheets are white with an alpha channel, so they can be TINTED (replace the RGB, keep the alpha).
+
+
+3. .atlas
+---------
+    "ATLA", u32 version, u32 number_of_surfaces, then per surface: u16 length + path.
+    u32 number_of_entries; per entry: u16 length + name, u32 surface index, 8 x float32: x0 x1 y0 y1 u0 u1 v0 v1.
+Example: rom_0/textures/screen_ui/index.atlas + index_surface_0.txtr (1024 x 1024): 459 UI sprites of 64 x 64, among them one icon per vehicle chassis:
+icon_chassis_wing_small (Albatross), wing_large (Manta), rotor_small (Razorbill), rotor_large (Petrel), wheel_small (Seal), wheel_medium (Walrus), wheel_large (Bear), wheel_mule (Mule),
+sea_ship_light (Needlefish), turret, deployable_droid. NO full-size version for the Swordfish (only 16 px). 13 icons exist at 64 x 64 (Albatross, Manta, Razorbill, Petrel, Seal, Walrus,
+Bear, Mule, Turret, Droid, Needlefish, Shuttle, Unknown); only 16 x 16 for VirusBot, Swordfish, Barge, Carrier, Lifeboat. Nothing bigger is stored. Nearest-neighbour upscaling keeps lines
+sharp; LANCZOS blurs.
+
+
+4. .cphys (collision)
+---------------------
+Header "cphy", version 1, number of pieces, then PhysX COOKED convex meshes (signatures `NXS\x01CVXM`, `ICE CLHL`). The carrier hull has 477 pieces
+(aircraft_carrier_hangar_physics.cphys, 234 KB). The elevator platform is one 432-byte box that can be copied with other coordinates. Making a hole in the deck would mean finding and
+re-cutting the hull pieces below it: without PhysX's cooking tool this is manual work.
+
+
+5. XML pieces that matter for the mechanisms
+--------------------------------------------
+rom_0/game_objects/vehicle_chassis_carrier.xml:
+  - bodies: hull (collision hangar_physics.cphys), lift (chassis_carrier_lift_phys.cphys), lift_personnel; constraints lift_constraint (type 0, course -9..0; drive_* ignored by the code) and
+    lift_personnel (type 4);
+  - paths: 47 nodes and 48 graph_link entries; those read by name by the code: see 02 section 4;
+  - aircraft bays vehicle_attachment air1..air8 (y 13.5), ground-vehicle places vehicle_attachment1..8, bay lights vehicle_bay_air_lift_light, buttons lift_tower_floor_*;
+  - nav mesh lift_aircraft attached to body 1;
+  - the screens (name, type, script_file_name, refresh_interval), see 06.
+Localisation: rom_0/locale/localization.csv (9 languages), font rom_0/locale/lanapixel.ttf (both excluded from the multiplayer mod sync).
+
+
+####################################################################################################
+# PART 11 - FROM THE MAC BUILD TO A WINDOWS DLL: WHAT CARRIES OVER, PRIORITIES, WISH LIST
+####################################################################################################
+
+FROM THE MAC BUILD TO A WINDOWS DLL: WHAT CARRIES OVER, WHAT DOES NOT, AND WHAT IS WORTH DOING
+==============================================================================================
+
+Written for someone who works on the Windows build with a DLL loaded in place of the system DirectInput 8 library (the game loads it first) and who
+bridges Lua and the engine. The author of these notes has NEVER seen the Windows executable. Everything below about Windows comes from the public README of
+a public community SDK (GPL-3.0), quoted as such, or is deduced and marked [UNV].
+
+
+1. WHAT THE PUBLIC SDK SAYS ABOUT THE WINDOWS TARGET (its README, not verified by us)
+------------------------------------------------------------------------------------
+- game build "1.5.18 Windows", executable `carrier_command.exe`, recognised by PE timestamp + image size against a table of profiles;
+- built with a bundled C compiler "for 32-bit Windows": THE WINDOWS EXECUTABLE IS PROBABLY 32-BIT x86 (hook addresses quoted there look like 0x004465ec);
+- proxy `dinput8.dll` loaded by GLFW (joystick support), game folder searched first, all five exports forwarded to the system DLL;
+- hooks: logic server vtable (init, tick, end), Lua environment creation (adds a global table to each Lua state), Lua 5.3 internals (index2addr, luaS_new, luaH_new...);
+  transactional patches (original bytes checked, overlaps refused, rollback);
+- a world API by named fields (vehicles, tiles / islands, airfields, hangars, waypoints, physics, events such as an airfield tick or the choice of a hangar slot).
+This tells us how to write the rest: the Mac executable is 64-bit and the Windows one is (probably) 32-bit.
+
+
+2. WHAT THIS MEANS FOR THE MAC NOTES (read this before reusing any number)
+--------------------------------------------------------------------------
+THE LOGIC CARRIES OVER (same source code, different compilers) [UNV but very likely]:
+  - state machines and their states (dock states, runway states, crane moves, the mode of the docking manager);
+  - formulas and VALUES (steps per tick, accelerations, caps, thresholds, delays in ticks, the energy shares and weights);
+  - names: functions, classes, saved field names, Lua API names, node and path names in the XML, e_* enums;
+  - everything about rom_0 data files (XML, Lua, shaders, textures, meshes, constants.txt): shared by all platforms.
+THE ADDRESSES AND OFFSETS DO NOT:
+  - x86-64 (Mac) vs x86-32 (Windows): all pointers are 8 bytes here and 4 there, so every structure containing a pointer has other offsets (dock_state at 0x220,
+    manager slots at 0x78..0x84, carrier fields at 0x15xx ...): treat the offsets of these notes as SEMANTIC LABELS ("the field that holds the crane's vehicle id"),
+    not as numbers to reuse. Alignment and padding differ too (and `long` is 8 bytes on the Mac, 4 on Windows).
+  - Instruction encoding: no RIP-relative addressing in 32-bit code; floats are read with an ABSOLUTE address (`movss xmm0, [abs32]`, `f3 0f 10 05 <abs32>`), or even with x87
+    instructions if the build is not SSE: the "redirect the constant" patch becomes "change the 4-byte absolute address", same idea, other bytes. The table in
+    part 10 (in cc2_reference.txt) documents the Mac encoding only.
+  - Calling convention and `this`: SysV on Mac (rdi, rsi, rdx, rcx, r8, r9) vs MSVC 32-bit (thiscall: `this` in ECX; cdecl / stdcall for functions): the C caves in workshop/outil/generateurs/ assume SysV
+    and must be rewritten (or written against the compiler you use); virtual-call indices and vtable layout may differ between the two C++ ABIs.
+  - Inlining: on the Mac `docking_manager_air::update` is ONE function of ~5,000 instructions with everything inlined (crane, taxi, landing, queues). The MSVC build may split
+    or inline otherwise; look for groups of constants, not for one function.
+  - MSVC puts float constants in literals named __real@3ccccccd in .rdata; negative values may not exist as constants (the compiler loads the positive and flips the sign
+    with xorps and a mask __xmm@80000000...): redirecting the positive read can then cover both bounds.
+
+
+3. HOW TO FIND THE SAME PLACES ON A BUILD WITHOUT SYMBOLS
+---------------------------------------------------------
+a) Float fingerprints (IEEE-754 bits, shown here big-endian; in the file they are little-endian):
+
+    value        bits         role (Mac build)                         doubled value / bits
+    0.4          0x3ECCCCCD   elevator/crane energy share              0.8     0x3F4CCCCD
+    0.025        0x3CCCCCCD   platform step per tick                   0.05    0x3D4CCCCD
+    -0.025       0xBCCCCCCD   platform step (lower bound)              -0.05   0xBD4CCCCD
+    0.001        0x3A83126F   platform dead zone (do not touch; helps recognise the place)
+    1/6          0x3E2AAAAB   crane horizontal step                    1/3     0x3EAAAAAB
+    -1/6         0xBE2AAAAB                                            -1/3    0xBEAAAAAB
+    1/30         0x3D088889   crane vertical step                      1/15    0x3D888889
+    -1/30        0xBD088889                                            -1/15   0xBD888889
+    0.04         0x3D23D70A   crane rotation step                      0.08    0x3DA3D70A
+    -0.04        0xBD23D70A                                            -0.08   0xBDA3D70A
+    0.05         0x3D4CCCCD   deck taxi acceleration                   0.1     0x3DCCCCCD
+    2.5          0x40200000   deck taxi speed cap                      5.0     0x40A00000
+    11.0 / 12.0  0x41300000 / 0x41400000   crane hook heights
+    30.0         0x41F00000   ticks per second in `t += v / (L x 30)`
+    0.01 / 0.1   0x3C23D70A / 0x3DCCCCCD   arrival thresholds
+    0.5          0x3F000000   take-off acceleration (no cap)
+    48.0 / 72.0 / 144.0   0x42400000 / 0x42900000 / 0x43100000   AI aircraft floor speeds (Albatross / Manta) and cap
+b) GROUPS of constants close together are better anchors than single values:
+    - 0.025 + 0.001 within a few dozen bytes (elevator platform step);
+    - 2.5 and 0.05 in pairs, 7 times (taxi blocks);
+    - 1/6 + 1/30 + 11.0/12.0 together (crane);
+    - the five energy shares 0.8, 0.2, 0.8, 0.6, 0.4 in one function (power manager build; 0.4 is the elevator/crane one);
+    - 48.0 then 144.0 then 72.0 then 144.0 around a compare with type 10 (the AI speed floors);
+    - 100^2 and the helicopter waiting point (-100, -240).
+c) STRINGS AS ANCHORS: names used by the code exist in every build.
+    - "lift_constraint" is looked up by name in the carrier's build function; "load_lift_lower", "runway_start", "runway_end", "lift_lower", "lift_upper", "hanger_center" are read by
+      name in the air docking manager's build function (the spelling "hanger_center" is the game's own);
+    - "vehicle_ai_wing_cruise_speed" and friends (dev values), the 314 constants of constants.txt (loader recipe in 08), the names of the Lua API functions in the Lua binding tables
+      (the ship screens have update_get_logic_tick, the frontend has update_get_time_ms).
+d) SAVED-STATE PARSERS: the best way to rebuild structure layouts. The function that reads a saved state ("parse_state_xml") reads each member BY NAME into `this + offset`. Find the string
+    ("docking_queue", "runway_state", "vehicle_id_crane", "crane_instructions", "docking_join_time", "vehicle_attachment_index_crane" ...), follow its reference, and read the destination
+    offset (on 32-bit: `push offset name` ... `lea ecx, [esi+offset]`). That gives you the layout of the Windows build with no guesswork.
+e) Cross-check by behaviour: in the stock game, deck taxi takes ~42 s after touchdown, the elevator takes 12 s for 9 m, the AI floor is 48 / 72 m/s, one aircraft gets the runway per
+    lap of the holding pattern. Measure in GAME time (update_get_logic_tick()/30).
+
+
+4. WHAT A DLL CHANGES COMPARED TO BYTE PATCHES AND CAVES
+-------------------------------------------------------
+- On the Mac everything that needed code had to be squeezed into a dead function (see 01 section 3) and compiled into a hand-linked blob. A DLL replaces all that with ordinary C and your toolchain.
+- Hooking a function at its ENTRY is not enough for most of what is in these notes: the interesting code is in the MIDDLE of very large functions (crane, taxi, landing states of
+  docking_manager_air::update; the AI speed floor in the middle of c_vehicle_server_wing::tick_control). You still need mid-function trampolines (replace whole instructions with a jump and replay
+  them; check that no jump of the game lands inside the replaced bytes) or, for values, constant redirects.
+- Better than redirecting a constant to another constant: redirect to a TUNABLE owned by the plugin (a small table of named floats: platform step, crane steps, taxi acceleration/cap, AI floors, energy shares, ...)
+  that Lua and the player can read and write at run time. This is the "standardised SDK" version of what was done here with fixed values.
+- In multiplayer the simulation runs on the host: only the host's tunables matter [ASM].
+
+
+5. RELATED CLASSES FOR ISLAND AIRFIELDS (names only; they were listed from the symbol table and NOT read)
+--------------------------------------------------------------------------------------------------------
+c_environment_tile_airfield_manager (+ its nested `hangar`): dock, undock, cancel_docking, update, tick_repair_vehicles, tick_resupply_vehicles, get_available_hangar_node, hangar::update,
+hangar::build_path_dock / build_path_undock, create_from_state_data / get_state_data (saved state: c_environment_tile_airfield_manager_state::hangar_state), plus c_enemy_spawner::spawn_plane,
+add_plane_to_hangar, get_chassis_hangar. The carrier's docking_manager_air follows the same family of ideas (queue + single-vehicle slots + paths built from graph links of the XML).
+Addresses on the Mac in part 12 (in cc2_reference.txt). What we know about the carrier side (queue semantics, slot meaning, taxi model) is in 02-04.
+
+
+6. WHAT IS WORTH DOING (gain / effort / risk of each item, from what was measured)
+----------------------------------------------------------------------------------
+    item                                     result                          effort (Mac)        notes
+    1  elevator + crane + deck taxi x2       launches -41 % [GAME]           34 float redirects, 1 session   best value / effort; energy share 0.4 -> 0.8 is the trade-off
+    2  helicopter approach x2 + touch near   4 helicopters -36 % [GAME]      4 sites, 1-2 sessions           shifting the touch point is the only delicate part
+       the elevator
+    3  landing pattern (wide slot + circle)  ~-30 % on 4 aircraft [EST]      10 sites, 1 session + queue simulation     risk: slower if one landing lasts 140-160 s; stock never measured
+    4  deck taxi x2 on return                -0:20 to -1:25 on 4 aircraft [EST]   3 sites, trivial           not yet measured
+    5  cancel a launch (2nd bay press)       window ~13-18 s [ASM]           cave of 932 bytes + 2 hooks, difficulty 5/10     needs saved-state reasoning; worst risk = stuck crane; check in game pending
+    6  AI speed modes ECO/NORMAL/FLANK       +27 % / +41 % speed [EST]       cave 671 bytes + Lua bar        also touches fuel use; check in game pending
+    7  CCTV image 512 x 512                  4x sharper, cosmetic            4 hooks, cave 439 bytes         check in game pending
+    8  shader without the old-TV effect      cosmetic, data file only        trivial, works on any platform
+    9  pilot UI 512 px                       rejected by the player          3 bytes
+   10  second elevator                       almost nothing (runway stays single)   9/10, 8-12 sessions    NOT worth it
+   11  release the runway earlier            collision risk                  refused                        the game destroys colliding vehicles
+   12  helicopters landing on the elevator   collided in test                abandoned                      kept as reference code
+   13  parking on deck                       only for prepared waves         8/10, 4-6 sessions             not worth it now
+The recurring lesson: the carrier's real bottleneck is the single RUNWAY slot (occupied from the grant until the aircraft is on the elevator), not the elevator.
+
+
+7. WISH LIST FOR A LUA-FACING SDK (ranked by value for the effort; all of this is currently impossible from stock Lua)
+----------------------------------------------------------------------------------------------------------------------
+    1. A tick that runs OUTSIDE the screens (stock Lua only runs while a screen is displayed): needed for any automation.
+    2. Read access to the docking manager: queue, slot contents (crane / elevator / runway / rotor take-off), dock_state, runway_state, mode; and events: runway granted, touchdown, stored, launch started.
+    3. Named TUNABLES (section 4): platform step, crane steps, taxi acceleration and cap, AI floor speeds, energy shares: get/set from Lua.
+    4. File output from Lua (an append-only log in the user folder) and `update_get_time_ms` in ship screens (today only the frontend has it): measuring and plotting.
+    5. Per-team AI speed modes (what the ECO / NORMAL / FLANK bar does), per-team, host-only.
+    6. Commands the player cannot give: choose a hangar slot (a hangar-choice hook exists in a public SDK for islands), press the physical bay buttons. (Launch and recall by id
+       already exist in Lua through waypoints, see 07 section 3.)
+    7. Screen texture sizes per screen type (the CCTV hack).
+Things I would NOT bother with: a 2nd elevator, parking on the deck, moving the pilot UI resolution.
+
+
+8. WHAT IS NOT KNOWN (honest list)
+----------------------------------
+- Everything about the Windows executable. The Mac build date is 2026-01-05 (md5 b0107170ddaf0245cbfee8a2d876aeb6); whether the Windows 1.5.18 code is the same version of the source is not known.
+- Whether struct field ORDER is identical across platforms (probable, not checked).
+- The CCTV, speed-mode and crane-cancel modules were installed on the Mac but NOT yet seen in game when these notes were written; the deck-taxi x2 and the landing-vs-stock gain are not measured.
+- Multiplayer behaviour of anything above: never tested with a second player.

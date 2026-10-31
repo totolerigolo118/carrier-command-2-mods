@@ -1,0 +1,63 @@
+; SPDX-License-Identifier: GPL-3.0-or-later
+;
+; cc2_patchs.ini - settings of the CC2X plugin cc2x_cc2_patchs.dll
+;
+; Where to put it:   %APPDATA%\Carrier Command 2\cc2x\cc2_patchs.ini
+;                    (the folder the SDK gives the plugin as api->config_dir; created by CC2X)
+; Without this file every group stays OFF and the game runs unmodified.
+;
+; STATE OF THE SKELETON: no group is ported yet (the Windows addresses are still to be found).
+; Switching a group on only makes the plugin log "refused: site table is empty" in cc2x.log.
+; Read cc2x.log after starting the game: one line per group says applied / skipped / refused and why.
+; Take the plugin out (delete the DLL) and restart the game = original game.
+
+[groups]
+; 1 = on, 0 = off (also accepted: on/off, true/false, yes/no). Default for every group: 0.
+energy_lift_crane_taxi = 0   ; energy share, elevator, crane and deck taxi x2        (plan step 3)
+helicopters            = 0   ; helicopter approach x2 and touch-down near the lift   (plan step 4)
+return_taxi            = 0   ; deck taxi x2 after landing                            (plan step 5)
+landing_circuit        = 0   ; wide runway slot and circular holding pattern         (plan step 5)
+speed_modes            = 0   ; squadron speed modes ECO / NORMAL / FLANK             (plan step 6)
+crane_cancel           = 0   ; cancel a launch already taken by the crane            (plan step 7)
+cctv                   = 0   ; CCTV screen image 512 x 512                           (plan step 8)
+recorder               = 0   ; Lua print() written to a file                         (plan step 8)
+
+[tunables]
+; The numbers our patches put in place of the game's own. The values written here are the DEFAULTS
+; (the values validated on the Mac build); "game value" is what the game holds. Delete a line to get
+; the default back. A value far from the default is at your own risk (the taxi cap above ~5 m/s makes
+; aircraft "jump", see the pitfalls of the sheet). Values that are not numbers are ignored with a warning.
+; The negative twins (-platform_step, -crane_*) are computed by the plugin.
+
+; group energy_lift_crane_taxi
+energy_share = 0.8                  ; game value 0.4   share of the energy given to elevator and crane
+platform_step = 0.05                ; game value 0.025 elevator platform step per tick (m)
+crane_horizontal = 0.33333334       ; game value 1/6   crane horizontal step per tick
+crane_vertical = 0.06666667         ; game value 1/30  crane vertical step per tick
+crane_rotation = 0.08               ; game value 0.04  crane rotation step per tick
+taxi_accel = 0.1                    ; game value 0.05  deck taxi acceleration per tick
+taxi_cap = 5                        ; game value 2.5   deck taxi speed cap (m/s)
+
+; group helicopters
+heli_aim_distance = 100             ; game value 50    aim distance ahead of a landing helicopter (m)
+heli_aim_max = 48                   ; game value 120   aim point at most runway_start + this (m)
+heli_gear_distance = 70             ; game value 20    gear-down threshold (m)
+heli_height_shift = 23.5            ; (not a game constant) height target shift, applied by a hook
+
+; group return_taxi
+taxi_return_ticks = 15              ; game value 30    ticks per second used on the three return legs
+
+; group landing_circuit
+circle_center_x = -1000             ; (not a game constant) circle centre x, ship coordinates (m)
+circle_center_z = -1800             ; game value 600   circle centre z (m); the game compares z with it
+
+; group speed_modes (floors in m/s; ECO is the game's own 48 / 72)
+speed_normal_wing = 61              ; NORMAL floor, all aircraft except the Manta (an estimate, to tune)
+speed_normal_manta = 91             ; NORMAL floor of the Manta (an estimate, to tune)
+speed_flank = 144                   ; FLANK floor = full throttle
+
+[debug]
+; 1 = register the Lua function cc2x.speed.mode even though the speed_modes group is not applied, to
+; test the Lua side (the ECO / NORMAL / FLANK buttons) before the hook exists. The buttons then change
+; a number only: no aircraft speed changes. Default 0.
+lua_speed_stub = 0

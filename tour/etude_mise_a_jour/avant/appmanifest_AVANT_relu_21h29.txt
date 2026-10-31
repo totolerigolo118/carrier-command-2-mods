@@ -1,0 +1,5 @@
+Contenu LU a 21:29:46 le 28/10/2026 (avant la mise a jour), recopie des champs utiles ; ce n'est pas une copie de fichier.
+"appid" "1489630" ; "StateFlags" "6" ; "LastUpdated" "1783178078" (04/07/2026) ; "SizeOnDisk" "1297785235"
+"buildid" "23836745" ; "TargetBuildID" "26277078" ; "BytesToDownload" "5463" ; "BytesDownloaded" "0" ; "BytesToStage" "0"
+"AutoUpdateBehavior" "0" ; "ScheduledAutoUpdate" "1793223348" ; "FullValidateAfterNextUpdate" "1"
+InstalledDepots : "1489631" manifest "3120081341062660422" size "1297785235"

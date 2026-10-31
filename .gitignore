@@ -1,0 +1,17 @@
+# Jamais sur GitHub : le programme du jeu, les sauvegardes, les binaires, les archives
+sauvegarde/
+build_mac*
+*.exe
+*.dll
+*.dylib
+*.zip
+__pycache__/
+*.pyc
+.DS_Store
+
+# Gros fichiers générés (>1 Mo, refaisables avec les commandes du README de envoi_native_bridge)
+envoi_native_bridge/symbols_raw.txt
+envoi_native_bridge/symbols_demangled.txt
+
+# Rapports et journal des coûts des exécutions sous crédits API (personnels, recréés à chaque lancement)
+outil/credits_api/rapports/

@@ -1,0 +1,12 @@
+carrier_command_NEW.exe ('0x6ae228f3', '2026-10-28 16:55', '0xaf7000')
+carrier_command_1.5.18_original.exe ('0x6a36c177', '2026-06-20 16:36', '0xaf7000')
+dedicated_server_NEW.exe ('0x6ae22909', '2026-10-28 16:55', '0x653000')
+carrier_command_vr.exe ('0x6ae2287f', '2026-10-28 16:53', '0xb05000')
+build_content.exe ('0x6ae22897', '2026-10-28 16:53', '0x50d000')
+carrier_command_test_cercle.exe ('0x6a36c177', '2026-06-20 16:36', '0xaf7000')
+carrier_command_NEW.exe versions texte: {b'1.5.18'}
+    9551164 b'Carrier Command 2 v1.5.18'
+    9562008 b'v1.5.18'
+carrier_command_1.5.18_original.exe versions texte: {b'1.5.18'}
+    9550652 b'Carrier Command 2 v1.5.18'
+    9561492 b'v1.5.18'

@@ -1,0 +1,90 @@
+SCREENS, THE PILOT HUD (256 px UI) AND THE CCTV SCREEN
+======================================================
+
+Renderer: c_frontend_renderer. OpenGL. Mac addresses (see 00_README).
+
+
+1. THE 3D VIEW IS FULL RESOLUTION, THE PILOT UI IS NOT
+------------------------------------------------------
+Render targets `gbuffer`, `post` and `depth` have the size of the window (c_frontend_renderer::update, 0x1001ecdc2). The INTERFACE of the
+pilot view (reticle, scales, text drawn by vehicle_hud.lua) goes into a separate target `hud_ui_target` which is only 256 PIXELS HIGH
+(width = screen aspect ratio x 256):
+    0x1001ed3f4  movl $0x100, %r9d      bytes 41 b9 00 01 00 00     (height 256)
+    0x1001ed3b7  mulss [256.0], %xmm1   (constant at 0x102869944)    (width = aspect x 256)
+filtering mode "0" (probably nearest). Then pass_hud_ui (0x1002143da) puts it on the screen with c_material_screen_crt_hud =
+shaders/screen_crt_hud.glsl (brightness 1, distortion 0, effect 1). pass_overlay_ui (loading screens overlay) uses the same effect.
+The Lua places the interface in FIXED PIXELS, so more pixels = smaller elements on screen. Cost of a taller target: almost nothing (2D).
+Constants that exist for a "rip" redirect: 384.0 (0x10286973c) and 512.0 (0x102869b58); 768.0 does not exist.
+A module `interface_x2` (3 bytes: 256 -> 512 high, see 10_patch_tables.txt) was written and tested and then REJECTED by the player (he wants the same
+element sizes); kept in reserve.
+
+The "old TV" look (grain, lines, colour bleeding, dark edges) of the pilot view and the gimbal camera is shaders/screen_crt_hud.glsl, a normal
+moddable file (effect strength uniform `crt_effect_factor`; the file ships as part of the game and is replaceable through the mod system, so it works
+on any platform). The variant chosen by the player ("no effect, same sizes"): keep the stock code in the file but multiply the effect contribution by a
+weight that is always 0 (for example `step(1e30, animation_time)`), so that the compiled shader still has all its 15 active uniforms (the engine looks
+for them; removing code that uses one of them makes the engine miss it). The shader compiles under WebGL 2 as a sanity check.
+shaders/screen_crt.glsl is the effect of the ship's screens (not touched). The uniform `resolution_scale` of post.glsl is set by the engine (not studied).
+
+
+2. SHIP SCREENS: ONE IMAGE PER SCREEN
+-------------------------------------
+Every screen of the ship has ONE image (background + the Lua interface), created in c_game_object_client::create_lite (0x1000ad572; loop over the
+screens of the object: count at +0xd0, elements of 0x230 bytes):
+
+    1000ad74f  movslq 0x60(%rax,%rcx),%rax      ; screen type (XML type=; the definition has elements of 0x78 bytes)
+    1000ad754  movl $0x80,%r9d                  ; default height (type > 5)
+    1000ad75a  movl $0x80,%r8d                  ; default width
+    1000ad760  cmpq $5,%rax ; ja 1000ad77c
+    1000ad766  lea 0x1028b1470 -> r9d = height[type]   u32 table: 128, 128, 256, 256, 192, 32
+    1000ad771  lea 0x1028b1488 -> r8d = width[type]    u32 table: 128, 256, 512, 256, 256, 64
+    1000ad798  call mm_resource_handle_target::create(..., 2 (colour), 8, width, height, filter 0, name)
+
+The table is read nowhere else. TYPE 0 = 128 x 128 = 35 screens in the XML files, including screen_veh_top_r (the CCTV). Changing the table would change all of them,
+so the change has to pick the CCTV screen out in code.
+Screen definition (0x78 bytes): 0x00 name, 0x10 display_name_loc, 0x18 script_file_name (mm_string: text pointer at 0x18, LENGTH at 0x20), 0x28 body_index, 0x2c
+seat_index, 0x30 transform, 0x60 type, 0x64 refresh_interval, 0x68 help_tag.
+Image filtering (create_surface_mipmap 0x1000ae850): RGBA8, MAG = GL_NEAREST (hence the big squares up close), MIN = GL_NEAREST_MIPMAP_LINEAR, mipmaps
+regenerated after each draw (generate_mipmap 0x10021cf2c): from far away you see mipmaps, no flicker even with a large image.
+The Lua script receives the size from OTHER (float) tables: c_vehicle_client_base::tick_screens (the function starts at 0x10011de36; the sizes are passed from about 0x10011e363): widths 0x1028b1b54, heights 0x1028b1b3c, default
+128.0 at 0x10286988c. They were left alone: screen_cctv.lua (and the library_custom files) keep seeing 128 x 128, nothing in the script assumes more
+(borders 5, bar 18, texts in fixed points, all relative to 128). The mouse goes through the screen type, not through the image.
+
+Drawing a screen: c_frontend_renderer::pass_screens (0x10020ccae) -> render_screen (0x10021cc14), target = the screen image:
+  1. render_command_screen_background (0x10021d088): background of type 9 (= camera, update_set_screen_background_type(9)) at 0x10021d1c1 ... 0x10021d911:
+     mm_camera::build with the aspect ratio of the image, frustum, then mm_material_basic_texture for each object. Works at any size. It is a SIMPLIFIED
+     3D render: only what is within 200 m (the carrier and what sits on or near it), WITH textures but WITHOUT lighting, shadows, sea, effects. So making the image
+     bigger does not change the number of objects drawn (what costs CPU, especially via Rosetta); it only increases the pixels to colour, which the GPU does
+     quickly for such a simple render.
+  2. Camera of the interface (0x10021ce70 ... 0x10021ce99): orthographic (type 2), width = image.w (+0x20), height = image.h (+0x24). With a 1024 image the interface
+     would be drawn in a corner, 8 times too small: must be forced to 128 x 128 for the CCTV screen.
+  3. Interface: `callq *0x20(%rax)` at 0x10021cf10 (= c_ui::element_container::render). Windows clip with c_ui::element_clip::render (0x10015e658) = glScissor(x, y, w, h)
+     (stub 0x10286807c, then glEnable 0xC11) with the script units TAKEN AS POINTS OF THE IMAGE: must be multiplied by the scale while the CCTV screen is drawn.
+     element_clip is shared with the pilot HUD, the pause menu and the overlay.
+  4. Lines `update_ui_line` are real GL lines of 1 point (render_lines): they would become 4-8 times thinner; the CCTV script draws none (only the `checkbox` and
+     `divider` of library_ui.lua do).
+  Ship screen effect: c_material_screen_crt::render (0x10022633e) passes `screen_resolution` = size of the image (0x1002263b4); in screen_crt.glsl the fringes = 0.3
+  image point, grain = size/256, scanlines independent. So fringes and grain get finer with a bigger image, scanlines unchanged.
+
+Screens named in vehicle_chassis_carrier.xml: screen_veh_l / _m / _r (vehicle control), screen_veh_top_m (air traffic), screen_veh_top_r (CCTV, script
+scripts/screen_cctv.lua), holomap_screen ... A replacement mod (installed by some players) replaces the vehicle control screens (screen_veh_l/m/r/ll, screen_veh_captchair,
+tacops_left/middle/right_control, sidebar_1) and draws the map scale at the bottom right.
+
+
+3. THE CCTV PATCH (module cctv_net, 512 x 512)
+----------------------------------------------
+Demand n. 1499 on the game's public issue tracker ("128x128 -> 256x256"). Chosen: 512 x 512 (4x finer; 1024 was proposed and refused: 64x the pixels).
+    cost table: 128 -> 16 K pixels; 512 -> 262 K (x16, ~2.5 MB of video memory more); 1024 -> 1 M (x64, ~10 MB). Beyond 1024 nothing to gain: the
+    screen never exceeds ~1000 points high on the display.
+Four hooks into ONE cave of 439 bytes (source workshop/outil/generateurs/cctv_net.s, SIZE = 512 set by the generator):
+  A  create_lite 0x1000ad754 ... 0x1000ad77c: if script_file_name == "scripts/screen_cctv.lua" (length 23, compared 8+8+7 bytes), width = height = SIZE;
+     otherwise the original code is replayed.
+  B  render_screen 0x10021ce70 ...: if the image is SIZE x SIZE: camera of the interface = 128 x 128 (128.0 exists: 0x10286988c) and scale = SIZE/128 in a free
+     variable (0x102a2a864); otherwise scale 0.
+  C  element_clip::render 0x10015e662 ... 0x10015e6a4: x, y, w, h x scale.
+  D  render_screen 0x10021cf13 (`movl $0xb44,%edi`, the argument of the glEnable right after the interface render): scale reset to 0 (the pilot view, pause and
+     overlay use element_clip too).
+Registers used: only those that the replaced code overwrites right after (A: rax rcx rdx r8 r9; B: rcx xmm0 xmm2; C: xmm0-xmm3 ecx edx esi edi; D: edi).
+Only the CCTV screen changes (also with the replacement mod, same script); frame, texts and buttons keep their size (interface in 128 units drawn 4x bigger).
+Status: installed; tested off game with objdump + the caves executed under Rosetta in a test program imitating the four places (27 cases);
+in-game check was still pending when these notes were written. Things to look at: both cameras finer; frame, "1/2", < > buttons and bottom text in place and complete;
+other ship screens, pilot view and pause menu unchanged.

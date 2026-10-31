@@ -1,0 +1,15 @@
+TESTS EN JEU SANS CLIQUER (Mac, 25/10/2026)  -  mode d'emploi
+
+Principe : un script Lua temporaire est copié dans rom_0/scripts/library_custom_7.lua (fichier VIDE d'origine, sha256 e3b0c442...b855).
+Dans le menu, il charge une sauvegarde tout seul avec update_ui_event("load_game", 18). En partie, il lit et pilote les véhicules
+par l'API Lua (lancer = add_waypoint sur un avion rangé, rappeler = add_waypoint sur le porte-avions + set_target_vehicle),
+chronomètre en ticks de jeu et écrit ses résultats avec print() (relevé releve_cc2.txt, grâce au module ecriture_releve).
+lancer_test.sh ETIQUETTE "modules a retirer" FICHIER.lua "MOTIF DE FIN" : copie les sauvegardes, attend 120 s d'inactivité
+clavier/souris, lance le jeu par Steam, surveille, ferme le jeu (SIGTERM), remet library_custom_7.lua vide, réactive les modules,
+remet les sauvegardes identiques et le dit dans un compte rendu. NE PAS lancer pendant qu'il joue.
+Fichiers : sonde_api_lua.lua (liste les fonctions de chaque contexte Lua + teste cc2_vitesse), charger_partie_seule.lua,
+mesure_sorties_retours.lua (4 avions : sortie puis retours), vitesse_vol_loin.lua (a fini avec les avions abattus : point trop
+loin), vitesse_vol_pres_du_point.lua (point à 300 m ; interrompu à la demande du moddeur, jamais mené au bout).
+Les chemins du script sont ceux du Mac (scratchpad de la session) : à adapter. Pièges rencontrés : les fonctions de l'API ne sont
+liées qu'au begin_load (pas au chargement du fichier) ; plusieurs contextes Lua portent le même nom (screen_front x4) : verrou
+commun = la table de cc2_vitesse (équipe 14, mode 1) ; le jeu écrit parfois l'autosave (slot 19) : toujours sauvegarder/restaurer.

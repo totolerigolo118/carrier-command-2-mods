@@ -1,0 +1,775 @@
+SYMBOL INDEX (Mac build_mac, md5 b0107170ddaf0245cbfee8a2d876aeb6)
+=================================================================
+
+Text symbols of the functions named in these notes and of their families, as given by `nm -n` + `c++filt` on the NOT STRIPPED Mac executable
+(addresses are virtual addresses of that file; file offset = address - 0x100000000). Signatures are shortened to 170 characters.
+Only the NAMES are portable to another build (see 11_porting_and_priorities.txt); the addresses are not.
+Not every function of the notes is listed here: inlined code has no symbol (the docking logic of the aircraft is inside
+docking_manager_air::update), and anonymous constants live in the shared pool described in 01.
+
+0x1000ad572  c_game_object_client::create_lite(mm_resource_event_container&)
+0x1000adb86  mm_resource_handle_target::create(mm_resource_event_container&, e_render_target_type, e_render_target_type, unsigned int, unsigned int, mm_file_format_txtr::e_filter_m...
+0x1000ae850  mm_api_gpu_target::create_surface_mipmap(unsigned int&, unsigned int, unsigned int, int, int, int, int, int, mm_string const&)
+0x1000afe74  mm_dev_value_table<c_dev_value_server>::get_table(mm_string const&)
+0x1000aff8c  mm_dev_value_table<c_dev_value_server>::~mm_dev_value_table()
+0x1000afff2  mm_dev_value_table<c_dev_value_server>::mm_dev_value_table(mm_string const&)
+0x1000b0574  mm_vector<mm_dev_value_table<c_dev_value_server>::element>::push_back()
+0x1000b0818  mm_vector<mm_dev_value_table<c_dev_value_server>::group>::push_back()
+0x1000b0884  mm_vector<mm_dev_value_table<c_dev_value_server>::group>::clear()
+0x1000b093a  mm_vector<mm_dev_value_table<c_dev_value_server>::group>::buffer_resize(unsigned int)
+0x1000b0a1c  c_dev_value_server::c_dev_value_server()
+0x1000b1cbc  mm_vector<mm_dev_value_table<c_dev_value_server>::element>::buffer_resize(unsigned int)
+0x1000b1f78  mm_vector<mm_dev_value_table<c_dev_value_server>::element>::clear()
+0x1000d727a  c_screen_lua_libs::get_scripts(mm_vector<mm_lua::script_module>&)
+0x1000da002  c_screen_lua_libs::c_screen_lua_libs()
+0x1000dfdf4  c_attachment_server_turret_missile::~c_attachment_server_turret_missile()
+0x1000dfe0c  c_attachment_server_turret_missile::~c_attachment_server_turret_missile()
+0x1000dfe36  c_attachment_server_turret_missile::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&, c_...
+0x1000e0026  c_attachment_server_turret_missile::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000e00f8  c_attachment_server_turret_missile::parse_state(mm_parser_binary&)
+0x1000e0132  c_attachment_server_turret::get_map_type()
+0x1000e013e  c_attachment_server_turret_missile::get_map_data(c_map_attachment_data&)
+0x1000e0186  c_attachment_server_turret_missile::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_defin...
+0x1000e1520  c_attachment_server_turret::get_type_turret()
+0x1000e152a  c_attachment_server_turret_missile::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000e1540  c_attachment_server_turret::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000e154c  c_attachment_server_turret::on_event_set_stabilisation_mode(e_attachment_stabilisation_mode)
+0x1000e156a  c_attachment_server_turret_missile::on_event_set_rotation(vec2 const&)
+0x1000e157e  c_attachment_server_turret_missile::clear_peer_input()
+0x1000e158c  c_attachment_server_turret::get_control_mode() const
+0x1000e1598  c_attachment_server_turret_missile::get_is_block_player_vehicle_axis(unsigned int)
+0x1000e15b4  c_attachment_server_turret::get_stabilisation_mode() const
+0x1000e15c0  c_attachment_server_turret_missile::get_ammo_capacity() const
+0x1000e15cc  c_attachment_server_turret::get_ammo_remaining() const
+0x1000e15d8  c_attachment_server_turret_missile::get_ammo_resupply_interval() const
+0x1000e15e4  c_attachment_server_turret::set_ammo_remaining(unsigned int)
+0x1000e160a  c_attachment_server_turret::tick_resupply(c_resource_inventory_interface&)
+0x1000e1766  c_attachment_server_turret::desupply(c_resource_inventory&)
+0x1000e17f4  c_attachment_server_turret_missile::get_active_target_vehicle()
+0x1000e1800  c_attachment_server_turret_missile::get_is_active_target_visible()
+0x1000e180c  c_attachment_server_turret::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000e1878  c_attachment_server_turret::get_is_vehicle_visible(c_scene_region_tick_util&, c_projectile_container_server&, c_vehicle_server const&, vec3_f64 const&, float, c_vehicl...
+0x1000e1eca  c_attachment_server_turret::get_closest_vehicle_target_land(c_scene_region_tick_util&, c_vehicle_container_server&, c_projectile_container_server&, c_vehicle_server co...
+0x1000e208e  c_attachment_server_turret::get_closest_vehicle_target_sea(c_scene_region_tick_util&, c_vehicle_container_server&, c_projectile_container_server&, c_vehicle_server con...
+0x1000e262c  c_attachment_server_turret::get_first_physics_hit_data(c_scene_region_tick_util&, unsigned int, vec3_f64 const&, vec3_f64 const&, float, c_physics_user_data*&, vec3_f64&)
+0x1000e4238  c_attachment_server_turret_30mm::~c_attachment_server_turret_30mm()
+0x1000e4250  c_attachment_server_turret_30mm::~c_attachment_server_turret_30mm()
+0x1000e427a  c_attachment_server_turret_30mm::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&, c_gam...
+0x1000e44fa  c_attachment_server_turret_30mm::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000e45ce  c_attachment_server_turret_30mm::parse_state(mm_parser_binary&)
+0x1000e4628  c_attachment_server_turret_30mm::get_map_data(c_map_attachment_data&)
+0x1000e4670  c_attachment_server_turret_30mm::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_definiti...
+0x1000e58b2  c_attachment_server_turret_30mm::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000e58c8  c_attachment_server_turret_30mm::on_event_set_rotation(vec2 const&)
+0x1000e58f8  c_attachment_server_turret_30mm::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x1000e5914  c_attachment_server_turret_30mm::clear_peer_input()
+0x1000e5922  c_attachment_server_turret_30mm::get_is_block_player_vehicle_axis(unsigned int)
+0x1000e593e  c_attachment_server_turret_30mm::get_ammo_capacity() const
+0x1000e594a  c_attachment_server_turret_30mm::get_ammo_resupply_interval() const
+0x1000e5956  c_attachment_server_turret_30mm::get_active_target_vehicle()
+0x1000e5962  c_attachment_server_turret_30mm::get_is_active_target_visible()
+0x1000e596e  c_attachment_server_turret::get_closest_vehicle_target(c_scene_region_tick_util&, c_vehicle_container_server&, c_projectile_container_server&, c_vehicle_server const&,...
+0x1000e6058  c_attachment_server_turret_carrier_main_gun::~c_attachment_server_turret_carrier_main_gun()
+0x1000e6070  c_attachment_server_turret_carrier_main_gun::~c_attachment_server_turret_carrier_main_gun()
+0x1000e609a  c_attachment_server_turret_carrier_main_gun::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_...
+0x1000e6314  c_attachment_server_turret_carrier_main_gun::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000e6404  c_attachment_server_turret_carrier_main_gun::parse_state(mm_parser_binary&)
+0x1000e645c  c_attachment_server_turret_carrier_main_gun::get_map_data(c_map_attachment_data&)
+0x1000e649a  c_attachment_server_turret_carrier_main_gun::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_obj...
+0x1000e75c2  c_attachment_server_turret_carrier_main_gun::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000e75c8  c_attachment_server_turret_carrier_main_gun::on_vehicle_destroyed(c_map_server&, c_vehicle_server&, unsigned int)
+0x1000e76ac  c_attachment_server_turret_carrier_main_gun::get_ammo_capacity() const
+0x1000e76b8  c_attachment_server_turret_carrier_main_gun::get_ammo_resupply_interval() const
+0x1000e76c4  c_attachment_server_turret_carrier_main_gun::get_is_damaged()
+0x1000e76d0  c_attachment_server_turret_carrier_main_gun::set_is_damaged(bool)
+0x1000e7d98  c_attachment_server_turret_plane_chaingun::~c_attachment_server_turret_plane_chaingun()
+0x1000e7db0  c_attachment_server_turret_plane_chaingun::~c_attachment_server_turret_plane_chaingun()
+0x1000e7dda  c_attachment_server_turret_plane_chaingun::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_da...
+0x1000e7ea4  c_attachment_server_turret_plane_chaingun::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000e7efe  c_attachment_server_turret_plane_chaingun::parse_state(mm_parser_binary&)
+0x1000e7f04  c_attachment_server_turret_plane_chaingun::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_objec...
+0x1000e82ec  c_attachment_server_turret_plane_chaingun::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000e8302  c_attachment_server_turret_plane_chaingun::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000e830e  c_attachment_server_turret_plane_chaingun::clear_peer_input()
+0x1000e831c  c_attachment_server_turret_plane_chaingun::on_set_inactive(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int)
+0x1000e832a  c_attachment_server_turret_plane_chaingun::build_events_peer_join(c_server_peer&, c_vehicle_server&, unsigned int)
+0x1000e8384  c_attachment_server_turret_plane_chaingun::trigger(unsigned int, unsigned int)
+0x1000e839a  c_attachment_server_turret_plane_chaingun::get_ammo_capacity() const
+0x1000e83a6  c_attachment_server_turret_plane_chaingun::get_ammo_resupply_interval() const
+0x1000e83b2  c_attachment_server_turret_plane_chaingun::update_turret_firing_state(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int, bool)
+0x1000e85ce  c_attachment_server_turret_rocket_pod::~c_attachment_server_turret_rocket_pod()
+0x1000e85e6  c_attachment_server_turret_rocket_pod::~c_attachment_server_turret_rocket_pod()
+0x1000e8610  c_attachment_server_turret_rocket_pod::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&,...
+0x1000e86bc  c_attachment_server_turret_rocket_pod::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000e8716  c_attachment_server_turret_rocket_pod::parse_state(mm_parser_binary&)
+0x1000e876e  c_attachment_server_turret_rocket_pod::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_de...
+0x1000e8f10  c_attachment_server_turret_rocket_pod::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000e8f26  c_attachment_server_turret_rocket_pod::clear_peer_input()
+0x1000e8f34  c_attachment_server_turret_rocket_pod::trigger(unsigned int, unsigned int)
+0x1000e8f4a  c_attachment_server_turret_rocket_pod::get_ammo_capacity() const
+0x1000e8f56  c_attachment_server_turret_rocket_pod::get_ammo_resupply_interval() const
+0x1000e8f62  c_attachment_server_turret_robot_dog_capsule::~c_attachment_server_turret_robot_dog_capsule()
+0x1000e8f7a  c_attachment_server_turret_robot_dog_capsule::~c_attachment_server_turret_robot_dog_capsule()
+0x1000e8fa4  c_attachment_server_turret_robot_dog_capsule::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user...
+0x1000e9016  c_attachment_server_turret_robot_dog_capsule::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000e9090  c_attachment_server_turret_robot_dog_capsule::parse_state(mm_parser_binary&)
+0x1000e90ca  c_attachment_server_turret_robot_dog_capsule::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_ob...
+0x1000e926c  c_attachment_server_turret_robot_dog_capsule::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000e9282  c_attachment_server_turret_robot_dog_capsule::clear_peer_input()
+0x1000e9290  c_attachment_server_turret_robot_dog_capsule::trigger(unsigned int, unsigned int)
+0x1000e929e  c_attachment_server_turret_robot_dog_capsule::get_ammo_capacity() const
+0x1000e92aa  c_attachment_server_turret_robot_dog_capsule::get_ammo_resupply_interval() const
+0x1000e92b6  c_attachment_server_turret_robot_dog_capsule::set_ammo_remaining(unsigned int)
+0x1000e92e8  c_attachment_server_turret_robot_dog_capsule::tick_resupply(c_resource_inventory_interface&)
+0x1000e93f4  c_attachment_server_turret_robot_dog_capsule::desupply(c_resource_inventory&)
+0x1000e9458  c_attachment_server_turret_robot_dog_capsule::launch_capsule(c_vehicle_server&, c_game_object_definition_container const&, c_missile_container_server&, c_game_object_d...
+0x1000e9d3c  c_attachment_server_turret_ciws::~c_attachment_server_turret_ciws()
+0x1000e9d54  c_attachment_server_turret_ciws::~c_attachment_server_turret_ciws()
+0x1000e9d7e  c_attachment_server_turret_ciws::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&, c_gam...
+0x1000e9ffe  c_attachment_server_turret_ciws::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000ea0ee  c_attachment_server_turret_ciws::parse_state(mm_parser_binary&)
+0x1000ea148  c_attachment_server_turret_ciws::get_map_data(c_map_attachment_data&)
+0x1000ea190  c_attachment_server_turret_ciws::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_definiti...
+0x1000eb414  c_attachment_server_turret_ciws::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000eb42a  c_attachment_server_turret_ciws::on_event_set_rotation(vec2 const&)
+0x1000eb45a  c_attachment_server_turret_ciws::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x1000eb476  c_attachment_server_turret_ciws::clear_peer_input()
+0x1000eb484  c_attachment_server_turret_ciws::on_set_inactive(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int)
+0x1000eb492  c_attachment_server_turret_ciws::build_events_peer_join(c_server_peer&, c_vehicle_server&, unsigned int)
+0x1000eb4ec  c_attachment_server_turret_ciws::get_is_block_player_vehicle_axis(unsigned int)
+0x1000eb508  c_attachment_server_turret_ciws::get_ammo_capacity() const
+0x1000eb514  c_attachment_server_turret_ciws::get_ammo_resupply_interval() const
+0x1000eb520  c_attachment_server_turret::get_closest_missile_target(c_scene_region_tick_util&, c_missile_container_server&, c_projectile_container_server&, c_vehicle_server const&,...
+0x1000eb6b4  c_attachment_server_turret::get_closest_vehicle_target_air(c_scene_region_tick_util&, c_vehicle_container_server&, c_projectile_container_server&, c_vehicle_server con...
+0x1000eb88e  c_attachment_server_turret_ciws::update_turret_firing_state(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int, bool)
+0x1000eb9ca  c_attachment_server_turret::get_is_missile_visible(c_scene_region_tick_util&, c_projectile_container_server&, unsigned int, vec3_f64 const&, float, c_missile_server co...
+0x1000ebafc  c_attachment_server_turret_carrier_ciws::~c_attachment_server_turret_carrier_ciws()
+0x1000ebb14  c_attachment_server_turret_carrier_ciws::~c_attachment_server_turret_carrier_ciws()
+0x1000ebb3e  c_attachment_server_turret_carrier_ciws::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data...
+0x1000ebe24  c_attachment_server_turret_carrier_ciws::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000ebf30  c_attachment_server_turret_carrier_ciws::parse_state(mm_parser_binary&)
+0x1000ebf6e  c_attachment_server_turret_carrier_ciws::get_map_data(c_map_attachment_data&)
+0x1000ebfc0  c_attachment_server_turret_carrier_ciws::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_...
+0x1000ed118  c_attachment_server_turret_carrier_ciws::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000ed11e  c_attachment_server_turret_carrier_ciws::on_set_inactive(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int)
+0x1000ed12c  c_attachment_server_turret_carrier_ciws::build_events_peer_join(c_server_peer&, c_vehicle_server&, unsigned int)
+0x1000ed186  c_attachment_server_turret_carrier_ciws::get_ammo_capacity() const
+0x1000ed192  c_attachment_server_turret_carrier_ciws::get_ammo_resupply_interval() const
+0x1000ed19e  c_attachment_server_turret_carrier_ciws::get_is_damaged()
+0x1000ed1aa  c_attachment_server_turret_carrier_ciws::set_is_damaged(bool)
+0x1000ed1b8  c_attachment_server_turret_carrier_ciws::update_turret_firing_state(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int, bool)
+0x1000ed2f4  c_attachment_server_turret_carrier_missile::~c_attachment_server_turret_carrier_missile()
+0x1000ed30c  c_attachment_server_turret_carrier_missile::~c_attachment_server_turret_carrier_missile()
+0x1000ed336  c_attachment_server_turret_carrier_missile::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_d...
+0x1000ed718  c_attachment_server_turret_carrier_missile::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000ed7ec  c_attachment_server_turret_carrier_missile::parse_state(mm_parser_binary&)
+0x1000ed858  c_attachment_server_turret_carrier_missile::get_map_data(c_map_attachment_data&)
+0x1000ed8a0  c_attachment_server_turret_carrier_missile::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_obje...
+0x1000ee918  c_attachment_server_turret_carrier_missile::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000ee91e  c_attachment_server_turret_carrier_missile::trigger(unsigned int, unsigned int)
+0x1000ee932  c_attachment_server_turret_carrier_missile::get_ammo_capacity() const
+0x1000ee93e  c_attachment_server_turret_carrier_missile::get_ammo_resupply_interval() const
+0x1000ee94a  c_attachment_server_turret_carrier_missile::get_active_target_vehicle()
+0x1000ee956  c_attachment_server_turret_carrier_missile::get_is_active_target_visible()
+0x1000ee962  c_attachment_server_turret_carrier_missile::get_is_damaged()
+0x1000ee96e  c_attachment_server_turret_carrier_missile::set_is_damaged(bool)
+0x1000ee97c  c_attachment_server_turret_carrier_missile_silo::~c_attachment_server_turret_carrier_missile_silo()
+0x1000ee994  c_attachment_server_turret_carrier_missile_silo::~c_attachment_server_turret_carrier_missile_silo()
+0x1000ee9be  c_attachment_server_turret_carrier_missile_silo::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_u...
+0x1000eebac  c_attachment_server_turret_carrier_missile_silo::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000eec46  c_attachment_server_turret_carrier_missile_silo::parse_state(mm_parser_binary&)
+0x1000eecbc  c_attachment_server_turret_carrier_missile_silo::get_map_data(c_map_attachment_data&)
+0x1000eecfa  c_attachment_server_turret_carrier_missile_silo::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game...
+0x1000ef550  c_attachment_server_turret_carrier_missile_silo::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000ef556  c_attachment_server_turret_carrier_missile_silo::on_vehicle_destroyed(c_map_server&, c_vehicle_server&, unsigned int)
+0x1000ef636  c_attachment_server_turret_carrier_missile_silo::get_ammo_capacity() const
+0x1000ef642  c_attachment_server_turret_carrier_missile_silo::get_ammo_resupply_interval() const
+0x1000ef64e  c_attachment_server_turret_carrier_missile_silo::get_is_damaged()
+0x1000ef65a  c_attachment_server_turret_carrier_missile_silo::set_is_damaged(bool)
+0x1000ef730  c_attachment_server_turret_carrier_flare_launcher::~c_attachment_server_turret_carrier_flare_launcher()
+0x1000ef748  c_attachment_server_turret_carrier_flare_launcher::~c_attachment_server_turret_carrier_flare_launcher()
+0x1000ef772  c_attachment_server_turret_carrier_flare_launcher::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics...
+0x1000ef9ec  c_attachment_server_turret_carrier_flare_launcher::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000efa88  c_attachment_server_turret_carrier_flare_launcher::parse_state(mm_parser_binary&)
+0x1000efac6  c_attachment_server_turret_carrier_flare_launcher::get_map_data(c_map_attachment_data&)
+0x1000efb04  c_attachment_server_turret_carrier_flare_launcher::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_ga...
+0x1000f0e4c  c_attachment_server_turret_carrier_flare_launcher::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000f0e52  c_attachment_server_turret_carrier_flare_launcher::on_vehicle_destroyed(c_map_server&, c_vehicle_server&, unsigned int)
+0x1000f0f36  c_attachment_server_turret_carrier_flare_launcher::get_ammo_capacity() const
+0x1000f0f42  c_attachment_server_turret_carrier_flare_launcher::get_ammo_remaining() const
+0x1000f0f4e  c_attachment_server_turret_carrier_flare_launcher::get_ammo_resupply_interval() const
+0x1000f0f5a  c_attachment_server_turret_carrier_flare_launcher::get_is_damaged()
+0x1000f0f66  c_attachment_server_turret_carrier_flare_launcher::set_is_damaged(bool)
+0x1000f0f74  c_attachment_server_turret_carrier_camera::~c_attachment_server_turret_carrier_camera()
+0x1000f0f8c  c_attachment_server_turret_carrier_camera::~c_attachment_server_turret_carrier_camera()
+0x1000f0fb6  c_attachment_server_turret_carrier_camera::clamp_rotation()
+0x1000f46b2  c_attachment_server_turret_battle_cannon::~c_attachment_server_turret_battle_cannon()
+0x1000f46ca  c_attachment_server_turret_battle_cannon::~c_attachment_server_turret_battle_cannon()
+0x1000f46f4  c_attachment_server_turret_battle_cannon::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_dat...
+0x1000f4974  c_attachment_server_turret_battle_cannon::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000f4a48  c_attachment_server_turret_battle_cannon::parse_state(mm_parser_binary&)
+0x1000f4aa2  c_attachment_server_turret_battle_cannon::get_map_data(c_map_attachment_data&)
+0x1000f4aea  c_attachment_server_turret_battle_cannon::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object...
+0x1000f5cc0  c_attachment_server_turret_battle_cannon::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000f5cd6  c_attachment_server_turret_battle_cannon::on_event_set_rotation(vec2 const&)
+0x1000f5d06  c_attachment_server_turret_battle_cannon::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x1000f5d22  c_attachment_server_turret_battle_cannon::clear_peer_input()
+0x1000f5d30  c_attachment_server_turret_battle_cannon::get_is_block_player_vehicle_axis(unsigned int)
+0x1000f5d4c  c_attachment_server_turret_battle_cannon::get_ammo_capacity() const
+0x1000f5d58  c_attachment_server_turret_battle_cannon::get_ammo_resupply_interval() const
+0x1000f5d64  c_attachment_server_turret_battle_cannon::get_active_target_vehicle()
+0x1000f5d70  c_attachment_server_turret_battle_cannon::get_is_active_target_visible()
+0x1000f5d7c  c_attachment_server_turret_artillery::~c_attachment_server_turret_artillery()
+0x1000f5d94  c_attachment_server_turret_artillery::~c_attachment_server_turret_artillery()
+0x1000f5dbe  c_attachment_server_turret_artillery::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&, ...
+0x1000f603e  c_attachment_server_turret_artillery::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000f60fc  c_attachment_server_turret_artillery::parse_state(mm_parser_binary&)
+0x1000f6166  c_attachment_server_turret_artillery::get_map_data(c_map_attachment_data&)
+0x1000f61a4  c_attachment_server_turret_artillery::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_def...
+0x1000f77f0  c_attachment_server_turret_artillery::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000f7802  c_attachment_server_turret_artillery::on_event_set_rotation(vec2 const&)
+0x1000f7850  c_attachment_server_turret_artillery::on_event_set_aim_position(vec3_f64 const&)
+0x1000f786e  c_attachment_server_turret_artillery::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x1000f788a  c_attachment_server_turret_artillery::on_vehicle_destroyed(c_map_server&, c_vehicle_server&, unsigned int)
+0x1000f794c  c_attachment_server_turret_artillery::get_is_block_player_vehicle_axis(unsigned int)
+0x1000f7968  c_attachment_server_turret_artillery::get_ammo_capacity() const
+0x1000f7974  c_attachment_server_turret_artillery::get_ammo_resupply_interval() const
+0x1000f7a8a  c_attachment_server_turret_carrier_torpedo_launcher::~c_attachment_server_turret_carrier_torpedo_launcher()
+0x1000f7aa2  c_attachment_server_turret_carrier_torpedo_launcher::~c_attachment_server_turret_carrier_torpedo_launcher()
+0x1000f7acc  c_attachment_server_turret_carrier_torpedo_launcher::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physi...
+0x1000f7cfa  c_attachment_server_turret_carrier_torpedo_launcher::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000f7e04  c_attachment_server_turret_carrier_torpedo_launcher::parse_state(mm_parser_binary&)
+0x1000f7e7a  c_attachment_server_turret_carrier_torpedo_launcher::get_map_data(c_map_attachment_data&)
+0x1000f7e84  c_attachment_server_turret_carrier_torpedo_launcher::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_...
+0x1000f865a  c_attachment_server_turret_carrier_torpedo_launcher::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000f8660  c_attachment_server_turret_carrier_torpedo_launcher::trigger(unsigned int, unsigned int)
+0x1000f8678  c_attachment_server_turret_carrier_torpedo_launcher::get_ammo_capacity() const
+0x1000f8684  c_attachment_server_turret_carrier_torpedo_launcher::get_ammo_remaining() const
+0x1000f86a0  c_attachment_server_turret_carrier_torpedo_launcher::get_ammo_resupply_interval() const
+0x1000f86ac  c_attachment_server_turret_carrier_torpedo_launcher::set_ammo_remaining(unsigned int)
+0x1000f86cc  c_attachment_server_turret_carrier_torpedo_launcher::tick_resupply(c_resource_inventory_interface&)
+0x1000f87ae  c_attachment_server_turret_carrier_torpedo_launcher::desupply(c_resource_inventory&)
+0x1000f87b4  c_attachment_server_turret_carrier_torpedo_launcher::get_is_damaged()
+0x1000f87c0  c_attachment_server_turret_carrier_torpedo_launcher::set_is_damaged(bool)
+0x1000f88e6  c_attachment_server_turret_carrier_torpedo_launcher::tick_behaviour_ai_ship(c_scene_region_tick_util&, c_debug_render_buffer&, unsigned int, c_vehicle_server&, c_game_...
+0x1000f8f10  c_attachment_server_turret_carrier_torpedo_launcher::tick_behaviour_player_ship(c_vehicle_server&, c_game_object_definition::attachment const&, c_vehicle_container_ser...
+0x1000f9234  c_attachment_server_turret::get_closest_torpedo_target(c_scene_region_tick_util&, c_missile_container_server&, c_projectile_container_server&, c_vehicle_server const&,...
+0x1000f9474  c_attachment_server_turret_carrier_torpedo_launcher_decoy::~c_attachment_server_turret_carrier_torpedo_launcher_decoy()
+0x1000f948c  c_attachment_server_turret_carrier_torpedo_launcher_decoy::~c_attachment_server_turret_carrier_torpedo_launcher_decoy()
+0x1000f94b6  c_attachment_server_turret_carrier_torpedo_launcher_decoy::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c...
+0x1000f96a4  c_attachment_server_turret_carrier_torpedo_launcher_decoy::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000f973e  c_attachment_server_turret_carrier_torpedo_launcher_decoy::parse_state(mm_parser_binary&)
+0x1000f97b4  c_attachment_server_turret_carrier_torpedo_launcher_decoy::get_map_data(c_map_attachment_data&)
+0x1000f97be  c_attachment_server_turret_carrier_torpedo_launcher_decoy::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned i...
+0x1000f9e44  c_attachment_server_turret_carrier_torpedo_launcher_decoy::on_event_set_control_mode(e_game_object_ai_control_mode)
+0x1000f9e4a  c_attachment_server_turret_carrier_torpedo_launcher_decoy::trigger(unsigned int, unsigned int)
+0x1000f9e58  c_attachment_server_turret_carrier_torpedo_launcher_decoy::get_ammo_capacity() const
+0x1000f9e64  c_attachment_server_turret_carrier_torpedo_launcher_decoy::get_ammo_resupply_interval() const
+0x1000f9e70  c_attachment_server_turret_carrier_torpedo_launcher_decoy::get_is_damaged()
+0x1000f9e7c  c_attachment_server_turret_carrier_torpedo_launcher_decoy::set_is_damaged(bool)
+0x1000fc360  c_attachment_server_turret_40mm::~c_attachment_server_turret_40mm()
+0x1000fc378  c_attachment_server_turret_40mm::~c_attachment_server_turret_40mm()
+0x1000fc3a2  c_attachment_server_turret_40mm::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&, c_gam...
+0x1000fc622  c_attachment_server_turret_40mm::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000fc6f6  c_attachment_server_turret_40mm::parse_state(mm_parser_binary&)
+0x1000fc750  c_attachment_server_turret_40mm::get_map_data(c_map_attachment_data&)
+0x1000fc798  c_attachment_server_turret_40mm::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_definiti...
+0x1000fd9da  c_attachment_server_turret_40mm::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000fd9f0  c_attachment_server_turret_40mm::on_event_set_rotation(vec2 const&)
+0x1000fda20  c_attachment_server_turret_40mm::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x1000fda3c  c_attachment_server_turret_40mm::clear_peer_input()
+0x1000fda4a  c_attachment_server_turret_40mm::get_is_block_player_vehicle_axis(unsigned int)
+0x1000fda66  c_attachment_server_turret_40mm::get_ammo_capacity() const
+0x1000fda72  c_attachment_server_turret_40mm::get_ammo_resupply_interval() const
+0x1000fda7e  c_attachment_server_turret_40mm::get_active_target_vehicle()
+0x1000fda8a  c_attachment_server_turret_40mm::get_is_active_target_visible()
+0x1000fda96  c_attachment_server_turret_heavy_cannon::~c_attachment_server_turret_heavy_cannon()
+0x1000fdaae  c_attachment_server_turret_heavy_cannon::~c_attachment_server_turret_heavy_cannon()
+0x1000fdad8  c_attachment_server_turret_heavy_cannon::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data...
+0x1000fdd58  c_attachment_server_turret_heavy_cannon::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000fde2c  c_attachment_server_turret_heavy_cannon::parse_state(mm_parser_binary&)
+0x1000fde86  c_attachment_server_turret_heavy_cannon::get_map_data(c_map_attachment_data&)
+0x1000fdece  c_attachment_server_turret_heavy_cannon::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_...
+0x1000fefd2  c_attachment_server_turret_heavy_cannon::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x1000fefe8  c_attachment_server_turret_heavy_cannon::on_event_set_rotation(vec2 const&)
+0x1000ff018  c_attachment_server_turret_heavy_cannon::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x1000ff034  c_attachment_server_turret_heavy_cannon::clear_peer_input()
+0x1000ff042  c_attachment_server_turret_heavy_cannon::get_is_block_player_vehicle_axis(unsigned int)
+0x1000ff05e  c_attachment_server_turret_heavy_cannon::get_ammo_capacity() const
+0x1000ff06a  c_attachment_server_turret_heavy_cannon::get_ammo_resupply_interval() const
+0x1000ff076  c_attachment_server_turret_heavy_cannon::get_active_target_vehicle()
+0x1000ff082  c_attachment_server_turret_heavy_cannon::get_is_active_target_visible()
+0x1000ff08e  c_attachment_server_turret_15mm::~c_attachment_server_turret_15mm()
+0x1000ff0a6  c_attachment_server_turret_15mm::~c_attachment_server_turret_15mm()
+0x1000ff0d0  c_attachment_server_turret_15mm::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&, c_gam...
+0x1000ff350  c_attachment_server_turret_15mm::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1000ff424  c_attachment_server_turret_15mm::parse_state(mm_parser_binary&)
+0x1000ff47e  c_attachment_server_turret_15mm::get_map_data(c_map_attachment_data&)
+0x1000ff4c6  c_attachment_server_turret_15mm::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_definiti...
+0x100100708  c_attachment_server_turret_15mm::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x10010071e  c_attachment_server_turret_15mm::on_event_set_rotation(vec2 const&)
+0x10010074e  c_attachment_server_turret_15mm::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x10010076a  c_attachment_server_turret_15mm::clear_peer_input()
+0x100100778  c_attachment_server_turret_15mm::get_is_block_player_vehicle_axis(unsigned int)
+0x100100794  c_attachment_server_turret_15mm::get_ammo_capacity() const
+0x1001007a0  c_attachment_server_turret_15mm::get_ammo_resupply_interval() const
+0x1001007ac  c_attachment_server_turret_15mm::get_active_target_vehicle()
+0x1001007b8  c_attachment_server_turret_15mm::get_is_active_target_visible()
+0x100100ec6  c_attachment_server_turret_droid::~c_attachment_server_turret_droid()
+0x100100ede  c_attachment_server_turret_droid::~c_attachment_server_turret_droid()
+0x100100f08  c_attachment_server_turret_droid::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&, c_ga...
+0x100101188  c_attachment_server_turret_droid::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x10010125c  c_attachment_server_turret_droid::parse_state(mm_parser_binary&)
+0x1001012b6  c_attachment_server_turret_droid::get_map_data(c_map_attachment_data&)
+0x1001012fe  c_attachment_server_turret_droid::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_definit...
+0x100102786  c_attachment_server_turret_droid::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x10010279c  c_attachment_server_turret_droid::on_event_set_rotation(vec2 const&)
+0x1001027cc  c_attachment_server_turret_droid::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x1001027e8  c_attachment_server_turret_droid::clear_peer_input()
+0x1001027f6  c_attachment_server_turret_droid::on_set_inactive(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int)
+0x100102804  c_attachment_server_turret_droid::build_events_peer_join(c_server_peer&, c_vehicle_server&, unsigned int)
+0x10010285e  c_attachment_server_turret_droid::trigger(unsigned int, unsigned int)
+0x100102874  c_attachment_server_turret_droid::get_is_block_player_vehicle_axis(unsigned int)
+0x100102890  c_attachment_server_turret_droid::get_ammo_capacity() const
+0x10010289c  c_attachment_server_turret_droid::get_ammo_resupply_interval() const
+0x1001028a8  c_attachment_server_turret_droid::get_active_target_vehicle()
+0x1001028b4  c_attachment_server_turret_droid::get_is_active_target_visible()
+0x1001028c0  c_attachment_server_turret_droid::update_turret_firing_state(mm_vector<c_server_peer*>&, c_vehicle_server&, unsigned int, bool)
+0x100103b00  c_attachment_server_turret_gimbal_30mm::~c_attachment_server_turret_gimbal_30mm()
+0x100103b18  c_attachment_server_turret_gimbal_30mm::~c_attachment_server_turret_gimbal_30mm()
+0x100103b42  c_attachment_server_turret_gimbal_30mm::create(c_vehicle_server&, c_game_object_definition_container const&, e_game_object_type, mat34_f64 const&, c_physics_user_data&...
+0x100103e2c  c_attachment_server_turret_gimbal_30mm::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x100103f00  c_attachment_server_turret_gimbal_30mm::parse_state(mm_parser_binary&)
+0x100103f4c  c_attachment_server_turret_gimbal_30mm::get_map_data(c_map_attachment_data&)
+0x100103f94  c_attachment_server_turret_gimbal_30mm::tick(c_scene_region_tick_util&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned int, c_game_object_d...
+0x100105778  c_attachment_server_turret_gimbal_30mm::on_event_trigger(c_message_attachment_trigger_data const&, bool)
+0x10010578e  c_attachment_server_turret_gimbal_30mm::on_event_set_stabilisation_mode(e_attachment_stabilisation_mode)
+0x10010579a  c_attachment_server_turret_gimbal_30mm::on_event_set_rotation(vec2 const&)
+0x1001057ca  c_attachment_server_turret_gimbal_30mm::on_event_set_stabilisation_track_position(vec3_f64 const&)
+0x1001057e8  c_attachment_server_turret_gimbal_30mm::on_input_event(e_attachment_input_event_type, e_input_action, c_attachment_input_event_data const&)
+0x100105804  c_attachment_server_turret_gimbal_30mm::clear_peer_input()
+0x100105812  c_attachment_server_turret_gimbal_30mm::get_is_block_player_vehicle_axis(unsigned int)
+0x10010582e  c_attachment_server_turret_gimbal_30mm::get_ammo_capacity() const
+0x10010583a  c_attachment_server_turret_gimbal_30mm::get_ammo_resupply_interval() const
+0x100105846  c_attachment_server_turret_gimbal_30mm::get_active_target_vehicle()
+0x100105852  c_attachment_server_turret_gimbal_30mm::get_is_active_target_visible()
+0x10010bc7e  c_vehicle_server::get_available_vehicle_bay_index(e_game_object_type, unsigned char)
+0x10010bd1a  c_vehicle_server::dock_immediate(c_map_server_base&, c_vehicle_server&, unsigned int)
+0x10010c9ca  c_vehicle_server::get_available_vehicle_bay_index(c_game_object_definition::e_vehicle_attachment_type, unsigned char)
+0x10010cce8  c_vehicle_server::set_attached_to_vehicle_id(c_map_server_base&, unsigned int)
+0x100117abe  c_environment_tile_airfield_manager::undock(c_vehicle_server&)
+0x100117b14  c_environment_tile_airfield_manager::hangar::undock(c_vehicle_server&)
+0x100117bf0  c_environment_tile_airfield_manager::cancel_docking(c_vehicle_server&)
+0x100117c46  c_environment_tile_airfield_manager::hangar::cancel_docking(c_vehicle_server&)
+0x100117f70  c_environment_tile_airfield_manager::dock(c_vehicle_server&)
+0x100117ff0  c_environment_tile_airfield_manager::hangar::dock(c_vehicle_server&)
+0x10011b954  c_vehicle_client_carrier::parse_state(mm_parser_binary&)
+0x10011de36  c_vehicle_client_base::tick_screens(c_map_client const&, c_message_client_manager&, unsigned int, vec3_f64)
+0x10011f876  c_vehicle_carrier_client_power_manager::~c_vehicle_carrier_client_power_manager()
+0x10012209e  c_vehicle_carrier_client_power_manager::build(c_game_object_client&)
+0x100129920  c_vehicle_carrier_client_vehicle_control::tick(c_game_object_client&, c_map_vehicle const*, c_map_client const&, unsigned int, c_vehicle_carrier_client_power_manager&)
+0x100129fe8  c_vehicle_carrier_client_weapon_control::tick(c_game_object_client&, c_vehicle_client_base&, c_map_vehicle const*, unsigned int, c_vehicle_carrier_client_power_manager&)
+0x10012a49c  c_vehicle_carrier_client_power_manager::tick()
+0x10012c238  c_screen_lua_callback::bind(mm_lua&)
+0x100136ac4  c_ui::bind_lua_api(mm_lua&)
+0x10015e648  c_ui::element_clip::~element_clip()
+0x10015e64e  c_ui::element_clip::~element_clip()
+0x10015e658  c_ui::element_clip::render(mm_graphics&, mm_camera&, mm_asset_geometry&, c_material_screen_ui_image&)
+0x100192b00  c_vehicle_server_carrier::build_events_peer_join(c_server_peer&)
+0x100193022  c_vehicle_server_carrier::build()
+0x100193768  c_vehicle_server_base::tick(c_scene_region_tick_util&, c_tile_container_server&, c_ocean&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned i...
+0x100193e0e  c_vehicle_server_carrier::dock(c_vehicle_container_server&, unsigned int)
+0x100193eaa  c_vehicle_server_carrier::undock(c_vehicle_container_server&, unsigned int, c_map_server_base&)
+0x1001944d2  c_vehicle_server_carrier::tick_server_type(c_scene_region_tick_util&, c_vehicle_container_server&, c_game_object_definition_container const&, c_debug_render_buffer&, c...
+0x100195fb0  c_vehicle_server::dock(c_vehicle_container_server&, unsigned int)
+0x100195fb6  c_vehicle_server::undock(c_vehicle_container_server&, unsigned int, c_map_server_base&)
+0x100196030  c_vehicle_server_base::tick_server_type(c_scene_region_tick_util&, c_vehicle_container_server&, c_game_object_definition_container const&, c_debug_render_buffer&, c_ma...
+0x100196036  c_vehicle_server_base::tick_ai(c_scene_region_tick_util&, c_tile_container_server&, c_vehicle_container_server&, c_debug_render_buffer&, c_map_server&, mm_vector<c_ser...
+0x10019612e  c_vehicle_server::docking_data::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1001964ae  void c_parser_state_xml::parse_state_object<c_vehicle_server::docking_data>(rapidxml::xml_node<char>&, char const*, c_vehicle_server::docking_data&)
+0x100197dfa  mm_array<c_vehicle_carrier_server_power_manager::system_data::subsystem>::reset(unsigned int)
+0x100198344  mm_vector<c_vehicle_server_carrier::docking_manager_air::queue_vehicle>::buffer_resize(unsigned int)
+0x1001984f6  c_vehicle_carrier_server_power_manager::~c_vehicle_carrier_server_power_manager()
+0x100198ce8  c_vehicle_server_carrier::docking_manager_air::~docking_manager_air()
+0x100199016  void c_parser_state_xml::parse_state_object<c_vehicle_server_carrier::docking_manager_surface>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_carrier::dockin...
+0x1001990f0  void c_parser_state_xml::parse_state_object<c_vehicle_server_carrier::docking_manager_air>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_carrier::docking_ma...
+0x1001991ca  void c_parser_state_xml::parse_state_object<c_vehicle_server_carrier::docking_manager_lifeboat>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_carrier::docki...
+0x100199688  c_vehicle_server_carrier::docking_manager_surface::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x100199806  void mm_parser_xml::parse_value_fixed_point<c_vehicle_server_carrier::docking_manager_surface::e_mode>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_carrier...
+0x10019991e  void mm_parser_xml::parse_value_fixed_point<c_vehicle_server_carrier::docking_manager_surface::e_lane_stage>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_c...
+0x100199dde  c_vehicle_server_carrier::docking_manager_air::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x10019a12e  void mm_parser_xml::parse_value_fixed_point<c_vehicle_server_carrier::docking_manager_air::e_mode>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_carrier::do...
+0x10019a5b6  void mm_parser_xml::parse_value_fixed_point<c_vehicle_server_carrier::docking_manager_air::e_runway_state>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_car...
+0x10019a6ce  void mm_parser_xml::parse_vector_of_objects<c_vehicle_server_carrier::docking_manager_air::queue_vehicle>(rapidxml::xml_node<char>&, char const*, char const*, mm_vecto...
+0x10019a8c6  mm_vector<c_vehicle_server_carrier::docking_manager_air::queue_vehicle>::push_back()
+0x10019a926  c_vehicle_server_carrier::docking_manager_air::queue_vehicle::parse_xml(mm_parser_xml&, rapidxml::xml_node<char>&)
+0x10019a98e  void mm_parser_xml::parse_value_fixed_point<c_vehicle_server_carrier::docking_manager_air::e_wing_queue_state>(rapidxml::xml_node<char>&, char const*, c_vehicle_server...
+0x10019aaa6  c_vehicle_server_carrier::docking_manager_lifeboat::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x10019ab36  void mm_parser_xml::parse_value_fixed_point<c_vehicle_server_carrier::docking_manager_lifeboat::e_state>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_carri...
+0x10019ad66  c_vehicle_server_carrier::docking_manager_air::post_load(c_vehicle_container_server&, c_vehicle_server_carrier&)
+0x10019aeda  c_vehicle_server_carrier::docking_manager_surface::post_load(c_vehicle_container_server&, c_vehicle_server_carrier&)
+0x10019ca44  c_vehicle_server_carrier::c_lift_tower_controller::build(c_game_object_server&)
+0x10019d392  c_vehicle_carrier_server_vehicle_control::build(c_vehicle_server&)
+0x10019eeb8  c_vehicle_carrier_server_power_manager::build(c_vehicle_server_base&)
+0x1001a0206  c_vehicle_server_carrier::docking_manager_surface::build(c_vehicle_server_carrier&)
+0x1001a02ca  c_vehicle_server_carrier::docking_manager_air::build(c_vehicle_server_carrier&)
+0x1001a0460  c_vehicle_server_carrier::docking_manager_lifeboat::build(c_vehicle_server_carrier&)
+0x1001a47d4  void c_parser_util::parse_enum_compressed<c_vehicle_server_carrier::docking_manager_air::e_mode>(mm_parser_binary&, c_vehicle_server_carrier::docking_manager_air::e_mo...
+0x1001a4f94  c_vehicle_server_base::tick_resupply_attached_vehicles(c_vehicle_container_server&, c_map_server_base&)
+0x1001a5180  c_vehicle_server_base::tick_repair_attached_vehicles(c_vehicle_container_server&)
+0x1001a7aa2  c_game_object_server::tick_force_emitter(c_debug_render_buffer&, mm_physics_object_dynamic&, c_game_object_server::force_emitter&, c_game_object_definition::force_emit...
+0x1001a89f2  c_vehicle_server_carrier::docking_manager_air::dock(c_vehicle_server&, c_vehicle_server_carrier&)
+0x1001a8ad4  c_vehicle_server_carrier::docking_manager_surface::dock(c_vehicle_server&, c_vehicle_server_carrier&)
+0x1001a8bd4  c_vehicle_server_carrier::docking_manager_air::undock(c_vehicle_server&, c_vehicle_server_carrier&, c_map_server_base&)
+0x1001a8cf0  c_vehicle_server_carrier::docking_manager_surface::undock(c_vehicle_server&, c_vehicle_server_carrier&, c_map_server_base&)
+0x1001a8dfa  c_vehicle_server_carrier::docking_manager_air::cancel_undocking(c_vehicle_server&, c_map_server_base&)
+0x1001a8eac  c_vehicle_server_carrier::docking_manager_surface::cancel_undocking(c_vehicle_server&, c_map_server_base&)
+0x1001a8f5e  c_vehicle_server_carrier::docking_manager_surface::cancel_docking(c_vehicle_server&)
+0x1001a9224  c_vehicle_server_carrier::docking_manager_air::cancel_docking(c_vehicle_server&)
+0x1001a9508  mm_vector<c_vehicle_server_carrier::docking_manager_air::queue_vehicle>::erase(unsigned int)
+0x1001a957a  mm_vector<c_vehicle_server_carrier::docking_manager_air::queue_vehicle>::buffer_shrink()
+0x1001a982c  c_vehicle_server_carrier::c_lift_tower_controller::tick(c_game_object_server&, mm_vector<c_server_peer*>&, unsigned int)
+0x1001aa404  c_vehicle_server_carrier::docking_manager_surface::update(mm_physics_scene&, mm_vector<c_server_peer*>&, c_vehicle_server_carrier&, c_vehicle_container_server&, c_map_...
+0x1001accd8  c_vehicle_server_carrier::docking_manager_air::update(mm_physics_scene&, mm_vector<c_server_peer*>&, c_vehicle_server_carrier&, c_vehicle_container_server&, c_map_serv...
+0x1001b2618  c_vehicle_server_carrier::docking_manager_lifeboat::update(mm_physics_scene&, mm_vector<c_server_peer*>&, c_vehicle_server_carrier&, c_vehicle_container_server&, c_map...
+0x1001b29d6  c_vehicle_carrier_server_carrier_control::tick(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_manager&, vec3&)
+0x1001b2e18  c_vehicle_carrier_server_vehicle_control::tick(c_vehicle_server_base&, c_vehicle_container_server&, c_map_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_s...
+0x1001b32a4  c_vehicle_carrier_server_communications_control::tick(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_manager&)
+0x1001b330e  c_vehicle_carrier_server_stock_management::tick(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_manager&)
+0x1001b3378  c_vehicle_carrier_server_weapon_control::tick(c_vehicle_server_base&, c_map_server&, c_tile_container_server&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_pow...
+0x1001b3520  c_vehicle_carrier_server_self_destruct_system::tick(c_vehicle_server_base&, c_vehicle_container_server&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_man...
+0x1001b3c90  c_vehicle_carrier_server_damage_system::tick(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_manager&)
+0x1001b3fdc  c_vehicle_carrier_server_power_manager::tick(c_vehicle_server_base&, mm_vector<c_server_peer*>&)
+0x1001b46c2  c_vehicle_server_carrier::c_lift_tower_controller::tick_buttons()
+0x1001b4e36  c_vehicle_carrier_server_carrier_control::set_nav_screen_states(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_manager&, bool, unsi...
+0x1001b4eb4  c_vehicle_carrier_server_screen_circuit::set_state(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_manager&, bool, unsigned int)
+0x1001b5ffc  c_vehicle_server::undock_immediate(c_map_server_base&, mm_physics_scene&, c_vehicle_server&)
+0x1001b6422  c_vehicle_carrier_server_screen_circuit::tick(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_power_manager&)
+0x1001b6738  c_vehicle_carrier_server_weapon_control::control_group_missile::tick(c_vehicle_server_base&, c_vehicle_carrier_server_power_manager&, e_carrier_power_weapons_subsystem)
+0x1001b68be  c_vehicle_carrier_server_weapon_control::control_group_gun::tick(c_vehicle_server_base&, c_vehicle_carrier_server_power_manager&, e_carrier_power_weapons_subsystem)
+0x1001b69ea  c_vehicle_carrier_server_weapon_control::control_group_flare::tick(c_vehicle_server_base&, c_map_server&, c_tile_container_server&, c_vehicle_carrier_server_power_mana...
+0x1001b6cb2  c_vehicle_carrier_server_weapon_control::control_group_torpedo::tick(c_vehicle_server_base&, c_vehicle_carrier_server_power_manager&, e_carrier_power_weapons_subsystem...
+0x1001b723c  c_attachment_server_turret_carrier_torpedo_launcher::set_projectile_type(c_map_server&, unsigned int, c_resource_inventory&, unsigned int, e_torpedo_tube_state)
+0x1001b733c  c_vehicle_carrier_server_damage_system::tick_damage_zone(c_vehicle_server_base&, mm_vector<c_server_peer*>&, c_vehicle_carrier_server_damage_system::damage_zone&, c_ve...
+0x1001bee16  c_vehicle_server_base::tick_ai_movement_wheel(c_tile_container_server&, c_vehicle_container_server&, c_debug_render_buffer&, c_map_server&, mm_vector<c_server_peer*>&,...
+0x1001c1b60  c_vehicle_server_wing::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1001c1e0a  c_vehicle_server_wing::parse_state(mm_parser_binary&)
+0x1001c1ea0  c_vehicle_server_wing::get_waypoint_move_threshold(vec2_f64 const&)
+0x1001c1ec6  c_vehicle_server_wing::get_is_air_target() const
+0x1001c1f18  c_vehicle_server_wing::get_is_land_target() const
+0x1001c1f7a  c_vehicle_server_wing::set_gear_state(bool)
+0x1001c1f96  c_vehicle_server_wing::reset_attack()
+0x1001c2564  c_vehicle_server_wing::tick_command(mm_physics_scene&, c_tile_container_server&, c_ocean&, mm_vector<c_server_peer*>&, c_debug_render_buffer&, unsigned int, unsigned i...
+0x1001c26c0  c_vehicle_server_wing::tick_control(c_tile_container_server&, c_vehicle_container_server&, c_debug_render_buffer&, c_map_server&, mm_vector<c_server_peer*>&, float)
+0x1001ce6fa  void c_parser_state_xml::parse_state_object<c_vehicle_server_drydock::docking_manager_carrier>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_drydock::dockin...
+0x1001ce7d4  c_vehicle_server_drydock::docking_manager_carrier::parse_state_xml(c_parser_state_xml&, rapidxml::xml_node<char>&)
+0x1001ce864  void mm_parser_xml::parse_value_fixed_point<c_vehicle_server_drydock::docking_manager_carrier::e_state>(rapidxml::xml_node<char>&, char const*, c_vehicle_server_drydoc...
+0x1001ce97c  c_vehicle_server_drydock::docking_manager_carrier::build(c_vehicle_server_drydock&)
+0x1001ceac2  c_vehicle_server_drydock::c_lift_tower_controller::build(c_game_object_server&)
+0x1001cebc4  c_vehicle_server_drydock::c_lift_tower_controller::tick(c_game_object_server&, mm_vector<c_server_peer*>&, unsigned int)
+0x1001cf4b0  c_vehicle_server_drydock::c_lift_tower_controller::tick_buttons()
+0x1001cf518  c_vehicle_server_drydock::docking_manager_carrier::update(mm_physics_scene&, mm_vector<c_server_peer*>&, c_vehicle_server_drydock&, c_vehicle_container_server&, c_map_...
+0x1001e950c  c_material_screen_crt::create(mm_program_container&)
+0x1001e96ce  c_material_screen_crt_hud::create(mm_program_container&)
+0x1001ecdc2  c_frontend_renderer::update(mm_graphics&, unsigned int, unsigned int)
+0x1001f58a6  mm_resource_handle_target::create(mm_resource_event_container&, mm_array<e_render_target_type>&, e_render_target_type, unsigned int, unsigned int, mm_file_format_txtr:...
+0x1001fc2bc  c_frontend_renderer::render(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, mm_camera, mm_resource_handle_target*)
+0x10020ccae  c_frontend_renderer::pass_screens(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&)
+0x10020ce28  c_frontend_renderer::pass_main_shadow(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&)
+0x10020cfc6  c_frontend_renderer::pass_spotlight_shadows(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&)
+0x10020d138  c_frontend_renderer::pass_rain_depth(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&)
+0x10020d244  c_frontend_renderer::pass_depth_prepass(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera const&, mat34...
+0x10020d332  c_frontend_renderer::pass_gbuffer(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera const&, mat34_f64 c...
+0x10020f9dc  c_frontend_renderer::pass_lighting(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera const&, mat34_f64 ...
+0x100213d2a  c_frontend_renderer::pass_post(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera const&, mm_resource_ha...
+0x1002143da  c_frontend_renderer::pass_hud_ui(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera const&, mat34_f64 co...
+0x100214a68  c_frontend_renderer::pass_overlay_ui(mm_graphics&, c_render_buffer const&, c_frontend_render_settings const&, mm_camera const&, mat34_f64 const&, mm_resource_handle_ta...
+0x10021534c  c_frontend_renderer::pass_interaction_ui(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data const&, mm_camera const&...
+0x100215afc  c_frontend_renderer::pass_debug(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera const&)
+0x10021cc14  c_frontend_renderer::render_screen(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, mm_resource_object_target&, c_render_buffer::screen_render_...
+0x10021d088  c_frontend_renderer::render_command_screen_background(mm_graphics&, c_frontend_render_settings const&, mm_resource_object_target*, float, c_render_buffer const&, float...
+0x10021ed86  c_frontend_renderer::render_basic_materials_shadow(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera co...
+0x10022027c  c_frontend_renderer::render_basic_materials(mm_graphics&, c_frontend_render_settings const&, c_render_buffer const&, c_frontend_render_build_data&, mm_camera const&, m...
+0x1002261ec  c_material_screen_crt::begin(mm_camera const&)
+0x10022633e  c_material_screen_crt::render(mm_resource_object_geometry const&, mat34 const&, vec3, mm_resource_object_target const&, mm_resource_object_texture const&, float, float...
+0x1002268b8  c_frontend_renderer::render_command_holomap(mm_graphics&, c_frontend_render_settings const&, mm_camera const&, c_render_buffer const&, mat34 const&, vec3 const&, c_ren...
+0x10022bc64  c_material_screen_crt_hud::begin(mm_camera const&)
+0x10022bdb6  c_material_screen_crt_hud::render(mm_resource_object_geometry const&, mat34 const&, vec3, mm_resource_object_target const&, mm_resource_object_texture const&, float, f...
+0x1002fa850  c_application_constants::load()
+0x10030effa  c_screen_lua_libs::on_asset_updated(mm_file_location const&)
+0x10030f536  mm_vector<c_application_constants::key_value>::push_back()
+0x10030f594  c_application_constants::parse_value_f32(mm_vector<c_application_constants::key_value>&, mm_string const&, float&)
+0x10030f652  c_application_constants::parse_value_u32(mm_vector<c_application_constants::key_value>&, mm_string const&, unsigned int&)
+0x10030f712  mm_vector<c_application_constants::key_value>::buffer_resize(unsigned int)
+0x10030f7f4  mm_vector<c_application_constants::key_value>::clear()
+0x100322e4a  mm_vector<c_mod_downloader_server::modded_file>::clear()
+0x100322eda  mm_vector<c_mod_downloader_server::modded_file>::buffer_resize(unsigned int)
+0x100325806  mm_vector_ptr<c_environment_tile_airfield_manager::hangar>::~mm_vector_ptr()
+0x100325852  mm_vector_ptr<c_environment_tile_airfield_manager::hangar>::clear()
+0x1003259a6  mm_vector<c_environment_tile_airfield_manager::hangar*>::~mm_vector()
+0x1003259da  mm_vector<c_environment_tile_airfield_manager::hangar*>::buffer_resize(unsigned int)
+0x1003264c6  mm_array<c_environment_tile_airfield_manager_state::hangar_state>::~mm_array()
+0x1003264dc  mm_array<c_environment_tile_airfield_manager_state::hangar_state>::reset(unsigned int)
+0x10032733a  c_mod_downloader_server::create()
+0x100328812  c_mod_downloader_server::build_modded_files_list()
+0x100328ac4  c_mod_downloader_server::build_modded_files_list_recursive(mm_string const&, mm_string const&)
+0x100328fa0  c_mod_downloader_server::is_file_blacklisted(mm_string)
+0x1003290fc  c_mod_downloader_server::is_file_modded(mm_string const&, unsigned int&)
+0x1003292be  mm_vector<c_mod_downloader_server::modded_file>::push_back()
+0x10032c4c4  void mm_parser_xml::parse_object<c_environment_tile_airfield_manager_state>(rapidxml::xml_node<char>&, char const*, c_environment_tile_airfield_manager_state&)
+0x10032d84c  void mm_parser_xml::parse_array_of_objects<c_environment_tile_airfield_manager_state::hangar_state>(rapidxml::xml_node<char>&, char const*, char const*, mm_array<c_env...
+0x10032da96  void mm_parser_xml::parse_object<c_environment_tile_airfield_manager_state::hangar_state>(rapidxml::xml_node<char>&, char const*, c_environment_tile_airfield_manager_s...
+0x10032db70  c_environment_tile_airfield_manager_state::hangar_state::parse_xml(mm_parser_xml&, rapidxml::xml_node<char>&)
+0x100347510  c_mod_downloader_server::send_to_peer(c_message_server_manager&, unsigned int, bool)
+0x1003493ba  c_mod_downloader_server::on_peer_request_file(c_message_server_manager&, unsigned int, unsigned int)
+0x10036207e  c_environment_tile_airfield_manager::update(vec3_f64&, c_vehicle_container_server&, c_debug_render_buffer&)
+0x100363298  c_environment_tile_airfield_manager::tick_repair_vehicles(c_vehicle_container_server&)
+0x10036339c  c_environment_tile_airfield_manager::tick_resupply_vehicles(c_vehicle_container_server&)
+0x1003634c6  c_environment_tile_airfield_manager::hangar::update(vec3_f64&, c_vehicle_container_server&, c_debug_render_buffer&)
+0x10036583c  c_environment_tile_airfield_manager::hangar::build_path_dock(unsigned int, mm_vector<unsigned int>&)
+0x10036594a  c_environment_tile_airfield_manager::hangar::build_path_undock(unsigned int, mm_vector<unsigned int>&)
+0x10036c652  c_environment_tile_airfield_manager::generate(c_environment_tile_server*, vec3_f64 const&, c_game_object_definition_container const&)
+0x10036c88e  c_enemy_spawner::generate_enemies(c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_object_definition_container const&, c_envir...
+0x10036d6f8  c_environment_tile_airfield_manager::create_from_state_data(c_environment_tile_airfield_manager_state const&, c_vehicle_container_server&)
+0x10036d8e4  c_environment_tile_airfield_manager::hangar::build(c_game_object_definition_container const&)
+0x10036dd90  mm_vector<c_environment_tile_airfield_manager::hangar*>::push_back()
+0x10036de56  c_enemy_spawner::spawn_land_from_pseudo(c_enemy_ai_pseudo_vehicle const&, c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_obj...
+0x10036df38  c_enemy_spawner::spawn_plane_from_pseudo(c_enemy_ai_pseudo_vehicle const&, c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_ob...
+0x10036e07e  c_enemy_spawner::spawn_turret_from_pseudo(c_enemy_ai_pseudo_vehicle const&, c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_o...
+0x10036e15e  c_enemy_spawner::spawn_ship_from_pseudo(c_enemy_ai_pseudo_vehicle const&, c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_obj...
+0x10036e23e  c_enemy_spawner::get_spawn_count_land(float)
+0x10036e2b2  c_enemy_spawner::get_spawn_count_turret(float)
+0x10036e37a  c_enemy_spawner::get_spawn_count_ship(float)
+0x10036e43a  c_enemy_spawner::spawn_plane(c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_object_definition_container const&, c_environmen...
+0x10036e756  c_enemy_spawner::spawn_land(c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_object_definition_container const&, mm_vector<uns...
+0x10036ea54  c_enemy_spawner::spawn_turret(c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_object_definition_container const&, mm_vector<u...
+0x10036ee24  c_enemy_spawner::spawn_ship(c_environment_tile_node_server&, c_vehicle_container_server&, c_team_server_base*, c_game_object_definition_container const&, mm_vector<uns...
+0x10036f15a  c_environment_tile_airfield_manager::get_available_hangar_node(unsigned int&, unsigned int&)
+0x10036f1c2  c_enemy_spawner::add_plane_to_hangar(unsigned int, unsigned int, c_environment_tile_airfield_manager&, c_vehicle_server&)
+0x10036f2b0  c_enemy_spawner::get_chassis_hangar(float)
+0x10036f33e  c_enemy_spawner::get_attachment_air(float)
+0x10036f49c  c_enemy_spawner::get_attachment_land(float, e_game_object_type)
+0x10036f93e  c_environment_tile_airfield_manager::hangar::create_from_state_data(c_environment_tile_airfield_manager_state::hangar_state const&)
+0x10036fb16  c_environment_tile_airfield_manager::hangar::post_load(c_vehicle_container_server&)
+0x10041880c  c_screen_frontend_api::bind(mm_lua&)
+0x1004298f4  c_ui_frontend_interactions::bind()
+0x100440356  c_environment_tile_airfield_manager::get_state_data(c_environment_tile_airfield_manager_state&)
+0x1004403d4  c_environment_tile_airfield_manager::hangar::get_state_data(c_environment_tile_airfield_manager_state::hangar_state&)
+0x10044c2f0  c_frontend_renderer::render_debug(c_debug_render_buffer&)
+0x10283aa8c  _luaB_dofile
+0x10283ae97  _luaB_print
+0x102856131  c_screen_lua_callback::bind(mm_lua&) (.cold.1)
+0x102856142  c_screen_lua_callback::bind(mm_lua&) (.cold.2)
+0x102856153  c_screen_lua_callback::bind(mm_lua&) (.cold.3)
+0x102856164  c_screen_lua_callback::bind(mm_lua&) (.cold.4)
+0x102856175  c_screen_lua_callback::bind(mm_lua&) (.cold.5)
+0x102856186  c_screen_lua_callback::bind(mm_lua&) (.cold.6)
+0x102856197  c_screen_lua_callback::bind(mm_lua&) (.cold.7)
+0x1028561a8  c_screen_lua_callback::bind(mm_lua&) (.cold.8)
+0x1028561b9  c_screen_lua_callback::bind(mm_lua&) (.cold.9)
+0x1028561ca  c_screen_lua_callback::bind(mm_lua&) (.cold.10)
+0x1028561db  c_screen_lua_callback::bind(mm_lua&) (.cold.11)
+0x1028561ec  c_screen_lua_callback::bind(mm_lua&) (.cold.12)
+0x1028561fd  c_screen_lua_callback::bind(mm_lua&) (.cold.13)
+0x10285620e  c_screen_lua_callback::bind(mm_lua&) (.cold.14)
+0x10285621f  c_screen_lua_callback::bind(mm_lua&) (.cold.15)
+0x102856230  c_screen_lua_callback::bind(mm_lua&) (.cold.16)
+0x102856241  c_screen_lua_callback::bind(mm_lua&) (.cold.17)
+0x102856252  c_screen_lua_callback::bind(mm_lua&) (.cold.18)
+0x102856263  c_screen_lua_callback::bind(mm_lua&) (.cold.19)
+0x102856274  c_screen_lua_callback::bind(mm_lua&) (.cold.20)
+0x102856285  c_screen_lua_callback::bind(mm_lua&) (.cold.21)
+0x102856296  c_screen_lua_callback::bind(mm_lua&) (.cold.22)
+0x1028562a7  c_screen_lua_callback::bind(mm_lua&) (.cold.23)
+0x1028562b8  c_screen_lua_callback::bind(mm_lua&) (.cold.24)
+0x1028562c9  c_screen_lua_callback::bind(mm_lua&) (.cold.25)
+0x1028562da  c_screen_lua_callback::bind(mm_lua&) (.cold.26)
+0x1028562eb  c_screen_lua_callback::bind(mm_lua&) (.cold.27)
+0x1028562fc  c_screen_lua_callback::bind(mm_lua&) (.cold.28)
+0x10285630d  c_screen_lua_callback::bind(mm_lua&) (.cold.29)
+0x10285631e  c_screen_lua_callback::bind(mm_lua&) (.cold.30)
+0x10285632f  c_screen_lua_callback::bind(mm_lua&) (.cold.31)
+0x102856340  c_screen_lua_callback::bind(mm_lua&) (.cold.32)
+0x102856351  c_screen_lua_callback::bind(mm_lua&) (.cold.33)
+0x102856362  c_screen_lua_callback::bind(mm_lua&) (.cold.34)
+0x102856373  c_screen_lua_callback::bind(mm_lua&) (.cold.35)
+0x102856384  c_screen_lua_callback::bind(mm_lua&) (.cold.36)
+0x102856395  c_screen_lua_callback::bind(mm_lua&) (.cold.37)
+0x1028563a6  c_screen_lua_callback::bind(mm_lua&) (.cold.38)
+0x1028563b7  c_screen_lua_callback::bind(mm_lua&) (.cold.39)
+0x1028563c8  c_screen_lua_callback::bind(mm_lua&) (.cold.40)
+0x1028563d9  c_screen_lua_callback::bind(mm_lua&) (.cold.41)
+0x1028563ea  c_screen_lua_callback::bind(mm_lua&) (.cold.42)
+0x1028563fb  c_screen_lua_callback::bind(mm_lua&) (.cold.43)
+0x10285640c  c_screen_lua_callback::bind(mm_lua&) (.cold.44)
+0x10285641d  c_screen_lua_callback::bind(mm_lua&) (.cold.45)
+0x10285642e  c_screen_lua_callback::bind(mm_lua&) (.cold.46)
+0x10285643f  c_screen_lua_callback::bind(mm_lua&) (.cold.47)
+0x102856450  c_screen_lua_callback::bind(mm_lua&) (.cold.48)
+0x102856461  c_screen_lua_callback::bind(mm_lua&) (.cold.49)
+0x102856472  c_screen_lua_callback::bind(mm_lua&) (.cold.50)
+0x102856483  c_screen_lua_callback::bind(mm_lua&) (.cold.51)
+0x102856494  c_screen_lua_callback::bind(mm_lua&) (.cold.52)
+0x1028564a5  c_screen_lua_callback::bind(mm_lua&) (.cold.53)
+0x1028564b6  c_screen_lua_callback::bind(mm_lua&) (.cold.54)
+0x1028564c7  c_screen_lua_callback::bind(mm_lua&) (.cold.55)
+0x1028564d8  c_screen_lua_callback::bind(mm_lua&) (.cold.56)
+0x1028564e9  c_screen_lua_callback::bind(mm_lua&) (.cold.57)
+0x1028564fa  c_screen_lua_callback::bind(mm_lua&) (.cold.58)
+0x10285650b  c_screen_lua_callback::bind(mm_lua&) (.cold.59)
+0x10285651c  c_screen_lua_callback::bind(mm_lua&) (.cold.60)
+0x10285652d  c_screen_lua_callback::bind(mm_lua&) (.cold.61)
+0x10285653e  c_screen_lua_callback::bind(mm_lua&) (.cold.62)
+0x10285654f  c_screen_lua_callback::bind(mm_lua&) (.cold.63)
+0x102856560  c_screen_lua_callback::bind(mm_lua&) (.cold.64)
+0x102856571  c_screen_lua_callback::bind(mm_lua&) (.cold.65)
+0x102856582  c_screen_lua_callback::bind(mm_lua&) (.cold.66)
+0x102856593  c_screen_lua_callback::bind(mm_lua&) (.cold.67)
+0x1028565a4  c_screen_lua_callback::bind(mm_lua&) (.cold.68)
+0x1028565b5  c_screen_lua_callback::bind(mm_lua&) (.cold.69)
+0x1028565c6  c_screen_lua_callback::bind(mm_lua&) (.cold.70)
+0x1028565d7  c_screen_lua_callback::bind(mm_lua&) (.cold.71)
+0x1028565e8  c_screen_lua_callback::bind(mm_lua&) (.cold.72)
+0x1028565f9  c_screen_lua_callback::bind(mm_lua&) (.cold.73)
+0x10285660a  c_screen_lua_callback::bind(mm_lua&) (.cold.74)
+0x10285661b  c_screen_lua_callback::bind(mm_lua&) (.cold.75)
+0x10285662c  c_screen_lua_callback::bind(mm_lua&) (.cold.76)
+0x10285663d  c_screen_lua_callback::bind(mm_lua&) (.cold.77)
+0x10285664e  c_screen_lua_callback::bind(mm_lua&) (.cold.78)
+0x10285665f  c_screen_lua_callback::bind(mm_lua&) (.cold.79)
+0x102856670  c_screen_lua_callback::bind(mm_lua&) (.cold.80)
+0x102856681  c_screen_lua_callback::bind(mm_lua&) (.cold.81)
+0x102856692  c_screen_lua_callback::bind(mm_lua&) (.cold.82)
+0x1028566a3  c_screen_lua_callback::bind(mm_lua&) (.cold.83)
+0x1028566b4  c_screen_lua_callback::bind(mm_lua&) (.cold.84)
+0x1028566c5  c_screen_lua_callback::bind(mm_lua&) (.cold.85)
+0x1028566d6  c_screen_lua_callback::bind(mm_lua&) (.cold.86)
+0x1028566e7  c_screen_lua_callback::bind(mm_lua&) (.cold.87)
+0x1028566f8  c_screen_lua_callback::bind(mm_lua&) (.cold.88)
+0x102856709  c_screen_lua_callback::bind(mm_lua&) (.cold.89)
+0x10285671a  c_screen_lua_callback::bind(mm_lua&) (.cold.90)
+0x10285672b  c_screen_lua_callback::bind(mm_lua&) (.cold.91)
+0x10285673c  c_screen_lua_callback::bind(mm_lua&) (.cold.92)
+0x10285674d  c_screen_lua_callback::bind(mm_lua&) (.cold.93)
+0x10285675e  c_screen_lua_callback::bind(mm_lua&) (.cold.94)
+0x10285676f  c_screen_lua_callback::bind(mm_lua&) (.cold.95)
+0x102856780  c_screen_lua_callback::bind(mm_lua&) (.cold.96)
+0x102856791  c_screen_lua_callback::bind(mm_lua&) (.cold.97)
+0x1028567a2  c_screen_lua_callback::bind(mm_lua&) (.cold.98)
+0x1028567b3  c_screen_lua_callback::bind(mm_lua&) (.cold.99)
+0x1028567c4  c_screen_lua_callback::bind(mm_lua&) (.cold.100)
+0x1028567d5  c_screen_lua_callback::bind(mm_lua&) (.cold.101)
+0x1028567e6  c_screen_lua_callback::bind(mm_lua&) (.cold.102)
+0x1028567f7  c_screen_lua_callback::bind(mm_lua&) (.cold.103)
+0x102856808  c_screen_lua_callback::bind(mm_lua&) (.cold.104)
+0x102856819  c_screen_lua_callback::bind(mm_lua&) (.cold.105)
+0x10285682a  c_screen_lua_callback::bind(mm_lua&) (.cold.106)
+0x10285683b  c_screen_lua_callback::bind(mm_lua&) (.cold.107)
+0x10285684c  c_screen_lua_callback::bind(mm_lua&) (.cold.108)
+0x10285685d  c_screen_lua_callback::bind(mm_lua&) (.cold.109)
+0x10285686e  c_screen_lua_callback::bind(mm_lua&) (.cold.110)
+0x10285687f  c_screen_lua_callback::bind(mm_lua&) (.cold.111)
+0x102856890  c_screen_lua_callback::bind(mm_lua&) (.cold.112)
+0x1028568a1  c_screen_lua_callback::bind(mm_lua&) (.cold.113)
+0x1028568b2  c_screen_lua_callback::bind(mm_lua&) (.cold.114)
+0x1028568c3  c_screen_lua_callback::bind(mm_lua&) (.cold.115)
+0x1028568d4  c_screen_lua_callback::bind(mm_lua&) (.cold.116)
+0x1028568e5  c_screen_lua_callback::bind(mm_lua&) (.cold.117)
+0x1028568f6  c_screen_lua_callback::bind(mm_lua&) (.cold.118)
+0x102856907  c_screen_lua_callback::bind(mm_lua&) (.cold.119)
+0x102856cf2  c_ui::bind_lua_api(mm_lua&) (.cold.1)
+0x102856d03  c_ui::bind_lua_api(mm_lua&) (.cold.2)
+0x102856d14  c_ui::bind_lua_api(mm_lua&) (.cold.3)
+0x102856d25  c_ui::bind_lua_api(mm_lua&) (.cold.4)
+0x102856d36  c_ui::bind_lua_api(mm_lua&) (.cold.5)
+0x102856d47  c_ui::bind_lua_api(mm_lua&) (.cold.6)
+0x102856d58  c_ui::bind_lua_api(mm_lua&) (.cold.7)
+0x102856d69  c_ui::bind_lua_api(mm_lua&) (.cold.8)
+0x102856d7a  c_ui::bind_lua_api(mm_lua&) (.cold.9)
+0x102856d8b  c_ui::bind_lua_api(mm_lua&) (.cold.10)
+0x102856d9c  c_ui::bind_lua_api(mm_lua&) (.cold.11)
+0x102856dad  c_ui::bind_lua_api(mm_lua&) (.cold.12)
+0x102856dbe  c_ui::bind_lua_api(mm_lua&) (.cold.13)
+0x102856dcf  c_ui::bind_lua_api(mm_lua&) (.cold.14)
+0x102856de0  c_ui::bind_lua_api(mm_lua&) (.cold.15)
+0x102856df1  c_ui::bind_lua_api(mm_lua&) (.cold.16)
+0x102856e02  c_ui::bind_lua_api(mm_lua&) (.cold.17)
+0x102856e13  c_ui::bind_lua_api(mm_lua&) (.cold.18)
+0x102856e24  c_ui::bind_lua_api(mm_lua&) (.cold.19)
+0x102856e35  c_ui::bind_lua_api(mm_lua&) (.cold.20)
+0x102856e46  c_ui::bind_lua_api(mm_lua&) (.cold.21)
+0x102856e57  c_ui::bind_lua_api(mm_lua&) (.cold.22)
+0x102856e68  c_ui::bind_lua_api(mm_lua&) (.cold.23)
+0x102856e79  c_ui::bind_lua_api(mm_lua&) (.cold.24)
+0x102856e8a  c_ui::bind_lua_api(mm_lua&) (.cold.25)
+0x1028581eb  c_screen_frontend_api::bind(mm_lua&) (.cold.1)
+0x1028581fc  c_screen_frontend_api::bind(mm_lua&) (.cold.2)
+0x10285820d  c_screen_frontend_api::bind(mm_lua&) (.cold.3)
+0x10285821e  c_screen_frontend_api::bind(mm_lua&) (.cold.4)
+0x10285822f  c_screen_frontend_api::bind(mm_lua&) (.cold.5)
+0x102858240  c_screen_frontend_api::bind(mm_lua&) (.cold.6)
+0x102858251  c_screen_frontend_api::bind(mm_lua&) (.cold.7)
+0x102858262  c_screen_frontend_api::bind(mm_lua&) (.cold.8)
+0x102858273  c_screen_frontend_api::bind(mm_lua&) (.cold.9)
+0x102858284  c_screen_frontend_api::bind(mm_lua&) (.cold.10)
+0x102858295  c_screen_frontend_api::bind(mm_lua&) (.cold.11)
+0x1028582a6  c_screen_frontend_api::bind(mm_lua&) (.cold.12)
+0x1028582b7  c_screen_frontend_api::bind(mm_lua&) (.cold.13)
+0x1028582c8  c_screen_frontend_api::bind(mm_lua&) (.cold.14)
+0x1028582d9  c_screen_frontend_api::bind(mm_lua&) (.cold.15)
+0x1028582ea  c_screen_frontend_api::bind(mm_lua&) (.cold.16)
+0x1028582fb  c_screen_frontend_api::bind(mm_lua&) (.cold.17)
+0x10285830c  c_screen_frontend_api::bind(mm_lua&) (.cold.18)
+0x10285831d  c_screen_frontend_api::bind(mm_lua&) (.cold.19)
+0x10285832e  c_screen_frontend_api::bind(mm_lua&) (.cold.20)
+0x10285833f  c_screen_frontend_api::bind(mm_lua&) (.cold.21)
+0x102858350  c_screen_frontend_api::bind(mm_lua&) (.cold.22)
+0x102858361  c_screen_frontend_api::bind(mm_lua&) (.cold.23)
+0x102858372  c_screen_frontend_api::bind(mm_lua&) (.cold.24)
+0x102858383  c_screen_frontend_api::bind(mm_lua&) (.cold.25)
+0x102858394  c_screen_frontend_api::bind(mm_lua&) (.cold.26)
+0x1028583a5  c_screen_frontend_api::bind(mm_lua&) (.cold.27)
+0x1028583b6  c_screen_frontend_api::bind(mm_lua&) (.cold.28)
+0x1028583c7  c_screen_frontend_api::bind(mm_lua&) (.cold.29)
+0x1028583d8  c_screen_frontend_api::bind(mm_lua&) (.cold.30)
+0x1028583e9  c_screen_frontend_api::bind(mm_lua&) (.cold.31)
+0x1028583fa  c_screen_frontend_api::bind(mm_lua&) (.cold.32)
+0x10285840b  c_screen_frontend_api::bind(mm_lua&) (.cold.33)
+0x10285841c  c_screen_frontend_api::bind(mm_lua&) (.cold.34)
+0x10285842d  c_screen_frontend_api::bind(mm_lua&) (.cold.35)
+0x10285843e  c_screen_frontend_api::bind(mm_lua&) (.cold.36)
+0x10285844f  c_screen_frontend_api::bind(mm_lua&) (.cold.37)
+0x102858460  c_screen_frontend_api::bind(mm_lua&) (.cold.38)
+0x102858471  c_screen_frontend_api::bind(mm_lua&) (.cold.39)
+0x102858482  c_screen_frontend_api::bind(mm_lua&) (.cold.40)
+0x102858493  c_screen_frontend_api::bind(mm_lua&) (.cold.41)
+0x1028584a4  c_screen_frontend_api::bind(mm_lua&) (.cold.42)
+0x1028584b5  c_screen_frontend_api::bind(mm_lua&) (.cold.43)
+0x1028584c6  c_screen_frontend_api::bind(mm_lua&) (.cold.44)
+0x1028585f1  c_ui_frontend_interactions::bind() (.cold.1)
+0x102858602  c_ui_frontend_interactions::bind() (.cold.2)
+0x102858613  c_ui_frontend_interactions::bind() (.cold.3)
+0x102858624  c_ui_frontend_interactions::bind() (.cold.4)
+0x102858635  c_ui_frontend_interactions::bind() (.cold.5)
+0x102858646  c_ui_frontend_interactions::bind() (.cold.6)
+0x102858657  c_ui_frontend_interactions::bind() (.cold.7)
+0x102858668  c_ui_frontend_interactions::bind() (.cold.8)
+0x102858679  c_ui_frontend_interactions::bind() (.cold.9)
+0x10285868a  c_ui_frontend_interactions::bind() (.cold.10)
+0x10285869b  c_ui_frontend_interactions::bind() (.cold.11)
+0x1028586ac  c_ui_frontend_interactions::bind() (.cold.12)
+0x1028586bd  c_ui_frontend_interactions::bind() (.cold.13)
+0x1028586ce  c_ui_frontend_interactions::bind() (.cold.14)
+0x1028586df  c_ui_frontend_interactions::bind() (.cold.15)
+0x1028586f0  c_ui_frontend_interactions::bind() (.cold.16)
+0x102858701  c_ui_frontend_interactions::bind() (.cold.17)
+0x102858712  c_ui_frontend_interactions::bind() (.cold.18)
+0x102858723  c_ui_frontend_interactions::bind() (.cold.19)
+0x102858734  c_ui_frontend_interactions::bind() (.cold.20)
+0x102858745  c_ui_frontend_interactions::bind() (.cold.21)
+0x102858756  c_ui_frontend_interactions::bind() (.cold.22)
+0x102858767  c_ui_frontend_interactions::bind() (.cold.23)
+0x102858778  c_ui_frontend_interactions::bind() (.cold.24)
+0x102858789  c_ui_frontend_interactions::bind() (.cold.25)
+0x10285879a  c_ui_frontend_interactions::bind() (.cold.26)
+0x1028587ab  c_ui_frontend_interactions::bind() (.cold.27)

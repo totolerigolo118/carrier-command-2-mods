@@ -1,0 +1,89 @@
+BUILD.txt - how the plugin was compiled and tested (record of the cloud session of 2026-10-26)
+
+ANSWER TO "CAN 32-BIT WINDOWS C BE COMPILED HERE?": YES.
+First method tried worked, so the other two (apt gcc-mingw-w64-i686, anything else) were not needed
+and were not tried.
+
+--------------------------------------------------------------------------------------------------
+1. Compiler: Zig 0.15.2 from PyPI, used as a C cross-compiler (the same version the SDK asks for)
+--------------------------------------------------------------------------------------------------
+Machine : Linux 6.18.44 x86_64 (Ubuntu 24.04.5, a cloud container), Python 3.13.17, pip 26.2.2.
+
+  python3 -m venv zigenv/venv
+  zigenv/venv/bin/pip install ziglang==0.15.2
+      -> Successfully installed ziglang-0.15.2
+         file: ziglang-0.15.2-py3-none-manylinux_2_12_x86_64.manylinux2010_x86_64.musllinux_1_1_x86_64.whl
+         sha256 of that file: 806316453d1ede7174ed3fefb8e5348154629089c3bb5fe812dfd0e172fac130
+  zigenv/venv/bin/python -m ziglang version
+      -> 0.15.2
+  zigenv/venv/bin/python -m ziglang cc --version
+      -> clang version 20.1.2 (https://github.com/ziglang/zig-bootstrap 7ef74e656cf8ddbd6bf891a8475892aa1afa6891)
+
+Note: this is the LINUX build of Zig 0.15.2. The Windows zip named in
+passation_windows/sdk_public_cc2x/SOURCE.txt (sha256 3a0ed1e8...cb0c) is another file of the same
+version; on the tower, `pip install ziglang==0.15.2` gives the Windows build of the same version
+(to be installed only with the modder's agreement, as the sheet requires).
+
+Check on the SDK's own example first (same flags as the SDK's build.py):
+  python -m ziglang cc -target x86-windows-gnu -std=c11 -O2 -Wall -Wextra -Wno-unused-parameter \
+      -Werror=implicit-function-declaration -fno-strict-aliasing -shared \
+      -I passation_windows/sdk_public_cc2x passation_windows/sdk_public_cc2x/examples_hello_plugin/hello.c \
+      -o cc2x_hello.dll
+  -> cc2x_hello.dll: PE32 executable (DLL) (GUI) Intel 80386, for MS Windows, 7 sections
+
+--------------------------------------------------------------------------------------------------
+2. Building the plugin
+--------------------------------------------------------------------------------------------------
+From the extension_windows folder:
+
+  python build.py                      # uses `zig` on the PATH, else `python -m ziglang`
+  python build.py --zig PATH_TO_ZIG    # or: set CC2X_ZIG
+  python build.py --sdk DIR            # folder that holds cc2x.h (default: ../passation_windows/sdk_public_cc2x)
+
+Why --sdk: the SDK's own build.py expects include/cc2x.h, but in this repository the header sits at the
+root of passation_windows/sdk_public_cc2x/. build.py here finds it by itself.
+
+The compile line it runs (printed by build.py) is the SDK's flags plus our sources:
+  python -m ziglang cc -target x86-windows-gnu -std=c11 -O2 -Wall -Wextra -Wno-unused-parameter \
+      -Werror=implicit-function-declaration -fno-strict-aliasing -shared \
+      -I <sdk folder> -I src  src/cc2_patchs.c src/cp_config.c src/cp_groups.c src/cp_hook.c \
+      src/cp_hooks.c src/cp_ini.c src/cp_patch.c src/cp_pe.c src/cp_speed.c src/cp_tunables.c \
+      src/cp_win.c  -o dist/cc2x_cc2_patchs.dll
+
+Result of the last build (zero compiler warnings):
+  built dist/cc2x_cc2_patchs.dll (235008 bytes)
+    machine 0x014c (i386), PE32: True, DLL: True
+    exports: cc2x_plugin_load
+    imports: api-ms-win-crt-private-l1-1-0.dll, api-ms-win-crt-runtime-l1-1-0.dll,
+             api-ms-win-crt-string-l1-1-0.dll, KERNEL32.dll, api-ms-win-crt-stdio-l1-1-0.dll,
+             api-ms-win-crt-heap-l1-1-0.dll
+    check OK
+build.py reads the produced file back and verifies those points itself. The imports are the Windows
+"universal C runtime" (present on Windows 10 and later) and KERNEL32; the SDK's hello example needs the
+same runtime (it imports 5 of these 6 names; the extra one, api-ms-win-crt-private, comes from strchr).
+The DLL is NOT committed (.gitignore blocks *.dll); dist/ is ignored too.
+
+Install for development (on the tower, with the modder's agreement, never before the SDK itself is installed):
+  copy dist\cc2x_cc2_patchs.dll next to carrier_command.exe (CC2X loads every cc2x_*.dll of that folder)
+  copy cc2_patchs.ini.example to %APPDATA%\Carrier Command 2\cc2x\cc2_patchs.ini   (optional; without it all groups stay off)
+  remove the DLL and restart the game = original game.
+
+--------------------------------------------------------------------------------------------------
+3. Host-side tests (nothing here starts the game)
+--------------------------------------------------------------------------------------------------
+  tests/run_tests.sh
+
+needs: gcc (13.3.0 used), objdump (GNU binutils 2.42), Zig as above for steps 3 and 4; python3 + `pip install lupa` for step 5
+(steps 3-5 are skipped with a message if their tool is missing).
+  1  unit + entry-point tests over a fake 32-bit address space, gcc with AddressSanitizer + UBSan, -Werror
+  2  disassembly of the trampoline with objdump (display only)
+  3  the trampoline EXECUTED in a real 32-bit process (Zig target x86-linux-musl; the sandbox runs 32-bit ELF files)
+  4  the same unit tests built as a 32-bit program
+  5  the Lua shim run with a real Lua 5.3 (lupa)
+The real output of the last run is pasted in RAPPORT_cloud.md.
+
+--------------------------------------------------------------------------------------------------
+4. Refreshing the Mac comment blocks of src/cp_groups.c
+--------------------------------------------------------------------------------------------------
+  python3 tools/mac_table_to_comments.py           rewrite them from partage/cc2_reference.txt (part 10)
+  python3 tools/mac_table_to_comments.py --check   exit 1 if they are out of date

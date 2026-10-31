@@ -1,0 +1,181 @@
+CARRIER COMMAND 2 - THE MAC BINARY AND THE PATCHING METHOD
+==========================================================
+
+What this file covers: what the Mac executable looks like, why it is easy to read, how byte patches and code
+"caves" were made safely, and how everything was tested. Read 00_README.txt first for the conventions
+([GAME] / [ASM] / [EST] / [UNV] tags, address and coordinate conventions).
+
+
+1. THE BINARY
+-------------
+- File: carriercommand.app/Contents/MacOS/build_mac. Mach-O, x86_64 ONLY (no arm64 slice): on Apple Silicon it runs
+  under Rosetta 2. Graphics API: OpenGL.
+- Analysed build: md5 b0107170ddaf0245cbfee8a2d876aeb6, dated 2026-01-05. Every address in these notes is a
+  virtual address of THIS file. File offset = virtual address - 0x100000000 for the whole file (checked by the patch
+  tool on every site). Nothing is slid at patch time: addresses written into data are plain unslid values (dyld
+  rebases them at load time).
+- NOT STRIPPED: `nm` + `c++filt` give about 44,600 text symbols. That is the "Rosetta stone" of this project: the C++
+  function names tell what the code does. Roughly: 42 MB of machine code, of which ~37 MB are free libraries (PhysX,
+  Lua 5.3.5, ImGui); the game itself is about 7,300 `c_` functions + 1,700 engine `mm_` functions + ~4,500 not
+  classified, ~13,000 functions / ~5 MB.
+- NOT SIGNED: nothing to re-sign after patching; Steam does not verify the files at launch (only on "verify
+  integrity", which restores the original).
+- Naming conventions you will see:
+    c_vehicle_server_*          simulation side (runs on the host / single player)
+    c_vehicle_client_*          display side (what other players see)
+    c_environment_tile_*        islands (tiles), airfields, defences
+    mm_*                        engine layer (vectors, strings, physics, renderer)
+    e_*                         enums (e_vehicle_dock_state, e_crane_state, e_elevator_state ...)
+    parse_state_xml / get_state_data   (de)serialisation of the saved state; the XML field names that these
+                                functions use are the best way to name structure members (see section 6).
+- Slicing the disassembly: `objdump -d --start-address=0x... --stop-address=0x... build_mac`. To get the bounds of a
+  function, sort `nm` output by address. A single call on the whole file is huge; work in slices.
+- The game simulation runs at 30 ticks per second. Server classes run on the host: a patch to the SIMULATION of a
+  host benefits the players who join; their display stays stock [ASM; not tried with a second player].
+
+
+2. THE GOLDEN RULE FOR CONSTANTS: NEVER EDIT A SHARED CONSTANT
+--------------------------------------------------------------
+Float constants live in a pool (__TEXT,__const, around 0x102869720...) shared by hundreds of instructions
+(for example 0.05 has 148 references in the whole binary, only 7 of which are in the function we care about; 2.5 has 11
+references, 7 in that function). So a "change the speed" patch never edits the value. It edits the DISPLACEMENT of
+the few instructions that matter, so that they read ANOTHER constant that already exists with the wanted value.
+
+Encoding (type "rip" in the tables of 10_patch_tables.txt): an SSE instruction with a RIP-relative memory operand,
+e.g. `f3 0f 59 0d <disp32>` = mulss disp32(%rip),%xmm1. The disp32 is the LAST 4 bytes of the instruction and
+    new_disp32 = address_of_new_constant - (address_of_instruction + instruction_length).
+On this build every wanted value already existed in the pool (doubles of the stock values, 15.0, 100.0 ...), so
+nothing had to be added or moved. Useful existing constants (addresses valid for this build only):
+
+    0x10286976c = 5.0      0x1028697a4 = 0.05     0x1028697b0 = 0.1      0x1028697b4 = 10.0
+    0x1028697ac = 100.0    0x1028697b8 = 120.0    0x1028697bc = 2.5      0x1028697f4 = 0.15
+    0x102869898 = 30.0     0x1028699cc = 15.0     0x102869b2c = 144.0    0x102869af0 = 48.0
+    0x102869b30 = 72.0     0x102869a44 = 60.0     0x102869aa4 = 64.0     0x102869900 = 80.0
+    0x102869c0c = 96.0     0x1028698b8 = 150.0    0x102869a90 = 160.0    0x1028698ac = 50.0
+    0x102869850 = -2.0     0x10286973c = 384.0    0x102869b58 = 512.0    0x102869944 = 256.0
+    (768.0 does NOT exist in the pool)
+
+Type "imm" patches replace a few raw bytes: an immediate (e.g. `movl $0x3ecccccd,0x118(%r15)` -> $0x3f4ccccd), a branch
+target, or a whole instruction by a `jmp` into a code cave.
+
+Safety rules of the patch tool (workshop/outil/patchs_cc2.py), worth copying in any tool:
+  - refuse if the game is running;
+  - refuse if the file is not EXACTLY the analysed build (md5), after reconstructing the original in memory;
+  - each site must contain either ALL its original bytes or ALL its patched bytes (otherwise: damaged / game updated
+    -> touch nothing);
+  - refuse two patches that touch the same bytes;
+  - write through a temporary file, replace, re-read and compare; keep a copy of the original.
+  - for "rip" sites the tool checks `new_value == factor x old_value` with an EXACT float comparison.
+
+
+3. CODE CAVES: ADDING REAL CODE
+-------------------------------
+When a constant is not enough (conditions, loops, new Lua functions) we add code.
+
+Where: the body of  ImGui::ShowDemoWindow(bool*)  (0x10005af39 -> 0x100061c00, ~27 KB). It is the Dear ImGui demo
+window: dead code. No `call` and no address of it anywhere in the program (checked by scanning), so nothing else can
+reach it. It is in __TEXT, so it is executable, and Rosetta runs it (verified in game on 2026-10-24, first with the
+helicopter module). 11 KB of padding at the start of the Mach-O header (0xF40..0x3BD0) is also executable and was kept
+as a plan B.
+
+Writable scratch memory: statics of the same demo code, only read by dead code:
+    0x102a2a828  8 bytes   (a FILE* kept by the print-to-file patch)
+    0x102a2a864  4 bytes, __bss   (the CCTV scale)
+    0x1029e5680 .. 0x1029e5692     end of the buffer ShowDemoWindowWidgets()::text, __data, zeros in the file,
+                                   16 KB read only by the demo (the per-team speed modes)
+  others: `nm -m | grep ShowExample`. Rule: check that no address you use is read outside 0x10005af39..0x100061c00.
+
+Occupation map of the cave (so that modules never overlap):
+    0x10005af40 .. 0x10005c4e0   helicos_ascenseur (experiment, abandoned; 5,536 bytes)
+    0x10005d000 .. 0x10005d29f   vitesse_escadrille (reserved to 0x10005d400)
+    0x100061200 .. 0x1000615a4   grue_annulation (reserved to 0x100061600)
+    0x100061800 .. 0x1000619b7   cctv_net (reserved to 0x100061a00)
+    0x100061a00 .. 0x100061aa5   ecriture_releve (code + file path)
+    0x100061b80 .. 0x100061b9c   helicos_pres_ascenseur
+
+How a cave is built (workshop/outil/generateurs/generer_helicos_ascenseur.py is also the mini-linker used by the others):
+  1. Write the logic in C (or assembly, for places where you do not know which registers are live).
+  2. Compile with  clang -arch x86_64 -O2 -c -ffreestanding -fno-builtin -fno-stack-protector
+     -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-exceptions -fno-math-errno -mno-red-zone -fno-common
+     -Wall -Wextra -Werror . Sections taken from the object: __text, __literal4/8/16, __const.
+  3. The generator links the object itself at the target address: it resolves the relocations (BRANCH, SIGNED,
+     SIGNED_1/2/4) against a table `JEU` of game functions and data (names -> addresses, e.g. mm_string constructors,
+     operator new, set_attachment_transform ...), because the game functions are called directly by absolute address.
+  4. Output = one "imm" patch for the cave bytes + one "imm" patch per hook.
+Hooks: a hook REPLACES WHOLE INSTRUCTIONS with `jmp cave` (5 bytes) + `nop` padding. Two conditions:
+  - no jump of the game may land in the middle of the replaced bytes (verified from the list of all jump targets of
+    the function);
+  - the cave starts by REPLAYING the replaced instructions (with rip-relative operands re-encoded) and ends with a `jmp`
+    back to the first instruction after them.
+Calling C from a cave: keep the stack 16-byte aligned (the hooks push/pop an odd number of registers, count them) and
+save every register the surrounding code still needs (caller-saved registers, and xmm registers if they are live:
+`docking_manager_air::update` is ~5,000 instructions with everything inlined, you do not know what is live). Where
+that is unknown, write the cave in assembly using only registers that the replaced code overwrites right after.
+New Lua functions without touching `print`: the table of the Lua base library `base_funcs` (0x1029dd310) contains
+{ "dofile", luaB_dofile }. Neither the game nor the Lua mods installed use dofile, so that entry was REPLACED by
+{ "cc2_vitesse", vit_lua } (name string and function in the cave). `loadfile` is free too. This is the recipe for adding a
+Lua function without hooking anything: 16 bytes of data.
+
+
+4. HOW EACH PATCH WAS TESTED (and what the tags mean)
+-----------------------------------------------------
+  a. Disassembly: every patched site is re-read with objdump AFTER being applied; every call, jump and rip-relative
+     operand in a cave is re-read too. "Sites read exactly twice the old value" for the
+     float redirects.
+  b. Round trip: apply then restore = file identical to the byte.
+  c. Logic tests of a cave, off game: compile the C logic as a normal host program (with -DESSAI) around a FAKE manager
+     structure and run it (under Rosetta on Apple Silicon). See workshop/tests/essai_grue_annulation.c and
+     workshop/tests/test_grue_annulation.py (120 cases for the speed cave: workshop/tests/test_vitesse_escadrille.py).
+  d. Lua modules: run under Lua 5.3 outside the game (Python `lupa`) with fake game functions (workshop/tests/test_*.py).
+  e. In game, with measurements in GAME time, not wall-clock: the Mac running the author's tests slowed down to 50-72 %
+     of real time during a session, so a stopwatch is useless. The in-game clock (workshop/fichiers/horloge/library_custom_1.lua) shows
+     update_get_logic_tick()/30.
+  f. One modification tested at a time; never test on the real game files with scripts (an accident happened: a shell
+     variable holding several options was not split by zsh and the tool acted on the real game; the tool now refuses any
+     argument it does not understand).
+
+
+5. LIMITS AND CAVEATS
+---------------------
+- Everything has to be redone after a game update (new build -> new addresses).
+- A patch in a shared function also affects the AI carriers (they run the same code), unless the cave tests the team.
+- Multiplayer: executable patches are never sent to other players; see 08_constants_and_multiplayer.txt.
+- Aircraft and vehicles that are "in the middle of something" when a patch is removed: the elevator/crane/landing patches
+  are designed so that removing them never leaves the carrier stuck (see 02 and 03 for each risk).
+
+
+6. CROSS-CHECK OF NAMES: "WHAT WAS THE FIELD CALLED?"
+------------------------------------------------------
+The most useful trick for naming structure members: the saved-state parser. For example
+`c_vehicle_server_carrier::docking_manager_air::parse_state_xml` (0x100199dde) reads each saved member by name
+("mode", "runway_state", "docking_queue", "vehicle_id_crane", "crane_instructions", "docking_join_time" ...) into
+`this + offset`. Following the `lea` of the name string and the `lea`/`add` of the destination gives you the member
+offset. The name strings exist in every build, and the XML save format is the same on every platform: that is how
+you can rediscover the structure on a build WITHOUT symbols (see 11_porting_and_priorities.txt).
+
+
+7. STRUCTURES IN ONE PLACE (Mac x86_64 offsets, [ASM])
+------------------------------------------------------
+docking_manager_air  (this = carrier + 0x15e8):
+    0x00 mode (0 idle, 1 returns, 2 launches)     0x04 elevator state for the screens
+    0x08 crane_instructions ring buffer (ptr 0x08, capacity 0x10, start 0x14, count 0x18)
+    0x20 is_crane_lifting      0x24 runway_state      0x28 id released from "hold at launch" (NOT saved)
+    0x48 docking_queue (12-byte elements: id, wait state, timer)       0x60 undocking_queue
+    0x78 vehicle_id_crane   0x7c vehicle_id_lift   0x80 vehicle_id_runway   0x84 vehicle_id_rotor_takeoff   (-1 = empty)
+    0x88 0x8c 0x90 0x94  bay index of those four (vehicle_attachment_index_*)
+    0x98 node hanger_center (not saved)  0xa0 lift_lower  0xa4 lift_upper  0xa8 runway_start  0xac runway_end
+    0xb0 paths_crane (+0x18 progress = 0xc8, +0x1c speed = 0xcc)   0xd0 paths_lift   0xf0 paths_runway (progress 0x108,
+    speed 0x10c)   0x110 docking_join_time (approach timer)   0x118 landing frame (mat34_f64)
+carrier (c_vehicle_server_carrier):
+    0x14e0 physics link of `lift_constraint` (found by name in ::build 0x100193022)
+    0x1218 energy   0x1518 elevator height (-9 down .. 0 up)   0x1520 levels   0x152c offset   0x1538 setpoint (0 down, 1 up)
+    0x153c / 0x1544 crane x / z   0x1540 hook height (12 up, 11 down)   0x1548 crane rotation (0 or pi)
+    0x1f0 + 0x70 x bay  = the bay slots (attachments) of the carrier
+vehicle (c_vehicle_server base):
+    0x220 dock_state    0x260 team pointer (c_team_server: +0x14 number, +0x19 is_ai_controlled, +0x1a is_neutral)
+    0x2a0 control_mode (0 waypoints, 1 other, 3 imposed setpoint)   0x2a8/0x2b0/0x2b8 target (double, world)
+    0x2c0/0x2c4 direction   0x2c8 target speed   0x2cc power   0x3e8..0x3f4 commands (pitch.., 0x3f4 = throttle)
+    0xd0 wheels (contact when +0 >= 0.01 and +4 <= 0.1)    0x90 definition type (10 = heavy wing = Manta)
+    virtual calls: 0xa0 = get_is_rotor, 0x108 = undock, 0x138(1) = gear / landing state
+These offsets belong to the Mac x86_64 layout (8-byte pointers, Itanium C++ ABI). A 32-bit Windows build cannot have
+the same offsets: see 11_porting_and_priorities.txt before reusing any of them.

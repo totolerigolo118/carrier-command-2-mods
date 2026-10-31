@@ -1,0 +1,37 @@
+OK     T1 sha256 des 3 copies 
+OK     T2 8E7FCBB6 = original + ascenseur_x2 + temps_x2, sans pont_retour_x2, aucun octet inexplique {'ascenseur_x2': 32, 'atterrissage_cercle': 0, 'atterrissage_creneau': 0, 'helicos_approche_x2': 0, 'pont_retour_x2': 0, 'temps_x2': 1}
+OK     T3 6 modules portes, memes nombres de changements que les originaux 
+OK     T3b sha256_origine = 461E1262 et build du nouvel exe 
+OK     T3c va/offset coherents avec le nouvel exe 
+OK     T3d champ avant = octets du nouvel exe 
+OK     T4 41 changements : meme instruction (11 instr.), valeurs de constantes identiques, relocations []
+OK     T4b en-tete : 1 ecriture (0x310) + 4 lectures vers VA 0x400310 valeur ecrite -0.06666667014360428
+OK     T5 copie ascenseur_x2           : 32 changements, 79 octets differents de 461E1262, seuls les octets prevus sha256 1D004BEF0B90C469FE3251FE8C67F871348DECC1E91F5D8113CFBBA41210C8A2
+OK     T5 retrait ascenseur_x2         : redonne exactement 461E1262 
+OK     T5 sha256_patche du JSON = copie fabriquee (ascenseur_x2) 
+OK     T5 copie atterrissage_cercle    :  3 changements,  6 octets differents de 461E1262, seuls les octets prevus sha256 A8B4F4490DAC1F7551914C944A046C35C0CC1AA6CCC03BA461A9C43546FEB402
+OK     T5 retrait atterrissage_cercle  : redonne exactement 461E1262 
+OK     T5 sha256_patche du JSON = copie fabriquee (atterrissage_cercle) 
+OK     T5 copie atterrissage_creneau   :  3 changements,  6 octets differents de 461E1262, seuls les octets prevus sha256 DD55A1A54844250ACAF712D01C93AAB1F3DB27AB4B4B424BE890699A65A5FBC7
+OK     T5 retrait atterrissage_creneau : redonne exactement 461E1262 
+OK     T5 sha256_patche du JSON = copie fabriquee (atterrissage_creneau) 
+OK     T5 copie helicos_approche_x2    :  1 changements,  2 octets differents de 461E1262, seuls les octets prevus sha256 0DF816F7D5E73B964A4150E907AD5A863999C83ED2131D1AD28899EADEAFD727
+OK     T5 retrait helicos_approche_x2  : redonne exactement 461E1262 
+OK     T5 sha256_patche du JSON = copie fabriquee (helicos_approche_x2) 
+OK     T5 copie pont_retour_x2         :  1 changements,  1 octets differents de 461E1262, seuls les octets prevus sha256 41A00F2CCA385B11B61E99C85B4A26B32E8D9A90F0BF55458DE0F4EB09FA3B0E
+OK     T5 retrait pont_retour_x2       : redonne exactement 461E1262 
+OK     T5 sha256_patche du JSON = copie fabriquee (pont_retour_x2) 
+OK     T5 copie temps_x2               :  1 changements,  2 octets differents de 461E1262, seuls les octets prevus sha256 A2353B6A68A34C2B2CD0E42C0C42DB1DC2E3B73C5A09769C0CCD15B5A85C3EFB
+OK     T5 retrait temps_x2             : redonne exactement 461E1262 
+OK     T5 sha256_patche du JSON = copie fabriquee (temps_x2) 
+OK     T5 copie TOUS                   : 41 changements, 96 octets differents de 461E1262, seuls les octets prevus sha256 9B902B5C614D192EEBB3C87ECC1568CB0322E95652A5CD65B746D7DCDA234A41
+OK     T5 retrait TOUS                 : redonne exactement 461E1262 
+OK     T5b TOUS moins temps_x2 = copie fabriquee avec les 5 autres 
+OK     T6 ascenseur_x2 + temps_x2 portes : memes valeurs lues que dans 8E7FCBB6 (ancien exe patche) []
+OK     T7a refuse une sortie dans un chemin steamapps (rien ecrit) 
+OK     T7b refuse sortie = entree 
+OK     T7c refuse l ancien exe (mauvais sha256) 
+OK     T7d etat de la copie TOUS : 6 modules patches sha256 : 9B902B5C614D192EEBB3C87ECC1568CB0322E95652A5CD65B746D7DCDA234A41 | coherent avec le nouvel exe + modules portes : True |   ascenseur_x2           patche |   atterrissage_cercle    patche |   atterrissage_creneau   patche |   helicos_approche_x2    patche |   pont_retour_x2         patche |   temps_x2               patche | 
+OK     T8 les 3 copies de copies/ sont intactes 
+
+RESULTAT GLOBAL : OK

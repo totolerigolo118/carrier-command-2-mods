@@ -1,0 +1,44 @@
+{
+ "nom": "atterrissage_creneau",
+ "description": "creneau de piste elargi : la piste peut etre donnee a l'avion pendant tout le virage arriere (3 sauts)",
+ "avertissement": "Change le circuit d'attente des avions au retour pour les DEUX porte-avions (le code est le meme). Tout ou rien : les 3 changements vont ensemble. Jamais vu en jeu avant la premiere mesure.",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11353600,
+  "horodatage_pe": "0x6a36c177",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "1C9A01C3007CB2BEC2A04D716812CF9F24C87EFA11056395C89DDD7D2C341026",
+ "sha256_patche": "63D8D2800D73BD3DE48C643E24DC6C0B847ACB87D83B716B2541ED4EED67E7A8",
+ "nb_changements": 3,
+ "changements": [
+  {
+   "va": 7346684,
+   "offset": 3149308,
+   "avant": "04010000",
+   "apres": "2a000000",
+   "role": "etat 1 du circuit (1re moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x007019fa]",
+   "reglage": "LANDING_GATE_STATE1",
+   "constante_va": 0
+  },
+  {
+   "va": 7347509,
+   "offset": 3150133,
+   "avant": "cbfdffff",
+   "apres": "f1fcffff",
+   "role": "etat 2 (2e moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x00701d33]",
+   "reglage": "LANDING_GATE_STATE2",
+   "constante_va": 0
+  },
+  {
+   "va": 7347535,
+   "offset": 3150159,
+   "avant": "b1fdffff",
+   "apres": "d7fcffff",
+   "role": "passage etat 2 -> 3 : `jmp 0x701b04` (sortie) -> `jmp 0x701a2a` (test de la piste) [jmp 0x701b04 a 0x00701d4e]",
+   "reglage": "LANDING_GATE_STATE2_TO_3",
+   "constante_va": 0
+  }
+ ]
+}

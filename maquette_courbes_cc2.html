@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette courbes CC2</title>
+<style>
+@font-face { font-family: "LanaPixel"; src: local("LanaPixel"); }
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10); --wash: rgba(11,11,11,0.06);
+  --moi: #2a78d6; --adv: #eb6834; --iles: #1baf7a; --mis: #6250d6; --obu: #eda100;
+  --pont: #c3c2b7; --pil: #e87ba4; --carte: #008300; --autre: #898781;
+  --seq0: #e3eefc; --seq1: #0d366b; --vfill: rgba(11,11,11,0.05);
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06);
+    --moi: #3987e5; --adv: #d95926; --iles: #199e70; --mis: #9085e9; --obu: #c98500;
+    --pont: #52514e; --pil: #d55181; --carte: #008300; --autre: #898781;
+    --seq0: #1f2a38; --seq1: #9ec5f4; --vfill: rgba(255,255,255,0.05);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06);
+  --moi: #3987e5; --adv: #d95926; --iles: #199e70; --mis: #9085e9; --obu: #c98500;
+  --pont: #52514e; --pil: #d55181; --carte: #008300; --autre: #898781;
+  --seq0: #1f2a38; --seq1: #9ec5f4; --vfill: rgba(255,255,255,0.05);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.45; }
+header.page { max-width: 1400px; margin: 0 auto; padding: 24px 16px 8px; }
+header.page h1 { font-size: 22px; margin: 0 0 6px; }
+header.page p { margin: 4px 0; color: var(--ink2); max-width: 900px; }
+.grille { max-width: 1400px; margin: 0 auto; padding: 8px 16px 40px; display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 600px), 1fr)); }
+.carte-v { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: 16px; min-width: 0; }
+.tete { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+.num { flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: var(--surface); display: grid; place-items: center; font-weight: 700; font-size: 20px; }
+.tete h2 { margin: 0; font-size: 17px; }
+.tete p { margin: 2px 0 0; color: var(--ink2); font-size: 13px; }
+.lecture { position: sticky; top: 0; z-index: 2; background: var(--surface); border-bottom: 1px solid var(--grid); padding: 6px 0; margin-bottom: 6px; font-size: 12.5px; color: var(--ink2); min-height: 2.6em; font-variant-numeric: tabular-nums; }
+.lecture b { color: var(--ink); font-weight: 600; }
+.lecture .vide { color: var(--muted); }
+.bloc { margin: 10px 0 2px; }
+.bloc .titre { font-size: 12.5px; font-weight: 600; color: var(--ink); display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.bloc .titre .sous { font-weight: 400; color: var(--muted); }
+.legende { display: inline-flex; gap: 12px; flex-wrap: wrap; font-weight: 400; color: var(--ink2); font-size: 12px; }
+.legende i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.legende i.ligne { height: 2px; border-radius: 1px; vertical-align: 3px; width: 14px; }
+svg { display: block; width: 100%; overflow: visible; }
+svg text { font-family: var(--font); font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.tuiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 4px 0 8px; }
+.tuile { border: 1px solid var(--grid); border-radius: 8px; padding: 8px 10px; }
+.tuile .v { font-size: 22px; font-weight: 650; color: var(--ink); }
+.tuile .l { font-size: 12px; color: var(--ink2); }
+@media (max-width: 520px) { .tuiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.bilan { font-size: 13.5px; color: var(--ink); margin: 6px 0 4px; }
+.bilan p { margin: 3px 0; }
+.boutons { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.boutons button, .bascule { font: inherit; font-size: 12.5px; border: 1px solid var(--axis); background: transparent; color: var(--ink2); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.boutons button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.bascule { display: inline-flex; align-items: center; gap: 6px; }
+.bascule input { margin: 0; }
+.verdict { font-size: 13px; margin: 6px 0; color: var(--ink); }
+.nuages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 14px; }
+@media (max-width: 700px) { .nuages { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.nuage .titre { font-size: 12.5px; font-weight: 600; }
+.nuage .lien { font-size: 12px; color: var(--ink2); }
+.episodes { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.ep { display: grid; grid-template-columns: 92px 1fr 150px; gap: 10px; align-items: center; padding: 7px 8px; border: 1px solid var(--grid); border-radius: 8px; }
+.ep.pire { border-color: var(--ink); }
+.ep .h { font-size: 12.5px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.ep .quoi { font-size: 13px; color: var(--ink); }
+.ep .quoi .puces { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
+.ep .puce { font-size: 11.5px; color: var(--ink2); border: 1px solid var(--grid); border-radius: 999px; padding: 0 7px; }
+.ep .marque { font-size: 11px; font-weight: 700; color: var(--surface); background: var(--ink); border-radius: 4px; padding: 0 5px; margin-left: 6px; }
+.ep .vit { font-size: 12px; color: var(--ink2); text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .ep { grid-template-columns: 1fr; } .ep .vit { text-align: left; } }
+.etiq { font-size: 11px; color: var(--ink2); }
+/* variante 6 : look des ecrans du porte-avions */
+.v6 { --surface: #04100f; --ink: #10ff7f; --ink2: #0fbf60; --muted: #3f8f6a; --grid: #10302a; --axis: #1f5a48; --ring: #10403a; --wash: rgba(16,255,127,0.08);
+  --moi: #10ffff; --adv: #ff3a3a; --iles: #ffff10; --mis: #ff3a3a; --obu: #ffff10; --pont: #1f5a48; --pil: #10ffff; --carte: #ffff10; --autre: #3f8f6a; --vfill: rgba(16,255,127,0.10);
+  --font: "LanaPixel", monospace; background: #020807; color: var(--ink); font-family: var(--font); border-color: #10403a; }
+.v6 .num { background: #10ff7f; color: #020807; font-family: var(--font); }
+.v6 .tete p, .v6 .bilan { color: var(--ink2); }
+.v6 .ecran { background: var(--surface); border: 1px solid #1f5a48; padding: 6px 8px 8px; margin: 8px 0; image-rendering: pixelated; }
+.v6 .ecran .titre { text-transform: uppercase; letter-spacing: 1px; color: var(--ink); font-weight: 400; font-size: 13px; }
+.v6 .lecture { background: #020807; color: var(--ink2); border-color: #10403a; font-family: var(--font); font-size: 13px; }
+.v6 .lecture b { color: var(--ink); font-weight: 400; }
+.v6 svg text { font-family: "LanaPixel", monospace; font-size: 12px; }
+.v6 .legende { color: var(--ink2); font-size: 12px; }
+.v6 h2 { font-weight: 400; text-transform: uppercase; letter-spacing: 1px; }
+footer.page { max-width: 1400px; margin: 0 auto; padding: 0 16px 40px; color: var(--ink2); }
+</style>
+</head>
+<body>
+<header class="page">
+  <h1>Maquette : tes courbes de lag de Carrier Command 2</h1>
+  <p>Six façons de présenter la page que Claude Code te fera après une partie. Les données sont les mêmes partout. <b>Température et processeur du Mac : vraies</b> (ta partie du 23/10, de 17:15 à 17:33, relevées par ton moniteur). <b>Tout ce qui vient du jeu est inventé</b> pour l'exemple (vitesse, unités, missiles, écrans, ce que tu faisais), en attendant ta première partie enregistrée.</p>
+  <p>Passe la souris sur les courbes : la ligne du haut donne tous les chiffres au même instant. Réponds par un numéro, ou un mélange (« le 1 avec les bandes du 2 »).</p>
+</header>
+
+<main class="grille">
+  <section class="carte-v" id="v1">
+    <div class="tete"><div class="num">1</div><div><h2>Colonne de courbes</h2><p>Un bilan en haut, puis une courbe par sujet, empilées sur le même axe de temps. On lit de haut en bas.</p></div></div>
+    <div class="lecture"></div>
+    <div class="tuiles"></div>
+    <div class="bilan"></div>
+    <label class="bascule"><input type="checkbox" class="comparer"> Comparer avec une autre partie (inventée, plus fluide)</label>
+    <div class="corps"></div>
+  </section>
+
+  <section class="carte-v" id="v2">
+    <div class="tete"><div class="num">2</div><div><h2>Une grande courbe et des bandes</h2><p>La vitesse en grand. Dessous, une bande par sujet, colorée selon la quantité. On cherche la bande qui change de couleur quand la vitesse plonge.</p></div></div>
+    <div class="lecture"></div>
+    <div class="bilan"></div>
+    <div class="corps"></div>
+  </section>
+
+  <section class="carte-v" id="v3">
+    <div class="tete"><div class="num">3</div><div><h2>Superposer un sujet à la vitesse</h2><p>Une seule courbe : la vitesse, plus le sujet que tu choisis, ramené en pourcentage de son maximum pour tenir sur la même échelle.</p></div></div>
+    <div class="lecture"></div>
+    <div class="boutons"></div>
+    <div class="corps"></div>
+    <div class="verdict"></div>
+  </section>
+
+  <section class="carte-v" id="v4">
+    <div class="tete"><div class="num">4</div><div><h2>Qu'est-ce qui va avec le lag ?</h2><p>Un nuage par sujet : chaque point = 5 secondes de jeu. Si les points descendent vers la droite, plus il y en a, plus le jeu ralentit. Classés de ce qui va le plus avec le ralentissement à ce qui y va le moins.</p></div></div>
+    <div class="lecture"></div>
+    <div class="bilan"></div>
+    <div class="corps"></div>
+  </section>
+
+  <section class="carte-v" id="v5">
+    <div class="tete"><div class="num">5</div><div><h2>La partie racontée</h2><p>Le bilan en phrases, puis la partie découpée en moments (pont, commandes, carte), avec pour chacun sa vitesse et ce qui se passait.</p></div></div>
+    <div class="lecture"></div>
+    <div class="bilan"></div>
+    <div class="corps"></div>
+  </section>
+
+  <section class="carte-v v6" id="v6">
+    <div class="tete"><div class="num">6</div><div><h2>Écrans du porte-avions</h2><p>Les mêmes courbes que le 1, habillées comme les écrans du jeu : police du jeu, vert sur fond noir.</p></div></div>
+    <div class="lecture"></div>
+    <div class="bilan"></div>
+    <div class="corps"></div>
+  </section>
+</main>
+<footer class="page">Fichier : maquette_courbes_cc2.html (atelier CC2). Rien n'est installé dans le jeu.</footer>
+
+<script>
+const D = {"pas":5,"partie":{"nom":"Partie du 23/10 a 17:14","points":[{"t":1792768520,"cpu":46.7,"temp":69.1,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768525,"cpu":37.7,"temp":69.9,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768530,"cpu":34.2,"temp":70.4,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768535,"cpu":54.5,"temp":75.2,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768540,"cpu":58.1,"temp":77.3,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768545,"cpu":85.0,"temp":80.0,"v":0.729,"jeu":109,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768550,"cpu":91.5,"temp":82.0,"v":0.741,"jeu":221,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768555,"cpu":88.6,"temp":82.5,"v":0.726,"jeu":329,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768560,"cpu":81.5,"temp":82.1,"v":0.732,"jeu":439,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768565,"cpu":73.5,"temp":83.2,"v":0.725,"jeu":548,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768570,"cpu":73.3,"temp":82.8,"v":0.727,"jeu":657,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768575,"cpu":84.7,"temp":83.5,"v":0.738,"jeu":768,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768580,"cpu":90.1,"temp":83.9,"v":0.718,"jeu":876,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768585,"cpu":94.4,"temp":85.1,"v":0.715,"jeu":983,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768590,"cpu":79.8,"temp":85.4,"v":0.721,"jeu":1091,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768595,"cpu":73.5,"temp":85.1,"v":0.703,"jeu":1196,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768600,"cpu":68.6,"temp":85.1,"v":0.715,"jeu":1304,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768605,"cpu":71.3,"temp":83.9,"v":0.735,"jeu":1414,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768610,"cpu":65.4,"temp":83.3,"v":0.73,"jeu":1523,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768615,"cpu":65.9,"temp":82.4,"v":0.723,"jeu":1632,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768620,"cpu":63.6,"temp":83.2,"v":0.716,"jeu":1739,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768625,"cpu":65.8,"temp":83.2,"v":0.703,"jeu":1845,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768630,"cpu":64.6,"temp":83.0,"v":0.707,"jeu":1951,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768635,"cpu":68.2,"temp":82.7,"v":0.72,"jeu":2059,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,44,9,8]},{"t":1792768640,"cpu":71.2,"temp":82.6,"v":0.732,"jeu":2169,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,1,0,3,2,0,1,44,9,8]},{"t":1792768645,"cpu":65.9,"temp":81.8,"v":0.718,"jeu":2276,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,1,0,3,2,0,1,44,9,8]},{"t":1792768650,"cpu":65.8,"temp":81.0,"v":0.718,"jeu":2384,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,1,0,3,2,0,1,44,9,8]},{"t":1792768655,"cpu":67.0,"temp":81.0,"v":0.704,"jeu":2489,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,1,0,3,2,0,1,44,9,8]},{"t":1792768660,"cpu":65.0,"temp":79.9,"v":0.704,"jeu":2595,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,1,0,3,2,0,1,44,9,8]},{"t":1792768665,"cpu":69.8,"temp":79.0,"v":0.711,"jeu":2702,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,1,0,3,2,0,1,44,9,8]},{"t":1792768670,"cpu":63.7,"temp":78.3,"v":0.721,"jeu":2810,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,2,0,3,2,0,1,44,9,8]},{"t":1792768675,"cpu":60.7,"temp":78.0,"v":0.691,"jeu":2913,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,2,0,3,2,0,1,44,9,8]},{"t":1792768680,"cpu":62.4,"temp":77.5,"v":0.702,"jeu":3019,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,2,0,3,2,0,1,44,9,8]},{"t":1792768685,"cpu":60.2,"temp":76.0,"v":0.708,"jeu":3125,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,2,0,3,2,0,1,44,9,8]},{"t":1792768690,"cpu":60.6,"temp":76.3,"v":0.701,"jeu":3230,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,2,0,3,2,0,1,44,9,8]},{"t":1792768695,"cpu":61.1,"temp":75.8,"v":0.713,"jeu":3337,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,2,0,3,2,0,1,44,9,8]},{"t":1792768700,"cpu":62.3,"temp":74.5,"v":0.699,"jeu":3442,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,3,1,3,2,0,1,44,9,8]},{"t":1792768705,"cpu":60.0,"temp":74.5,"v":0.694,"jeu":3546,"act":0,"ecr":17,"mis":2,"obu":0,"u":[0,3,1,3,2,0,1,44,9,8]},{"t":1792768710,"cpu":60.4,"temp":74.0,"v":0.723,"jeu":3655,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,3,1,3,2,0,1,44,9,8]},{"t":1792768715,"cpu":59.8,"temp":73.2,"v":0.691,"jeu":3758,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,3,1,3,2,0,1,44,9,8]},{"t":1792768720,"cpu":60.7,"temp":73.7,"v":0.705,"jeu":3864,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,3,1,3,2,0,1,44,9,8]},{"t":1792768725,"cpu":67.4,"temp":73.2,"v":0.698,"jeu":3969,"act":0,"ecr":17,"mis":2,"obu":0,"u":[0,3,1,3,2,0,1,44,9,8]},{"t":1792768730,"cpu":64.7,"temp":73.4,"v":0.721,"jeu":4077,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,2,0,1,44,9,8]},{"t":1792768735,"cpu":60.2,"temp":73.5,"v":0.718,"jeu":4184,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,2,0,1,44,9,8]},{"t":1792768740,"cpu":62.6,"temp":72.8,"v":0.711,"jeu":4291,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,2,0,1,44,9,8]},{"t":1792768745,"cpu":60.1,"temp":73.0,"v":0.714,"jeu":4398,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,2,0,1,44,9,8]},{"t":1792768750,"cpu":60.6,"temp":73.3,"v":0.717,"jeu":4506,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,2,0,1,44,9,8]},{"t":1792768755,"cpu":60.6,"temp":73.0,"v":0.708,"jeu":4612,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,2,0,1,44,9,8]},{"t":1792768760,"cpu":60.9,"temp":73.3,"v":0.693,"jeu":4716,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768765,"cpu":59.5,"temp":72.5,"v":0.701,"jeu":4821,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768770,"cpu":60.7,"temp":72.8,"v":0.708,"jeu":4927,"act":0,"ecr":17,"mis":2,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768775,"cpu":60.4,"temp":73.5,"v":0.716,"jeu":5035,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768780,"cpu":61.8,"temp":72.5,"v":0.708,"jeu":5141,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768785,"cpu":67.4,"temp":72.8,"v":0.734,"jeu":5251,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768790,"cpu":66.6,"temp":72.5,"v":0.689,"jeu":5354,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768795,"cpu":59.4,"temp":72.4,"v":0.711,"jeu":5461,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768800,"cpu":62.6,"temp":72.7,"v":0.727,"jeu":5570,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768805,"cpu":61.3,"temp":73.5,"v":0.694,"jeu":5674,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768810,"cpu":61.1,"temp":73.1,"v":0.698,"jeu":5779,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768815,"cpu":61.8,"temp":73.4,"v":0.689,"jeu":5882,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768820,"cpu":62.1,"temp":73.5,"v":0.715,"jeu":5989,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768825,"cpu":64.5,"temp":74.0,"v":0.674,"jeu":6090,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768830,"cpu":64.2,"temp":72.9,"v":0.694,"jeu":6194,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768835,"cpu":60.3,"temp":73.2,"v":0.686,"jeu":6297,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768840,"cpu":62.9,"temp":73.3,"v":0.69,"jeu":6401,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768845,"cpu":66.8,"temp":73.7,"v":0.702,"jeu":6506,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768850,"cpu":66.4,"temp":73.1,"v":0.687,"jeu":6609,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768855,"cpu":59.1,"temp":74.0,"v":0.721,"jeu":6717,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768860,"cpu":60.1,"temp":73.6,"v":0.72,"jeu":6825,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768865,"cpu":58.4,"temp":74.3,"v":0.698,"jeu":6930,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768870,"cpu":62.0,"temp":73.8,"v":0.706,"jeu":7036,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768875,"cpu":61.7,"temp":74.6,"v":0.691,"jeu":7140,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,44,9,8]},{"t":1792768880,"cpu":71.7,"temp":73.6,"v":0.694,"jeu":7244,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768885,"cpu":61.2,"temp":73.3,"v":0.714,"jeu":7351,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768890,"cpu":60.3,"temp":73.7,"v":0.695,"jeu":7455,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768895,"cpu":58.0,"temp":73.6,"v":0.676,"jeu":7557,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768900,"cpu":59.7,"temp":74.3,"v":0.705,"jeu":7662,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768905,"cpu":59.6,"temp":73.7,"v":0.678,"jeu":7764,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768910,"cpu":61.6,"temp":74.7,"v":0.695,"jeu":7868,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768915,"cpu":58.2,"temp":73.7,"v":0.692,"jeu":7972,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768920,"cpu":59.6,"temp":73.6,"v":0.681,"jeu":8074,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768925,"cpu":59.2,"temp":73.7,"v":0.705,"jeu":8180,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768930,"cpu":59.8,"temp":74.2,"v":0.701,"jeu":8285,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768935,"cpu":59.2,"temp":73.8,"v":0.695,"jeu":8389,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768940,"cpu":60.1,"temp":74.0,"v":0.687,"jeu":8492,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,44,9,8]},{"t":1792768945,"cpu":58.6,"temp":74.5,"v":0.711,"jeu":8599,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768950,"cpu":60.2,"temp":73.7,"v":0.708,"jeu":8705,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768955,"cpu":59.1,"temp":74.2,"v":0.706,"jeu":8811,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768960,"cpu":60.1,"temp":73.7,"v":0.693,"jeu":8915,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768965,"cpu":66.3,"temp":73.7,"v":0.691,"jeu":9019,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768970,"cpu":63.9,"temp":74.0,"v":0.663,"jeu":9118,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768975,"cpu":58.7,"temp":74.5,"v":0.71,"jeu":9225,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768980,"cpu":60.3,"temp":73.6,"v":0.701,"jeu":9330,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768985,"cpu":66.9,"temp":73.7,"v":0.698,"jeu":9435,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768990,"cpu":60.1,"temp":73.6,"v":0.677,"jeu":9536,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792768995,"cpu":59.4,"temp":73.6,"v":0.68,"jeu":9638,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,44,9,8]},{"t":1792769000,"cpu":58.6,"temp":74.6,"v":0.688,"jeu":9741,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769005,"cpu":56.4,"temp":74.4,"v":0.682,"jeu":9844,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769010,"cpu":59.2,"temp":73.8,"v":0.677,"jeu":9945,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769015,"cpu":57.9,"temp":74.0,"v":0.667,"jeu":10045,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769020,"cpu":58.5,"temp":74.8,"v":0.693,"jeu":10149,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769025,"cpu":64.7,"temp":73.8,"v":0.687,"jeu":10252,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769030,"cpu":63.4,"temp":73.8,"v":0.623,"jeu":10346,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769035,"cpu":58.1,"temp":74.0,"v":0.609,"jeu":10437,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769040,"cpu":60.5,"temp":73.7,"v":0.618,"jeu":10530,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769045,"cpu":58.0,"temp":74.4,"v":0.605,"jeu":10621,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769050,"cpu":59.5,"temp":73.8,"v":0.611,"jeu":10712,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769055,"cpu":59.1,"temp":73.7,"v":0.615,"jeu":10805,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,1,3,4,1,1,44,9,8]},{"t":1792769060,"cpu":59.7,"temp":73.7,"v":0.629,"jeu":10899,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769065,"cpu":58.5,"temp":73.4,"v":0.619,"jeu":10992,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769070,"cpu":59.6,"temp":74.3,"v":0.619,"jeu":11084,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769075,"cpu":58.7,"temp":73.4,"v":0.625,"jeu":11178,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769080,"cpu":60.6,"temp":74.0,"v":0.619,"jeu":11271,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769085,"cpu":66.2,"temp":74.0,"v":0.579,"jeu":11358,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769090,"cpu":63.9,"temp":73.7,"v":0.62,"jeu":11451,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769095,"cpu":59.3,"temp":73.5,"v":0.608,"jeu":11542,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769100,"cpu":61.6,"temp":73.7,"v":0.495,"jeu":11616,"act":1,"ecr":3,"mis":11,"obu":39,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769105,"cpu":58.6,"temp":74.3,"v":0.528,"jeu":11696,"act":1,"ecr":3,"mis":10,"obu":42,"u":[2,4,0,3,4,1,1,44,9,8]},{"t":1792769110,"cpu":59.8,"temp":73.6,"v":0.519,"jeu":11773,"act":1,"ecr":3,"mis":7,"obu":40,"u":[2,4,0,3,4,1,1,43,9,8]},{"t":1792769115,"cpu":58.9,"temp":73.2,"v":0.524,"jeu":11852,"act":1,"ecr":3,"mis":7,"obu":34,"u":[2,4,0,3,4,1,1,43,9,8]},{"t":1792769120,"cpu":59.7,"temp":73.3,"v":0.527,"jeu":11931,"act":1,"ecr":3,"mis":10,"obu":30,"u":[2,4,0,3,4,1,1,42,9,8]},{"t":1792769125,"cpu":58.7,"temp":72.9,"v":0.53,"jeu":12011,"act":1,"ecr":3,"mis":11,"obu":28,"u":[2,4,0,3,4,1,1,42,9,8]},{"t":1792769130,"cpu":59.7,"temp":73.2,"v":0.524,"jeu":12089,"act":1,"ecr":3,"mis":11,"obu":34,"u":[2,4,0,3,4,1,1,42,9,8]},{"t":1792769135,"cpu":58.8,"temp":73.3,"v":0.512,"jeu":12166,"act":1,"ecr":3,"mis":8,"obu":38,"u":[2,4,0,3,4,1,1,41,9,8]},{"t":1792769140,"cpu":59.4,"temp":73.4,"v":0.522,"jeu":12244,"act":1,"ecr":3,"mis":6,"obu":39,"u":[2,4,0,3,4,1,1,41,9,8]},{"t":1792769145,"cpu":66.6,"temp":72.8,"v":0.509,"jeu":12321,"act":1,"ecr":3,"mis":9,"obu":39,"u":[2,4,0,3,4,1,1,40,9,8]},{"t":1792769150,"cpu":64.0,"temp":73.5,"v":0.52,"jeu":12399,"act":1,"ecr":3,"mis":11,"obu":37,"u":[2,4,0,3,4,1,1,40,9,8]},{"t":1792769155,"cpu":59.6,"temp":73.3,"v":0.528,"jeu":12478,"act":1,"ecr":3,"mis":11,"obu":32,"u":[2,4,0,3,4,1,1,40,9,8]},{"t":1792769160,"cpu":60.0,"temp":73.5,"v":0.535,"jeu":12558,"act":1,"ecr":3,"mis":10,"obu":27,"u":[2,4,0,3,4,1,1,39,9,8]},{"t":1792769165,"cpu":58.7,"temp":73.2,"v":0.547,"jeu":12640,"act":1,"ecr":3,"mis":6,"obu":30,"u":[2,4,0,3,4,1,1,39,9,8]},{"t":1792769170,"cpu":59.2,"temp":73.7,"v":0.522,"jeu":12718,"act":1,"ecr":3,"mis":8,"obu":36,"u":[2,4,0,3,4,1,1,38,9,8]},{"t":1792769175,"cpu":60.1,"temp":73.0,"v":0.493,"jeu":12792,"act":1,"ecr":3,"mis":11,"obu":40,"u":[2,4,0,3,4,1,1,38,9,8]},{"t":1792769180,"cpu":69.0,"temp":73.3,"v":0.5,"jeu":12867,"act":1,"ecr":3,"mis":11,"obu":40,"u":[2,4,0,3,4,1,1,37,9,8]},{"t":1792769185,"cpu":60.7,"temp":73.4,"v":0.523,"jeu":12946,"act":1,"ecr":3,"mis":10,"obu":41,"u":[2,4,0,3,4,1,1,37,9,8]},{"t":1792769190,"cpu":59.8,"temp":73.3,"v":0.535,"jeu":13026,"act":1,"ecr":3,"mis":8,"obu":36,"u":[2,4,0,3,4,1,1,37,9,8]},{"t":1792769195,"cpu":57.8,"temp":73.0,"v":0.546,"jeu":13108,"act":1,"ecr":3,"mis":7,"obu":31,"u":[2,4,0,3,4,1,1,36,9,8]},{"t":1792769200,"cpu":59.5,"temp":73.4,"v":0.544,"jeu":13190,"act":1,"ecr":3,"mis":10,"obu":28,"u":[2,4,0,3,4,1,1,36,9,8]},{"t":1792769205,"cpu":59.1,"temp":73.3,"v":0.518,"jeu":13267,"act":1,"ecr":3,"mis":11,"obu":34,"u":[2,4,0,3,4,1,1,35,9,8]},{"t":1792769210,"cpu":61.5,"temp":73.6,"v":0.515,"jeu":13345,"act":1,"ecr":3,"mis":11,"obu":39,"u":[2,4,0,3,4,1,1,35,9,8]},{"t":1792769215,"cpu":58.3,"temp":73.5,"v":0.503,"jeu":13420,"act":1,"ecr":3,"mis":9,"obu":42,"u":[2,4,0,3,4,1,1,35,9,8]},{"t":1792769220,"cpu":60.8,"temp":74.0,"v":0.539,"jeu":13501,"act":1,"ecr":3,"mis":6,"obu":41,"u":[2,4,0,3,4,1,1,34,9,8]},{"t":1792769225,"cpu":57.9,"temp":73.4,"v":0.535,"jeu":13581,"act":1,"ecr":3,"mis":9,"obu":38,"u":[2,4,0,3,4,1,1,34,9,8]},{"t":1792769230,"cpu":59.8,"temp":73.8,"v":0.618,"jeu":13674,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,33,9,8]},{"t":1792769235,"cpu":60.2,"temp":73.4,"v":0.606,"jeu":13765,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,4,1,1,33,9,8]},{"t":1792769240,"cpu":59.7,"temp":73.7,"v":0.653,"jeu":13863,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769245,"cpu":58.1,"temp":73.5,"v":0.63,"jeu":13957,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769250,"cpu":59.7,"temp":73.7,"v":0.626,"jeu":14051,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769255,"cpu":58.2,"temp":73.3,"v":0.618,"jeu":14144,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769260,"cpu":59.5,"temp":72.7,"v":0.593,"jeu":14233,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769265,"cpu":65.6,"temp":73.2,"v":0.63,"jeu":14327,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769270,"cpu":63.6,"temp":73.3,"v":0.626,"jeu":14421,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769275,"cpu":58.0,"temp":72.7,"v":0.627,"jeu":14515,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769280,"cpu":59.8,"temp":74.0,"v":0.681,"jeu":14617,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769285,"cpu":57.9,"temp":73.3,"v":0.684,"jeu":14720,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769290,"cpu":59.7,"temp":72.8,"v":0.695,"jeu":14824,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769295,"cpu":60.3,"temp":72.9,"v":0.691,"jeu":14928,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,0,3,5,1,1,33,9,8]},{"t":1792769300,"cpu":59.6,"temp":73.1,"v":0.695,"jeu":15032,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769305,"cpu":58.1,"temp":72.9,"v":0.683,"jeu":15134,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769310,"cpu":59.2,"temp":73.4,"v":0.69,"jeu":15238,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769315,"cpu":57.6,"temp":73.1,"v":0.706,"jeu":15344,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769320,"cpu":59.3,"temp":73.1,"v":0.666,"jeu":15444,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769325,"cpu":68.4,"temp":73.7,"v":0.691,"jeu":15547,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769330,"cpu":67.2,"temp":73.7,"v":0.707,"jeu":15653,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769335,"cpu":58.0,"temp":73.2,"v":0.701,"jeu":15758,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769340,"cpu":60.1,"temp":73.4,"v":0.689,"jeu":15862,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769345,"cpu":57.7,"temp":74.2,"v":0.656,"jeu":15960,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769350,"cpu":59.0,"temp":72.9,"v":0.678,"jeu":16062,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769355,"cpu":58.8,"temp":73.1,"v":0.689,"jeu":16165,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769360,"cpu":59.4,"temp":74.3,"v":0.683,"jeu":16268,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769365,"cpu":57.7,"temp":74.0,"v":0.697,"jeu":16372,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769370,"cpu":59.1,"temp":74.0,"v":0.681,"jeu":16474,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769375,"cpu":58.6,"temp":73.3,"v":0.686,"jeu":16577,"act":0,"ecr":17,"mis":2,"obu":0,"u":[2,3,0,3,5,1,1,33,9,8]},{"t":1792769380,"cpu":59.6,"temp":74.0,"v":0.693,"jeu":16681,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769385,"cpu":65.5,"temp":73.0,"v":0.675,"jeu":16783,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769390,"cpu":63.4,"temp":73.3,"v":0.687,"jeu":16886,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769395,"cpu":58.1,"temp":73.0,"v":0.654,"jeu":16984,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769400,"cpu":59.3,"temp":73.8,"v":0.687,"jeu":17087,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769405,"cpu":59.2,"temp":72.8,"v":0.688,"jeu":17190,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769410,"cpu":59.0,"temp":73.5,"v":0.668,"jeu":17290,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769415,"cpu":60.0,"temp":73.4,"v":0.675,"jeu":17391,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769420,"cpu":59.7,"temp":73.3,"v":0.674,"jeu":17492,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769425,"cpu":60.3,"temp":73.1,"v":0.673,"jeu":17593,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769430,"cpu":58.9,"temp":73.1,"v":0.705,"jeu":17699,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769435,"cpu":57.4,"temp":73.2,"v":0.676,"jeu":17800,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769440,"cpu":58.8,"temp":73.4,"v":0.68,"jeu":17902,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769445,"cpu":64.8,"temp":73.2,"v":0.691,"jeu":18006,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769450,"cpu":63.2,"temp":72.9,"v":0.693,"jeu":18110,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769455,"cpu":57.7,"temp":74.0,"v":0.674,"jeu":18211,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,33,9,8]},{"t":1792769460,"cpu":61.8,"temp":72.9,"v":0.674,"jeu":18312,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,5,1,1,33,9,8]},{"t":1792769465,"cpu":59.6,"temp":73.3,"v":0.693,"jeu":18416,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,1,0,3,5,1,1,33,9,8]},{"t":1792769470,"cpu":59.1,"temp":73.7,"v":0.679,"jeu":18518,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,5,1,1,33,9,8]},{"t":1792769475,"cpu":59.6,"temp":72.9,"v":0.674,"jeu":18619,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,5,1,1,33,9,8]},{"t":1792769480,"cpu":69.2,"temp":73.1,"v":0.692,"jeu":18723,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769485,"cpu":60.7,"temp":72.8,"v":0.675,"jeu":18824,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769490,"cpu":59.4,"temp":72.7,"v":0.663,"jeu":18924,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769495,"cpu":57.5,"temp":73.0,"v":0.681,"jeu":19026,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769500,"cpu":58.9,"temp":72.9,"v":0.679,"jeu":19128,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769505,"cpu":59.0,"temp":72.8,"v":0.698,"jeu":19232,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769510,"cpu":61.3,"temp":72.8,"v":0.687,"jeu":19335,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769515,"cpu":57.6,"temp":73.4,"v":0.672,"jeu":19436,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769520,"cpu":59.3,"temp":73.5,"v":0.705,"jeu":19542,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769525,"cpu":57.9,"temp":73.6,"v":0.687,"jeu":19645,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769530,"cpu":59.8,"temp":73.6,"v":0.681,"jeu":19747,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,33,9,8]},{"t":1792769535,"cpu":58.4,"temp":73.0,"v":0.676,"jeu":19849,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769540,"cpu":60.3,"temp":72.8,"v":0.699,"jeu":19953,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769545,"cpu":58.3,"temp":73.2,"v":0.673,"jeu":20054,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769550,"cpu":60.6,"temp":73.6,"v":0.695,"jeu":20159,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769555,"cpu":58.1,"temp":72.8,"v":0.694,"jeu":20263,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769560,"cpu":59.8,"temp":73.2,"v":0.677,"jeu":20364,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769565,"cpu":65.9,"temp":72.8,"v":0.671,"jeu":20465,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769570,"cpu":84.8,"temp":71.8,"v":0.684,"jeu":20568,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769575,"cpu":81.6,"temp":72.9,"v":0.682,"jeu":20670,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769580,"cpu":71.0,"temp":72.3,"v":0.675,"jeu":20771,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,33,9,8]},{"t":1792769585,"cpu":61.0,"temp":72.3,"v":0.659,"jeu":20870,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,33,9,8]}]},"autre":{"nom":"Partie plus fluide (inventee)","points":[{"t":1792768520,"cpu":46.7,"temp":69.1,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768525,"cpu":37.7,"temp":69.9,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768530,"cpu":34.2,"temp":70.4,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768535,"cpu":54.5,"temp":75.2,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768540,"cpu":58.1,"temp":77.3,"v":null,"jeu":0,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768545,"cpu":85.0,"temp":80.0,"v":0.891,"jeu":134,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768550,"cpu":91.5,"temp":82.0,"v":0.933,"jeu":274,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768555,"cpu":88.6,"temp":82.5,"v":0.931,"jeu":413,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768560,"cpu":81.5,"temp":82.1,"v":0.912,"jeu":550,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768565,"cpu":73.5,"temp":83.2,"v":0.927,"jeu":689,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768570,"cpu":73.3,"temp":82.8,"v":0.886,"jeu":822,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768575,"cpu":84.7,"temp":83.5,"v":0.926,"jeu":961,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768580,"cpu":90.1,"temp":83.9,"v":0.923,"jeu":1099,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768585,"cpu":94.4,"temp":85.1,"v":0.9,"jeu":1234,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768590,"cpu":79.8,"temp":85.4,"v":0.932,"jeu":1374,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768595,"cpu":73.5,"temp":85.1,"v":0.923,"jeu":1513,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768600,"cpu":68.6,"temp":85.1,"v":0.899,"jeu":1648,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768605,"cpu":71.3,"temp":83.9,"v":0.926,"jeu":1786,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768610,"cpu":65.4,"temp":83.3,"v":0.935,"jeu":1927,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768615,"cpu":65.9,"temp":82.4,"v":0.916,"jeu":2064,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768620,"cpu":63.6,"temp":83.2,"v":0.927,"jeu":2203,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768625,"cpu":65.8,"temp":83.2,"v":0.937,"jeu":2344,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768630,"cpu":64.6,"temp":83.0,"v":0.935,"jeu":2484,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768635,"cpu":68.2,"temp":82.7,"v":0.918,"jeu":2622,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,0,0,3,2,0,1,14,0,0]},{"t":1792768640,"cpu":71.2,"temp":82.6,"v":0.913,"jeu":2759,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,1,0,3,2,0,1,14,0,0]},{"t":1792768645,"cpu":65.9,"temp":81.8,"v":0.911,"jeu":2895,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,1,0,3,2,0,1,14,0,0]},{"t":1792768650,"cpu":65.8,"temp":81.0,"v":0.917,"jeu":3033,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,1,0,3,2,0,1,14,0,0]},{"t":1792768655,"cpu":67.0,"temp":81.0,"v":0.917,"jeu":3171,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,1,0,3,2,0,1,14,0,0]},{"t":1792768660,"cpu":65.0,"temp":79.9,"v":0.923,"jeu":3309,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,1,0,3,2,0,1,14,0,0]},{"t":1792768665,"cpu":69.8,"temp":79.0,"v":0.919,"jeu":3447,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,1,0,3,2,0,1,14,0,0]},{"t":1792768670,"cpu":63.7,"temp":78.3,"v":0.929,"jeu":3586,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,2,0,3,2,0,1,14,0,0]},{"t":1792768675,"cpu":60.7,"temp":78.0,"v":0.93,"jeu":3726,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,2,0,3,2,0,1,14,0,0]},{"t":1792768680,"cpu":62.4,"temp":77.5,"v":0.9,"jeu":3861,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,2,0,3,2,0,1,14,0,0]},{"t":1792768685,"cpu":60.2,"temp":76.0,"v":0.927,"jeu":4000,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,2,0,3,2,0,1,14,0,0]},{"t":1792768690,"cpu":60.6,"temp":76.3,"v":0.943,"jeu":4141,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,2,0,3,2,0,1,14,0,0]},{"t":1792768695,"cpu":61.1,"temp":75.8,"v":0.923,"jeu":4280,"act":0,"ecr":17,"mis":2,"obu":2,"u":[0,2,0,3,2,0,1,14,0,0]},{"t":1792768700,"cpu":62.3,"temp":74.5,"v":0.911,"jeu":4416,"act":0,"ecr":17,"mis":2,"obu":0,"u":[0,3,1,3,2,0,1,14,0,0]},{"t":1792768705,"cpu":60.0,"temp":74.5,"v":0.906,"jeu":4552,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,3,1,3,2,0,1,14,0,0]},{"t":1792768710,"cpu":60.4,"temp":74.0,"v":0.922,"jeu":4690,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,3,1,3,2,0,1,14,0,0]},{"t":1792768715,"cpu":59.8,"temp":73.2,"v":0.913,"jeu":4827,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,3,1,3,2,0,1,14,0,0]},{"t":1792768720,"cpu":60.7,"temp":73.7,"v":0.92,"jeu":4965,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,3,1,3,2,0,1,14,0,0]},{"t":1792768725,"cpu":67.4,"temp":73.2,"v":0.92,"jeu":5103,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,3,1,3,2,0,1,14,0,0]},{"t":1792768730,"cpu":64.7,"temp":73.4,"v":0.926,"jeu":5242,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,2,0,1,14,0,0]},{"t":1792768735,"cpu":60.2,"temp":73.5,"v":0.897,"jeu":5377,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,2,0,1,14,0,0]},{"t":1792768740,"cpu":62.6,"temp":72.8,"v":0.906,"jeu":5513,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,2,0,1,14,0,0]},{"t":1792768745,"cpu":60.1,"temp":73.0,"v":0.901,"jeu":5648,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,2,0,1,14,0,0]},{"t":1792768750,"cpu":60.6,"temp":73.3,"v":0.901,"jeu":5783,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,2,0,1,14,0,0]},{"t":1792768755,"cpu":60.6,"temp":73.0,"v":0.905,"jeu":5919,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,2,0,1,14,0,0]},{"t":1792768760,"cpu":60.9,"temp":73.3,"v":0.899,"jeu":6054,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768765,"cpu":59.5,"temp":72.5,"v":0.892,"jeu":6188,"act":0,"ecr":17,"mis":2,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768770,"cpu":60.7,"temp":72.8,"v":0.916,"jeu":6325,"act":0,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768775,"cpu":60.4,"temp":73.5,"v":0.908,"jeu":6461,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768780,"cpu":61.8,"temp":72.5,"v":0.94,"jeu":6602,"act":0,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768785,"cpu":67.4,"temp":72.8,"v":0.891,"jeu":6736,"act":0,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768790,"cpu":66.6,"temp":72.5,"v":0.891,"jeu":6870,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768795,"cpu":59.4,"temp":72.4,"v":0.892,"jeu":7003,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768800,"cpu":62.6,"temp":72.7,"v":0.909,"jeu":7140,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768805,"cpu":61.3,"temp":73.5,"v":0.907,"jeu":7276,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768810,"cpu":61.1,"temp":73.1,"v":0.913,"jeu":7413,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768815,"cpu":61.8,"temp":73.4,"v":0.911,"jeu":7549,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768820,"cpu":62.1,"temp":73.5,"v":0.898,"jeu":7684,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768825,"cpu":64.5,"temp":74.0,"v":0.919,"jeu":7822,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768830,"cpu":64.2,"temp":72.9,"v":0.889,"jeu":7955,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768835,"cpu":60.3,"temp":73.2,"v":0.911,"jeu":8092,"act":2,"ecr":17,"mis":0,"obu":0,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768840,"cpu":62.9,"temp":73.3,"v":0.906,"jeu":8228,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768845,"cpu":66.8,"temp":73.7,"v":0.908,"jeu":8364,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768850,"cpu":66.4,"temp":73.1,"v":0.894,"jeu":8498,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768855,"cpu":59.1,"temp":74.0,"v":0.897,"jeu":8633,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768860,"cpu":60.1,"temp":73.6,"v":0.901,"jeu":8768,"act":2,"ecr":17,"mis":2,"obu":2,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768865,"cpu":58.4,"temp":74.3,"v":0.907,"jeu":8904,"act":2,"ecr":17,"mis":0,"obu":2,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768870,"cpu":62.0,"temp":73.8,"v":0.882,"jeu":9036,"act":2,"ecr":17,"mis":2,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768875,"cpu":61.7,"temp":74.6,"v":0.909,"jeu":9173,"act":2,"ecr":17,"mis":0,"obu":1,"u":[0,4,1,3,3,0,1,14,0,0]},{"t":1792768880,"cpu":71.7,"temp":73.6,"v":0.88,"jeu":9305,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768885,"cpu":61.2,"temp":73.3,"v":0.916,"jeu":9442,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768890,"cpu":60.3,"temp":73.7,"v":0.887,"jeu":9575,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768895,"cpu":58.0,"temp":73.6,"v":0.906,"jeu":9711,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768900,"cpu":59.7,"temp":74.3,"v":0.919,"jeu":9849,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768905,"cpu":59.6,"temp":73.7,"v":0.906,"jeu":9985,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768910,"cpu":61.6,"temp":74.7,"v":0.887,"jeu":10118,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768915,"cpu":58.2,"temp":73.7,"v":0.879,"jeu":10250,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768920,"cpu":59.6,"temp":73.6,"v":0.899,"jeu":10384,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768925,"cpu":59.2,"temp":73.7,"v":0.887,"jeu":10517,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768930,"cpu":59.8,"temp":74.2,"v":0.915,"jeu":10655,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768935,"cpu":59.2,"temp":73.8,"v":0.887,"jeu":10788,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768940,"cpu":60.1,"temp":74.0,"v":0.88,"jeu":10920,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,0,1,14,0,0]},{"t":1792768945,"cpu":58.6,"temp":74.5,"v":0.901,"jeu":11055,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768950,"cpu":60.2,"temp":73.7,"v":0.868,"jeu":11185,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768955,"cpu":59.1,"temp":74.2,"v":0.925,"jeu":11324,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768960,"cpu":60.1,"temp":73.7,"v":0.922,"jeu":11462,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768965,"cpu":66.3,"temp":73.7,"v":0.872,"jeu":11593,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768970,"cpu":63.9,"temp":74.0,"v":0.885,"jeu":11726,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768975,"cpu":58.7,"temp":74.5,"v":0.876,"jeu":11857,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768980,"cpu":60.3,"temp":73.6,"v":0.91,"jeu":11994,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768985,"cpu":66.9,"temp":73.7,"v":0.885,"jeu":12126,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768990,"cpu":60.1,"temp":73.6,"v":0.903,"jeu":12262,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792768995,"cpu":59.4,"temp":73.6,"v":0.882,"jeu":12394,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,3,1,1,14,0,0]},{"t":1792769000,"cpu":58.6,"temp":74.6,"v":0.881,"jeu":12526,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769005,"cpu":56.4,"temp":74.4,"v":0.887,"jeu":12659,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769010,"cpu":59.2,"temp":73.8,"v":0.892,"jeu":12793,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769015,"cpu":57.9,"temp":74.0,"v":0.901,"jeu":12928,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769020,"cpu":58.5,"temp":74.8,"v":0.882,"jeu":13061,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769025,"cpu":64.7,"temp":73.8,"v":0.876,"jeu":13192,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769030,"cpu":63.4,"temp":73.8,"v":0.819,"jeu":13315,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769035,"cpu":58.1,"temp":74.0,"v":0.793,"jeu":13434,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769040,"cpu":60.5,"temp":73.7,"v":0.832,"jeu":13558,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769045,"cpu":58.0,"temp":74.4,"v":0.806,"jeu":13679,"act":1,"ecr":3,"mis":2,"obu":1,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769050,"cpu":59.5,"temp":73.8,"v":0.801,"jeu":13799,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769055,"cpu":59.1,"temp":73.7,"v":0.788,"jeu":13918,"act":1,"ecr":3,"mis":2,"obu":2,"u":[2,4,1,3,4,1,1,14,0,0]},{"t":1792769060,"cpu":59.7,"temp":73.7,"v":0.838,"jeu":14043,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769065,"cpu":58.5,"temp":73.4,"v":0.801,"jeu":14164,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769070,"cpu":59.6,"temp":74.3,"v":0.818,"jeu":14286,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769075,"cpu":58.7,"temp":73.4,"v":0.799,"jeu":14406,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769080,"cpu":60.6,"temp":74.0,"v":0.808,"jeu":14527,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769085,"cpu":66.2,"temp":74.0,"v":0.82,"jeu":14650,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769090,"cpu":63.9,"temp":73.7,"v":0.815,"jeu":14772,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769095,"cpu":59.3,"temp":73.5,"v":0.814,"jeu":14895,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769100,"cpu":61.6,"temp":73.7,"v":0.689,"jeu":14998,"act":1,"ecr":3,"mis":11,"obu":41,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769105,"cpu":58.6,"temp":74.3,"v":0.714,"jeu":15105,"act":1,"ecr":3,"mis":10,"obu":40,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769110,"cpu":59.8,"temp":73.6,"v":0.745,"jeu":15217,"act":1,"ecr":3,"mis":7,"obu":38,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769115,"cpu":58.9,"temp":73.2,"v":0.74,"jeu":15328,"act":1,"ecr":3,"mis":7,"obu":36,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769120,"cpu":59.7,"temp":73.3,"v":0.72,"jeu":15436,"act":1,"ecr":3,"mis":10,"obu":29,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769125,"cpu":58.7,"temp":72.9,"v":0.711,"jeu":15543,"act":1,"ecr":3,"mis":11,"obu":26,"u":[2,4,0,3,4,1,1,14,0,0]},{"t":1792769130,"cpu":59.7,"temp":73.2,"v":0.711,"jeu":15649,"act":1,"ecr":3,"mis":11,"obu":33,"u":[2,4,0,3,4,1,1,13,0,0]},{"t":1792769135,"cpu":58.8,"temp":73.3,"v":0.717,"jeu":15757,"act":1,"ecr":3,"mis":10,"obu":39,"u":[2,4,0,3,4,1,1,13,0,0]},{"t":1792769140,"cpu":59.4,"temp":73.4,"v":0.717,"jeu":15864,"act":1,"ecr":3,"mis":6,"obu":40,"u":[2,4,0,3,4,1,1,13,0,0]},{"t":1792769145,"cpu":66.6,"temp":72.8,"v":0.71,"jeu":15971,"act":1,"ecr":3,"mis":9,"obu":42,"u":[2,4,0,3,4,1,1,13,0,0]},{"t":1792769150,"cpu":64.0,"temp":73.5,"v":0.696,"jeu":16075,"act":1,"ecr":3,"mis":11,"obu":38,"u":[2,4,0,3,4,1,1,13,0,0]},{"t":1792769155,"cpu":59.6,"temp":73.3,"v":0.724,"jeu":16184,"act":1,"ecr":3,"mis":11,"obu":31,"u":[2,4,0,3,4,1,1,13,0,0]},{"t":1792769160,"cpu":60.0,"temp":73.5,"v":0.723,"jeu":16292,"act":1,"ecr":3,"mis":10,"obu":26,"u":[2,4,0,3,4,1,1,12,0,0]},{"t":1792769165,"cpu":58.7,"temp":73.2,"v":0.728,"jeu":16401,"act":1,"ecr":3,"mis":6,"obu":30,"u":[2,4,0,3,4,1,1,12,0,0]},{"t":1792769170,"cpu":59.2,"temp":73.7,"v":0.721,"jeu":16510,"act":1,"ecr":3,"mis":8,"obu":35,"u":[2,4,0,3,4,1,1,12,0,0]},{"t":1792769175,"cpu":60.1,"temp":73.0,"v":0.698,"jeu":16614,"act":1,"ecr":3,"mis":11,"obu":41,"u":[2,4,0,3,4,1,1,12,0,0]},{"t":1792769180,"cpu":69.0,"temp":73.3,"v":0.704,"jeu":16720,"act":1,"ecr":3,"mis":11,"obu":41,"u":[2,4,0,3,4,1,1,12,0,0]},{"t":1792769185,"cpu":60.7,"temp":73.4,"v":0.722,"jeu":16828,"act":1,"ecr":3,"mis":10,"obu":39,"u":[2,4,0,3,4,1,1,12,0,0]},{"t":1792769190,"cpu":59.8,"temp":73.3,"v":0.743,"jeu":16940,"act":1,"ecr":3,"mis":8,"obu":37,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769195,"cpu":57.8,"temp":73.0,"v":0.757,"jeu":17053,"act":1,"ecr":3,"mis":7,"obu":29,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769200,"cpu":59.5,"temp":73.4,"v":0.729,"jeu":17163,"act":1,"ecr":3,"mis":10,"obu":26,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769205,"cpu":59.1,"temp":73.3,"v":0.722,"jeu":17271,"act":1,"ecr":3,"mis":11,"obu":33,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769210,"cpu":61.5,"temp":73.6,"v":0.694,"jeu":17375,"act":1,"ecr":3,"mis":11,"obu":39,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769215,"cpu":58.3,"temp":73.5,"v":0.723,"jeu":17483,"act":1,"ecr":3,"mis":9,"obu":40,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769220,"cpu":60.8,"temp":74.0,"v":0.735,"jeu":17594,"act":1,"ecr":3,"mis":6,"obu":40,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769225,"cpu":57.9,"temp":73.4,"v":0.738,"jeu":17704,"act":1,"ecr":3,"mis":9,"obu":37,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769230,"cpu":59.8,"temp":73.8,"v":0.822,"jeu":17827,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769235,"cpu":60.2,"temp":73.4,"v":0.796,"jeu":17947,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,4,1,1,11,0,0]},{"t":1792769240,"cpu":59.7,"temp":73.7,"v":0.823,"jeu":18070,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769245,"cpu":58.1,"temp":73.5,"v":0.804,"jeu":18191,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769250,"cpu":59.7,"temp":73.7,"v":0.829,"jeu":18315,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769255,"cpu":58.2,"temp":73.3,"v":0.789,"jeu":18434,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769260,"cpu":59.5,"temp":72.7,"v":0.805,"jeu":18554,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769265,"cpu":65.6,"temp":73.2,"v":0.802,"jeu":18675,"act":1,"ecr":3,"mis":0,"obu":0,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769270,"cpu":63.6,"temp":73.3,"v":0.785,"jeu":18792,"act":1,"ecr":3,"mis":0,"obu":1,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769275,"cpu":58.0,"temp":72.7,"v":0.812,"jeu":18914,"act":1,"ecr":3,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769280,"cpu":59.8,"temp":74.0,"v":0.875,"jeu":19045,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769285,"cpu":57.9,"temp":73.3,"v":0.887,"jeu":19179,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769290,"cpu":59.7,"temp":72.8,"v":0.871,"jeu":19309,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769295,"cpu":60.3,"temp":72.9,"v":0.877,"jeu":19441,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,4,0,3,5,1,1,11,0,0]},{"t":1792769300,"cpu":59.6,"temp":73.1,"v":0.887,"jeu":19574,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769305,"cpu":58.1,"temp":72.9,"v":0.89,"jeu":19707,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769310,"cpu":59.2,"temp":73.4,"v":0.882,"jeu":19839,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769315,"cpu":57.6,"temp":73.1,"v":0.892,"jeu":19973,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769320,"cpu":59.3,"temp":73.1,"v":0.873,"jeu":20104,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769325,"cpu":68.4,"temp":73.7,"v":0.871,"jeu":20235,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769330,"cpu":67.2,"temp":73.7,"v":0.888,"jeu":20368,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769335,"cpu":58.0,"temp":73.2,"v":0.87,"jeu":20499,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769340,"cpu":60.1,"temp":73.4,"v":0.866,"jeu":20629,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769345,"cpu":57.7,"temp":74.2,"v":0.896,"jeu":20763,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769350,"cpu":59.0,"temp":72.9,"v":0.862,"jeu":20892,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769355,"cpu":58.8,"temp":73.1,"v":0.879,"jeu":21024,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769360,"cpu":59.4,"temp":74.3,"v":0.844,"jeu":21151,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769365,"cpu":57.7,"temp":74.0,"v":0.867,"jeu":21281,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769370,"cpu":59.1,"temp":74.0,"v":0.873,"jeu":21412,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769375,"cpu":58.6,"temp":73.3,"v":0.875,"jeu":21543,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,3,0,3,5,1,1,11,0,0]},{"t":1792769380,"cpu":59.6,"temp":74.0,"v":0.865,"jeu":21673,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769385,"cpu":65.5,"temp":73.0,"v":0.856,"jeu":21801,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769390,"cpu":63.4,"temp":73.3,"v":0.888,"jeu":21934,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769395,"cpu":58.1,"temp":73.0,"v":0.886,"jeu":22067,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769400,"cpu":59.3,"temp":73.8,"v":0.896,"jeu":22202,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769405,"cpu":59.2,"temp":72.8,"v":0.872,"jeu":22333,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769410,"cpu":59.0,"temp":73.5,"v":0.871,"jeu":22463,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769415,"cpu":60.0,"temp":73.4,"v":0.876,"jeu":22595,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769420,"cpu":59.7,"temp":73.3,"v":0.881,"jeu":22727,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769425,"cpu":60.3,"temp":73.1,"v":0.861,"jeu":22856,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769430,"cpu":58.9,"temp":73.1,"v":0.88,"jeu":22988,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769435,"cpu":57.4,"temp":73.2,"v":0.882,"jeu":23120,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769440,"cpu":58.8,"temp":73.4,"v":0.865,"jeu":23250,"act":2,"ecr":17,"mis":0,"obu":0,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769445,"cpu":64.8,"temp":73.2,"v":0.885,"jeu":23383,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769450,"cpu":63.2,"temp":72.9,"v":0.881,"jeu":23515,"act":2,"ecr":17,"mis":0,"obu":1,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769455,"cpu":57.7,"temp":74.0,"v":0.869,"jeu":23645,"act":2,"ecr":17,"mis":0,"obu":2,"u":[2,2,0,3,5,1,1,11,0,0]},{"t":1792769460,"cpu":61.8,"temp":72.9,"v":0.871,"jeu":23776,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,1,0,3,5,1,1,11,0,0]},{"t":1792769465,"cpu":59.6,"temp":73.3,"v":0.883,"jeu":23908,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,5,1,1,11,0,0]},{"t":1792769470,"cpu":59.1,"temp":73.7,"v":0.88,"jeu":24040,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,5,1,1,11,0,0]},{"t":1792769475,"cpu":59.6,"temp":72.9,"v":0.863,"jeu":24170,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,1,0,3,5,1,1,11,0,0]},{"t":1792769480,"cpu":69.2,"temp":73.1,"v":0.874,"jeu":24301,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769485,"cpu":60.7,"temp":72.8,"v":0.892,"jeu":24435,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769490,"cpu":59.4,"temp":72.7,"v":0.875,"jeu":24566,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769495,"cpu":57.5,"temp":73.0,"v":0.88,"jeu":24698,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769500,"cpu":58.9,"temp":72.9,"v":0.867,"jeu":24828,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769505,"cpu":59.0,"temp":72.8,"v":0.858,"jeu":24957,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769510,"cpu":61.3,"temp":72.8,"v":0.868,"jeu":25087,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769515,"cpu":57.6,"temp":73.4,"v":0.871,"jeu":25217,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769520,"cpu":59.3,"temp":73.5,"v":0.883,"jeu":25350,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769525,"cpu":57.9,"temp":73.6,"v":0.897,"jeu":25484,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769530,"cpu":59.8,"temp":73.6,"v":0.878,"jeu":25616,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,1,0,3,6,1,1,11,0,0]},{"t":1792769535,"cpu":58.4,"temp":73.0,"v":0.896,"jeu":25751,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769540,"cpu":60.3,"temp":72.8,"v":0.862,"jeu":25880,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769545,"cpu":58.3,"temp":73.2,"v":0.878,"jeu":26012,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769550,"cpu":60.6,"temp":73.6,"v":0.87,"jeu":26142,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769555,"cpu":58.1,"temp":72.8,"v":0.864,"jeu":26272,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769560,"cpu":59.8,"temp":73.2,"v":0.86,"jeu":26401,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769565,"cpu":65.9,"temp":72.8,"v":0.882,"jeu":26533,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769570,"cpu":84.8,"temp":71.8,"v":0.872,"jeu":26664,"act":0,"ecr":17,"mis":0,"obu":2,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769575,"cpu":81.6,"temp":72.9,"v":0.858,"jeu":26792,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769580,"cpu":71.0,"temp":72.3,"v":0.877,"jeu":26924,"act":0,"ecr":17,"mis":0,"obu":0,"u":[2,0,0,3,6,1,1,11,0,0]},{"t":1792769585,"cpu":61.0,"temp":72.3,"v":0.883,"jeu":27056,"act":0,"ecr":17,"mis":0,"obu":1,"u":[2,0,0,3,6,1,1,11,0,0]}]}};
+const PAS = D.pas;
+const NOMS_ACT = ['Sur le pont', 'Aux commandes', 'Sur la carte'];
+const VAR_ACT = ['--pont', '--pil', '--carte'];
+
+function preparer(points) {
+  return points.map((p, i) => {
+    const u = p.u;
+    return Object.assign({}, p, {
+      i, min: i * PAS / 60,
+      moi: u[0] + u[1] + u[2], adv: u[3] + u[4] + u[5] + u[6], iles: u[7] + u[8] + u[9],
+      tot: u.reduce((a, b) => a + b, 0), vp: p.v == null ? null : p.v * 100,
+    });
+  });
+}
+const P = preparer(D.partie.points), Q = preparer(D.autre.points);
+const MMAX = (P.length - 1) * PAS / 60;
+
+// sujets mesures (tous rapportes a un point p)
+const SUJETS = {
+  tot:  { nom: 'Unités en jeu', court: 'Unités', f: p => p.tot, fmt: x => Math.round(x) + '' },
+  mis:  { nom: 'Missiles en vol', court: 'Missiles', f: p => p.mis, fmt: x => Math.round(x) + '' },
+  obu:  { nom: 'Obus en vol', court: 'Obus', f: p => p.obu, fmt: x => Math.round(x) + '' },
+  ecr:  { nom: 'Écrans allumés', court: 'Écrans', f: p => p.ecr, fmt: x => Math.round(x) + '' },
+  temp: { nom: 'Température du Mac', court: 'Température', f: p => p.temp, fmt: x => Math.round(x) + ' °C' },
+  cpu:  { nom: 'Processeur du Mac', court: 'Processeur', f: p => p.cpu, fmt: x => Math.round(x) + ' %' },
+};
+
+// ---------- outils ----------
+const NS = 'http://www.w3.org/2000/svg';
+function S(tag, at, parent) { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; }
+function H(tag, cls, parent, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.appendChild(e); return e; }
+function couleur(host, v) { return getComputedStyle(host).getPropertyValue(v).trim(); }
+function heure(p) { const d = new Date(p.t * 1000); return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
+function hm(p) { const d = new Date(p.t * 1000); return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
+function duree(min) { const s = Math.round(min * 60); return Math.floor(s / 60) + ' min ' + String(s % 60).padStart(2, '0') + ' s'; }
+function horloge(ticks) { const s = ticks / 30; return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0'); }
+function moyenne(a) { const b = a.filter(x => x != null); return b.reduce((s, x) => s + x, 0) / b.length; }
+function pearson(xs, ys) {
+  const n = xs.length, mx = moyenne(xs), my = moyenne(ys); let a = 0, b = 0, c = 0;
+  for (let i = 0; i < n; i++) { const dx = xs[i] - mx, dy = ys[i] - my; a += dx * dy; b += dx * dx; c += dy * dy; }
+  return (b === 0 || c === 0) ? 0 : a / Math.sqrt(b * c);
+}
+function nbTicks(ymax, compact) { const m = Math.round(ymax / Math.pow(10, Math.floor(Math.log10(ymax))) * 10) / 10; const n = (m === 2.5 || m === 5) ? 5 : 4; return compact ? (n === 4 ? 2 : 1) : n; }
+function lissee(points, k) { return points.map((p, i) => { const w = points.slice(Math.max(0, i - k), i + k + 1).filter(q => q.vp != null); return w.length ? w.reduce((s, q) => s + q.vp, 0) / w.length : null; }); }
+function niceMax(v) { if (v <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 2.5, 5, 10]) if (m * e >= v) return m * e; return 10 * e; }
+function runs(points, f) { const r = []; for (const p of points) { const k = f(p); if (!r.length || r[r.length - 1].k !== k) r.push({ k, a: p.i, b: p.i }); else r[r.length - 1].b = p.i; } return r; }
+
+// ---------- analyse (le bilan) ----------
+function analyser(points) {
+  const vs = points.filter(p => p.v != null);
+  const vmoy = moyenne(vs.map(p => p.vp));
+  let pire = null;                                   // pire minute (moyenne glissante de 12 points)
+  for (let i = 0; i + 12 <= points.length; i++) {
+    const w = points.slice(i, i + 12); if (w.some(p => p.v == null)) continue;
+    const m = moyenne(w.map(p => p.vp)); if (!pire || m < pire.v) pire = { v: m, a: i, b: i + 11 };
+  }
+  const w = points.slice(pire.a, pire.b + 1);
+  const r = {};
+  for (const k in SUJETS) r[k] = pearson(vs.map(p => SUJETS[k].f(p)), vs.map(p => p.vp));
+  const actW = runs(w, p => p.act).sort((x, y) => (y.b - y.a) - (x.b - x.a))[0].k;
+  return { vmoy, pire, w, r, actW,
+    totMax: Math.max(...points.map(p => p.tot)), tempMax: Math.max(...points.map(p => p.temp)),
+    tempMoy: moyenne(points.map(p => p.temp)), tempW: moyenne(w.map(p => p.temp)),
+    misW: Math.max(...w.map(p => p.mis)), obuW: Math.max(...w.map(p => p.obu)),
+    misMoy: moyenne(points.map(p => p.mis)), obuMoy: moyenne(points.map(p => p.obu)),
+    ilesMoy: moyenne(points.map(p => p.iles)) };
+}
+const AN = analyser(P), ANQ = analyser(Q);
+function phrasesBilan(an, points) {
+  const p0 = points[an.pire.a];
+  const sJeu = Math.round(an.vmoy * 0.6);
+  const out = [];
+  out.push(`Le jeu a tourné à <b>${Math.round(an.vmoy)} %</b> de sa vitesse en moyenne : une minute réelle n'a fait que ${sJeu} secondes de jeu.`);
+  let cause = `<b>${NOMS_ACT[an.actW].toLowerCase()}</b>`;
+  if (an.misW > 3 * Math.max(1, an.misMoy)) cause += `, avec ${an.misW} missiles et ${an.obuW} obus en vol (presque rien le reste du temps)`;
+  out.push(`Pire minute : <b>${hm(p0)}</b>, à <b>${Math.round(an.pire.v)} %</b>, ${cause}.`);
+  const dT = an.tempW - an.tempMoy;
+  out.push(Math.abs(dT) < 3
+    ? `Le Mac était à ${Math.round(an.tempW)} °C, comme le reste de la partie : la chaleur n'explique pas ce creux.`
+    : `Le Mac était à ${Math.round(an.tempW)} °C, ${Math.round(Math.abs(dT))} °C ${dT > 0 ? 'de plus' : 'de moins'} que d'habitude.`);
+  out.push(`Unités : jusqu'à ${an.totMax} en même temps, dont environ ${Math.round(an.ilesMoy)} sur les îles.`);
+  return out;
+}
+function lien(r) {
+  const a = Math.abs(r);
+  const force = a >= 0.6 ? 'lien fort' : a >= 0.3 ? 'lien moyen' : 'pas de lien net';
+  if (a < 0.3) return force;
+  return force + (r < 0 ? ' : quand ça monte, le jeu ralentit' : ' : quand ça monte, le jeu accélère');
+}
+
+// ---------- groupe : la ligne de lecture et le curseur partage ----------
+function groupe(section, contenu) {
+  const g = { charts: [], lecture: section.querySelector('.lecture'), contenu };
+  g.set = i => {
+    for (const c of g.charts) c.curseur(i);
+    if (i == null) { g.lecture.innerHTML = '<span class="vide">Passe la souris sur une courbe pour lire les chiffres à cet instant.</span>'; return; }
+    g.lecture.innerHTML = contenu(P[i]);
+  };
+  g.set(null);
+  return g;
+}
+function lectureComplete(p) {
+  const v = p.v == null ? 'chargement' : Math.round(p.vp) + ' %';
+  return `<b>${heure(p)}</b> (${duree(p.min)} après le début, horloge du jeu ${horloge(p.jeu)}) · Vitesse <b>${v}</b> · Unités <b>${p.tot}</b> (toi ${p.moi}, adverse ${p.adv}, îles ${p.iles}) · Missiles <b>${p.mis}</b> · Obus <b>${p.obu}</b> · Écrans <b>${p.ecr}</b> · <b>${NOMS_ACT[p.act]}</b> · Mac <b>${Math.round(p.temp)} °C</b>, processeur <b>${Math.round(p.cpu)} %</b>`;
+}
+
+// ---------- graphique a courbes ----------
+// opts : h, series [{f, var, label, area, step, w, pts}], stack (bool), ymax, yfmt, ref {y, label}, lents (bool), xaxe (bool)
+function courbes(host, g, opts) {
+  const box = H('div', '', host);
+  const draw = () => {
+    box.innerHTML = '';
+    const W = Math.max(280, box.clientWidth), Hh = opts.h, xaxe = opts.xaxe !== false;
+    const pl = opts.pl != null ? opts.pl : 38, pr = opts.pr != null ? opts.pr : 64, pt = 8, pb = xaxe ? 20 : 4;
+    const svg = S('svg', { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
+    if (opts.crisp) svg.setAttribute('shape-rendering', 'crispEdges');
+    const x = m => pl + m / MMAX * (W - pl - pr);
+    const series = opts.series.map(s => Object.assign({ pts: P }, s));
+    // valeurs (empilees si besoin)
+    const vals = series.map(s => s.pts.map(s.f));
+    if (opts.stack) for (let k = 1; k < vals.length; k++) vals[k] = vals[k].map((v, i) => v + vals[k - 1][i]);
+    const all = vals.flat().filter(v => v != null);
+    const ymax = opts.ymax != null ? opts.ymax : niceMax(Math.max(...all) * 1.08);
+    const y = v => pt + (1 - v / ymax) * (Hh - pt - pb);
+    // moments lents
+    const L = lissee(P, 6);
+    if (opts.lents) for (const r of runs(P, p => L[p.i] != null && L[p.i] < 60)) if (r.k)
+      S('rect', { x: x(P[r.a].min), y: pt, width: Math.max(2, x(P[r.b].min) - x(P[r.a].min)), height: Hh - pt - pb, fill: couleur(host, '--wash') }, svg);
+    // grille
+    const nt = nbTicks(ymax, opts.compact);
+    for (let k = 0; k <= nt; k++) {
+      const v = ymax * k / nt, yy = y(v);
+      S('line', { x1: pl, x2: W - pr, y1: yy, y2: yy, stroke: couleur(host, k === 0 ? '--axis' : '--grid'), 'stroke-width': 1 }, svg);
+      const t = S('text', { x: pl - 6, y: yy + 3.5, 'text-anchor': 'end' }, svg); t.textContent = (opts.yfmt || (v => Math.round(v)))(v);
+    }
+    if (xaxe) for (let m = 0; m <= MMAX; m += 5) { const t = S('text', { x: x(m), y: Hh - 5, 'text-anchor': 'middle' }, svg); t.textContent = m + ' min'; }
+    if (opts.ref) {
+      const yy = y(opts.ref.y);
+      S('line', { x1: pl, x2: W - pr, y1: yy, y2: yy, stroke: couleur(host, '--axis'), 'stroke-width': 1 }, svg);
+      const t = S('text', { x: W - pr + 4, y: yy + 3.5 }, svg); t.textContent = opts.ref.label;
+    }
+    // traces (de haut en bas pour l'empilement : on dessine les aires du dernier au premier)
+    const chemins = [];
+    for (let k = series.length - 1; k >= 0; k--) {
+      const s = series[k], c = couleur(host, s.var);
+      let d = '', started = false;
+      s.pts.forEach((p, i) => {
+        const v = vals[k][i]; if (v == null) { started = false; return; }
+        const X = x(p.min), Y = y(v);
+        if (!started) { d += `M${X},${Y}`; started = true; }
+        else if (s.step) d += `H${X}V${Y}`;
+        else d += `L${X},${Y}`;
+      });
+      if (s.area || opts.stack) {
+        const bas = opts.stack && k > 0 ? vals[k - 1] : null;
+        let a = '';
+        const idx = s.pts.map((p, i) => i).filter(i => vals[k][i] != null);
+        a = 'M' + idx.map(i => `${x(s.pts[i].min)},${y(vals[k][i])}`).join('L');
+        a += 'L' + idx.slice().reverse().map(i => `${x(s.pts[i].min)},${y(bas ? bas[i] : 0)}`).join('L') + 'Z';
+        S('path', { d: a, fill: opts.stack ? c : couleur(host, '--vfill'), 'fill-opacity': opts.stack ? 0.32 : 1, stroke: 'none' }, svg);
+      }
+      S('path', { d, fill: 'none', stroke: c, 'stroke-width': opts.stack ? 1.5 : (s.w || 2), 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+      chemins.push({ s, k });
+    }
+    // etiquettes directes en bout de courbe
+    const lab = series.map((s, k) => { const i = s.pts.length - 1; const v = vals[k][i]; const base = opts.stack && k > 0 ? vals[k - 1][i] : 0; return { s, yv: opts.stack ? y((v + base) / 2) : y(v), txt: s.label ? s.label + ' ' + (opts.lfmt || (z => Math.round(z)))(s.f(s.pts[i])) : null }; }).filter(o => o.txt);
+    lab.sort((a, b) => a.yv - b.yv);
+    for (let k = 1; k < lab.length; k++) if (lab[k].yv - lab[k - 1].yv < 12) lab[k].yv = lab[k - 1].yv + 12;
+    for (const o of lab) { const t = S('text', { x: W - pr + 6, y: o.yv + 3.5 }, svg); t.textContent = o.txt; t.style.fill = couleur(host, '--ink2'); }
+    // curseur
+    const cur = S('line', { y1: pt, y2: Hh - pb, stroke: couleur(host, '--ink'), 'stroke-width': 1, visibility: 'hidden' }, svg);
+    const dots = series.map((s, k) => S('circle', { r: 4, fill: couleur(host, s.var), stroke: couleur(host, '--surface'), 'stroke-width': 2, visibility: 'hidden' }, svg));
+    chart.curseur = i => {
+      if (i == null) { cur.setAttribute('visibility', 'hidden'); dots.forEach(d => d.setAttribute('visibility', 'hidden')); return; }
+      const X = x(P[i].min); cur.setAttribute('x1', X); cur.setAttribute('x2', X); cur.setAttribute('visibility', 'visible');
+      series.forEach((s, k) => { const v = vals[k][i]; if (v == null || i >= s.pts.length) { dots[k].setAttribute('visibility', 'hidden'); return; } dots[k].setAttribute('cx', X); dots[k].setAttribute('cy', y(v)); dots[k].setAttribute('visibility', 'visible'); });
+    };
+    const zone = S('rect', { x: pl, y: 0, width: W - pl - pr, height: Hh, fill: 'transparent' }, svg);
+    zone.addEventListener('mousemove', e => { const r = svg.getBoundingClientRect(); const m = ((e.clientX - r.left) * W / r.width - pl) / (W - pl - pr) * MMAX; g.set(Math.max(0, Math.min(P.length - 1, Math.round(m * 60 / PAS)))); });
+    zone.addEventListener('mouseleave', () => g.set(null));
+  };
+  const chart = { draw, curseur: () => {} };
+  g.charts.push(chart); draw();
+  return chart;
+}
+
+// ---------- bande (activite ou chaleur) ----------
+function bande(host, g, opts) {
+  const box = H('div', '', host);
+  const draw = () => {
+    box.innerHTML = '';
+    const W = Math.max(280, box.clientWidth), Hh = opts.h || 18, pl = opts.pl != null ? opts.pl : 38, pr = opts.pr != null ? opts.pr : 64;
+    const svg = S('svg', { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
+    const x = m => pl + m / MMAX * (W - pl - pr);
+    const dx = (W - pl - pr) / (P.length - 1);
+    if (opts.label) { const t = S('text', { x: pl - 6, y: Hh / 2 + 4, 'text-anchor': 'end' }, svg); t.textContent = opts.label; t.style.fill = couleur(host, '--ink2'); }
+    if (opts.cat) {
+      for (const r of runs(P, opts.cat)) {
+        const x0 = x(P[r.a].min) - dx / 2, x1 = x(P[r.b].min) + dx / 2;
+        S('rect', { x: Math.max(pl, x0) + 1, y: 2, width: Math.max(1, Math.min(W - pr, x1) - Math.max(pl, x0) - 2), height: Hh - 4, rx: 3, fill: couleur(host, VAR_ACT[r.k]) }, svg);
+      }
+    } else {
+      const vals = P.map(opts.f), lo = Math.min(...vals), hi = Math.max(...vals);
+      const c0 = couleur(host, '--seq0'), c1 = couleur(host, '--seq1');
+      P.forEach((p, i) => S('rect', { x: x(p.min) - dx / 2, y: 2, width: dx + 0.6, height: Hh - 4, fill: melange(c0, c1, hi === lo ? 0 : (vals[i] - lo) / (hi - lo)) }, svg));
+      if (opts.droite) { const t = S('text', { x: W - pr + 6, y: Hh / 2 + 4 }, svg); t.textContent = opts.droite(lo, hi); }
+    }
+    const cur = S('line', { y1: 0, y2: Hh, stroke: couleur(host, '--ink'), 'stroke-width': 1, visibility: 'hidden' }, svg);
+    chart.curseur = i => { if (i == null) return cur.setAttribute('visibility', 'hidden'); const X = x(P[i].min); cur.setAttribute('x1', X); cur.setAttribute('x2', X); cur.setAttribute('visibility', 'visible'); };
+    const zone = S('rect', { x: pl, y: 0, width: W - pl - pr, height: Hh, fill: 'transparent' }, svg);
+    zone.addEventListener('mousemove', e => { const r = svg.getBoundingClientRect(); const m = ((e.clientX - r.left) * W / r.width - pl) / (W - pl - pr) * MMAX; g.set(Math.max(0, Math.min(P.length - 1, Math.round(m * 60 / PAS)))); });
+    zone.addEventListener('mouseleave', () => g.set(null));
+  };
+  const chart = { draw, curseur: () => {} };
+  g.charts.push(chart); draw();
+  return chart;
+}
+function hex(c) { c = c.replace('#', ''); return [0, 2, 4].map(k => parseInt(c.substr(k, 2), 16)); }
+function melange(a, b, t) { const A = hex(a), B = hex(b); return 'rgb(' + A.map((v, k) => Math.round(v + (B[k] - v) * t)).join(',') + ')'; }
+
+function bloc(parent, titre, sous, legende) {
+  const b = H('div', 'bloc', parent);
+  const t = H('div', 'titre', b, titre + (sous ? ` <span class="sous">${sous}</span>` : ''));
+  if (legende) { const l = H('span', 'legende', t); for (const [v, n, ligne] of legende) l.insertAdjacentHTML('beforeend', `<span><i class="${ligne ? 'ligne' : ''}" style="background:var(${v})"></i>${n}</span>`); }
+  return b;
+}
+const LEG_CAMPS = [['--moi', 'Toi'], ['--adv', 'Porte-avions adverse'], ['--iles', 'Îles']];
+const LEG_ACT = NOMS_ACT.map((n, k) => [VAR_ACT[k], n]);
+const pct = v => Math.round(v) + ' %';
+
+// ================= variante 1 =================
+function v1() {
+  const sec = document.getElementById('v1'), corps = sec.querySelector('.corps');
+  const g = groupe(sec, lectureComplete);
+  const tu = sec.querySelector('.tuiles');
+  const p0 = P[AN.pire.a];
+  tu.innerHTML = [
+    [pct(AN.vmoy), 'vitesse moyenne'], [pct(AN.pire.v), 'pire minute (' + hm(p0) + ')'],
+    [AN.totMax, 'unités au plus fort'], [Math.round(AN.tempMax) + ' °C', 'Mac au plus chaud'],
+  ].map(([v, l]) => `<div class="tuile"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  const bil = sec.querySelector('.bilan');
+  const cmp = sec.querySelector('.comparer');
+  const rendre = () => {
+    corps.innerHTML = ''; g.charts.length = 0;
+    const avec = cmp.checked;
+    bil.innerHTML = phrasesBilan(AN, P).map(s => `<p>${s}</p>`).join('') +
+      (avec ? `<p>Autre partie : <b>${pct(ANQ.vmoy)}</b> en moyenne, avec environ ${Math.round(ANQ.ilesMoy)} unités sur les îles au lieu de ${Math.round(AN.ilesMoy)}.</p>` : '');
+    const sv = [{ f: p => p.vp, var: '--ink', area: !avec, label: avec ? 'Celle-ci' : null }];
+    if (avec) sv.push({ f: p => p.vp, var: '--autre', pts: Q, label: 'Autre' });
+    courbes(bloc(corps, 'Vitesse du jeu', '100 % = vitesse normale', avec ? [['--ink', 'Cette partie', 1], ['--autre', 'Autre partie', 1]] : null), g,
+      { h: 150, series: sv, ymax: 100, yfmt: pct, ref: avec ? null : { y: 100, label: 'normal' }, xaxe: false, lfmt: pct });
+    if (avec) courbes(bloc(corps, 'Unités en jeu (total)', '', [['--ink', 'Cette partie', 1], ['--autre', 'Autre partie', 1]]), g,
+      { h: 100, series: [{ f: p => p.tot, var: '--ink', label: 'Celle-ci' }, { f: p => p.tot, var: '--autre', pts: Q, label: 'Autre' }], xaxe: false });
+    else courbes(bloc(corps, 'Unités en jeu', 'empilées par camp', LEG_CAMPS), g,
+      { h: 110, stack: true, series: [{ f: p => p.moi, var: '--moi', label: 'Toi' }, { f: p => p.adv, var: '--adv', label: 'Adverse' }, { f: p => p.iles, var: '--iles', label: 'Îles' }], xaxe: false });
+    courbes(bloc(corps, 'En vol', '', [['--mis', 'Missiles', 1], ['--obu', 'Obus', 1]]), g,
+      { h: 90, series: [{ f: p => p.mis, var: '--mis', label: 'Missiles' }, { f: p => p.obu, var: '--obu', label: 'Obus' }], xaxe: false });
+    courbes(bloc(corps, 'Écrans du porte-avions allumés'), g, { h: 70, series: [{ f: p => p.ecr, var: '--ink2', step: true }], xaxe: false, compact: true });
+    bande(bloc(corps, 'Ce que tu faisais', '', LEG_ACT), g, { h: 20, cat: p => p.act });
+    courbes(bloc(corps, 'Mac : température', 'réel'), g, { h: 80, series: [{ f: p => p.temp, var: '--ink2' }], ymax: 100, yfmt: v => Math.round(v) + '°', xaxe: false, compact: true });
+    courbes(bloc(corps, 'Mac : processeur', 'réel'), g, { h: 80, series: [{ f: p => p.cpu, var: '--ink2' }], ymax: 100, yfmt: pct, compact: true });
+  };
+  cmp.addEventListener('change', rendre);
+  rendre();
+  return g;
+}
+
+// ================= variante 2 =================
+function v2() {
+  const sec = document.getElementById('v2'), corps = sec.querySelector('.corps');
+  const g = groupe(sec, lectureComplete);
+  sec.querySelector('.bilan').innerHTML = '<p>' + phrasesBilan(AN, P).slice(0, 2).join(' ') + '</p>';
+  courbes(bloc(corps, 'Vitesse du jeu', 'zones grisées = moins de 60 %'), g, { h: 200, series: [{ f: p => p.vp, var: '--ink', area: true }], ymax: 100, yfmt: pct, ref: { y: 100, label: 'normal' }, lents: true, pl: 74 });
+  const b = H('div', 'bloc', corps);
+  H('div', 'titre', b, 'Bandes <span class="sous">peu <i style="display:inline-block;width:60px;height:9px;border-radius:2px;vertical-align:0;background:linear-gradient(90deg,var(--seq0),var(--seq1))"></i> beaucoup (par rapport à cette partie)</span>');
+  const rng = (u) => (lo, hi) => `${Math.round(lo)}–${Math.round(hi)}${u}`;
+  const B2 = { pl: 74 };
+  bande(b, g, Object.assign({ f: p => p.tot, label: 'Unités', droite: rng('') }, B2));
+  bande(b, g, Object.assign({ f: p => p.mis, label: 'Missiles', droite: rng('') }, B2));
+  bande(b, g, Object.assign({ f: p => p.obu, label: 'Obus', droite: rng('') }, B2));
+  bande(b, g, Object.assign({ f: p => p.ecr, label: 'Écrans', droite: rng('') }, B2));
+  bande(b, g, Object.assign({ cat: p => p.act, label: 'Activité' }, B2));
+  bande(b, g, Object.assign({ f: p => p.temp, label: 'Temp.', droite: rng(' °C') }, B2));
+  bande(b, g, Object.assign({ f: p => p.cpu, label: 'Proc.', droite: rng(' %') }, B2));
+  const l = H('div', 'legende', b); l.style.marginLeft = '74px';
+  for (const [v, n] of LEG_ACT) l.insertAdjacentHTML('beforeend', `<span><i style="background:var(${v})"></i>${n}</span>`);
+  return g;
+}
+
+// ================= variante 3 =================
+function v3() {
+  const sec = document.getElementById('v3'), corps = sec.querySelector('.corps');
+  const g = groupe(sec, lectureComplete);
+  const bt = sec.querySelector('.boutons');
+  let choix = 'mis';
+  const rendre = () => {
+    corps.innerHTML = ''; g.charts.length = 0;
+    const s = SUJETS[choix], mx = Math.max(...P.map(s.f)) || 1;
+    courbes(bloc(corps, 'Vitesse et ' + s.nom.toLowerCase(), `100 % du sujet = ${s.fmt(mx)}, son maximum`, [['--ink', 'Vitesse du jeu', 1], ['--mis', s.nom + ' (en % du max)', 1]]), g,
+      { h: 230, series: [{ f: p => p.vp, var: '--ink', label: 'Vitesse' }, { f: p => s.f(p) / mx * 100, var: '--mis', label: s.court }], ymax: 100, yfmt: pct, lents: true, lfmt: pct });
+    bande(bloc(corps, 'Ce que tu faisais', '', LEG_ACT), g, { h: 20, cat: p => p.act });
+    sec.querySelector('.verdict').innerHTML = `<b>${s.nom}</b> et vitesse : ${lien(AN.r[choix])}.`;
+    bt.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === choix));
+  };
+  for (const k in SUJETS) { const b = H('button', '', bt, SUJETS[k].court); b.dataset.k = k; b.addEventListener('click', () => { choix = k; rendre(); }); }
+  rendre();
+  return g;
+}
+
+// ================= variante 4 =================
+function v4() {
+  const sec = document.getElementById('v4'), corps = sec.querySelector('.corps');
+  const g = groupe(sec, lectureComplete);
+  const cles = Object.keys(SUJETS).sort((a, b) => AN.r[a] - AN.r[b]);
+  const k0 = cles[0];
+  sec.querySelector('.bilan').innerHTML = `<p>Ce qui va le plus avec le ralentissement dans cette partie : <b>${SUJETS[k0].nom.toLowerCase()}</b> (${lien(AN.r[k0])}). Vitesse moyenne ${pct(AN.vmoy)}. Attention : un lien n'est pas une preuve (les écrans s'éteignent quand tu pilotes, et c'est peut-être le pilotage qui ralentit).</p>`;
+  const leg = H('div', 'legende', corps); leg.style.margin = '2px 0 8px';
+  for (const [v, n] of LEG_ACT) leg.insertAdjacentHTML('beforeend', `<span><i style="background:var(${v});border-radius:50%"></i>${n}</span>`);
+  const grille = H('div', 'nuages', corps);
+  const nuages = [];
+  for (const k of cles) {
+    const s = SUJETS[k], cell = H('div', 'nuage', grille);
+    H('div', 'titre', cell, s.nom); H('div', 'lien', cell, lien(AN.r[k]));
+    const box = H('div', '', cell);
+    const draw = () => {
+      box.innerHTML = '';
+      const W = Math.max(150, box.clientWidth), Hh = 130, pl = 30, pr = 6, pt = 6, pb = 18;
+      const svg = S('svg', { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
+      const vals = P.map(s.f), lo = Math.min(...vals), hi = Math.max(...vals) || 1, span = (hi - lo) || 1;
+      const vv = P.filter(p => p.v != null).map(p => p.vp), y0 = Math.floor(Math.min(...vv) / 10) * 10, y1 = Math.ceil(Math.max(...vv) / 10) * 10;
+      const x = v => pl + (v - lo) / span * (W - pl - pr), y = v => pt + (1 - (v - y0) / (y1 - y0)) * (Hh - pt - pb);
+      for (const v of [y0, (y0 + y1) / 2, y1]) { S('line', { x1: pl, x2: W - pr, y1: y(v), y2: y(v), stroke: couleur(sec, v === 0 ? '--axis' : '--grid') }, svg); const t = S('text', { x: pl - 4, y: y(v) + 3.5, 'text-anchor': 'end' }, svg); t.textContent = v + '%'; }
+      for (const [v, a] of [[lo, 'start'], [hi, 'end']]) { const t = S('text', { x: x(v), y: Hh - 4, 'text-anchor': a }, svg); t.textContent = s.fmt(v); }
+      const pts = P.filter(p => p.v != null);
+      for (const p of pts) S('circle', { cx: x(s.f(p)) + (Math.random() - 0.5) * 2, cy: y(p.vp), r: 3, fill: couleur(sec, VAR_ACT[p.act]), 'fill-opacity': 0.75 }, svg);
+      const hl = S('circle', { r: 6, fill: 'none', stroke: couleur(sec, '--ink'), 'stroke-width': 2, visibility: 'hidden' }, svg);
+      chart.curseur = i => { if (i == null || P[i].v == null) return hl.setAttribute('visibility', 'hidden'); hl.setAttribute('cx', x(s.f(P[i]))); hl.setAttribute('cy', y(P[i].vp)); hl.setAttribute('visibility', 'visible'); };
+      const zone = S('rect', { x: 0, y: 0, width: W, height: Hh, fill: 'transparent' }, svg);
+      zone.addEventListener('mousemove', e => {
+        const r = svg.getBoundingClientRect(), mx = (e.clientX - r.left) * W / r.width, my = (e.clientY - r.top) * Hh / r.height;
+        let best = null, bd = 1e9; for (const p of pts) { const d = (x(s.f(p)) - mx) ** 2 + (y(p.vp) - my) ** 2; if (d < bd) { bd = d; best = p; } }
+        if (best && bd < 900) g.set(best.i); else g.set(null);
+      });
+      zone.addEventListener('mouseleave', () => g.set(null));
+    };
+    const chart = { draw, curseur: () => {} };
+    g.charts.push(chart); draw();
+  }
+  return g;
+}
+
+// ================= variante 5 =================
+function v5() {
+  const sec = document.getElementById('v5'), corps = sec.querySelector('.corps');
+  const g = groupe(sec, lectureComplete);
+  sec.querySelector('.bilan').innerHTML = phrasesBilan(AN, P).map(s => `<p>${s}</p>`).join('');
+  courbes(bloc(corps, 'Toute la partie', 'vitesse du jeu'), g, { h: 90, series: [{ f: p => p.vp, var: '--ink', area: true }], ymax: 100, yfmt: pct, lents: true, compact: true });
+  bande(corps, g, { h: 16, cat: p => p.act });
+  const eps = runs(P, p => p.act).map(r => {
+    const w = P.slice(r.a, r.b + 1), wv = w.filter(p => p.v != null);
+    return { r, w, v: wv.length ? moyenne(wv.map(p => p.vp)) : null, mis: Math.max(...w.map(p => p.mis)), obu: Math.max(...w.map(p => p.obu)), tot: Math.round(moyenne(w.map(p => p.tot))), temp: moyenne(w.map(p => p.temp)), ecr: Math.round(moyenne(w.map(p => p.ecr))) };
+  });
+  const pire = eps.filter(e => e.v != null).sort((a, b) => a.v - b.v)[0];
+  const liste = H('div', 'episodes', corps);
+  for (const e of eps) {
+    const a = P[e.r.a], b = P[e.r.b];
+    const row = H('div', 'ep' + (e === pire ? ' pire' : ''), liste);
+    H('div', 'h', row, `${hm(a)} – ${hm(b)}<br>${Math.max(1, Math.round((e.r.b - e.r.a + 1) * PAS / 60))} min`);
+    const q = H('div', 'quoi', row, `<span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(${VAR_ACT[e.r.k]});margin-right:5px"></i>${NOMS_ACT[e.r.k]}</span>${e === pire ? '<span class="marque">le plus lent</span>' : ''}`);
+    const pu = H('div', 'puces', q);
+    pu.innerHTML = [`${e.tot} unités`, e.mis ? `${e.mis} missiles` : null, e.obu > 5 ? `${e.obu} obus` : null, `${e.ecr} écrans`, `Mac ${Math.round(e.temp)} °C`].filter(Boolean).map(t => `<span class="puce">${t}</span>`).join('');
+    const vit = H('div', 'vit', row);
+    vit.innerHTML = e.v == null ? 'chargement' : `vitesse <b style="color:var(--ink)">${pct(e.v)}</b>`;
+    const box = H('div', '', vit);
+    const svg = S('svg', { viewBox: '0 0 150 26', height: 26 }, box);
+    S('rect', { x: 0, y: 6, width: 150, height: 14, rx: 3, fill: couleur(sec, '--grid') }, svg);
+    if (e.v != null) S('rect', { x: 0, y: 6, width: 1.5 * e.v, height: 14, rx: 3, fill: couleur(sec, '--ink') }, svg);
+    row.addEventListener('mouseenter', () => g.set(e.r.a + Math.floor((e.r.b - e.r.a) / 2)));
+    row.addEventListener('mouseleave', () => g.set(null));
+  }
+  return g;
+}
+
+// ================= variante 6 =================
+function v6() {
+  const sec = document.getElementById('v6'), corps = sec.querySelector('.corps');
+  const g = groupe(sec, p => lectureComplete(p).toUpperCase());
+  sec.querySelector('.bilan').innerHTML = phrasesBilan(AN, P).slice(0, 3).map(s => `<p>${s.toUpperCase()}</p>`).join('');
+  const ecran = (t, leg) => { const e = H('div', 'ecran', corps); bloc(e, t, '', leg); return e; };
+  courbes(ecran('Vitesse du jeu'), g, { h: 140, series: [{ f: p => p.vp, var: '--ink', area: true }], ymax: 100, yfmt: pct, ref: { y: 100, label: 'NORMAL' }, xaxe: false, crisp: true });
+  courbes(ecran('Unités', [['--moi', 'TOI'], ['--adv', 'ADVERSE'], ['--iles', 'ÎLES']]), g, { h: 100, stack: true, series: [{ f: p => p.moi, var: '--moi', label: 'TOI' }, { f: p => p.adv, var: '--adv', label: 'ADV' }, { f: p => p.iles, var: '--iles', label: 'ÎLES' }], xaxe: false, crisp: true });
+  courbes(ecran('En vol', [['--mis', 'MISSILES', 1], ['--obu', 'OBUS', 1]]), g, { h: 80, series: [{ f: p => p.mis, var: '--mis', label: 'MIS' }, { f: p => p.obu, var: '--obu', label: 'OBUS' }], xaxe: false, crisp: true });
+  bande(ecran('Activité', NOMS_ACT.map((n, k) => [VAR_ACT[k], n.toUpperCase()])), g, { h: 18, cat: p => p.act });
+  courbes(ecran('Mac : température'), g, { h: 70, series: [{ f: p => p.temp, var: '--ink', label: '°C' }], ymax: 100, compact: true, xaxe: false, crisp: true, yfmt: v => Math.round(v) + '°' });
+  courbes(ecran('Mac : processeur'), g, { h: 80, series: [{ f: p => p.cpu, var: '--ink', label: '%' }], ymax: 100, compact: true, crisp: true, yfmt: pct });
+  return g;
+}
+
+const GROUPES = [v1(), v2(), v3(), v4(), v5(), v6()];
+let attente = null;
+const redessiner = () => { clearTimeout(attente); attente = setTimeout(() => GROUPES.forEach(gr => gr.charts.forEach(c => c.draw())), 120); };
+window.addEventListener('resize', redessiner);
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redessiner);
+new MutationObserver(redessiner).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+</script>
+</body>
+</html>

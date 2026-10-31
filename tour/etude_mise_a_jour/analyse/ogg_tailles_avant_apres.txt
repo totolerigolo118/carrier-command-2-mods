@@ -1,0 +1,9 @@
+ogg dans les deux listes: 787
+ogg dont le sha256 differe (avant douteux): 0
+ogg: delta de taille (apres-avant) -> nb de fichiers (10 plus frequents):
+   0 787
+dates (avant, apres) les plus frequentes:
+   ('2026-07-04 17:14:37', '2026-10-28 21:30:05') 742
+   ('2026-07-04 17:14:36', '2026-10-28 21:30:05') 24
+   ('2026-07-04 17:14:36', '2026-10-28 21:30:04') 21
+taille totale ogg apres (octets): 60118515

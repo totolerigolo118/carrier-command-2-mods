@@ -1,0 +1,58 @@
+ATELIER DE PATCHS — Carrier Command 2 (version Mac)
+====================================================
+
+Un seul endroit pour activer ou retirer tous les changements faits au jeu.
+
+Les boutons (jeu fermé)
+-----------------------
+  « Atelier CC2 (activer ou retirer les patchs) »
+      Affiche l'état de chaque patch et propose, par numéro, de l'activer ou de le retirer.
+      Tape le numéro puis Entrée ; « q » pour quitter.
+  « Tout remettre CC2 d origine »
+      Retire tout d'un coup : le jeu redevient exactement celui de Steam.
+
+Les patchs disponibles (24/10/2026)
+-----------------------------------
+  ascenseur_x2   Avions qui sortent et rentrent environ 2x plus vite, contre 2x plus
+                 d'énergie pour l'ascenseur et la grue. Mesuré : 4 avions 3:50 → 2:15.
+  horloge        « TEMPS DE JEU » en bas à gauche des écrans de contrôle des véhicules,
+                 pour mesurer en temps de jeu (le lag du Mac ne fausse pas la mesure).
+  atterrissage   Avions qui rentrent plus vite : ils peuvent recevoir la piste sur tout le
+                 virage arrière (au lieu d'un seul point), et le circuit d'attente est un cercle
+                 de 7,5 km au lieu d'un ovale de 12,3 km. À utiliser AVEC l'ascenseur x2.
+                 Les hélicos ne sont pas concernés. Essai du 23/10 : 4 avions rangés en
+                 7:28, un atterrissage toutes les 1:31, aucune approche ratée.
+  journal        Chronomètre automatique des retours d'avions et d'hélicos : en bas à gauche des
+                 écrans de contrôle des véhicules, au-dessus de l'horloge, il note tout seul
+                 (temps de jeu) quand chaque appareil reçoit la piste, touche le pont et est
+                 rangé, puis affiche le total. Ne change rien au jeu.
+  helicos_approche_x2
+                 Hélicos qui reviennent se poser sur la piste deux fois plus vite (environ 10 m/s
+                 au lieu de 5 pendant l'approche). Les avions ne sont pas concernés.
+  helicos_pres_ascenseur
+                 Hélicos qui se posent à l'arrière de la piste, juste à côté de l'ascenseur, au lieu
+                 du milieu : presque plus de roulage. Avec l'approche x2 : 4 hélicos 6:52 → 4:22 (24/10).
+  effet_tele     Vue de pilotage et caméra gimbal sans l'effet « vieille télé » (plus de grain,
+                 de lignes, de couleurs qui bavent ni de bords assombris). Mêmes tailles qu'avant.
+                 Marche aussi tel quel sur Windows (c'est un fichier d'effet, pas le programme).
+  releve + ecriture_releve   (24/10, à garder ensemble)
+                 Pendant la partie, le jeu note toutes les 5 secondes sa vitesse, les unités de
+                 chaque camp, les missiles et obus en vol, les écrans allumés et ce que tu fais.
+                 Rien ne s'affiche et rien ne change dans le jeu. Le relevé va dans
+                 ~/Library/Application Support/Carrier Command 2/releve_cc2.txt (environ 0,5 Mo
+                 par heure). Après la partie, dis à Claude « fais les courbes de ma dernière
+                 partie » : il fait la page des courbes du lag, avec un court bilan.
+
+Sécurités
+---------
+  - Refuse de tourner si le jeu est ouvert.
+  - Après une mise à jour Steam, refuse de toucher au programme du jeu (il faudra refaire
+    l'analyse) : rien n'est abîmé.
+  - Garde une copie du programme d'origine (sauvegarde/) et des fichiers remplacés.
+  - Ne touche jamais aux mêmes endroits avec deux patchs.
+
+À savoir
+--------
+  - En multijoueur, l'ascenseur x2 profite à tout le monde si c'est TOI qui héberges.
+  - Le bouton « Restaurer CC2 d origine » de la fumée tricolore ne touche pas à ces patchs.
+  - Pour Claude : lire d'abord DEMARRER_cc2_patchs.md.

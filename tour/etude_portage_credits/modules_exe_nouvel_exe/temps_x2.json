@@ -1,0 +1,41 @@
+{
+ "nom": "temps_x2",
+ "description": "simulation 2x plus vite (facteur de vitesse du serveur 1.0 -> 2.0) : MODE TEST, jamais en multijoueur",
+ "avertissement": "Le serveur dicte la vitesse : les autres joueurs d'une partie hebergee verraient le jeu 2x plus vite. Toute la partie accelere (ennemis, animations). A retirer pour jouer normalement.",
+ "etat_du_portage": "PORTE SUR COPIE, JAMAIS ESSAYE EN JEU (etude portage_credits)",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11354112,
+  "horodatage_pe": "0x6ae228f3",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000",
+  "steam_build": "26277078",
+  "build_precedent": "23836745"
+ },
+ "sha256_origine": "461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A",
+ "sha256_patche": "A2353B6A68A34C2B2CD0E42C0C42DB1DC2E3B73C5A09769C0CCD15B5A85C3EFB",
+ "nb_changements": 1,
+ "changements": [
+  {
+   "va": 8609275,
+   "offset": 4411899,
+   "avant": "0000803f",
+   "apres": "00000040",
+   "role": "constructeur du serveur 0x00835b50 : [edi+0x140] (facteur de vitesse) 1.0 -> 2.0",
+   "reglage": "SERVER_SPEED_FACTOR",
+   "constante_va": 0,
+   "portage": {
+    "va_ancien": 8608971,
+    "offset_ancien": 4411595,
+    "avant_ancien": "0000803f",
+    "apres_ancien": "00000040",
+    "type_de_champ": "immediat",
+    "instruction_ancien_exe": "00835cc5  mov     dword ptr [edi + 0x140], 0x3f800000",
+    "instruction_nouvel_exe": "00835df5  mov     dword ptr [edi + 0x140], 0x3f800000",
+    "verifie_par_desassemblage": true,
+    "valeur_avant": null,
+    "valeur_apres": null
+   }
+  }
+ ]
+}

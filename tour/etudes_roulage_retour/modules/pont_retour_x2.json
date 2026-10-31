@@ -1,0 +1,26 @@
+{
+ "nom": "pont_retour_x2",
+ "description": "roulage de retour sur le pont x2 : la constante 30,0 (ticks par seconde) lue pour les etats 5, 6, 7 devient 15,0 (1 lecture redirigee)",
+ "avertissement": "Les avions et helicos qui reviennent roulent 2 fois plus vite sur le pont apres le toucher (piste -> ascenseur). EFFET DE BORD deduit de l'analyse (non vu en jeu) : le roulage du depart (ascenseur -> bout de piste) peut aussi aller x2 (en plus de l'ascenseur_x2). Les deux porte-avions ont le meme code. Jamais vu en jeu avant la premiere mesure.",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11353600,
+  "horodatage_pe": "0x6a36c177",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "1C9A01C3007CB2BEC2A04D716812CF9F24C87EFA11056395C89DDD7D2C341026",
+ "sha256_patche": "1E60E8C4EACEB19FD1C4F8530AD16620607F8469D87481E7D72E942AD0524E3F",
+ "nb_changements": 1,
+ "changements": [
+  {
+   "va": 7331245,
+   "offset": 3133869,
+   "avant": "8c79db00",
+   "apres": "3079db00",
+   "role": "`movss xmm7,[30.0]` (debut de la boucle de la file) : la lecture de 30,0 devient 15,0 ; queue commune des etats 5, 6, 7 : t += v/(L x 15) [mulss xmm0,xmm7 a 0x007007e3]",
+   "reglage": "RETURN_TAXI_TICKS_PER_SECOND",
+   "constante_va": 14383408
+  }
+ ]
+}

@@ -1,0 +1,41 @@
+{
+ "nom": "helicos_approche_x2",
+ "description": "approche des helicos x2 : le point vise est 100 m devant l'helico au lieu de 50 m (1 lecture redirigee)",
+ "avertissement": "Les helicos qui reviennent s'approchent environ 2 fois plus vite (visee a 100 m au lieu de 50 m). Les avions ne sont pas touches (la partie est reservee aux helicos, apres le test get_is_rotor). Valide sur le Mac avec le toucher pres de l'ascenseur ; SEUL, jamais vu. Jamais vu en jeu sur Windows avant la premiere mesure.",
+ "etat_du_portage": "PORTE SUR COPIE, JAMAIS ESSAYE EN JEU (etude portage_credits)",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11354112,
+  "horodatage_pe": "0x6ae228f3",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000",
+  "steam_build": "26277078",
+  "build_precedent": "23836745"
+ },
+ "sha256_origine": "461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A",
+ "sha256_patche": "0DF816F7D5E73B964A4150E907AD5A863999C83ED2131D1AD28899EADEAFD727",
+ "nb_changements": 1,
+ "changements": [
+  {
+   "va": 7332551,
+   "offset": 3135175,
+   "avant": "f079db00",
+   "apres": "187adb00",
+   "role": "partie helico de l'etat 3 (apres `call [vtable+0x4c]` / `test al,al` / `je 0x6fe436`) : `addss xmm2,[50.0]` (z vise = z + 50) -> `[100.0]`",
+   "reglage": "HELI_APPROACH_AIM_AHEAD_M",
+   "constante_va": 14383640,
+   "portage": {
+    "va_ancien": 7332279,
+    "offset_ancien": 3134903,
+    "avant_ancien": "b879db00",
+    "apres_ancien": "e079db00",
+    "type_de_champ": "pointeur",
+    "instruction_ancien_exe": "006fe1b3  addss   xmm2, dword ptr [0xdb79b8]",
+    "instruction_nouvel_exe": "006fe2c3  addss   xmm2, dword ptr [0xdb79f0]",
+    "verifie_par_desassemblage": true,
+    "valeur_avant": 50.0,
+    "valeur_apres": 100.0
+   }
+  }
+ ]
+}

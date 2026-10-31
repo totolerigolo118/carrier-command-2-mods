@@ -1,0 +1,304 @@
+{
+ "nom": "ascenseur_x2",
+ "description": "ascenseur / grue / roulage sur le pont x2 (methode du Mac : octets du programme, sans DLL)",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11353600,
+  "horodatage_pe": "0x6a36c177",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "1C9A01C3007CB2BEC2A04D716812CF9F24C87EFA11056395C89DDD7D2C341026",
+ "sha256_patche": "DAC8B1E66B03ACEA7DC64B02EB24F6A9F19C61FA242D7E8E68F0C5D8B7888B48",
+ "nb_changements": 32,
+ "changements": [
+  {
+   "va": 4195088,
+   "offset": 784,
+   "avant": "00000000",
+   "apres": "898888bd",
+   "role": "valeur ajoutee dans le bourrage de l'en-tete (CP_T_CRANE_V_NEG)",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "constante_va": 4195088
+  },
+  {
+   "va": 7250081,
+   "offset": 3052705,
+   "avant": "cdcccc3e",
+   "apres": "cdcc4c3f",
+   "role": "energie : 5e ecriture de la fonction, part ascenseur / grue presumee (a confirmer par le Mac, Q3), mov [edi+8], 0,4: mov dword ptr [edi + 8], 0x3ecccccd",
+   "reglage": "CP_T_ENERGY_SHARE",
+   "constante_va": 0
+  },
+  {
+   "va": 7313425,
+   "offset": 3116049,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "role": "roulage : plafond 2,5, bloc 1: movss xmm2, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5",
+   "reglage": "CP_T_TAXI_CAP",
+   "constante_va": 14383152
+  },
+  {
+   "va": 7313477,
+   "offset": 3116101,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "role": "roulage : acceleration 0,05, bloc 1: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "constante_va": 13522444
+  },
+  {
+   "va": 7320270,
+   "offset": 3122894,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "role": "roulage : acceleration 0,05, bloc 2: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "constante_va": 13522444
+  },
+  {
+   "va": 7320297,
+   "offset": 3122921,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "role": "roulage : plafond 2,5, bloc 2: movss xmm1, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5",
+   "reglage": "CP_T_TAXI_CAP",
+   "constante_va": 14383152
+  },
+  {
+   "va": 7326634,
+   "offset": 3129258,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "role": "roulage : acceleration 0,05, bloc 3: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "constante_va": 13522444
+  },
+  {
+   "va": 7326642,
+   "offset": 3129266,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "role": "roulage : plafond 2,5, bloc 3: movss xmm1, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5",
+   "reglage": "CP_T_TAXI_CAP",
+   "constante_va": 14383152
+  },
+  {
+   "va": 7327310,
+   "offset": 3129934,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "role": "roulage : acceleration 0,05, bloc 4: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "constante_va": 13522444
+  },
+  {
+   "va": 7327318,
+   "offset": 3129942,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "role": "roulage : plafond 2,5, bloc 4: movss xmm3, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5",
+   "reglage": "CP_T_TAXI_CAP",
+   "constante_va": 14383152
+  },
+  {
+   "va": 7330005,
+   "offset": 3132629,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "role": "roulage : acceleration 0,05, bloc 5: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "constante_va": 13522444
+  },
+  {
+   "va": 7330032,
+   "offset": 3132656,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "role": "roulage : plafond 2,5, bloc 5: movss xmm3, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5",
+   "reglage": "CP_T_TAXI_CAP",
+   "constante_va": 14383152
+  },
+  {
+   "va": 7331253,
+   "offset": 3133877,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "role": "roulage : acceleration 0,05 chargee dans xmm2 avant l'aiguillage (bloc 6): movss xmm2, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "constante_va": 13522444
+  },
+  {
+   "va": 7331261,
+   "offset": 3133885,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "role": "roulage : plafond 2,5 chargee dans xmm5 avant l'aiguillage (bloc 6, sert au bloc 7): movss xmm5, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5",
+   "reglage": "CP_T_TAXI_CAP",
+   "constante_va": 14383152
+  },
+  {
+   "va": 7338600,
+   "offset": 3141224,
+   "avant": "c876db00",
+   "apres": "3078db00",
+   "role": "roulage : plafond 2,5, bloc 7: movss xmm5, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5",
+   "reglage": "CP_T_TAXI_CAP",
+   "constante_va": 14383152
+  },
+  {
+   "va": 7338735,
+   "offset": 3141359,
+   "avant": "d071db00",
+   "apres": "0c56ce00",
+   "role": "roulage : acceleration 0,05, bloc 7: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007",
+   "reglage": "CP_T_TAXI_ACCEL",
+   "constante_va": 13522444
+  },
+  {
+   "va": 7343910,
+   "offset": 3146534,
+   "avant": "2472db00",
+   "apres": "580bce00",
+   "role": "grue horizontale +1/6, bloc A: movss xmm2, dword ptr [0xdb7224], constante 0x00db7224 = 0.166666672",
+   "reglage": "CP_T_CRANE_H",
+   "constante_va": 13503320
+  },
+  {
+   "va": 7343921,
+   "offset": 3146545,
+   "avant": "147cdb00",
+   "apres": "a4e4ce00",
+   "role": "grue horizontale -1/6, bloc A: movss xmm1, dword ptr [0xdb7c14], constante 0x00db7c14 = -0.166666672",
+   "reglage": "CP_T_CRANE_H_NEG",
+   "constante_va": 13558948
+  },
+  {
+   "va": 7344002,
+   "offset": 3146626,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "role": "grue verticale -1/30, bloc A: movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "constante_va": 4195088
+  },
+  {
+   "va": 7344026,
+   "offset": 3146650,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "role": "grue verticale +1/30, bloc A: movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351",
+   "reglage": "CP_T_CRANE_V",
+   "constante_va": 14381540
+  },
+  {
+   "va": 7344181,
+   "offset": 3146805,
+   "avant": "2472db00",
+   "apres": "580bce00",
+   "role": "grue horizontale +1/6, bloc B: movss xmm2, dword ptr [0xdb7224], constante 0x00db7224 = 0.166666672",
+   "reglage": "CP_T_CRANE_H",
+   "constante_va": 13503320
+  },
+  {
+   "va": 7344192,
+   "offset": 3146816,
+   "avant": "147cdb00",
+   "apres": "a4e4ce00",
+   "role": "grue horizontale -1/6, bloc B: movss xmm1, dword ptr [0xdb7c14], constante 0x00db7c14 = -0.166666672",
+   "reglage": "CP_T_CRANE_H_NEG",
+   "constante_va": 13558948
+  },
+  {
+   "va": 7344259,
+   "offset": 3146883,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "role": "grue verticale -1/30, bloc B: movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "constante_va": 4195088
+  },
+  {
+   "va": 7344294,
+   "offset": 3146918,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "role": "grue verticale +1/30, bloc B: movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351",
+   "reglage": "CP_T_CRANE_V",
+   "constante_va": 14381540
+  },
+  {
+   "va": 7344420,
+   "offset": 3147044,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "role": "grue verticale +1/30, bloc C (hauteur 12): movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351",
+   "reglage": "CP_T_CRANE_V",
+   "constante_va": 14381540
+  },
+  {
+   "va": 7344428,
+   "offset": 3147052,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "role": "grue verticale -1/30, bloc C (hauteur 12): movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "constante_va": 4195088
+  },
+  {
+   "va": 7344566,
+   "offset": 3147190,
+   "avant": "bc71db00",
+   "apres": "e471db00",
+   "role": "grue verticale +1/30, bloc D (hauteur 11): movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351",
+   "reglage": "CP_T_CRANE_V",
+   "constante_va": 14381540
+  },
+  {
+   "va": 7344574,
+   "offset": 3147198,
+   "avant": "e47bdb00",
+   "apres": "10034000",
+   "role": "grue verticale -1/30, bloc D (hauteur 11): movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351",
+   "reglage": "CP_T_CRANE_V_NEG",
+   "constante_va": 4195088
+  },
+  {
+   "va": 7344665,
+   "offset": 3147289,
+   "avant": "c471db00",
+   "apres": "ec71db00",
+   "role": "grue rotation +0,04: movss xmm2, dword ptr [0xdb71c4], constante 0x00db71c4 = 0.0399999991",
+   "reglage": "CP_T_CRANE_ROT",
+   "constante_va": 14381548
+  },
+  {
+   "va": 7344677,
+   "offset": 3147301,
+   "avant": "ec7bdb00",
+   "apres": "fc7bdb00",
+   "role": "grue rotation -0,04: movss xmm1, dword ptr [0xdb7bec], constante 0x00db7bec = -0.0399999991",
+   "reglage": "CP_T_CRANE_ROT_NEG",
+   "constante_va": 14384124
+  },
+  {
+   "va": 7363604,
+   "offset": 3166228,
+   "avant": "b071db00",
+   "apres": "d071db00",
+   "role": "plateforme : pas +0,025 (charge xmm3, sert au minss et au divss): movss xmm3, dword ptr [0xdb71b0], constante 0x00db71b0 = 0.0250000004",
+   "reglage": "CP_T_PLATFORM_STEP",
+   "constante_va": 14381520
+  },
+  {
+   "va": 7363646,
+   "offset": 3166270,
+   "avant": "e07bdb00",
+   "apres": "f07bdb00",
+   "role": "plateforme : pas -0,025 (borne basse): maxss xmm1, dword ptr [0xdb7be0], constante 0x00db7be0 = -0.0250000004",
+   "reglage": "CP_T_PLATFORM_STEP_NEG",
+   "constante_va": 14384112
+  }
+ ]
+}

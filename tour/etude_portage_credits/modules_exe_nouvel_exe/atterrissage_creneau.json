@@ -1,0 +1,83 @@
+{
+ "nom": "atterrissage_creneau",
+ "description": "creneau de piste elargi : la piste peut etre donnee a l'avion pendant tout le virage arriere (3 sauts)",
+ "avertissement": "Change le circuit d'attente des avions au retour pour les DEUX porte-avions (le code est le meme). Tout ou rien : les 3 changements vont ensemble. Jamais vu en jeu avant la premiere mesure.",
+ "etat_du_portage": "PORTE SUR COPIE, JAMAIS ESSAYE EN JEU (etude portage_credits)",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11354112,
+  "horodatage_pe": "0x6ae228f3",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000",
+  "steam_build": "26277078",
+  "build_precedent": "23836745"
+ },
+ "sha256_origine": "461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A",
+ "sha256_patche": "DD55A1A54844250ACAF712D01C93AAB1F3DB27AB4B4B424BE890699A65A5FBC7",
+ "nb_changements": 3,
+ "changements": [
+  {
+   "va": 7346956,
+   "offset": 3149580,
+   "avant": "04010000",
+   "apres": "2a000000",
+   "role": "etat 1 du circuit (1re moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x007019fa]",
+   "reglage": "LANDING_GATE_STATE1",
+   "constante_va": 0,
+   "portage": {
+    "va_ancien": 7346684,
+    "offset_ancien": 3149308,
+    "avant_ancien": "04010000",
+    "apres_ancien": "2a000000",
+    "type_de_champ": "saut_relatif",
+    "instruction_ancien_exe": "007019fa  jbe     0x701b04",
+    "instruction_nouvel_exe": "00701b0a  jbe     0x701c14",
+    "verifie_par_desassemblage": true,
+    "valeur_avant": null,
+    "valeur_apres": null
+   }
+  },
+  {
+   "va": 7347781,
+   "offset": 3150405,
+   "avant": "cbfdffff",
+   "apres": "f1fcffff",
+   "role": "etat 2 (2e moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x00701d33]",
+   "reglage": "LANDING_GATE_STATE2",
+   "constante_va": 0,
+   "portage": {
+    "va_ancien": 7347509,
+    "offset_ancien": 3150133,
+    "avant_ancien": "cbfdffff",
+    "apres_ancien": "f1fcffff",
+    "type_de_champ": "saut_relatif",
+    "instruction_ancien_exe": "00701d33  jbe     0x701b04",
+    "instruction_nouvel_exe": "00701e43  jbe     0x701c14",
+    "verifie_par_desassemblage": true,
+    "valeur_avant": null,
+    "valeur_apres": null
+   }
+  },
+  {
+   "va": 7347807,
+   "offset": 3150431,
+   "avant": "b1fdffff",
+   "apres": "d7fcffff",
+   "role": "passage etat 2 -> 3 : `jmp 0x701b04` (sortie) -> `jmp 0x701a2a` (test de la piste) [jmp 0x701b04 a 0x00701d4e]",
+   "reglage": "LANDING_GATE_STATE2_TO_3",
+   "constante_va": 0,
+   "portage": {
+    "va_ancien": 7347535,
+    "offset_ancien": 3150159,
+    "avant_ancien": "b1fdffff",
+    "apres_ancien": "d7fcffff",
+    "type_de_champ": "saut_relatif",
+    "instruction_ancien_exe": "00701d4e  jmp     0x701b04",
+    "instruction_nouvel_exe": "00701e5e  jmp     0x701c14",
+    "verifie_par_desassemblage": true,
+    "valeur_avant": null,
+    "valeur_apres": null
+   }
+  }
+ ]
+}

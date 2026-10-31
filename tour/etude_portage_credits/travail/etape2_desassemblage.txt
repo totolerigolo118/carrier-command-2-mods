@@ -1,0 +1,742 @@
+====================================================================================================
+ascenseur_x2 #0  va 0x00400310 offset 0x310  avant 00000000 apres 898888bd
+  role : valeur ajoutee dans le bourrage de l'en-tete (CP_T_CRANE_V_NEG)
+  EN-TETE (voir etape 3)
+====================================================================================================
+ascenseur_x2 #1  va 0x006ea0a1 offset 0x2e94a1  avant cdcccc3e apres cdcc4c3f
+  role : energie : 5e ecriture de la fonction, part ascenseur / grue presumee (a confirmer par le Mac, Q3), mov [edi+8], 0,4: mov dword ptr [edi + 8], 0x3ecccccd
+  site nouveau : va 0x006ea1b1 offset 0x2e95b1 (decalage +0x110) ; champ : immediat ; liste de relocation ancien/nouveau : False/False
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006ea091  sub     ecx, 1                                | 006ea1a1  sub     ecx, 1
+     006ea094  jne     0x6ea080                              | 006ea1a4  jne     0x6ea190
+     006ea096  lea     edi, [esi + 0xa8]                     | 006ea1a6  lea     edi, [esi + 0xa8]
+     006ea09c  mov     ecx, edi                              | 006ea1ac  mov     ecx, edi
+  >> 006ea09e  mov     dword ptr [edi + 8], 0x3ecccccd       | 006ea1ae  mov     dword ptr [edi + 8], 0x3ecccccd
+     006ea0a5  push    2                                     | 006ea1b5  push    2
+     006ea0a7  call    0x844710                              | 006ea1b7  call    0x844840
+     006ea0ac  mov     eax, dword ptr [edi]                  | 006ea1bc  mov     eax, dword ptr [edi]
+     006ea0ae  mov     dword ptr [eax + 4], 0x3f800000       | 006ea1be  mov     dword ptr [eax + 4], 0x3f800000
+     006ea0b5  mov     eax, dword ptr [edi]                  | 006ea1c5  mov     eax, dword ptr [edi]
+     006ea0b7  mov     dword ptr [eax + 0x10], 0x3f800000    | 006ea1c7  mov     dword ptr [eax + 0x10], 0x3f800000
+  IMMEDIAT (aucune adresse) : cdcccc3e -> cdcc4c3f ; avant dans le nouvel exe = cdcccc3e (identique=True)
+====================================================================================================
+ascenseur_x2 #2  va 0x006f9811 offset 0x2f8c11  avant c876db00 apres 3078db00
+  role : roulage : plafond 2,5, bloc 1: movss xmm2, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5
+  site nouveau : va 0x006f9921 offset 0x2f8d21 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006f97fd  mov     byte ptr [eax + 0xc0], 0              | 006f990d  mov     byte ptr [eax + 0xc0], 0
+     006f9804  inc     edx                                   | 006f9914  inc     edx
+     006f9805  cmp     edx, dword ptr [ecx + 0x160]          | 006f9915  cmp     edx, dword ptr [ecx + 0x160]
+     006f980b  jb      0x6f97f0                              | 006f991b  jb      0x6f9900
+  >> 006f980d  movss   xmm2, dword ptr [0xdb76c8]            | 006f991d  movss   xmm2, dword ptr [0xdb7700]
+     006f9815  movaps  xmm1, xmm3                            | 006f9925  movaps  xmm1, xmm3
+     006f9818  mov     dword ptr [ecx + 0x174], 3            | 006f9928  mov     dword ptr [ecx + 0x174], 3
+     006f9822  mov     edx, dword ptr [edi + 0x54]           | 006f9932  mov     edx, dword ptr [edi + 0x54]
+     006f9825  mov     eax, edx                              | 006f9935  mov     eax, edx
+     006f9827  sub     eax, dword ptr [edi + 0x50]           | 006f9937  sub     eax, dword ptr [edi + 0x50]
+     006f982a  cmp     edx, dword ptr [edi + 0x50]           | 006f993a  cmp     edx, dword ptr [edi + 0x50]
+  VALEUR avant : ancien [0x00db76c8]=2.5 ; nouveau [0x00db7700]=2.5 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7830]=5.0 ; nouveau [0x00db7868]=5.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #3  va 0x006f9845 offset 0x2f8c45  avant d071db00 apres 0c56ce00
+  role : roulage : acceleration 0,05, bloc 1: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007
+  site nouveau : va 0x006f9955 offset 0x2f8d55 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006f9832  movss   xmm4, dword ptr [edi + 0x5c]          | 006f9942  movss   xmm4, dword ptr [edi + 0x5c]
+     006f9837  cmovb   eax, edx                              | 006f9947  cmovb   eax, edx
+     006f983a  mov     edx, dword ptr [edi + 0x4c]           | 006f994a  mov     edx, dword ptr [edi + 0x4c]
+     006f983d  subss   xmm1, xmm4                            | 006f994d  subss   xmm1, xmm4
+  >> 006f9841  addss   xmm0, dword ptr [0xdb71d0]            | 006f9951  addss   xmm0, dword ptr [0xdb7208]
+     006f9849  imul    ecx, eax, 0x7c                        | 006f9959  imul    ecx, eax, 0x7c
+     006f984c  add     ecx, edx                              | 006f995c  add     ecx, edx
+     006f984e  minss   xmm2, xmm0                            | 006f995e  minss   xmm2, xmm0
+     006f9852  movss   xmm0, dword ptr [0xdb71f8]            | 006f9962  movss   xmm0, dword ptr [0xdb7230]
+     006f985a  mulss   xmm1, dword ptr [ecx + 0x78]          | 006f996a  mulss   xmm1, dword ptr [ecx + 0x78]
+     006f985f  comiss  xmm0, xmm1                            | 006f996f  comiss  xmm0, xmm1
+  VALEUR avant : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce560c]=0.10000000149011612 ; nouveau [0x00ce560c]=0.10000000149011612 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #4  va 0x006fb2ce offset 0x2fa6ce  avant d071db00 apres 0c56ce00
+  role : roulage : acceleration 0,05, bloc 2: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007
+  site nouveau : va 0x006fb3de offset 0x2fa7de (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fb2bd  mov     ecx, edx                              | 006fb3cd  mov     ecx, edx
+     006fb2bf  sub     ecx, dword ptr [edi + 0x50]           | 006fb3cf  sub     ecx, dword ptr [edi + 0x50]
+     006fb2c2  cmp     edx, dword ptr [edi + 0x50]           | 006fb3d2  cmp     edx, dword ptr [edi + 0x50]
+     006fb2c5  movss   xmm0, dword ptr [edi + 0x60]          | 006fb3d5  movss   xmm0, dword ptr [edi + 0x60]
+  >> 006fb2ca  addss   xmm0, dword ptr [0xdb71d0]            | 006fb3da  addss   xmm0, dword ptr [0xdb7208]
+     006fb2d2  movss   xmm3, dword ptr [0xdb7418]            | 006fb3e2  movss   xmm3, dword ptr [0xdb7450]
+     006fb2da  cmovb   ecx, edx                              | 006fb3ea  cmovb   ecx, edx
+     006fb2dd  movss   xmm4, dword ptr [edi + 0x5c]          | 006fb3ed  movss   xmm4, dword ptr [edi + 0x5c]
+     006fb2e2  movaps  xmm2, xmm3                            | 006fb3f2  movaps  xmm2, xmm3
+     006fb2e5  movss   xmm1, dword ptr [0xdb76c8]            | 006fb3f5  movss   xmm1, dword ptr [0xdb7700]
+     006fb2ed  subss   xmm2, xmm4                            | 006fb3fd  subss   xmm2, xmm4
+  VALEUR avant : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce560c]=0.10000000149011612 ; nouveau [0x00ce560c]=0.10000000149011612 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #5  va 0x006fb2e9 offset 0x2fa6e9  avant c876db00 apres 3078db00
+  role : roulage : plafond 2,5, bloc 2: movss xmm1, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5
+  site nouveau : va 0x006fb3f9 offset 0x2fa7f9 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fb2d2  movss   xmm3, dword ptr [0xdb7418]            | 006fb3e2  movss   xmm3, dword ptr [0xdb7450]
+     006fb2da  cmovb   ecx, edx                              | 006fb3ea  cmovb   ecx, edx
+     006fb2dd  movss   xmm4, dword ptr [edi + 0x5c]          | 006fb3ed  movss   xmm4, dword ptr [edi + 0x5c]
+     006fb2e2  movaps  xmm2, xmm3                            | 006fb3f2  movaps  xmm2, xmm3
+  >> 006fb2e5  movss   xmm1, dword ptr [0xdb76c8]            | 006fb3f5  movss   xmm1, dword ptr [0xdb7700]
+     006fb2ed  subss   xmm2, xmm4                            | 006fb3fd  subss   xmm2, xmm4
+     006fb2f1  imul    ecx, ecx, 0x7c                        | 006fb401  imul    ecx, ecx, 0x7c
+     006fb2f4  minss   xmm1, xmm0                            | 006fb404  minss   xmm1, xmm0
+     006fb2f8  add     ecx, dword ptr [edi + 0x4c]           | 006fb408  add     ecx, dword ptr [edi + 0x4c]
+     006fb2fb  cmp     dword ptr [edi + 0x58], 1             | 006fb40b  cmp     dword ptr [edi + 0x58], 1
+     006fb2ff  mulss   xmm2, dword ptr [ecx + 0x78]          | 006fb40f  mulss   xmm2, dword ptr [ecx + 0x78]
+  VALEUR avant : ancien [0x00db76c8]=2.5 ; nouveau [0x00db7700]=2.5 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7830]=5.0 ; nouveau [0x00db7868]=5.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #6  va 0x006fcbaa offset 0x2fbfaa  avant d071db00 apres 0c56ce00
+  role : roulage : acceleration 0,05, bloc 3: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007
+  site nouveau : va 0x006fccba offset 0x2fc0ba (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fcb8e  call    0x844530                              | 006fcc9e  call    0x844660
+     006fcb93  movss   xmm0, dword ptr [edi + 0xa0]          | 006fcca3  movss   xmm0, dword ptr [edi + 0xa0]
+     006fcb9b  movaps  xmm2, xmm4                            | 006fccab  movaps  xmm2, xmm4
+     006fcb9e  movss   xmm6, dword ptr [edi + 0x9c]          | 006fccae  movss   xmm6, dword ptr [edi + 0x9c]
+  >> 006fcba6  addss   xmm0, dword ptr [0xdb71d0]            | 006fccb6  addss   xmm0, dword ptr [0xdb7208]
+     006fcbae  movss   xmm1, dword ptr [0xdb76c8]            | 006fccbe  movss   xmm1, dword ptr [0xdb7700]
+     006fcbb6  subss   xmm2, xmm6                            | 006fccc6  subss   xmm2, xmm6
+     006fcbba  minss   xmm1, xmm0                            | 006fccca  minss   xmm1, xmm0
+     006fcbbe  movss   xmm0, dword ptr [0xdb71a0]            | 006fccce  movss   xmm0, dword ptr [0xdb71d8]
+     006fcbc6  mulss   xmm2, dword ptr [eax + 0x78]          | 006fccd6  mulss   xmm2, dword ptr [eax + 0x78]
+     006fcbcb  comiss  xmm0, xmm2                            | 006fccdb  comiss  xmm0, xmm2
+  VALEUR avant : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce560c]=0.10000000149011612 ; nouveau [0x00ce560c]=0.10000000149011612 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #7  va 0x006fcbb2 offset 0x2fbfb2  avant c876db00 apres 3078db00
+  role : roulage : plafond 2,5, bloc 3: movss xmm1, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5
+  site nouveau : va 0x006fccc2 offset 0x2fc0c2 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fcb93  movss   xmm0, dword ptr [edi + 0xa0]          | 006fcca3  movss   xmm0, dword ptr [edi + 0xa0]
+     006fcb9b  movaps  xmm2, xmm4                            | 006fccab  movaps  xmm2, xmm4
+     006fcb9e  movss   xmm6, dword ptr [edi + 0x9c]          | 006fccae  movss   xmm6, dword ptr [edi + 0x9c]
+     006fcba6  addss   xmm0, dword ptr [0xdb71d0]            | 006fccb6  addss   xmm0, dword ptr [0xdb7208]
+  >> 006fcbae  movss   xmm1, dword ptr [0xdb76c8]            | 006fccbe  movss   xmm1, dword ptr [0xdb7700]
+     006fcbb6  subss   xmm2, xmm6                            | 006fccc6  subss   xmm2, xmm6
+     006fcbba  minss   xmm1, xmm0                            | 006fccca  minss   xmm1, xmm0
+     006fcbbe  movss   xmm0, dword ptr [0xdb71a0]            | 006fccce  movss   xmm0, dword ptr [0xdb71d8]
+     006fcbc6  mulss   xmm2, dword ptr [eax + 0x78]          | 006fccd6  mulss   xmm2, dword ptr [eax + 0x78]
+     006fcbcb  comiss  xmm0, xmm2                            | 006fccdb  comiss  xmm0, xmm2
+     006fcbce  movaps  xmm5, xmm2                            | 006fccde  movaps  xmm5, xmm2
+  VALEUR avant : ancien [0x00db76c8]=2.5 ; nouveau [0x00db7700]=2.5 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7830]=5.0 ; nouveau [0x00db7868]=5.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #8  va 0x006fce4e offset 0x2fc24e  avant d071db00 apres 0c56ce00
+  role : roulage : acceleration 0,05, bloc 4: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007
+  site nouveau : va 0x006fcf5e offset 0x2fc35e (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fce2f  movss   xmm2, dword ptr [0xdb7418]            | 006fcf3f  movss   xmm2, dword ptr [0xdb7450]
+     006fce37  movss   xmm0, dword ptr [edi + 0xb8]          | 006fcf47  movss   xmm0, dword ptr [edi + 0xb8]
+     006fce3f  movaps  xmm1, xmm2                            | 006fcf4f  movaps  xmm1, xmm2
+     006fce42  movss   xmm4, dword ptr [edi + 0xb4]          | 006fcf52  movss   xmm4, dword ptr [edi + 0xb4]
+  >> 006fce4a  addss   xmm0, dword ptr [0xdb71d0]            | 006fcf5a  addss   xmm0, dword ptr [0xdb7208]
+     006fce52  movss   xmm3, dword ptr [0xdb76c8]            | 006fcf62  movss   xmm3, dword ptr [0xdb7700]
+     006fce5a  subss   xmm1, xmm4                            | 006fcf6a  subss   xmm1, xmm4
+     006fce5e  minss   xmm3, xmm0                            | 006fcf6e  minss   xmm3, xmm0
+     006fce62  movss   xmm0, dword ptr [0xdb71a0]            | 006fcf72  movss   xmm0, dword ptr [0xdb71d8]
+     006fce6a  mulss   xmm1, dword ptr [eax + 0x78]          | 006fcf7a  mulss   xmm1, dword ptr [eax + 0x78]
+     006fce6f  comiss  xmm0, xmm1                            | 006fcf7f  comiss  xmm0, xmm1
+  VALEUR avant : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce560c]=0.10000000149011612 ; nouveau [0x00ce560c]=0.10000000149011612 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #9  va 0x006fce56 offset 0x2fc256  avant c876db00 apres 3078db00
+  role : roulage : plafond 2,5, bloc 4: movss xmm3, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5
+  site nouveau : va 0x006fcf66 offset 0x2fc366 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fce37  movss   xmm0, dword ptr [edi + 0xb8]          | 006fcf47  movss   xmm0, dword ptr [edi + 0xb8]
+     006fce3f  movaps  xmm1, xmm2                            | 006fcf4f  movaps  xmm1, xmm2
+     006fce42  movss   xmm4, dword ptr [edi + 0xb4]          | 006fcf52  movss   xmm4, dword ptr [edi + 0xb4]
+     006fce4a  addss   xmm0, dword ptr [0xdb71d0]            | 006fcf5a  addss   xmm0, dword ptr [0xdb7208]
+  >> 006fce52  movss   xmm3, dword ptr [0xdb76c8]            | 006fcf62  movss   xmm3, dword ptr [0xdb7700]
+     006fce5a  subss   xmm1, xmm4                            | 006fcf6a  subss   xmm1, xmm4
+     006fce5e  minss   xmm3, xmm0                            | 006fcf6e  minss   xmm3, xmm0
+     006fce62  movss   xmm0, dword ptr [0xdb71a0]            | 006fcf72  movss   xmm0, dword ptr [0xdb71d8]
+     006fce6a  mulss   xmm1, dword ptr [eax + 0x78]          | 006fcf7a  mulss   xmm1, dword ptr [eax + 0x78]
+     006fce6f  comiss  xmm0, xmm1                            | 006fcf7f  comiss  xmm0, xmm1
+     006fce72  movss   dword ptr [edi + 0xb8], xmm3          | 006fcf82  movss   dword ptr [edi + 0xb8], xmm3
+  VALEUR avant : ancien [0x00db76c8]=2.5 ; nouveau [0x00db7700]=2.5 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7830]=5.0 ; nouveau [0x00db7868]=5.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #10  va 0x006fd8d5 offset 0x2fccd5  avant d071db00 apres 0c56ce00
+  role : roulage : acceleration 0,05, bloc 5: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007
+  site nouveau : va 0x006fd9e5 offset 0x2fcde5 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fd8bc  mov     dword ptr [ebp - 0x234], eax          | 006fd9cc  mov     dword ptr [ebp - 0x234], eax
+     006fd8c2  call    0x844530                              | 006fd9d2  call    0x844660
+     006fd8c7  movss   xmm0, dword ptr [edi + 0xd0]          | 006fd9d7  movss   xmm0, dword ptr [edi + 0xd0]
+     006fd8cf  mov     edx, eax                              | 006fd9df  mov     edx, eax
+  >> 006fd8d1  addss   xmm0, dword ptr [0xdb71d0]            | 006fd9e1  addss   xmm0, dword ptr [0xdb7208]
+     006fd8d9  movss   xmm2, dword ptr [0xdb7418]            | 006fd9e9  movss   xmm2, dword ptr [0xdb7450]
+     006fd8e1  movss   xmm4, dword ptr [edi + 0xcc]          | 006fd9f1  movss   xmm4, dword ptr [edi + 0xcc]
+     006fd8e9  movaps  xmm1, xmm2                            | 006fd9f9  movaps  xmm1, xmm2
+     006fd8ec  movss   xmm3, dword ptr [0xdb76c8]            | 006fd9fc  movss   xmm3, dword ptr [0xdb7700]
+     006fd8f4  subss   xmm1, xmm4                            | 006fda04  subss   xmm1, xmm4
+     006fd8f8  mov     eax, dword ptr [edi + 0xc8]           | 006fda08  mov     eax, dword ptr [edi + 0xc8]
+  VALEUR avant : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce560c]=0.10000000149011612 ; nouveau [0x00ce560c]=0.10000000149011612 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #11  va 0x006fd8f0 offset 0x2fccf0  avant c876db00 apres 3078db00
+  role : roulage : plafond 2,5, bloc 5: movss xmm3, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5
+  site nouveau : va 0x006fda00 offset 0x2fce00 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fd8d1  addss   xmm0, dword ptr [0xdb71d0]            | 006fd9e1  addss   xmm0, dword ptr [0xdb7208]
+     006fd8d9  movss   xmm2, dword ptr [0xdb7418]            | 006fd9e9  movss   xmm2, dword ptr [0xdb7450]
+     006fd8e1  movss   xmm4, dword ptr [edi + 0xcc]          | 006fd9f1  movss   xmm4, dword ptr [edi + 0xcc]
+     006fd8e9  movaps  xmm1, xmm2                            | 006fd9f9  movaps  xmm1, xmm2
+  >> 006fd8ec  movss   xmm3, dword ptr [0xdb76c8]            | 006fd9fc  movss   xmm3, dword ptr [0xdb7700]
+     006fd8f4  subss   xmm1, xmm4                            | 006fda04  subss   xmm1, xmm4
+     006fd8f8  mov     eax, dword ptr [edi + 0xc8]           | 006fda08  mov     eax, dword ptr [edi + 0xc8]
+     006fd8fe  minss   xmm3, xmm0                            | 006fda0e  minss   xmm3, xmm0
+     006fd902  mulss   xmm1, dword ptr [edx + 0x78]          | 006fda12  mulss   xmm1, dword ptr [edx + 0x78]
+     006fd907  movss   dword ptr [edi + 0xd0], xmm3          | 006fda17  movss   dword ptr [edi + 0xd0], xmm3
+     006fd90f  cmp     eax, 1                                | 006fda1f  cmp     eax, 1
+  VALEUR avant : ancien [0x00db76c8]=2.5 ; nouveau [0x00db7700]=2.5 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7830]=5.0 ; nouveau [0x00db7868]=5.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #12  va 0x006fddb5 offset 0x2fd1b5  avant d071db00 apres 0c56ce00
+  role : roulage : acceleration 0,05 chargee dans xmm2 avant l'aiguillage (bloc 6): movss xmm2, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007
+  site nouveau : va 0x006fdec5 offset 0x2fd2c5 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fdd9b  push    dword ptr [edi + 0x5c]                | 006fdeab  push    dword ptr [edi + 0x5c]
+     006fdd9e  mov     ecx, dword ptr [ebp - 0x264]          | 006fdeae  mov     ecx, dword ptr [ebp - 0x264]
+     006fdda4  call    0x5ee6a0                              | 006fdeb4  call    0x5ee7e0
+     006fdda9  movss   xmm7, dword ptr [0xdb798c]            | 006fdeb9  movss   xmm7, dword ptr [0xdb79c4]
+  >> 006fddb1  movss   xmm2, dword ptr [0xdb71d0]            | 006fdec1  movss   xmm2, dword ptr [0xdb7208]
+     006fddb9  movss   xmm5, dword ptr [0xdb76c8]            | 006fdec9  movss   xmm5, dword ptr [0xdb7700]
+     006fddc1  mov     dword ptr [ebp - 0x1fc], eax          | 006fded1  mov     dword ptr [ebp - 0x1fc], eax
+     006fddc7  test    eax, eax                              | 006fded7  test    eax, eax
+     006fddc9  je      0x700bff                              | 006fded9  je      0x700d0f
+     006fddcf  mov     ecx, dword ptr [edi + 0x1c]           | 006fdedf  mov     ecx, dword ptr [edi + 0x1c]
+     006fddd2  add     ecx, -3                               | 006fdee2  add     ecx, -3
+  VALEUR avant : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce560c]=0.10000000149011612 ; nouveau [0x00ce560c]=0.10000000149011612 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #13  va 0x006fddbd offset 0x2fd1bd  avant c876db00 apres 3078db00
+  role : roulage : plafond 2,5 chargee dans xmm5 avant l'aiguillage (bloc 6, sert au bloc 7): movss xmm5, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5
+  site nouveau : va 0x006fdecd offset 0x2fd2cd (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fdd9e  mov     ecx, dword ptr [ebp - 0x264]          | 006fdeae  mov     ecx, dword ptr [ebp - 0x264]
+     006fdda4  call    0x5ee6a0                              | 006fdeb4  call    0x5ee7e0
+     006fdda9  movss   xmm7, dword ptr [0xdb798c]            | 006fdeb9  movss   xmm7, dword ptr [0xdb79c4]
+     006fddb1  movss   xmm2, dword ptr [0xdb71d0]            | 006fdec1  movss   xmm2, dword ptr [0xdb7208]
+  >> 006fddb9  movss   xmm5, dword ptr [0xdb76c8]            | 006fdec9  movss   xmm5, dword ptr [0xdb7700]
+     006fddc1  mov     dword ptr [ebp - 0x1fc], eax          | 006fded1  mov     dword ptr [ebp - 0x1fc], eax
+     006fddc7  test    eax, eax                              | 006fded7  test    eax, eax
+     006fddc9  je      0x700bff                              | 006fded9  je      0x700d0f
+     006fddcf  mov     ecx, dword ptr [edi + 0x1c]           | 006fdedf  mov     ecx, dword ptr [edi + 0x1c]
+     006fddd2  add     ecx, -3                               | 006fdee2  add     ecx, -3
+     006fddd5  cmp     ecx, 4                                | 006fdee5  cmp     ecx, 4
+  VALEUR avant : ancien [0x00db76c8]=2.5 ; nouveau [0x00db7700]=2.5 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7830]=5.0 ; nouveau [0x00db7868]=5.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #14  va 0x006ffa68 offset 0x2fee68  avant c876db00 apres 3078db00
+  role : roulage : plafond 2,5, bloc 7: movss xmm5, dword ptr [0xdb76c8], constante 0x00db76c8 = 2.5
+  site nouveau : va 0x006ffb78 offset 0x2fef78 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006ffa4b  movss   dword ptr [edi + 0x78], xmm0          | 006ffb5b  movss   dword ptr [edi + 0x78], xmm0
+     006ffa50  mov     edi, dword ptr [ebp - 0x204]          | 006ffb60  mov     edi, dword ptr [ebp - 0x204]
+     006ffa56  mov     esi, dword ptr [ebp - 0x200]          | 006ffb66  mov     esi, dword ptr [ebp - 0x200]
+     006ffa5c  movss   xmm7, dword ptr [0xdb798c]            | 006ffb6c  movss   xmm7, dword ptr [0xdb79c4]
+  >> 006ffa64  movss   xmm5, dword ptr [0xdb76c8]            | 006ffb74  movss   xmm5, dword ptr [0xdb7700]
+     006ffa6c  push    dword ptr [edi + 0x58]                | 006ffb7c  push    dword ptr [edi + 0x58]
+     006ffa6f  mov     ecx, dword ptr [ebp - 0x264]          | 006ffb7f  mov     ecx, dword ptr [ebp - 0x264]
+     006ffa75  call    0x5ee6a0                              | 006ffb85  call    0x5ee7e0
+     006ffa7a  mov     dword ptr [ebp - 0x24c], eax          | 006ffb8a  mov     dword ptr [ebp - 0x24c], eax
+     006ffa80  test    eax, eax                              | 006ffb90  test    eax, eax
+     006ffa82  je      0x700dc5                              | 006ffb92  je      0x700ed5
+  VALEUR avant : ancien [0x00db76c8]=2.5 ; nouveau [0x00db7700]=2.5 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7830]=5.0 ; nouveau [0x00db7868]=5.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #15  va 0x006ffaef offset 0x2feeef  avant d071db00 apres 0c56ce00
+  role : roulage : acceleration 0,05, bloc 7: addss xmm0, dword ptr [0xdb71d0], constante 0x00db71d0 = 0.0500000007
+  site nouveau : va 0x006ffbff offset 0x2fefff (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006ffad6  movss   xmm3, dword ptr [edi + 0xb4]          | 006ffbe6  movss   xmm3, dword ptr [edi + 0xb4]
+     006ffade  cmovb   eax, edx                              | 006ffbee  cmovb   eax, edx
+     006ffae1  mov     ecx, dword ptr [edi + 0xa4]           | 006ffbf1  mov     ecx, dword ptr [edi + 0xa4]
+     006ffae7  subss   xmm1, xmm3                            | 006ffbf7  subss   xmm1, xmm3
+  >> 006ffaeb  addss   xmm0, dword ptr [0xdb71d0]            | 006ffbfb  addss   xmm0, dword ptr [0xdb7208]
+     006ffaf3  imul    eax, eax, 0x7c                        | 006ffc03  imul    eax, eax, 0x7c
+     006ffaf6  add     eax, ecx                              | 006ffc06  add     eax, ecx
+     006ffaf8  minss   xmm5, xmm0                            | 006ffc08  minss   xmm5, xmm0
+     006ffafc  movss   xmm0, dword ptr [0xdb71a0]            | 006ffc0c  movss   xmm0, dword ptr [0xdb71d8]
+     006ffb04  mulss   xmm1, dword ptr [eax + 0x78]          | 006ffc14  mulss   xmm1, dword ptr [eax + 0x78]
+     006ffb09  comiss  xmm0, xmm1                            | 006ffc19  comiss  xmm0, xmm1
+  VALEUR avant : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce560c]=0.10000000149011612 ; nouveau [0x00ce560c]=0.10000000149011612 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #16  va 0x00700f26 offset 0x300326  avant 2472db00 apres 580bce00
+  role : grue horizontale +1/6, bloc A: movss xmm2, dword ptr [0xdb7224], constante 0x00db7224 = 0.166666672
+  site nouveau : va 0x00701036 offset 0x300436 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00700f13  push    ecx                                   | 00701023  push    ecx
+     00700f14  lea     ecx, [ebp - 0x214]                    | 00701024  lea     ecx, [ebp - 0x214]
+     00700f1a  lea     edx, [eax + 0x30]                     | 0070102a  lea     edx, [eax + 0x30]
+     00700f1d  call    0x40db30                              | 0070102d  call    0x40db30
+  >> 00700f22  movss   xmm2, dword ptr [0xdb7224]            | 00701032  movss   xmm2, dword ptr [0xdb725c]
+     00700f2a  add     esp, 4                                | 0070103a  add     esp, 4
+     00700f2d  movss   xmm1, dword ptr [0xdb7c14]            | 0070103d  movss   xmm1, dword ptr [0xdb7c4c]
+     00700f35  movss   xmm0, dword ptr [ebp - 0x214]         | 00701045  movss   xmm0, dword ptr [ebp - 0x214]
+     00700f3d  call    0x870700                              | 0070104d  call    0x870820
+     00700f42  movaps  xmm3, xmm0                            | 00701052  movaps  xmm3, xmm0
+     00700f45  movss   xmm0, dword ptr [ebp - 0x20c]         | 00701055  movss   xmm0, dword ptr [ebp - 0x20c]
+  VALEUR avant : ancien [0x00db7224]=0.1666666716337204 ; nouveau [0x00db725c]=0.1666666716337204 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce0b58]=0.3333333432674408 ; nouveau [0x00ce0b58]=0.3333333432674408 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #17  va 0x00700f31 offset 0x300331  avant 147cdb00 apres a4e4ce00
+  role : grue horizontale -1/6, bloc A: movss xmm1, dword ptr [0xdb7c14], constante 0x00db7c14 = -0.166666672
+  site nouveau : va 0x00701041 offset 0x300441 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00700f1a  lea     edx, [eax + 0x30]                     | 0070102a  lea     edx, [eax + 0x30]
+     00700f1d  call    0x40db30                              | 0070102d  call    0x40db30
+     00700f22  movss   xmm2, dword ptr [0xdb7224]            | 00701032  movss   xmm2, dword ptr [0xdb725c]
+     00700f2a  add     esp, 4                                | 0070103a  add     esp, 4
+  >> 00700f2d  movss   xmm1, dword ptr [0xdb7c14]            | 0070103d  movss   xmm1, dword ptr [0xdb7c4c]
+     00700f35  movss   xmm0, dword ptr [ebp - 0x214]         | 00701045  movss   xmm0, dword ptr [ebp - 0x214]
+     00700f3d  call    0x870700                              | 0070104d  call    0x870820
+     00700f42  movaps  xmm3, xmm0                            | 00701052  movaps  xmm3, xmm0
+     00700f45  movss   xmm0, dword ptr [ebp - 0x20c]         | 00701055  movss   xmm0, dword ptr [ebp - 0x20c]
+     00700f4d  movss   dword ptr [ebp - 0x24c], xmm3         | 0070105d  movss   dword ptr [ebp - 0x24c], xmm3
+     00700f55  call    0x870700                              | 00701065  call    0x870820
+  VALEUR avant : ancien [0x00db7c14]=-0.1666666716337204 ; nouveau [0x00db7c4c]=-0.1666666716337204 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00cee4a4]=-0.3333333432674408 ; nouveau [0x00cee4a4]=-0.3333333432674408 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #18  va 0x00700f82 offset 0x300382  avant e47bdb00 apres 10034000
+  role : grue verticale -1/30, bloc A: movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351
+  site nouveau : va 0x00701092 offset 0x300492 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00700f6b  movss   dword ptr [ebp - 0x224], xmm1         | 0070107b  movss   dword ptr [ebp - 0x224], xmm1
+     00700f73  call    0x40ad50                              | 00701083  call    0x40ad50
+     00700f78  movaps  xmm3, xmm0                            | 00701088  movaps  xmm3, xmm0
+     00700f7b  movaps  xmm4, xmm1                            | 0070108b  movaps  xmm4, xmm1
+  >> 00700f7e  movss   xmm1, dword ptr [0xdb7be4]            | 0070108e  movss   xmm1, dword ptr [0xdb7c1c]
+     00700f86  maxss   xmm4, xmm3                            | 00701096  maxss   xmm4, xmm3
+     00700f8a  movss   xmm0, dword ptr [ebp - 0x210]         | 0070109a  movss   xmm0, dword ptr [ebp - 0x210]
+     00700f92  divss   xmm4, xmm2                            | 007010a2  divss   xmm4, xmm2
+     00700f96  movss   xmm2, dword ptr [0xdb71bc]            | 007010a6  movss   xmm2, dword ptr [0xdb71f4]
+     00700f9e  call    0x870700                              | 007010ae  call    0x870820
+     00700fa3  call    0x40ad50                              | 007010b3  call    0x40ad50
+  VALEUR avant : ancien [0x00db7be4]=-0.03333333507180214 ; nouveau [0x00db7c1c]=-0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : adresse en-tete 0x00400310 conservee ; valeur ecrite par ascenseur_x2 #0
+====================================================================================================
+ascenseur_x2 #19  va 0x00700f9a offset 0x30039a  avant bc71db00 apres e471db00
+  role : grue verticale +1/30, bloc A: movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351
+  site nouveau : va 0x007010aa offset 0x3004aa (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00700f7e  movss   xmm1, dword ptr [0xdb7be4]            | 0070108e  movss   xmm1, dword ptr [0xdb7c1c]
+     00700f86  maxss   xmm4, xmm3                            | 00701096  maxss   xmm4, xmm3
+     00700f8a  movss   xmm0, dword ptr [ebp - 0x210]         | 0070109a  movss   xmm0, dword ptr [ebp - 0x210]
+     00700f92  divss   xmm4, xmm2                            | 007010a2  divss   xmm4, xmm2
+  >> 00700f96  movss   xmm2, dword ptr [0xdb71bc]            | 007010a6  movss   xmm2, dword ptr [0xdb71f4]
+     00700f9e  call    0x870700                              | 007010ae  call    0x870820
+     00700fa3  call    0x40ad50                              | 007010b3  call    0x40ad50
+     00700fa8  comiss  xmm5, xmm3                            | 007010b8  comiss  xmm5, xmm3
+     00700fab  divss   xmm0, xmm2                            | 007010bb  divss   xmm0, xmm2
+     00700faf  maxss   xmm4, xmm0                            | 007010bf  maxss   xmm4, xmm0
+     00700fb3  movss   dword ptr [ebp - 0x268], xmm4         | 007010c3  movss   dword ptr [ebp - 0x268], xmm4
+  VALEUR avant : ancien [0x00db71bc]=0.03333333507180214 ; nouveau [0x00db71f4]=0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db71e4]=0.06666667014360428 ; nouveau [0x00db721c]=0.06666667014360428 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #20  va 0x00701035 offset 0x300435  avant 2472db00 apres 580bce00
+  role : grue horizontale +1/6, bloc B: movss xmm2, dword ptr [0xdb7224], constante 0x00db7224 = 0.166666672
+  site nouveau : va 0x00701145 offset 0x300545 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701022  push    ecx                                   | 00701132  push    ecx
+     00701023  lea     ecx, [ebp - 0x214]                    | 00701133  lea     ecx, [ebp - 0x214]
+     00701029  lea     edx, [eax + 0x34]                     | 00701139  lea     edx, [eax + 0x34]
+     0070102c  call    0x40db30                              | 0070113c  call    0x40db30
+  >> 00701031  movss   xmm2, dword ptr [0xdb7224]            | 00701141  movss   xmm2, dword ptr [0xdb725c]
+     00701039  add     esp, 4                                | 00701149  add     esp, 4
+     0070103c  movss   xmm1, dword ptr [0xdb7c14]            | 0070114c  movss   xmm1, dword ptr [0xdb7c4c]
+     00701044  movss   xmm0, dword ptr [ebp - 0x214]         | 00701154  movss   xmm0, dword ptr [ebp - 0x214]
+     0070104c  call    0x870700                              | 0070115c  call    0x870820
+     00701051  movaps  xmm7, xmm0                            | 00701161  movaps  xmm7, xmm0
+     00701054  movss   xmm0, dword ptr [ebp - 0x20c]         | 00701164  movss   xmm0, dword ptr [ebp - 0x20c]
+  VALEUR avant : ancien [0x00db7224]=0.1666666716337204 ; nouveau [0x00db725c]=0.1666666716337204 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00ce0b58]=0.3333333432674408 ; nouveau [0x00ce0b58]=0.3333333432674408 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #21  va 0x00701040 offset 0x300440  avant 147cdb00 apres a4e4ce00
+  role : grue horizontale -1/6, bloc B: movss xmm1, dword ptr [0xdb7c14], constante 0x00db7c14 = -0.166666672
+  site nouveau : va 0x00701150 offset 0x300550 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701029  lea     edx, [eax + 0x34]                     | 00701139  lea     edx, [eax + 0x34]
+     0070102c  call    0x40db30                              | 0070113c  call    0x40db30
+     00701031  movss   xmm2, dword ptr [0xdb7224]            | 00701141  movss   xmm2, dword ptr [0xdb725c]
+     00701039  add     esp, 4                                | 00701149  add     esp, 4
+  >> 0070103c  movss   xmm1, dword ptr [0xdb7c14]            | 0070114c  movss   xmm1, dword ptr [0xdb7c4c]
+     00701044  movss   xmm0, dword ptr [ebp - 0x214]         | 00701154  movss   xmm0, dword ptr [ebp - 0x214]
+     0070104c  call    0x870700                              | 0070115c  call    0x870820
+     00701051  movaps  xmm7, xmm0                            | 00701161  movaps  xmm7, xmm0
+     00701054  movss   xmm0, dword ptr [ebp - 0x20c]         | 00701164  movss   xmm0, dword ptr [ebp - 0x20c]
+     0070105c  call    0x870700                              | 0070116c  call    0x870820
+     00701061  movaps  xmm1, xmm0                            | 00701171  movaps  xmm1, xmm0
+  VALEUR avant : ancien [0x00db7c14]=-0.1666666716337204 ; nouveau [0x00db7c4c]=-0.1666666716337204 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00cee4a4]=-0.3333333432674408 ; nouveau [0x00cee4a4]=-0.3333333432674408 ; identique=True ; decalage +0x0 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #22  va 0x00701083 offset 0x300483  avant e47bdb00 apres 10034000
+  role : grue verticale -1/30, bloc B: movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351
+  site nouveau : va 0x00701193 offset 0x300593 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     0070106f  call    0x40ad50                              | 0070117f  call    0x40ad50
+     00701074  movaps  xmm3, xmm0                            | 00701184  movaps  xmm3, xmm0
+     00701077  movaps  xmm0, xmm1                            | 00701187  movaps  xmm0, xmm1
+     0070107a  call    0x40ad50                              | 0070118a  call    0x40ad50
+  >> 0070107f  movss   xmm1, dword ptr [0xdb7be4]            | 0070118f  movss   xmm1, dword ptr [0xdb7c1c]
+     00701087  movaps  xmm4, xmm3                            | 00701197  movaps  xmm4, xmm3
+     0070108a  maxss   xmm4, xmm0                            | 0070119a  maxss   xmm4, xmm0
+     0070108e  movss   dword ptr [ebp - 0x224], xmm0         | 0070119e  movss   dword ptr [ebp - 0x224], xmm0
+     00701096  movss   xmm0, dword ptr [ebp - 0x210]         | 007011a6  movss   xmm0, dword ptr [ebp - 0x210]
+     0070109e  divss   xmm4, xmm2                            | 007011ae  divss   xmm4, xmm2
+     007010a2  movss   xmm2, dword ptr [0xdb71bc]            | 007011b2  movss   xmm2, dword ptr [0xdb71f4]
+  VALEUR avant : ancien [0x00db7be4]=-0.03333333507180214 ; nouveau [0x00db7c1c]=-0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : adresse en-tete 0x00400310 conservee ; valeur ecrite par ascenseur_x2 #0
+====================================================================================================
+ascenseur_x2 #23  va 0x007010a6 offset 0x3004a6  avant bc71db00 apres e471db00
+  role : grue verticale +1/30, bloc B: movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351
+  site nouveau : va 0x007011b6 offset 0x3005b6 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     0070108a  maxss   xmm4, xmm0                            | 0070119a  maxss   xmm4, xmm0
+     0070108e  movss   dword ptr [ebp - 0x224], xmm0         | 0070119e  movss   dword ptr [ebp - 0x224], xmm0
+     00701096  movss   xmm0, dword ptr [ebp - 0x210]         | 007011a6  movss   xmm0, dword ptr [ebp - 0x210]
+     0070109e  divss   xmm4, xmm2                            | 007011ae  divss   xmm4, xmm2
+  >> 007010a2  movss   xmm2, dword ptr [0xdb71bc]            | 007011b2  movss   xmm2, dword ptr [0xdb71f4]
+     007010aa  call    0x870700                              | 007011ba  call    0x870820
+     007010af  call    0x40ad50                              | 007011bf  call    0x40ad50
+     007010b4  comiss  xmm5, xmm3                            | 007011c4  comiss  xmm5, xmm3
+     007010b7  divss   xmm0, xmm2                            | 007011c7  divss   xmm0, xmm2
+     007010bb  maxss   xmm4, xmm0                            | 007011cb  maxss   xmm4, xmm0
+     007010bf  movss   dword ptr [ebp - 0x268], xmm4         | 007011cf  movss   dword ptr [ebp - 0x268], xmm4
+  VALEUR avant : ancien [0x00db71bc]=0.03333333507180214 ; nouveau [0x00db71f4]=0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db71e4]=0.06666667014360428 ; nouveau [0x00db721c]=0.06666667014360428 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #24  va 0x00701124 offset 0x300524  avant bc71db00 apres e471db00
+  role : grue verticale +1/30, bloc C (hauteur 12): movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351
+  site nouveau : va 0x00701234 offset 0x300634 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701107  movss   dword ptr [esi + 0xc80], xmm7         | 00701217  movss   dword ptr [esi + 0xc80], xmm7
+     0070110f  jmp     0x701267                              | 0070121f  jmp     0x701377
+     00701114  cmp     byte ptr [edi + 0x18], 0              | 00701224  cmp     byte ptr [edi + 0x18], 0
+     00701118  movss   xmm3, dword ptr [esi + 0xc84]         | 00701228  movss   xmm3, dword ptr [esi + 0xc84]
+  >> 00701120  movss   xmm2, dword ptr [0xdb71bc]            | 00701230  movss   xmm2, dword ptr [0xdb71f4]
+     00701128  movss   xmm1, dword ptr [0xdb7be4]            | 00701238  movss   xmm1, dword ptr [0xdb7c1c]
+     00701130  je      0x701178                              | 00701240  je      0x701288
+     00701132  movss   xmm0, dword ptr [0xdb790c]            | 00701242  movss   xmm0, dword ptr [0xdb7944]
+     0070113a  subss   xmm0, xmm3                            | 0070124a  subss   xmm0, xmm3
+     0070113e  call    0x870700                              | 0070124e  call    0x870820
+     00701143  movaps  xmm1, xmm0                            | 00701253  movaps  xmm1, xmm0
+  VALEUR avant : ancien [0x00db71bc]=0.03333333507180214 ; nouveau [0x00db71f4]=0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db71e4]=0.06666667014360428 ; nouveau [0x00db721c]=0.06666667014360428 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #25  va 0x0070112c offset 0x30052c  avant e47bdb00 apres 10034000
+  role : grue verticale -1/30, bloc C (hauteur 12): movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351
+  site nouveau : va 0x0070123c offset 0x30063c (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     0070110f  jmp     0x701267                              | 0070121f  jmp     0x701377
+     00701114  cmp     byte ptr [edi + 0x18], 0              | 00701224  cmp     byte ptr [edi + 0x18], 0
+     00701118  movss   xmm3, dword ptr [esi + 0xc84]         | 00701228  movss   xmm3, dword ptr [esi + 0xc84]
+     00701120  movss   xmm2, dword ptr [0xdb71bc]            | 00701230  movss   xmm2, dword ptr [0xdb71f4]
+  >> 00701128  movss   xmm1, dword ptr [0xdb7be4]            | 00701238  movss   xmm1, dword ptr [0xdb7c1c]
+     00701130  je      0x701178                              | 00701240  je      0x701288
+     00701132  movss   xmm0, dword ptr [0xdb790c]            | 00701242  movss   xmm0, dword ptr [0xdb7944]
+     0070113a  subss   xmm0, xmm3                            | 0070124a  subss   xmm0, xmm3
+     0070113e  call    0x870700                              | 0070124e  call    0x870820
+     00701143  movaps  xmm1, xmm0                            | 00701253  movaps  xmm1, xmm0
+     00701146  call    0x40ad50                              | 00701256  call    0x40ad50
+  VALEUR avant : ancien [0x00db7be4]=-0.03333333507180214 ; nouveau [0x00db7c1c]=-0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : adresse en-tete 0x00400310 conservee ; valeur ecrite par ascenseur_x2 #0
+====================================================================================================
+ascenseur_x2 #26  va 0x007011b6 offset 0x3005b6  avant bc71db00 apres e471db00
+  role : grue verticale +1/30, bloc D (hauteur 11): movss xmm2, dword ptr [0xdb71bc], constante 0x00db71bc = 0.0333333351
+  site nouveau : va 0x007012c6 offset 0x3006c6 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     0070119d  mov     byte ptr [edi + 0x18], 1              | 007012ad  mov     byte ptr [edi + 0x18], 1
+     007011a1  jmp     0x701267                              | 007012b1  jmp     0x701377
+     007011a6  cmp     byte ptr [edi + 0x18], 0              | 007012b6  cmp     byte ptr [edi + 0x18], 0
+     007011aa  movss   xmm3, dword ptr [esi + 0xc84]         | 007012ba  movss   xmm3, dword ptr [esi + 0xc84]
+  >> 007011b2  movss   xmm2, dword ptr [0xdb71bc]            | 007012c2  movss   xmm2, dword ptr [0xdb71f4]
+     007011ba  movss   xmm1, dword ptr [0xdb7be4]            | 007012ca  movss   xmm1, dword ptr [0xdb7c1c]
+     007011c2  je      0x701132                              | 007012d2  je      0x701242
+     007011c8  movss   xmm0, dword ptr [0xdb7908]            | 007012d8  movss   xmm0, dword ptr [0xdb7940]
+     007011d0  subss   xmm0, xmm3                            | 007012e0  subss   xmm0, xmm3
+     007011d4  call    0x870700                              | 007012e4  call    0x870820
+     007011d9  movaps  xmm1, xmm0                            | 007012e9  movaps  xmm1, xmm0
+  VALEUR avant : ancien [0x00db71bc]=0.03333333507180214 ; nouveau [0x00db71f4]=0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db71e4]=0.06666667014360428 ; nouveau [0x00db721c]=0.06666667014360428 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #27  va 0x007011be offset 0x3005be  avant e47bdb00 apres 10034000
+  role : grue verticale -1/30, bloc D (hauteur 11): movss xmm1, dword ptr [0xdb7be4], constante 0x00db7be4 = -0.0333333351
+  site nouveau : va 0x007012ce offset 0x3006ce (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     007011a1  jmp     0x701267                              | 007012b1  jmp     0x701377
+     007011a6  cmp     byte ptr [edi + 0x18], 0              | 007012b6  cmp     byte ptr [edi + 0x18], 0
+     007011aa  movss   xmm3, dword ptr [esi + 0xc84]         | 007012ba  movss   xmm3, dword ptr [esi + 0xc84]
+     007011b2  movss   xmm2, dword ptr [0xdb71bc]            | 007012c2  movss   xmm2, dword ptr [0xdb71f4]
+  >> 007011ba  movss   xmm1, dword ptr [0xdb7be4]            | 007012ca  movss   xmm1, dword ptr [0xdb7c1c]
+     007011c2  je      0x701132                              | 007012d2  je      0x701242
+     007011c8  movss   xmm0, dword ptr [0xdb7908]            | 007012d8  movss   xmm0, dword ptr [0xdb7940]
+     007011d0  subss   xmm0, xmm3                            | 007012e0  subss   xmm0, xmm3
+     007011d4  call    0x870700                              | 007012e4  call    0x870820
+     007011d9  movaps  xmm1, xmm0                            | 007012e9  movaps  xmm1, xmm0
+     007011dc  call    0x40ad50                              | 007012ec  call    0x40ad50
+  VALEUR avant : ancien [0x00db7be4]=-0.03333333507180214 ; nouveau [0x00db7c1c]=-0.03333333507180214 ; identique=True ; decalage +0x38
+  VALEUR apres : adresse en-tete 0x00400310 conservee ; valeur ecrite par ascenseur_x2 #0
+====================================================================================================
+ascenseur_x2 #28  va 0x00701219 offset 0x300619  avant c471db00 apres ec71db00
+  role : grue rotation +0,04: movss xmm2, dword ptr [0xdb71c4], constante 0x00db71c4 = 0.0399999991
+  site nouveau : va 0x00701329 offset 0x300729 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701200  cmp     byte ptr [edi + 0x18], al             | 00701310  cmp     byte ptr [edi + 0x18], al
+     00701203  jne     0x70120d                              | 00701313  jne     0x70131d
+     00701205  movss   xmm0, dword ptr [0xdb7758]            | 00701315  movss   xmm0, dword ptr [0xdb7790]
+     0070120d  movss   xmm3, dword ptr [esi + 0xc8c]         | 0070131d  movss   xmm3, dword ptr [esi + 0xc8c]
+  >> 00701215  movss   xmm2, dword ptr [0xdb71c4]            | 00701325  movss   xmm2, dword ptr [0xdb71fc]
+     0070121d  subss   xmm0, xmm3                            | 0070132d  subss   xmm0, xmm3
+     00701221  movss   xmm1, dword ptr [0xdb7bec]            | 00701331  movss   xmm1, dword ptr [0xdb7c24]
+     00701229  call    0x870700                              | 00701339  call    0x870820
+     0070122e  movaps  xmm1, xmm0                            | 0070133e  movaps  xmm1, xmm0
+     00701231  call    0x40ad50                              | 00701341  call    0x40ad50
+     00701236  comiss  xmm2, xmm0                            | 00701346  comiss  xmm2, xmm0
+  VALEUR avant : ancien [0x00db71c4]=0.03999999910593033 ; nouveau [0x00db71fc]=0.03999999910593033 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db71ec]=0.07999999821186066 ; nouveau [0x00db7224]=0.07999999821186066 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #29  va 0x00701225 offset 0x300625  avant ec7bdb00 apres fc7bdb00
+  role : grue rotation -0,04: movss xmm1, dword ptr [0xdb7bec], constante 0x00db7bec = -0.0399999991
+  site nouveau : va 0x00701335 offset 0x300735 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701205  movss   xmm0, dword ptr [0xdb7758]            | 00701315  movss   xmm0, dword ptr [0xdb7790]
+     0070120d  movss   xmm3, dword ptr [esi + 0xc8c]         | 0070131d  movss   xmm3, dword ptr [esi + 0xc8c]
+     00701215  movss   xmm2, dword ptr [0xdb71c4]            | 00701325  movss   xmm2, dword ptr [0xdb71fc]
+     0070121d  subss   xmm0, xmm3                            | 0070132d  subss   xmm0, xmm3
+  >> 00701221  movss   xmm1, dword ptr [0xdb7bec]            | 00701331  movss   xmm1, dword ptr [0xdb7c24]
+     00701229  call    0x870700                              | 00701339  call    0x870820
+     0070122e  movaps  xmm1, xmm0                            | 0070133e  movaps  xmm1, xmm0
+     00701231  call    0x40ad50                              | 00701341  call    0x40ad50
+     00701236  comiss  xmm2, xmm0                            | 00701346  comiss  xmm2, xmm0
+     00701239  movaps  xmm4, xmm0                            | 00701349  movaps  xmm4, xmm0
+     0070123c  mulss   xmm1, xmm6                            | 0070134c  mulss   xmm1, xmm6
+  VALEUR avant : ancien [0x00db7bec]=-0.03999999910593033 ; nouveau [0x00db7c24]=-0.03999999910593033 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7bfc]=-0.07999999821186066 ; nouveau [0x00db7c34]=-0.07999999821186066 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #30  va 0x00705c14 offset 0x305014  avant b071db00 apres d071db00
+  role : plateforme : pas +0,025 (charge xmm3, sert au minss et au divss): movss xmm3, dword ptr [0xdb71b0], constante 0x00db71b0 = 0.0250000004
+  site nouveau : va 0x00705d24 offset 0x305124 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00705bff  add     ecx, dword ptr [edi + 0xc7c]          | 00705d0f  add     ecx, dword ptr [edi + 0xc7c]
+     00705c05  xorps   xmm0, xmm0                            | 00705d15  xorps   xmm0, xmm0
+     00705c08  mov     eax, dword ptr [edi + 0xc70]          | 00705d18  mov     eax, dword ptr [edi + 0xc70]
+     00705c0e  mov     edx, ecx                              | 00705d1e  mov     edx, ecx
+  >> 00705c10  movss   xmm3, dword ptr [0xdb71b0]            | 00705d20  movss   xmm3, dword ptr [0xdb71e8]
+     00705c18  sub     edx, eax                              | 00705d28  sub     edx, eax
+     00705c1a  cmp     ecx, eax                              | 00705d2a  cmp     ecx, eax
+     00705c1c  movss   xmm4, dword ptr [0xdb7418]            | 00705d2c  movss   xmm4, dword ptr [0xdb7450]
+     00705c24  mov     eax, dword ptr [edi + 0xc6c]          | 00705d34  mov     eax, dword ptr [edi + 0xc6c]
+     00705c2a  cmovb   edx, ecx                              | 00705d3a  cmovb   edx, ecx
+     00705c2d  movss   xmm1, dword ptr [eax + edx*4]         | 00705d3d  movss   xmm1, dword ptr [eax + edx*4]
+  VALEUR avant : ancien [0x00db71b0]=0.02500000037252903 ; nouveau [0x00db71e8]=0.02500000037252903 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db71d0]=0.05000000074505806 ; nouveau [0x00db7208]=0.05000000074505806 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+ascenseur_x2 #31  va 0x00705c3e offset 0x30503e  avant e07bdb00 apres f07bdb00
+  role : plateforme : pas -0,025 (borne basse): maxss xmm1, dword ptr [0xdb7be0], constante 0x00db7be0 = -0.0250000004
+  site nouveau : va 0x00705d4e offset 0x30514e (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00705c24  mov     eax, dword ptr [edi + 0xc6c]          | 00705d34  mov     eax, dword ptr [edi + 0xc6c]
+     00705c2a  cmovb   edx, ecx                              | 00705d3a  cmovb   edx, ecx
+     00705c2d  movss   xmm1, dword ptr [eax + edx*4]         | 00705d3d  movss   xmm1, dword ptr [eax + edx*4]
+     00705c32  subss   xmm1, dword ptr [edi + 0xc68]         | 00705d42  subss   xmm1, dword ptr [edi + 0xc68]
+  >> 00705c3a  maxss   xmm1, dword ptr [0xdb7be0]            | 00705d4a  maxss   xmm1, dword ptr [0xdb7c18]
+     00705c42  minss   xmm1, xmm3                            | 00705d52  minss   xmm1, xmm3
+     00705c46  movaps  xmm2, xmm1                            | 00705d56  movaps  xmm2, xmm1
+     00705c49  andps   xmm2, xmmword ptr [0xdb8d90]          | 00705d59  andps   xmm2, xmmword ptr [0xdb8dc0]
+     00705c50  comiss  xmm2, dword ptr [0xdb715c]            | 00705d60  comiss  xmm2, dword ptr [0xdb7194]
+     00705c57  jbe     0x705c68                              | 00705d67  jbe     0x705d78
+     00705c59  movaps  xmm0, xmm2                            | 00705d69  movaps  xmm0, xmm2
+  VALEUR avant : ancien [0x00db7be0]=-0.02500000037252903 ; nouveau [0x00db7c18]=-0.02500000037252903 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7bf0]=-0.05000000074505806 ; nouveau [0x00db7c28]=-0.05000000074505806 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+atterrissage_cercle #0  va 0x0070137f offset 0x30077f  avant 00001644 apres 0000e1c4
+  role : centre du virage AVANT, z : `mov dword ptr [ebp-0x2a4], 600.0` -> `-1800.0` (meme cercle que le virage arriere) [mov dword ptr [ebp - 0x2a4], 0x44160000 a 0x00701379]
+  site nouveau : va 0x0070148f offset 0x30088f (decalage +0x110) ; champ : immediat ; liste de relocation ancien/nouveau : False/False
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701359  push    0                                     | 00701469  push    0
+     0070135b  mov     dword ptr [ebp - 0x258], 0xc47a0000   | 0070146b  mov     dword ptr [ebp - 0x258], 0xc47a0000
+     00701365  mov     dword ptr [ebp - 0x254], 0xc4e10000   | 00701475  mov     dword ptr [ebp - 0x254], 0xc4e10000
+     0070136f  mov     dword ptr [ebp - 0x2a8], 0xc47a0000   | 0070147f  mov     dword ptr [ebp - 0x2a8], 0xc47a0000
+  >> 00701379  mov     dword ptr [ebp - 0x2a4], 0x44160000   | 00701489  mov     dword ptr [ebp - 0x2a4], 0x44160000
+     00701383  movsd   qword ptr [ebp - 0x140], xmm0         | 00701493  movsd   qword ptr [ebp - 0x140], xmm0
+     0070138b  call    0x4113e0                              | 0070149b  call    0x4113e0
+     00701390  movsd   xmm1, qword ptr [0xdb7630]            | 007014a0  movsd   xmm1, qword ptr [0xdb7668]
+     00701398  lea     ecx, [ebp - 0xc0]                     | 007014a8  lea     ecx, [ebp - 0xc0]
+     0070139e  push    eax                                   | 007014ae  push    eax
+     0070139f  push    0x20                                  | 007014af  push    0x20
+  IMMEDIAT (aucune adresse) : 00001644 -> 0000e1c4 ; avant dans le nouvel exe = 00001644 (identique=True)
+====================================================================================================
+atterrissage_cercle #1  va 0x00701d5e offset 0x30115e  avant 707adb00 apres 547edb00
+  role : etat 3 : seuil de fin de la ligne droite `comiss xmm0,[600.0]` -> `[-1800.0]` [comiss xmm0, dword ptr [0xdb7a70] a 0x00701d5b]
+  site nouveau : va 0x00701e6e offset 0x30126e (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701d42  call    0x844310                              | 00701e52  call    0x844440
+     00701d47  mov     dword ptr [eax + 4], 3                | 00701e57  mov     dword ptr [eax + 4], 3
+     00701d4e  jmp     0x701b04                              | 00701e5e  jmp     0x701c14
+     00701d53  movss   xmm0, dword ptr [ebp - 0x24c]         | 00701e63  movss   xmm0, dword ptr [ebp - 0x24c]
+  >> 00701d5b  comiss  xmm0, dword ptr [0xdb7a70]            | 00701e6b  comiss  xmm0, dword ptr [0xdb7aa8]
+     00701d62  movaps  xmm1, xmm0                            | 00701e72  movaps  xmm1, xmm0
+     00701d65  addss   xmm1, dword ptr [0xdb7a70]            | 00701e75  addss   xmm1, dword ptr [0xdb7aa8]
+     00701d6d  jbe     0x701d84                              | 00701e7d  jbe     0x701e94
+     00701d6f  push    dword ptr [ebp - 0x204]               | 00701e7f  push    dword ptr [ebp - 0x204]
+     00701d75  lea     ecx, [edi + 0x34]                     | 00701e85  lea     ecx, [edi + 0x34]
+     00701d78  call    0x844310                              | 00701e88  call    0x844440
+  VALEUR avant : ancien [0x00db7a70]=600.0 ; nouveau [0x00db7aa8]=600.0 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7e54]=-1800.0 ; nouveau [0x00db7e8c]=-1800.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+atterrissage_cercle #2  va 0x00701f52 offset 0x301352  avant 707adb00 apres 547edb00
+  role : etat 5 : seuil de fin du virage avant `movss xmm0,[600.0]` -> `[-1800.0]` [movss xmm0, dword ptr [0xdb7a70] a 0x00701f4e]
+  site nouveau : va 0x00702062 offset 0x301462 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701f35  movss   xmm0, dword ptr [eax]                 | 00702045  movss   xmm0, dword ptr [eax]
+     00701f39  movss   dword ptr [ebp - 0x21c], xmm0         | 00702049  movss   dword ptr [ebp - 0x21c], xmm0
+     00701f41  movss   xmm0, dword ptr [eax + 4]             | 00702051  movss   xmm0, dword ptr [eax + 4]
+     00701f46  movss   dword ptr [ebp - 0x1fc], xmm0         | 00702056  movss   dword ptr [ebp - 0x1fc], xmm0
+  >> 00701f4e  movss   xmm0, dword ptr [0xdb7a70]            | 0070205e  movss   xmm0, dword ptr [0xdb7aa8]
+     00701f56  comiss  xmm0, dword ptr [ebp - 0x24c]         | 00702066  comiss  xmm0, dword ptr [ebp - 0x24c]
+     00701f5d  jbe     0x701b04                              | 0070206d  jbe     0x701c14
+     00701f63  push    dword ptr [ebp - 0x204]               | 00702073  push    dword ptr [ebp - 0x204]
+     00701f69  lea     ecx, [edi + 0x34]                     | 00702079  lea     ecx, [edi + 0x34]
+     00701f6c  call    0x844310                              | 0070207c  call    0x844440
+     00701f71  mov     dword ptr [eax + 4], 0                | 00702081  mov     dword ptr [eax + 4], 0
+  VALEUR avant : ancien [0x00db7a70]=600.0 ; nouveau [0x00db7aa8]=600.0 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7e54]=-1800.0 ; nouveau [0x00db7e8c]=-1800.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+atterrissage_creneau #0  va 0x007019fc offset 0x300dfc  avant 04010000 apres 2a000000
+  role : etat 1 du circuit (1re moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x007019fa]
+  site nouveau : va 0x00701b0c offset 0x300f0c (decalage +0x110) ; champ : saut_relatif ; liste de relocation ancien/nouveau : False/False
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     007019de  movss   xmm0, dword ptr [eax + 4]             | 00701aee  movss   xmm0, dword ptr [eax + 4]
+     007019e3  movss   dword ptr [ebp - 0x1fc], xmm0         | 00701af3  movss   dword ptr [ebp - 0x1fc], xmm0
+     007019eb  movss   xmm0, dword ptr [ebp - 0x250]         | 00701afb  movss   xmm0, dword ptr [ebp - 0x250]
+     007019f3  comiss  xmm0, dword ptr [0xdb7e50]            | 00701b03  comiss  xmm0, dword ptr [0xdb7e88]
+  >> 007019fa  jbe     0x701b04                              | 00701b0a  jbe     0x701c14
+     00701a00  push    dword ptr [ebp - 0x204]               | 00701b10  push    dword ptr [ebp - 0x204]
+     00701a06  lea     ecx, [edi + 0x34]                     | 00701b16  lea     ecx, [edi + 0x34]
+     00701a09  call    0x844310                              | 00701b19  call    0x844440
+     00701a0e  push    dword ptr [ebp - 0x204]               | 00701b1e  push    dword ptr [ebp - 0x204]
+     00701a14  lea     ecx, [edi + 0x34]                     | 00701b24  lea     ecx, [edi + 0x34]
+     00701a17  mov     dword ptr [eax + 4], 2                | 00701b27  mov     dword ptr [eax + 4], 2
+  SAUT : cible avant ancien 0x701b04 ; cible lue dans le nouvel exe 0x701c14 ; decalage de cible retrouve par desassemblage ['0x110'] ; coherent=True
+  cible apres (ancien) 0x701a2a ; decalage de cible retrouve ['0x110']
+  apres calcule pour le nouvel exe : 2a000000 (ancien 2a000000)
+      cible avant : 00701b04  movss   xmm1, dword ptr [ebp - 0x1fc]| 00701c14  movss   xmm1, dword ptr [ebp - 0x1fc]
+      cible avant : 00701b0c  movss   xmm0, dword ptr [ebp - 0x21c]| 00701c1c  movss   xmm0, dword ptr [ebp - 0x21c]
+      cible avant : 00701b14  mov     eax, dword ptr [ebp - 0x22c]| 00701c24  mov     eax, dword ptr [ebp - 0x22c]
+      cible apres : 00701a2a  cmp     dword ptr [edi], 1        | 00701b3a  cmp     dword ptr [edi], 1
+      cible apres : 00701a2d  jne     0x701b04                  | 00701b3d  jne     0x701c14
+      cible apres : 00701a33  cmp     dword ptr [edi + 0x5c], -1| 00701b43  cmp     dword ptr [edi + 0x5c], -1
+====================================================================================================
+atterrissage_creneau #1  va 0x00701d35 offset 0x301135  avant cbfdffff apres f1fcffff
+  role : etat 2 (2e moitie du virage arriere) : `jbe 0x701b04` (sortie) -> `jbe 0x701a2a` (test de la piste) [jbe 0x701b04 a 0x00701d33]
+  site nouveau : va 0x00701e45 offset 0x301245 (decalage +0x110) ; champ : saut_relatif ; liste de relocation ancien/nouveau : False/False
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701d17  movss   xmm0, dword ptr [eax + 4]             | 00701e27  movss   xmm0, dword ptr [eax + 4]
+     00701d1c  movss   dword ptr [ebp - 0x1fc], xmm0         | 00701e2c  movss   dword ptr [ebp - 0x1fc], xmm0
+     00701d24  movss   xmm0, dword ptr [ebp - 0x24c]         | 00701e34  movss   xmm0, dword ptr [ebp - 0x24c]
+     00701d2c  comiss  xmm0, dword ptr [0xdb7e54]            | 00701e3c  comiss  xmm0, dword ptr [0xdb7e8c]
+  >> 00701d33  jbe     0x701b04                              | 00701e43  jbe     0x701c14
+     00701d39  push    dword ptr [ebp - 0x204]               | 00701e49  push    dword ptr [ebp - 0x204]
+     00701d3f  lea     ecx, [edi + 0x34]                     | 00701e4f  lea     ecx, [edi + 0x34]
+     00701d42  call    0x844310                              | 00701e52  call    0x844440
+     00701d47  mov     dword ptr [eax + 4], 3                | 00701e57  mov     dword ptr [eax + 4], 3
+     00701d4e  jmp     0x701b04                              | 00701e5e  jmp     0x701c14
+     00701d53  movss   xmm0, dword ptr [ebp - 0x24c]         | 00701e63  movss   xmm0, dword ptr [ebp - 0x24c]
+  SAUT : cible avant ancien 0x701b04 ; cible lue dans le nouvel exe 0x701c14 ; decalage de cible retrouve par desassemblage ['0x110'] ; coherent=True
+  cible apres (ancien) 0x701a2a ; decalage de cible retrouve ['0x110']
+  apres calcule pour le nouvel exe : f1fcffff (ancien f1fcffff)
+      cible avant : 00701b04  movss   xmm1, dword ptr [ebp - 0x1fc]| 00701c14  movss   xmm1, dword ptr [ebp - 0x1fc]
+      cible avant : 00701b0c  movss   xmm0, dword ptr [ebp - 0x21c]| 00701c1c  movss   xmm0, dword ptr [ebp - 0x21c]
+      cible avant : 00701b14  mov     eax, dword ptr [ebp - 0x22c]| 00701c24  mov     eax, dword ptr [ebp - 0x22c]
+      cible apres : 00701a2a  cmp     dword ptr [edi], 1        | 00701b3a  cmp     dword ptr [edi], 1
+      cible apres : 00701a2d  jne     0x701b04                  | 00701b3d  jne     0x701c14
+      cible apres : 00701a33  cmp     dword ptr [edi + 0x5c], -1| 00701b43  cmp     dword ptr [edi + 0x5c], -1
+====================================================================================================
+atterrissage_creneau #2  va 0x00701d4f offset 0x30114f  avant b1fdffff apres d7fcffff
+  role : passage etat 2 -> 3 : `jmp 0x701b04` (sortie) -> `jmp 0x701a2a` (test de la piste) [jmp 0x701b04 a 0x00701d4e]
+  site nouveau : va 0x00701e5f offset 0x30125f (decalage +0x110) ; champ : saut_relatif ; liste de relocation ancien/nouveau : False/False
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00701d39  push    dword ptr [ebp - 0x204]               | 00701e49  push    dword ptr [ebp - 0x204]
+     00701d3f  lea     ecx, [edi + 0x34]                     | 00701e4f  lea     ecx, [edi + 0x34]
+     00701d42  call    0x844310                              | 00701e52  call    0x844440
+     00701d47  mov     dword ptr [eax + 4], 3                | 00701e57  mov     dword ptr [eax + 4], 3
+  >> 00701d4e  jmp     0x701b04                              | 00701e5e  jmp     0x701c14
+     00701d53  movss   xmm0, dword ptr [ebp - 0x24c]         | 00701e63  movss   xmm0, dword ptr [ebp - 0x24c]
+     00701d5b  comiss  xmm0, dword ptr [0xdb7a70]            | 00701e6b  comiss  xmm0, dword ptr [0xdb7aa8]
+     00701d62  movaps  xmm1, xmm0                            | 00701e72  movaps  xmm1, xmm0
+     00701d65  addss   xmm1, dword ptr [0xdb7a70]            | 00701e75  addss   xmm1, dword ptr [0xdb7aa8]
+     00701d6d  jbe     0x701d84                              | 00701e7d  jbe     0x701e94
+     00701d6f  push    dword ptr [ebp - 0x204]               | 00701e7f  push    dword ptr [ebp - 0x204]
+  SAUT : cible avant ancien 0x701b04 ; cible lue dans le nouvel exe 0x701c14 ; decalage de cible retrouve par desassemblage ['0x110'] ; coherent=True
+  cible apres (ancien) 0x701a2a ; decalage de cible retrouve ['0x110']
+  apres calcule pour le nouvel exe : d7fcffff (ancien d7fcffff)
+      cible avant : 00701b04  movss   xmm1, dword ptr [ebp - 0x1fc]| 00701c14  movss   xmm1, dword ptr [ebp - 0x1fc]
+      cible avant : 00701b0c  movss   xmm0, dword ptr [ebp - 0x21c]| 00701c1c  movss   xmm0, dword ptr [ebp - 0x21c]
+      cible avant : 00701b14  mov     eax, dword ptr [ebp - 0x22c]| 00701c24  mov     eax, dword ptr [ebp - 0x22c]
+      cible apres : 00701a2a  cmp     dword ptr [edi], 1        | 00701b3a  cmp     dword ptr [edi], 1
+      cible apres : 00701a2d  jne     0x701b04                  | 00701b3d  jne     0x701c14
+      cible apres : 00701a33  cmp     dword ptr [edi + 0x5c], -1| 00701b43  cmp     dword ptr [edi + 0x5c], -1
+====================================================================================================
+helicos_approche_x2 #0  va 0x006fe1b7 offset 0x2fd5b7  avant b879db00 apres e079db00
+  role : partie helico de l'etat 3 (apres `call [vtable+0x4c]` / `test al,al` / `je 0x6fe436`) : `addss xmm2,[50.0]` (z vise = z + 50) -> `[100.0]`
+  site nouveau : va 0x006fe2c7 offset 0x2fd6c7 (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fe198  movss   xmm7, dword ptr [ebp - 0x20c]         | 006fe2a8  movss   xmm7, dword ptr [ebp - 0x20c]
+     006fe1a0  movss   xmm2, dword ptr [ebp - 0x278]         | 006fe2b0  movss   xmm2, dword ptr [ebp - 0x278]
+     006fe1a8  movaps  xmm0, xmm7                            | 006fe2b8  movaps  xmm0, xmm7
+     006fe1ab  addss   xmm0, dword ptr [0xdb79ec]            | 006fe2bb  addss   xmm0, dword ptr [0xdb7a24]
+  >> 006fe1b3  addss   xmm2, dword ptr [0xdb79b8]            | 006fe2c3  addss   xmm2, dword ptr [0xdb79f0]
+     006fe1bb  movss   xmm1, dword ptr [ebp - 0x2cc]         | 006fe2cb  movss   xmm1, dword ptr [ebp - 0x2cc]
+     006fe1c3  movss   xmm6, dword ptr [ebp - 0x214]         | 006fe2d3  movss   xmm6, dword ptr [ebp - 0x214]
+     006fe1cb  addss   xmm1, xmm1                            | 006fe2db  addss   xmm1, xmm1
+     006fe1cf  mov     esi, dword ptr [ebp - 0x200]          | 006fe2df  mov     esi, dword ptr [ebp - 0x200]
+     006fe1d5  movss   xmm5, dword ptr [ebp - 0x210]         | 006fe2e5  movss   xmm5, dword ptr [ebp - 0x210]
+     006fe1dd  minss   xmm2, xmm0                            | 006fe2ed  minss   xmm2, xmm0
+  VALEUR avant : ancien [0x00db79b8]=50.0 ; nouveau [0x00db79f0]=50.0 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db79e0]=100.0 ; nouveau [0x00db7a18]=100.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+pont_retour_x2 #0  va 0x006fddad offset 0x2fd1ad  avant 8c79db00 apres 3079db00
+  role : `movss xmm7,[30.0]` (debut de la boucle de la file) : la lecture de 30,0 devient 15,0 ; queue commune des etats 5, 6, 7 : t += v/(L x 15) [mulss xmm0,xmm7 a 0x007007e3]
+  site nouveau : va 0x006fdebd offset 0x2fd2bd (decalage +0x110) ; champ : pointeur ; liste de relocation ancien/nouveau : True/True
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     006fdd98  xorps   xmm3, xmm3                            | 006fdea8  xorps   xmm3, xmm3
+     006fdd9b  push    dword ptr [edi + 0x5c]                | 006fdeab  push    dword ptr [edi + 0x5c]
+     006fdd9e  mov     ecx, dword ptr [ebp - 0x264]          | 006fdeae  mov     ecx, dword ptr [ebp - 0x264]
+     006fdda4  call    0x5ee6a0                              | 006fdeb4  call    0x5ee7e0
+  >> 006fdda9  movss   xmm7, dword ptr [0xdb798c]            | 006fdeb9  movss   xmm7, dword ptr [0xdb79c4]
+     006fddb1  movss   xmm2, dword ptr [0xdb71d0]            | 006fdec1  movss   xmm2, dword ptr [0xdb7208]
+     006fddb9  movss   xmm5, dword ptr [0xdb76c8]            | 006fdec9  movss   xmm5, dword ptr [0xdb7700]
+     006fddc1  mov     dword ptr [ebp - 0x1fc], eax          | 006fded1  mov     dword ptr [ebp - 0x1fc], eax
+     006fddc7  test    eax, eax                              | 006fded7  test    eax, eax
+     006fddc9  je      0x700bff                              | 006fded9  je      0x700d0f
+     006fddcf  mov     ecx, dword ptr [edi + 0x1c]           | 006fdedf  mov     ecx, dword ptr [edi + 0x1c]
+  VALEUR avant : ancien [0x00db798c]=30.0 ; nouveau [0x00db79c4]=30.0 ; identique=True ; decalage +0x38
+  VALEUR apres : ancien [0x00db7930]=15.0 ; nouveau [0x00db7968]=15.0 ; identique=True ; decalage +0x38 ; contexte +-16 octets, 1 candidat(s)
+====================================================================================================
+temps_x2 #0  va 0x00835ccb offset 0x4350cb  avant 0000803f apres 00000040
+  role : constructeur du serveur 0x00835b50 : [edi+0x140] (facteur de vitesse) 1.0 -> 2.0
+  site nouveau : va 0x00835dfb offset 0x4351fb (decalage +0x130) ; champ : immediat ; liste de relocation ancien/nouveau : False/False
+  ANCIEN exe (1C9A01C3)                                       | NOUVEL exe (461E1262)
+     00835cb4  mov     ecx, esi                              | 00835de4  mov     ecx, esi
+     00835cb6  call    0x414890                              | 00835de6  call    0x414890
+     00835cbb  mov     byte ptr [ebp - 4], 0x19              | 00835deb  mov     byte ptr [ebp - 4], 0x19
+     00835cbf  lea     eax, [edi + 0x148]                    | 00835def  lea     eax, [edi + 0x148]
+  >> 00835cc5  mov     dword ptr [edi + 0x140], 0x3f800000   | 00835df5  mov     dword ptr [edi + 0x140], 0x3f800000
+     00835ccf  mov     byte ptr [edi + 0x144], 0             | 00835dff  mov     byte ptr [edi + 0x144], 0
+     00835cd6  mov     dword ptr [ebp - 0x4c], eax           | 00835e06  mov     dword ptr [ebp - 0x4c], eax
+     00835cd9  mov     dword ptr [eax], 0                    | 00835e09  mov     dword ptr [eax], 0
+     00835cdf  mov     byte ptr [ebp - 4], 0x1b              | 00835e0f  mov     byte ptr [ebp - 4], 0x1b
+     00835ce3  lea     eax, [edi + 0x14c]                    | 00835e13  lea     eax, [edi + 0x14c]
+     00835ce9  mov     dword ptr [ebp - 0x50], eax           | 00835e19  mov     dword ptr [ebp - 0x50], eax
+  IMMEDIAT (aucune adresse) : 0000803f -> 00000040 ; avant dans le nouvel exe = 0000803f (identique=True)

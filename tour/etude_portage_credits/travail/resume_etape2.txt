@@ -1,0 +1,63 @@
+## ascenseur_x2
+    decalage code -0x1 1
+    decalage code 0x110 31
+    imm: avant identique 1
+    imm: reloc 0
+    kind=entete 1
+    kind=immediat 1
+    kind=pointeur 30
+    ptr: apres en-tete 4
+    ptr: apres retrouve 30
+    ptr: dans liste de relocation (ancien et nouveau) 30
+    ptr: valeur apres identique 26
+    ptr: valeur avant identique 30
+    site unique par desassemblage 31
+    total 32
+## atterrissage_cercle
+    decalage code 0x110 3
+    imm: avant identique 1
+    imm: reloc 0
+    kind=immediat 1
+    kind=pointeur 2
+    ptr: apres en-tete 0
+    ptr: apres retrouve 2
+    ptr: dans liste de relocation (ancien et nouveau) 2
+    ptr: valeur apres identique 2
+    ptr: valeur avant identique 2
+    site unique par desassemblage 3
+    total 3
+## atterrissage_creneau
+    decalage code 0x110 3
+    kind=saut_relatif 3
+    saut: apres rel nouveau == ancien 3
+    saut: cible apres retrouvee unique 3
+    saut: cible avant coherente 3
+    site unique par desassemblage 3
+    total 3
+## helicos_approche_x2
+    decalage code 0x110 1
+    kind=pointeur 1
+    ptr: apres en-tete 0
+    ptr: apres retrouve 1
+    ptr: dans liste de relocation (ancien et nouveau) 1
+    ptr: valeur apres identique 1
+    ptr: valeur avant identique 1
+    site unique par desassemblage 1
+    total 1
+## pont_retour_x2
+    decalage code 0x110 1
+    kind=pointeur 1
+    ptr: apres en-tete 0
+    ptr: apres retrouve 1
+    ptr: dans liste de relocation (ancien et nouveau) 1
+    ptr: valeur apres identique 1
+    ptr: valeur avant identique 1
+    site unique par desassemblage 1
+    total 1
+## temps_x2
+    decalage code 0x130 1
+    imm: avant identique 1
+    imm: reloc 0
+    kind=immediat 1
+    site unique par desassemblage 1
+    total 1

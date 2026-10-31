@@ -1,0 +1,14 @@
+Inventaire des crochets et adresses fixes des plugins : ancien exe -> nouvel exe (LECTURE SEULE)
+
+plugin | nom | ancien | nouveau | alignement | contexte | octets | frontieres | sauts dans les octets deplaces | identiques av/ap | plus proche bloc different | verdict
+frein v10 | H1 | 0x007018ce | 0x007019de | egal | unique 64+64 | OK | OK | aucun | 15186 / 344 | -0xf84e / +0x6da octets | SUR
+frein v10 | H2 | 0x00701a3d | 0x00701b4d | egal | unique 64+64 | OK | OK | aucun | 15255 / 275 | -0xf9bd / +0x56b octets | SUR
+frein v10 | H3 | 0x006ff0fb | 0x006ff20b | egal | unique 64+64 | OK | OK | aucun | 12987 / 2543 | -0xd07b / +0x2ead octets | SUR
+frein v10 | sonde A/B | 0x006febda | 0x006fecea | egal | unique 64+64 | OK | OK | aucun | 12718 / 2812 | -0xcb5a / +0x33ce octets | SUR
+frein v10 | sonde C/D | 0x006febe7 | 0x006fecf7 | egal | unique 64+64 | OK | OK | aucun | 12720 / 2810 | -0xcb67 / +0x33c1 octets | SUR
+frein v10 | sonde E | 0x006febc0 | 0x006fecd0 | egal | unique 64+64 | OK | OK | aucun | 12714 / 2816 | -0xcb40 / +0x33e8 octets | SUR
+frein v10 | sonde C passee | 0x006fe788 | 0x006fe898 | egal | unique 64+64 | OK | OK | aucun | 12479 / 3051 | -0xc708 / +0x3820 octets | SUR
+frein v10 | cible de saut H2 | 0x00701a8a | 0x00701b9a | egal | unique 64+64 | - | - | aucun | 15269 / 261 | -0xfa0a / +0x51e octets | SUR
+frein v11 (non commite) | H4 | 0x006fe470 | 0x006fe580 | egal | unique 64+64 | OK | OK | aucun | 12324 / 3206 | -0xc3f0 / +0x3b38 octets | SUR
+frein v11 (non commite) | cible de saut H4 | 0x006fe55b | 0x006fe66b | egal | unique 64+64 | - | - | aucun | 12367 / 3163 | -0xc4db / +0x3a4d octets | SUR
+modes v3.1 | site du gaz | 0x0071dbbf | 0x0071dcbf | egal | unique 64+64 | OK | OK | aucun | 3477 / 7254 | -0x403f / +0x7792 octets | SUR

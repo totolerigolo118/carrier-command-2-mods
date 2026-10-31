@@ -1,0 +1,66 @@
+{
+ "nom": "atterrissage_cercle",
+ "description": "circuit d'attente des avions en CERCLE au lieu d'un ovale (1 valeur ecrite dans le code, 2 lectures de constante) [PORTE sur le build Steam du 28/10/2026 (461E1262...), horodatage 0x6ae228f3]",
+ "statut_portage": "SECONDAIRE : essaye en jeu sur l'ancien exe (essai 1 du 27/10 et essai 2 du 29/10) ; sur le nouvel exe, octets et desassemblage seulement.",
+ "build": {
+  "fichier": "carrier_command.exe",
+  "taille": 11354112,
+  "horodatage_pe": "0x6ae228f3",
+  "taille_image": "0x00af7000",
+  "base": "0x00400000"
+ },
+ "sha256_origine": "461E12623BACB7DE29CA27B4614425C87E8DF2C8327A5E958A957C850EFFE42A",
+ "sha256_patche": "A8B4F4490DAC1F7551914C944A046C35C0CC1AA6CCC03BA461A9C43546FEB402",
+ "nb_changements": 3,
+ "changements": [
+  {
+   "va": 7345295,
+   "offset": 3147919,
+   "avant": "00001644",
+   "apres": "0000e1c4",
+   "role": "[NOUVEL EXE ; les adresses citees dans ce texte sont celles de l'ANCIEN exe] centre du virage AVANT, z : `mov dword ptr [ebp-0x2a4], 600.0` -> `-1800.0` (meme cercle que le virage arriere) [mov dword ptr [ebp - 0x2a4], 0x44160000 a 0x00701379]",
+   "reglage": "LANDING_CIRCLE_FRONT_CENTER_Z",
+   "constante_va": 0,
+   "va_ancien": 7345023,
+   "offset_ancien": 3147647,
+   "avant_ancien": "00001644",
+   "apres_ancien": "0000e1c4",
+   "type": "imm",
+   "retrouve_par": "contexte unique de 64+64 instructions ; identique sur 14888 avant / 651 apres",
+   "preuve": "immediat identique avant/apres qu'a l'ancien exe"
+  },
+  {
+   "va": 7347822,
+   "offset": 3150446,
+   "avant": "a87adb00",
+   "apres": "8c7edb00",
+   "role": "[NOUVEL EXE ; les adresses citees dans ce texte sont celles de l'ANCIEN exe] etat 3 : seuil de fin de la ligne droite `comiss xmm0,[600.0]` -> `[-1800.0]` [comiss xmm0, dword ptr [0xdb7a70] a 0x00701d5b]",
+   "reglage": "LANDING_CIRCLE_STATE3_END",
+   "constante_va": 14384780,
+   "va_ancien": 7347550,
+   "offset_ancien": 3150174,
+   "avant_ancien": "707adb00",
+   "apres_ancien": "547edb00",
+   "type": "abs",
+   "retrouve_par": "contexte unique de 64+64 instructions ; identique sur 15420 avant / 119 apres",
+   "preuve": "premiere copie en lecture seule de -1800.0 (.rdata), voisins identiques a l'ancien 0x00db7e54"
+  },
+  {
+   "va": 7348322,
+   "offset": 3150946,
+   "avant": "a87adb00",
+   "apres": "8c7edb00",
+   "role": "[NOUVEL EXE ; les adresses citees dans ce texte sont celles de l'ANCIEN exe] etat 5 : seuil de fin du virage avant `movss xmm0,[600.0]` -> `[-1800.0]` [movss xmm0, dword ptr [0xdb7a70] a 0x00701f4e]",
+   "reglage": "LANDING_CIRCLE_STATE5_END",
+   "constante_va": 14384780,
+   "va_ancien": 7348050,
+   "offset_ancien": 3150674,
+   "avant_ancien": "707adb00",
+   "apres_ancien": "547edb00",
+   "type": "abs",
+   "retrouve_par": "contexte unique de 20+20 instructions ; identique sur 15516 avant / 23 apres",
+   "preuve": "premiere copie en lecture seule de -1800.0 (.rdata), voisins identiques a l'ancien 0x00db7e54"
+  }
+ ],
+ "avertissement": "Change le circuit d'attente des avions au retour pour les DEUX porte-avions (le code est le meme). Tout ou rien : les 3 changements vont ensemble. Jamais vu en jeu avant la premiere mesure."
+}

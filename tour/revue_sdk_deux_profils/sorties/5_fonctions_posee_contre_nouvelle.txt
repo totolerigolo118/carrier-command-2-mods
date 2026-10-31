@@ -1,0 +1,217 @@
+A C:/Program Files (x86)/Steam/steamapps/common/Carrier Command 2/dinput8.dll : 648 fonctions (FDE) ; B C:/Users/UTILISATEUR/Documents/cc2-port-travail/sdk/dist/dinput8.dll : 648 fonctions
+
+fonction #17  A 0x10001a50 (2313 o, 519 instr.)  B 0x10001a50 (2429 o, 555 instr.)
+   imports appelés : ['kernel32.dll!CreateDirectoryW', 'kernel32.dll!GetEnvironmentVariableW', 'kernel32.dll!GetFileAttributesW', 'kernel32.dll!GetModuleFileNameW', 'kernel32.dll!GetModuleHandleW', 'kernel32.dll!GetPrivateProfileIntA', 'kernel32.dll!GetProcessHeap', 'kernel32.dll!HeapFree', 'kernel32.dll!WideCharToMultiByte']
+   chaînes lues    : [' (no Lua bridge)', '%d enabled mod folder(s) checked for plugins', '%s\\cc2x.ini', '0.5.0', '<active_mod_folders', '<path ', 'CC2X %s ready for Carrier Command 2 %s%s', 'L"%ls\\Carrier Command 2\\cc2x"', 'L"%ls\\Carrier Command 2\\mods.xml"', 'L"%ls\\cc2x"', 'L"%ls\\cc2x\\plugins"', 'L"%ls\\content\\cc2x"', 'L"%ls\\mod.xml"', 'L"*.dll"', 'L"APPDATA"', 'L"cc2x_*.dll"', 'Lua functions not recognised: the cc2x Lua table is disabled', 'cc2x', 'cc2x\\plugins', 'core hooks failed; CC2X stays inactive', 'developer option time_scale=%d (logic runs %dx faster)', 'mod "%s"', 'name', 'no mods.xml yet: no mods enabled', 'no world layout for this build: API 3 functions do nothing', 'the game folder', 'time_scale', 'unsupported game build (PE timestamp 0x%08lx, size 0x%08lx): CC2X stays inactive', 'value']
+   appels internes : [1, 9, 13, 19, 48, 49, 50, 51, 54, 101, 151, 153, 516]
+   données .data/.rdata (hors chaînes) A {('donnee', '.rdata'): 2, ('donnee', '.data'): 91, ('donnee', '.text'): 7} ; B {('donnee', '.rdata'): 3, ('donnee', '.data'): 95, ('donnee', '.text'): 7}
+   ensembles (imports, appels, chaînes) identiques : False  *** seulement A : [('chaine', '1.5.18-win32')] ; seulement B : []
+
+fonction #23  A 0x100027d0 (1074 o, 306 instr.)  B 0x10002840 (1090 o, 313 instr.)
+   imports appelés : []
+   chaînes lues    : ['0.5.0', 'Lua stack changed by a plugin callback; restored', 'api', 'cc2x', 'game_build', 'has', 'log', 'unexpected Lua registry layout; cc2x not registered', 'version']
+   appels internes : [1]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 40, ('donnee', '.text'): 2} ; B {('donnee', '.data'): 41, ('donnee', '.text'): 2}
+   ensembles (imports, appels, chaînes) identiques : False  *** seulement A : [('chaine', '1.5.18-win32')] ; seulement B : []
+
+fonction #51  A 0x10003a60 (54 o, 17 instr.)  B 0x10003ae0 (85 o, 26 instr.)
+   imports appelés : []
+   chaînes lues    : ['1.5.18-win32', '1.5.18-win32-6ae228f3']
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.text'): 1, ('donnee', '.data'): 2, ('donnee', '.rdata'): 1} ; B {('donnee', '.text'): 2, ('donnee', '.rdata'): 2, ('donnee', '.data'): 3}
+   ensembles (imports, appels, chaînes) identiques : False  *** seulement A : [] ; seulement B : [('chaine', '1.5.18-win32-6ae228f3')]
+
+fonction #55  A 0x10003be0 (89 o, 36 instr.)  B 0x10003c80 (104 o, 38 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0, 14]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 3}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #56  A 0x10003c40 (99 o, 33 instr.)  B 0x10003cf0 (105 o, 35 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0, 14]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 3}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #57  A 0x10003cb0 (525 o, 117 instr.)  B 0x10003d60 (297 o, 81 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [14]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 2, ('donnee', '.rdata'): 1} ; B {('donnee', '.data'): 2, ('donnee', '.rdata'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #58  A 0x10003ec0 (385 o, 111 instr.)  B 0x10003e90 (307 o, 100 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [14]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 2} ; B {('donnee', '.data'): 2}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #63  A 0x10004150 (239 o, 79 instr.)  B 0x100040d0 (239 o, 81 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #64  A 0x10004240 (156 o, 55 instr.)  B 0x100041c0 (162 o, 61 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #65  A 0x100042e0 (130 o, 37 instr.)  B 0x10004270 (140 o, 42 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 2}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #66  A 0x10004370 (297 o, 84 instr.)  B 0x10004300 (339 o, 92 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 2}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #67  A 0x100044a0 (545 o, 151 instr.)  B 0x10004460 (618 o, 168 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1, ('donnee', '.rdata'): 1} ; B {('donnee', '.data'): 2, ('donnee', '.rdata'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #68  A 0x100046d0 (1560 o, 374 instr.)  B 0x100046d0 (1634 o, 399 instr.)
+   imports appelés : []
+   chaînes lues    : ['cc2x', 'several PhysX scenes: ray casts use the one of the nearest vehicle']
+   appels internes : [0, 1, 14, 86]
+   données .data/.rdata (hors chaînes) A {('donnee', '.rdata'): 2, ('donnee', '.data'): 16} ; B {('donnee', '.rdata'): 2, ('donnee', '.data'): 18}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #69  A 0x10004cf0 (58 o, 19 instr.)  B 0x10004d40 (67 o, 23 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #70  A 0x10004d30 (32 o, 12 instr.)  B 0x10004d90 (41 o, 16 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #71  A 0x10004d50 (70 o, 27 instr.)  B 0x10004dc0 (83 o, 31 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 3}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #72  A 0x10004da0 (82 o, 28 instr.)  B 0x10004e20 (103 o, 40 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [14]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 2}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #73  A 0x10004e00 (190 o, 45 instr.)  B 0x10004e90 (214 o, 53 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #74  A 0x10004ec0 (298 o, 76 instr.)  B 0x10004f70 (317 o, 78 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1, ('donnee', '.rdata'): 3, ('donnee', '.text'): 1} ; B {('donnee', '.data'): 1, ('donnee', '.rdata'): 3, ('donnee', '.text'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #80  A 0x10005360 (749 o, 202 instr.)  B 0x10005420 (864 o, 225 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [81]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1, ('donnee', '.rdata'): 6} ; B {('donnee', '.data'): 1, ('donnee', '.rdata'): 6}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #81  A 0x10005650 (722 o, 184 instr.)  B 0x10005780 (945 o, 221 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.rdata'): 2} ; B {('donnee', '.rdata'): 2, ('donnee', '.data'): 30}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #86  A 0x10005a80 (308 o, 100 instr.)  B 0x10005c90 (394 o, 126 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0]
+   données .data/.rdata (hors chaînes) A {} ; B {('donnee', '.data'): 3}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #87  A 0x10005bc0 (36 o, 13 instr.)  B 0x10005e20 (34 o, 13 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [9]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #89  A 0x10005c30 (48 o, 15 instr.)  B 0x10005e90 (57 o, 20 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [7]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 2}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #91  A 0x10005cc0 (36 o, 13 instr.)  B 0x10005f30 (34 o, 13 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [9]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 1}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #92  A 0x10005cf0 (213 o, 79 instr.)  B 0x10005f60 (225 o, 80 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [0]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 4} ; B {('donnee', '.data'): 6}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #93  A 0x10005dd0 (84 o, 31 instr.)  B 0x10006050 (80 o, 31 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [7]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 2} ; B {('donnee', '.data'): 2}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #94  A 0x10005e30 (90 o, 32 instr.)  B 0x100060a0 (90 o, 31 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 4} ; B {('donnee', '.data'): 5}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #95  A 0x10005e90 (48 o, 15 instr.)  B 0x10006100 (57 o, 20 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : [7]
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 1} ; B {('donnee', '.data'): 2}
+   ensembles (imports, appels, chaînes) identiques : True
+
+fonction #96  A 0x10005ec0 (124 o, 46 instr.)  B 0x10006140 (140 o, 49 instr.)
+   imports appelés : []
+   chaînes lues    : []
+   appels internes : []
+   données .data/.rdata (hors chaînes) A {('donnee', '.data'): 6} ; B {('donnee', '.data'): 7}
+   ensembles (imports, appels, chaînes) identiques : True
+
+618 fonctions identiques, 30 changées ; changées dont les imports/appels/chaînes diffèrent : 3
+nombre total de références à chaque import identique (A/B) : True
+chaînes référencées par le code : A 148 distinctes, B 149 ; seulement A : [] ; seulement B : ['1.5.18-win32-6ae228f3']
+   nombre de références différent : '1.5.18-win32' A 5, B 1
+   nombre de références différent : '1.5.18-win32-6ae228f3' A 0, B 1

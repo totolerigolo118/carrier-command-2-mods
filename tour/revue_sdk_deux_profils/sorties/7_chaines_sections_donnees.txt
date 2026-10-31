@@ -1,0 +1,4 @@
+ASCII >=4 dans .rdata/.data/.buildid/.tls : nouvelle 290 posee 289
+seulement nouvelle : ['1.5.18-win32-6ae228f3', ":}M'LLD PDB.", 'RSDSag']
+seulement posee : ['LLD PDB.', 'RSDSdZ']
+UTF-16 seulement nouvelle : [] ; seulement posee : []

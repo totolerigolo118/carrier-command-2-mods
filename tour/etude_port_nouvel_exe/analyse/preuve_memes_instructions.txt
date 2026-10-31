@@ -1,0 +1,56 @@
+Preuve « memes instructions qu'a l'ancien exe patche » (octets seulement, rien lance)
+ancien patche (6 modules) : 11353600 octets, sha256 C48D3C24FD7122234E19C1D077C4076E121C879F26E9AB817F5B7F4DCAB74432
+nouveau patche (6 modules): 11354112 octets, sha256 9B902B5C614D192EEBB3C87ECC1568CB0322E95652A5CD65B746D7DCDA234A41
+ancien : 89 octets different de l'original (champs permis : 164), tous dans les champs listes : OUI
+nouveau : 96 octets different de l'original (champs permis : 164), tous dans les champs listes : OUI
+
+--- site par site (ancien patche | nouveau patche)
+ascenseur_x2           en-tete 0x00400310 : ancien -0.0666666701 | nouveau -0.0666666701 (voulu -0.0666666667) OK
+ascenseur_x2           0x006ea09e|0x006ea1ae  mov dword ptr [edi + 8], 0x3f4ccccd | mov dword ptr [edi + 8], 0x3f4ccccd ; immediat 0.800000012 (voulu 0.800000012) -> OK
+ascenseur_x2           0x006f980d|0x006f991d  movss xmm2, dword ptr [0xdb7830] | movss xmm2, dword ptr [0xdb7868] ; lit 5 (voulu 5) en 0x00db7830/0x00db7868, .rdata -> OK
+ascenseur_x2           0x006f9841|0x006f9951  addss xmm0, dword ptr [0xce560c] | addss xmm0, dword ptr [0xce560c] ; lit 0.100000001 (voulu 0.100000001) en 0x00ce560c/0x00ce560c, .rdata -> OK
+ascenseur_x2           0x006fb2ca|0x006fb3da  addss xmm0, dword ptr [0xce560c] | addss xmm0, dword ptr [0xce560c] ; lit 0.100000001 (voulu 0.100000001) en 0x00ce560c/0x00ce560c, .rdata -> OK
+ascenseur_x2           0x006fb2e5|0x006fb3f5  movss xmm1, dword ptr [0xdb7830] | movss xmm1, dword ptr [0xdb7868] ; lit 5 (voulu 5) en 0x00db7830/0x00db7868, .rdata -> OK
+ascenseur_x2           0x006fcba6|0x006fccb6  addss xmm0, dword ptr [0xce560c] | addss xmm0, dword ptr [0xce560c] ; lit 0.100000001 (voulu 0.100000001) en 0x00ce560c/0x00ce560c, .rdata -> OK
+ascenseur_x2           0x006fcbae|0x006fccbe  movss xmm1, dword ptr [0xdb7830] | movss xmm1, dword ptr [0xdb7868] ; lit 5 (voulu 5) en 0x00db7830/0x00db7868, .rdata -> OK
+ascenseur_x2           0x006fce4a|0x006fcf5a  addss xmm0, dword ptr [0xce560c] | addss xmm0, dword ptr [0xce560c] ; lit 0.100000001 (voulu 0.100000001) en 0x00ce560c/0x00ce560c, .rdata -> OK
+ascenseur_x2           0x006fce52|0x006fcf62  movss xmm3, dword ptr [0xdb7830] | movss xmm3, dword ptr [0xdb7868] ; lit 5 (voulu 5) en 0x00db7830/0x00db7868, .rdata -> OK
+ascenseur_x2           0x006fd8d1|0x006fd9e1  addss xmm0, dword ptr [0xce560c] | addss xmm0, dword ptr [0xce560c] ; lit 0.100000001 (voulu 0.100000001) en 0x00ce560c/0x00ce560c, .rdata -> OK
+ascenseur_x2           0x006fd8ec|0x006fd9fc  movss xmm3, dword ptr [0xdb7830] | movss xmm3, dword ptr [0xdb7868] ; lit 5 (voulu 5) en 0x00db7830/0x00db7868, .rdata -> OK
+ascenseur_x2           0x006fddb1|0x006fdec1  movss xmm2, dword ptr [0xce560c] | movss xmm2, dword ptr [0xce560c] ; lit 0.100000001 (voulu 0.100000001) en 0x00ce560c/0x00ce560c, .rdata -> OK
+ascenseur_x2           0x006fddb9|0x006fdec9  movss xmm5, dword ptr [0xdb7830] | movss xmm5, dword ptr [0xdb7868] ; lit 5 (voulu 5) en 0x00db7830/0x00db7868, .rdata -> OK
+ascenseur_x2           0x006ffa64|0x006ffb74  movss xmm5, dword ptr [0xdb7830] | movss xmm5, dword ptr [0xdb7868] ; lit 5 (voulu 5) en 0x00db7830/0x00db7868, .rdata -> OK
+ascenseur_x2           0x006ffaeb|0x006ffbfb  addss xmm0, dword ptr [0xce560c] | addss xmm0, dword ptr [0xce560c] ; lit 0.100000001 (voulu 0.100000001) en 0x00ce560c/0x00ce560c, .rdata -> OK
+ascenseur_x2           0x00700f22|0x00701032  movss xmm2, dword ptr [0xce0b58] | movss xmm2, dword ptr [0xce0b58] ; lit 0.333333343 (voulu 0.333333343) en 0x00ce0b58/0x00ce0b58, .rdata -> OK
+ascenseur_x2           0x00700f2d|0x0070103d  movss xmm1, dword ptr [0xcee4a4] | movss xmm1, dword ptr [0xcee4a4] ; lit -0.333333343 (voulu -0.333333343) en 0x00cee4a4/0x00cee4a4, .rdata -> OK
+ascenseur_x2           0x00700f7e|0x0070108e  movss xmm1, dword ptr [0x400310] | movss xmm1, dword ptr [0x400310] ; lit -0.0666666701 (voulu -0.0666666701) en 0x00400310/0x00400310, (en-tete) -> OK
+ascenseur_x2           0x00700f96|0x007010a6  movss xmm2, dword ptr [0xdb71e4] | movss xmm2, dword ptr [0xdb721c] ; lit 0.0666666701 (voulu 0.0666666701) en 0x00db71e4/0x00db721c, .rdata -> OK
+ascenseur_x2           0x00701031|0x00701141  movss xmm2, dword ptr [0xce0b58] | movss xmm2, dword ptr [0xce0b58] ; lit 0.333333343 (voulu 0.333333343) en 0x00ce0b58/0x00ce0b58, .rdata -> OK
+ascenseur_x2           0x0070103c|0x0070114c  movss xmm1, dword ptr [0xcee4a4] | movss xmm1, dword ptr [0xcee4a4] ; lit -0.333333343 (voulu -0.333333343) en 0x00cee4a4/0x00cee4a4, .rdata -> OK
+ascenseur_x2           0x0070107f|0x0070118f  movss xmm1, dword ptr [0x400310] | movss xmm1, dword ptr [0x400310] ; lit -0.0666666701 (voulu -0.0666666701) en 0x00400310/0x00400310, (en-tete) -> OK
+ascenseur_x2           0x007010a2|0x007011b2  movss xmm2, dword ptr [0xdb71e4] | movss xmm2, dword ptr [0xdb721c] ; lit 0.0666666701 (voulu 0.0666666701) en 0x00db71e4/0x00db721c, .rdata -> OK
+ascenseur_x2           0x00701120|0x00701230  movss xmm2, dword ptr [0xdb71e4] | movss xmm2, dword ptr [0xdb721c] ; lit 0.0666666701 (voulu 0.0666666701) en 0x00db71e4/0x00db721c, .rdata -> OK
+ascenseur_x2           0x00701128|0x00701238  movss xmm1, dword ptr [0x400310] | movss xmm1, dword ptr [0x400310] ; lit -0.0666666701 (voulu -0.0666666701) en 0x00400310/0x00400310, (en-tete) -> OK
+ascenseur_x2           0x007011b2|0x007012c2  movss xmm2, dword ptr [0xdb71e4] | movss xmm2, dword ptr [0xdb721c] ; lit 0.0666666701 (voulu 0.0666666701) en 0x00db71e4/0x00db721c, .rdata -> OK
+ascenseur_x2           0x007011ba|0x007012ca  movss xmm1, dword ptr [0x400310] | movss xmm1, dword ptr [0x400310] ; lit -0.0666666701 (voulu -0.0666666701) en 0x00400310/0x00400310, (en-tete) -> OK
+ascenseur_x2           0x00701215|0x00701325  movss xmm2, dword ptr [0xdb71ec] | movss xmm2, dword ptr [0xdb7224] ; lit 0.0799999982 (voulu 0.0799999982) en 0x00db71ec/0x00db7224, .rdata -> OK
+ascenseur_x2           0x00701221|0x00701331  movss xmm1, dword ptr [0xdb7bfc] | movss xmm1, dword ptr [0xdb7c34] ; lit -0.0799999982 (voulu -0.0799999982) en 0x00db7bfc/0x00db7c34, .rdata -> OK
+ascenseur_x2           0x00705c10|0x00705d20  movss xmm3, dword ptr [0xdb71d0] | movss xmm3, dword ptr [0xdb7208] ; lit 0.0500000007 (voulu 0.0500000007) en 0x00db71d0/0x00db7208, .rdata -> OK
+ascenseur_x2           0x00705c3a|0x00705d4a  maxss xmm1, dword ptr [0xdb7bf0] | maxss xmm1, dword ptr [0xdb7c28] ; lit -0.0500000007 (voulu -0.0500000007) en 0x00db7bf0/0x00db7c28, .rdata -> OK
+atterrissage_cercle    0x00701379|0x00701489  mov dword ptr [ebp - 0x2a4], 0xc4e10000 | mov dword ptr [ebp - 0x2a4], 0xc4e10000 ; immediat -1800 (voulu -1800) -> OK
+atterrissage_cercle    0x00701d5b|0x00701e6b  comiss xmm0, dword ptr [0xdb7e54] | comiss xmm0, dword ptr [0xdb7e8c] ; lit -1800 (voulu -1800) en 0x00db7e54/0x00db7e8c, .rdata -> OK
+atterrissage_cercle    0x00701f4e|0x0070205e  movss xmm0, dword ptr [0xdb7e54] | movss xmm0, dword ptr [0xdb7e8c] ; lit -1800 (voulu -1800) en 0x00db7e54/0x00db7e8c, .rdata -> OK
+atterrissage_creneau   0x007019fa|0x00701b0a  jbe 0x701a2a | jbe 0x701b3a ; saute en 0x00701a2a/0x00701b3a : cmp dword ptr [edi], 1 ; jne 0x701c14 ; cmp dword ptr [edi + 0x5c], -1 -> OK
+atterrissage_creneau   0x00701d33|0x00701e43  jbe 0x701a2a | jbe 0x701b3a ; saute en 0x00701a2a/0x00701b3a : cmp dword ptr [edi], 1 ; jne 0x701c14 ; cmp dword ptr [edi + 0x5c], -1 -> OK
+atterrissage_creneau   0x00701d4e|0x00701e5e  jmp 0x701a2a | jmp 0x701b3a ; saute en 0x00701a2a/0x00701b3a : cmp dword ptr [edi], 1 ; jne 0x701c14 ; cmp dword ptr [edi + 0x5c], -1 -> OK
+helicos_approche_x2    0x006fe1b3|0x006fe2c3  addss xmm2, dword ptr [0xdb79e0] | addss xmm2, dword ptr [0xdb7a18] ; lit 100 (voulu 100) en 0x00db79e0/0x00db7a18, .rdata -> OK
+pont_retour_x2         0x006fdda9|0x006fdeb9  movss xmm7, dword ptr [0xdb7930] | movss xmm7, dword ptr [0xdb7968] ; lit 15 (voulu 15) en 0x00db7930/0x00db7968, .rdata -> OK
+temps_x2               0x00835cc5|0x00835df5  mov dword ptr [edi + 0x140], 0x40000000 | mov dword ptr [edi + 0x140], 0x40000000 ; immediat 2 (voulu 2) -> OK
+
+--- controles globaux
+table de relocation identique avant/apres patch (150969 / 150985 entrees) : OUI
+ancien : les 2569512 instructions de tout .text gardent leurs frontieres et mnemoniques apres patch : OUI
+nouveau : les 2569837 instructions de tout .text gardent leurs frontieres et mnemoniques apres patch : OUI
+constantes finales lues (ancienne -> nouvelle) : 13, correspondances multiples : 0
+
+RESULTAT : TOUT CONCORDE (0 echec)

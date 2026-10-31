@@ -1,0 +1,102 @@
+DOCKING STATES, THE RUNWAY AND THE AIRCRAFT LANDING QUEUE
+=========================================================
+
+All in c_vehicle_server_carrier::docking_manager_air::update (0x1001accd8 -> 0x1001b2618) unless stated otherwise.
+Ship frame: x to starboard, z to the bow, y up (metres); 30 ticks per second. Offsets of the manager: see
+01_mac_binary_and_patching_method.txt section 7.
+
+
+1. e_vehicle_dock_state  (vehicle + 0x220)
+------------------------------------------
+    0 flying       1 landing        2 launch requested    3 launching (crane / elevator / runway)
+    4 in the hangar     5 in the landing queue     6 taxiing back after touchdown
+    7 hold at launch (probably the red "wait at launch" button; not verified)
+Other vehicle fields used by the docking code: 0x2a0 control_mode (0 = waypoints, 1 = other, 3 = setpoint imposed by the ship),
+0x2a8 target position (double), 0x2c8 target speed. virtual 0xa0 = get_is_rotor (helicopter?).
+"Hold at launch" already exists in the game (red button): the aircraft at the head waits at the aft end of the runway
+(dock_state 7, test at 0x1001b0185; only the aircraft whose id is in manager+0x28 leaves).
+
+
+2. THE LANDING QUEUE FOR AIRCRAFT (fixed wings)
+-----------------------------------------------
+The holding pattern (code 0x1001af631 ... 0x1001afc63, jump table 0x1001b2600), ship frame: an anticlockwise OVAL of 12.3 km:
+    state 0   straight line x = -2200 going aft
+    states 1-2  rear turn, centre (-1000, -1800), radius 1200
+    state 3   straight line x = 200 going forward until z = 600
+    states 4-5  front turn, centre (-1000, 600)
+Imposed speed 80 m/s (lap = 154 s), altitude 120 + 20 x rank in the queue.
+
+THE BOTTLENECK: the runway is given at ONE moment only, the tick of the transition state 1 -> 2 (bottom of the rear turn,
+the "gate" at about (-1000, -3000)), and only if mode == 1, the runway is free and the aircraft is within 1000 m of the gate
+(block at 0x1001af914). Otherwise: one more lap. The runway is released ONLY when the aircraft is on the elevator (swap of the
+slots 0x80 <-> 0x7c at 0x1001ae183). So the runway is occupied during the approach AND during the deck taxi.
+Hard-coded delays: a queue entry is abandoned after 7201 ticks without passing the gate; an approach is FAILED (the aircraft
+goes back to the queue at state 3) if docking_join_time > 3600 ticks (2 min), or the angle > 0.45 rad between 50 and 400 m from
+the runway end, or the runway end is overshot, or there is no free bay. Final approach: the target is on the axis 240 m ahead
+of the aircraft, imposed speed 18 x (1 - progress) + autopilot correction bounded to -10/+40.
+
+Runway states (jump table 0x1001b25d8, index = state - 3):
+
+    state  what the aircraft does                                              where / duration (x2 elevator patch)
+    3      approach                                                              in the air behind the ship (journal: 0:49)
+    4      "rails": rolls along the runway to the END (99 % of the path to z 82) on the axis
+    5      BACKS UP along the whole runway from the front (z ~ 81) to taxi_a (z -44), ~125 m   28.5 s, on the axis
+    6      taxi_a -> lift_upper_wait (~17 m diagonal)                            7.1 s
+    7      lift_upper_wait -> platform (15.5 m); waits for the elevator up and free   6.8 s
+    total computed 42 s; measured: the runway frees 38-41 s after the touchdown [GAME]
+Touchdown test (common to aircraft and helicopters, 0x1b1f5c...0x1b2058): speed relative to the ship < 10 m/s AND all wheels in
+contact. The aircraft is then attached to the ship (its future hangar slot, +0x90) and the state goes to 5.
+Where the runway slot is TAKEN: aircraft: block of the gate 0x1001af914, `mov %eax,0x80(%r14)` at 0x1001af95c, then state 3 at
+0x1001af963; helicopters: 0x1001adb23. Where it is RELEASED: end of state 7 (0x1001ae183); failed approach (0x1001b254a);
+vehicle gone / mode change (0x1001ad624, 0x1001ae753).
+
+Simulation of the queue (gate, window, lap, landing duration O): workshop/outil/generateurs/simuler_file_atterrissage.py.
+
+
+3. WHAT WAS CHANGED AND WHAT WAS MEASURED
+-----------------------------------------
+Module "atterrissage" (setting B = wide runway slot + circular pattern; 10 sites, see 10_patch_tables.txt):
+  (a) the runway can be granted on the whole rear turn (~2.7 km, ~35 s of flight): the three jumps that skip the grant block now land in it;
+  (b) the front turn uses the same circle as the rear turn (centre (-1000, -1800), r 1200): lap 7.5 km = 94 s instead of 154 s.
+Measured with the x2 elevator patch [GAME]: 4 aircraft stored in 7:28 game time (first entry in the queue -> 4th in the hangar);
+runway given at 1:22, 3:00, 4:20, 5:56 (one every 1:31); approach 0:49; deck -> hangar 0:51; 0 failed approaches; the runway
+frees ~38-41 s after touchdown, i.e. it is occupied ~88 s per aircraft.
+Simulation with 88 s of occupancy: stock 154-158 s per aircraft (one oval lap), setting B 98-104 s, measured 91 s. Estimated gain ~3 min
+on 4 aircraft (~-30 %) [EST]: the stock game was NOT measured on the real game.
+Caution found by simulation: setting B is SLOWER if a landing lasts ~140-160 s (the next aircraft arrives too early and makes
+another lap); then setting A alone (wide slot only) is better. Setting A alone is the first 3 sites of the table.
+Deck taxi x2 ("pont_retour_x2", 3 sites): occupancy ~88 s -> ~68 s computed; expected -0:20 (grouped aircraft) to -1:25
+(spread); not yet measured in game [EST].
+
+WHY NOT RELEASE THE RUNWAY EARLIER: the aircraft stays on the runway axis for ~29 of the 42 s (state 5 backs up straight toward the
+next arriving aircraft). The first position off the axis is lift_upper_wait (12 m from the axis, aircraft turned 90 degrees, nose
+at x ~ 6 m) while the wings of the aircraft that lands extend several metres from the axis: no margin. The only clearly safe place
+is the platform, which is exactly where the game releases the runway. Doing it anyway needs a cave (slot 0x80 is also the one
+that drives the taxi) for ~7 s per aircraft and a real collision risk: refused.
+The game destroys vehicles that collide (seen on 2026-10-24 with helicopters).
+Idea B, "aircraft parked on the deck ready to launch" (public tracker demand 2023): there is NO parking place anywhere except the 8
+hangar bays; it would need new places on the deck (x ~ 18-33, z -18..80, 2-4 places at best), a cave of several KB, a way to treat
+parked aircraft as "in the hangar" after a load, and the runway kept free during returns. Difficulty 8/10, 4-6 sessions; gain
+only for a wave prepared in advance (4 launches ~2:15 -> ~1:00-1:15 estimated). Not done.
+"True x2": shorten the last braking of every taxi leg (not done; estimated a few seconds per aircraft).
+Ground vehicles and ships use docking_manager_surface (update at 0x1001aa404, NOT inlined, same model 0.05 / 2.5 / 0.1, about 5 sites)
+and docking_manager_lifeboat; a "taxi x2" for them is a small job (2-3/10) but was not done.
+
+
+4. THE GAME'S OWN DOCKING MANAGERS (names, for your reference)
+--------------------------------------------------------------
+    c_vehicle_server_carrier::docking_manager_air        (aircraft; build 0x1001a02ca; update 0x1001accd8; dock/undock/cancel_*)
+    c_vehicle_server_carrier::docking_manager_surface    (ground vehicles + ships, rear crane; update 0x1001aa404)
+    c_vehicle_server_carrier::docking_manager_lifeboat
+    c_vehicle_server_drydock::docking_manager_carrier    (dry dock)
+    c_lift_tower_controller
+    c_environment_tile_airfield_manager (+ ::hangar)     ISLAND airfields: dock, undock, cancel_docking, update, tick_repair_vehicles,
+                                                         tick_resupply_vehicles, get_available_hangar_node, hangar::build_path_dock /
+                                                         build_path_undock (full list with addresses in 12_symbol_index.txt)
+Saved state: docking_manager_air::parse_state_xml reads, among others, mode, runway_state, docking_queue (queue_vehicle: id,
+e_wing_queue_state, timer), docking_join_time, vehicle_id_crane/lift/runway/rotor_takeoff, vehicle_attachment_index_*,
+crane_instructions, is_crane_lifting, undocking_queue, paths_crane/lift/runway. Because these are saved, the cave logic can rely
+on them after a load.
+
+Data model facts useful for any Lua tooling: aircraft lists seen by ship screens include what the fog hides
+(get_is_visible() == false); screen_landing.lua already draws the queue (get_docking_vehicles; helicopters and aircraft apart).

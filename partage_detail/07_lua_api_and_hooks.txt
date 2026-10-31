@@ -1,0 +1,78 @@
+LUA: WHAT THE GAME EXPOSES, HOW TO HOOK IT, WHAT IS MISSING
+===========================================================
+
+The game embeds Lua 5.3.5. Libraries loaded: base (including print), debug, math, string, table, utf8. NO io, NO os.
+`print` is luaB_print (0x10283ae97) and writes to stdout, which is lost when Steam starts the game (hence the print-to-file patch,
+workshop/outil/generateurs/ecriture_releve.s). All the scripts of the ship are Lua (rom_0/scripts/*.lua, one per screen); the game journal is NOT produced by Lua.
+
+
+1. HOOKS THAT EXIST IN THE STOCK GAME
+-------------------------------------
+- `library_custom_0.lua` ... `library_custom_9.lua`: empty files shipped with the game, loaded into EVERY screen context AFTER the screen script
+  (also in the pilot HUD, the pause menu, the overlay and the main menu; c_screen_lua_libs::get_scripts). All share the same global environment, so you can
+  monkey-patch: wrap `update` (and `begin_load`) at file level. Mods may replace them through the mod system; several can exist at once in different slots,
+  check which ones a user already has.
+- Hooking one particular screen: wrap `begin_load` (a global from library_util.lua, called by the `begin()` of every screen) and test `begin_get_screen_name()`.
+  Screen names (vehicle_chassis_carrier.xml): screen_veh_l/m/r = vehicle control, screen_veh_top_m = air traffic, screen_veh_top_r = CCTV, holomap_screen, ...
+  PITFALL (a real accident): wrap with `...` and table.pack / table.unpack. `vehicle_hud.lua` defines
+  `update(screen_w, screen_h, tick_fraction, delta_time, local_peer_id, vehicle, map_data)` (7 parameters), `overlay.lua` has 4: a wrapper that forwards only
+  3 arguments broke the pilot HUD. The pilot HUD has no `begin_get_screen_name`; it is recognised by `debug.getinfo(update).nparams == 7`.
+- Replacement mods keep `begin()` -> `begin_load()` (check this before relying on the screen-name hook).
+- Mods replace WHOLE files (no merging by element); the last loaded wins. The Lua of mods can extend a function without replacing a whole script only through
+  the library_custom mechanism above.
+
+
+2. FUNCTIONS SEEN (not an exhaustive list; read from the binary and the shipped scripts)
+-----------------------------------------------------------------------------------------
+Time:
+  update_get_logic_tick()          present in ship screens (c_screen_lua_callback::bind); the game runs at 30 ticks/s, so game seconds = tick / 30
+  update_get_time_since_epoch()    seconds, real time; present in ship screens
+  update_get_time_ms()             ABSENT in ship screens: only bound in the frontend (c_screen_frontend_api::bind and c_ui_frontend_interactions::bind)
+Other ship-screen functions: update_get_missile_count, update_get_projectile_count, update_get_screen_state_active, update_get_is_focus_local, update_ui_line
+(c_ui::bind_lua_api), update_get_screen_team_id, update_get_screen_vehicle() (the ship itself).
+World lists: update_get_map_vehicle_count / _by_index / _by_id; update_get_tile_count / update_get_tile_by_index(i). The vehicle and missile lists include what the
+fog hides (vehicle:get_is_visible() == false).
+Vehicle: get_dock_state(), get_dock_parent_id(), get_definition_index() (e_game_object_type.chassis_air_wing_light/heavy, _rotor_light/heavy ...), get_is_visible().
+Tiles: tile:get(), tile:get_team_control(), tile:get_facility_inventory_count(idx), tile:get_facility_production_queue_item_type(idx),
+tile:set_facility_add_production_queue_item(idx, n) (the game uses it in screen_inventory.lua, buttons +1/+10/+100/+1000).
+Enumerations are readable in rom_0/scripts/library_enum.lua (e_game_object_type, e_inventory_item ...).
+`get_is_controller_peer` does NOT exist in this version.
+Pilot HUD (vehicle_hud.lua): `update(screen_w, screen_h, tick_fraction, delta_time, local_peer_id, vehicle, map_data)`.
+Vehicle control screens have refresh_interval="1" in the XML (the update frequency was not verified; the landing journal flags a screen frozen for more than 5 s).
+
+
+3. WHAT THE LUA API CAN COMMAND (from the shipped scripts and the binary)
+------------------------------------------------------------------------
+Command-capable but only for ACTIONS EQUIVALENT TO A PLAYER ACTION: movement and attack orders (vehicle:add_waypoint, set_waypoint_attack_target_*, clear waypoints,
+set target vehicle), production queues (set_facility_add_production_queue_item), loadouts (carrier:set_attached_vehicle_attachment(bay, slot, def),
+set_attached_vehicle_*), repairs, go-codes, launching the carrier.
+NOT available: spawn, destroy, teleport, set currency, set hit points; no background tick (Lua only runs while a screen / terminal is displayed); no file I/O.
+Launching and recalling DO exist in Lua, through waypoints: the map screen (scripts/screen_vehicle_control.lua) launches a docked child vehicle with
+`child:clear_waypoints(); child:clear_attack_target(); child:add_waypoint(x, z)` and recalls it by dragging it onto a friendly vehicle:
+`v:clear_waypoints(); v:add_waypoint(<position of the carrier>); v:set_target_vehicle(waypoint_id, carrier_id)` [read in the shipped script, then TESTED IN GAME on 2026-10-25: 4 aircraft launched by add_waypoint
+were all airborne after 4048 ticks = 2:15 game time, exactly the time measured by hand with the bay buttons, and the same 4 recalled by add_waypoint + set_target_vehicle
+were all stored again with no failed approach, so waypoints take the same docking pipeline as the buttons]. The physical bay
+buttons are a second path that Lua cannot press.
+Menu commands from Lua: `update_ui_event("load_game", slot_index)` (slots from `update_get_save_slots()`: slot_index, display_name, save_name, time), also
+"host_load_game", "new_game_campaign", "quit_to_menu", "quit_game", "save_game", "set_game_setting", "chat" ... (the same strings are in the executable:
+"load_game %u", "host_load_game %u", "quit_game", ...).
+This is the gap that a native extension (DLL) fills: a tick outside the screens, world access, file output, commands the player cannot give.
+Candidate functions to expose, by value, are listed in 11_porting_and_priorities.txt.
+
+
+4. LUA MODULES WRITTEN DURING THIS WORK (all in workshop/fichiers/<module>/, plain library_custom_N.lua files)
+---------------------------------------------------------------------------------------
+  library_custom_1.lua  game clock "GAME TIME h:mm:ss.s" = update_get_logic_tick()/30, bottom left of the vehicle control screens (hooked with
+                        begin_load + begin_get_screen_name). Purpose: measure in game time. Changes nothing else.
+  library_custom_4.lua  landing journal: times (game time) of the runway grant, touchdown and storage of every aircraft/helicopter that comes back, total,
+                        spacing between grants, failed approaches, "screen frozen" alert. It polls v:get_dock_state() of the vehicles whose
+                        get_dock_parent_id() is the ship: 5 = in the landing queue, 1 = landing (= runway granted), 6 = touchdown on the deck,
+                        4 = stored in the hangar, 0 = flying. A "return" starts when a vehicle enters the queue while nothing is in progress and
+                        ends when all are stored.
+  library_custom_5.lua  performance recorder: every 10 s each screen prints one line `CC2R1 E ... FIN` (real time, game tick, screen, number of update calls,
+                        shown, player on it, number of mod print() discarded) and a few screens print `CC2R1 D ...` every 5 s (units per team and type, missiles,
+                        shells, hidden units, piloted vehicle...). Needs the print-to-file patch (otherwise stdout is lost).
+  library_custom_6.lua  ECO / NORMAL / FLANK bar; calls the new Lua function cc2_vitesse (needs the program module vitesse_escadrille).
+Test recipe outside the game: Lua 5.3 in Python (`lupa`, `import lupa.lua53`) with fake `update_*` functions: workshop/tests/test_horloge.py, test_journal.py, test_releve.py,
+test_vitesse_boutons.py (run them with --lua53).
+Note: the recorder tags (CC2R1 ...) are the format read by the plotting tool that is not included.

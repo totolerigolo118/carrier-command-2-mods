@@ -1,0 +1,44 @@
+ascenseur_x2 0x400310 en-tete (hors code) -
+ascenseur_x2 0x6ea0a1 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x6f9811 -> nouveau 0x6f9921 .text ctx12 avant_nouveau=0077db00 (DIFFERENT: c876db00)
+ascenseur_x2 0x6f9845 -> nouveau 0x6f9955 .text ctx12 avant_nouveau=0872db00 (DIFFERENT: d071db00)
+ascenseur_x2 0x6fb2ce non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x6fb2e9 -> nouveau 0x6fb3f9 .text ctx12 avant_nouveau=0077db00 (DIFFERENT: c876db00)
+ascenseur_x2 0x6fcbaa non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x6fcbb2 -> nouveau 0x6fccc2 .text ctx6 avant_nouveau=0077db00 (DIFFERENT: c876db00)
+ascenseur_x2 0x6fce4e non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x6fce56 -> nouveau 0x6fcf66 .text ctx6 avant_nouveau=0077db00 (DIFFERENT: c876db00)
+ascenseur_x2 0x6fd8d5 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x6fd8f0 -> nouveau 0x6fda00 .text ctx12 avant_nouveau=0077db00 (DIFFERENT: c876db00)
+ascenseur_x2 0x6fddb5 -> nouveau 0x6fdec5 .text ctx4 avant_nouveau=0872db00 (DIFFERENT: d071db00)
+ascenseur_x2 0x6fddbd -> nouveau 0x6fdecd .text ctx6 avant_nouveau=0077db00 (DIFFERENT: c876db00)
+ascenseur_x2 0x6ffa68 -> nouveau 0x6ffb78 .text ctx6 avant_nouveau=0077db00 (DIFFERENT: c876db00)
+ascenseur_x2 0x6ffaef -> nouveau 0x6ffbff .text ctx12 avant_nouveau=0872db00 (DIFFERENT: d071db00)
+ascenseur_x2 0x700f26 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x700f31 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x700f82 -> nouveau 0x701092 .text ctx12 avant_nouveau=1c7cdb00 (DIFFERENT: e47bdb00)
+ascenseur_x2 0x700f9a non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x701035 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x701040 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x701083 -> nouveau 0x701193 .text ctx6 avant_nouveau=1c7cdb00 (DIFFERENT: e47bdb00)
+ascenseur_x2 0x7010a6 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x701124 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x70112c -> nouveau 0x70123c .text ctx6 avant_nouveau=1c7cdb00 (DIFFERENT: e47bdb00)
+ascenseur_x2 0x7011b6 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x7011be -> nouveau 0x7012ce .text ctx6 avant_nouveau=1c7cdb00 (DIFFERENT: e47bdb00)
+ascenseur_x2 0x701219 -> nouveau 0x701329 .text ctx8 avant_nouveau=fc71db00 (DIFFERENT: c471db00)
+ascenseur_x2 0x701225 non retrouve par contexte (octets voisins modifies) -
+ascenseur_x2 0x705c14 -> nouveau 0x705d24 .text ctx8 avant_nouveau=e871db00 (DIFFERENT: b071db00)
+ascenseur_x2 0x705c3e -> nouveau 0x705d4e .text ctx10 avant_nouveau=187cdb00 (DIFFERENT: e07bdb00)
+atterrissage_cercle 0x70137f -> nouveau 0x70148f .text ctx8 avant_nouveau=00001644 (=ancien)
+atterrissage_cercle 0x701d5e -> nouveau 0x701e6e .text ctx6 avant_nouveau=a87adb00 (DIFFERENT: 707adb00)
+atterrissage_cercle 0x701f52 -> nouveau 0x702062 .text ctx12 avant_nouveau=a87adb00 (DIFFERENT: 707adb00)
+atterrissage_creneau 0x7019fc non retrouve par contexte (octets voisins modifies) -
+atterrissage_creneau 0x701d35 non retrouve par contexte (octets voisins modifies) -
+atterrissage_creneau 0x701d4f -> nouveau 0x701e5f .text ctx10 avant_nouveau=b1fdffff (=ancien)
+helicos_approche_x2 0x6fe1b7 -> nouveau 0x6fe2c7 .text ctx6 avant_nouveau=f079db00 (DIFFERENT: b879db00)
+pont_retour_x2 0x6fddad non retrouve par contexte (octets voisins modifies) -
+temps_x2 0x835ccb -> nouveau 0x835dfb .text ctx12 avant_nouveau=0000803f (=ancien)
+retrouves 23 sur 41
+
+sites code/const: 40  coherents (decalage uniforme): 40  a verifier: 0

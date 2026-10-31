@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+"""Vitesse de croisiere des avions sous IA choisie par l'ecran (ECO / NORMAL / FLANK).
+
+FICHIER GENERE par outil/generateurs/generer_vitesse_escadrille.py a partir de vitesse_escadrille.c (ne pas
+modifier a la main). Etude : etudes/ia_vitesse.md. Demande du moddeur le 25/10/2026.
+En vol vers un point, l'IA des avions vise la vitesse plancher : 48 m/s (Albatros) ou 72 m/s (Manta). Ici le
+plancher depend du mode choisi par l'equipe : ECO = jeu d'origine, NORMAL = 61 / 91 m/s (environ 80 % de
+puissance, estimation), FLANK = 144 m/s (plein gaz). Equipes pilotees par l'IA (ennemis) : jeu d'origine.
+Le mode est regle par la fonction Lua cc2_vitesse(equipe [, mode]) (a la place de dofile, inutilise) que
+dessine le module « vitesse_boutons » ; le dernier mode est garde dans
+~/Library/Application Support/Carrier Command 2/vitesse_escadrille.txt.
+Sans le module « vitesse_boutons », rien ne choisit de mode : les avions volent comme dans le jeu d'origine.
+"""
+NOM = 'vitesse_escadrille'
+TITRE = "Vitesse de l'escadrille (ECO / NORMAL / FLANK) : programme"
+TYPE = "programme"
+# md5 du programme avec ce module seul : f03c977f864734496de2c29304bfc0ab
+
+RETOUCHES = [
+    # code ajoute (671 octets) a la place de ImGui::ShowDemoWindow, jamais appele
+    ("imm", 0x10005d000, "e0fefffff30f58d8b001f30f1005268a98024c8badd8fefffff30f10250fc780028985fcfeffffa8017508f30f1025098a9802f30f11a520fffffff30f100d09c78002f30f59c10f288de0fefffff30f58c80f28d3f30f58d0f30f118d50fffffff30f119554ffffff4c89ef4c8db550ffffff4c89f689dab9060000000f28cc0f299d30ffffffe8988bfdfff30f1005a48998020f28d0f30f100d15c78002f30f58d1f30f5895e0fefffff30f119500fffffff30f590591c680020f28c8f30f58ca0f289530fffffff30f58d0f30f118d50fffffff30f119554ffffff4c89ef4c89f689dab914000000f30f108d20ffffffe82d8bfdfff30f1005398998020f28d0f30f5815aac68002f30f589500fffffff30f119500fffffff30f119550ffffff0f288d30fffffff30f118d54ffffff0f288d30fffffff30f58c8f30f58c2f30f118548fffffff30f118d4cffffff0f57c04c89ef4c89f64c8da548ffffff4c89e289d94531c0f30f108d20ffffffe8ade1fbfff30f1015bb8898020f28daf30f10052cc68002f30f58d8f30f589d00fffffff30f119d00fffffff30f119d50ffffff0f288d30fffffff30f118d54ffffff0f288d30fffffff30f58caf30f58d3f30f119548fffffff30f118d4cffffff4c89ef4c89f64c89e289d941b80f000000f30f108d20ffffffe832e1fbfff30f1015408898020f28daf30f1005b1c58002f30f58d8f30f589d00fffffff30f119d00fffffff30f119d50ffffff0f288d30fffffff30f118d54ffffff0f288d30fffffff30f58caf30f58d3f30f119548fffffff30f118d4cffffff4c89ef4c89f64c89e289d941b809000000f30f108d20ffffffe8b7e0fbfff30f1005c58798020f28d8f30f581d36c58002f30f589d00fffffff30f119d00ffffff0f28c8f30f590db3c48002f30f58cbf30f", "f30f1003505131c9498b85600200004885c0742080781900751a8b401483f8107312488d0d578698020fb60c0183f903760231c9488d05d50100000f28c8f30f5f0cc8f30f5d0de5010000f3410f118dc80200004183bd900000000a7517f30f5f44c804f30f5d05c4010000f3410f1185c80200005958e9125b16000f1f4000554889e5415741564155415453504889fbe846a87c024189c74531e44889dfbe0100000031d2e819ad7c024883f80f0f872c0100004989c6803dd1859802000f848e0000004183ff020f8ced0000004889dfbe0200000031d2e8e6ac7c024989c748ffc84883f8020f87e7000000488d058b85980245883c060fb605918598024939c70f84cc000000488d3d30010000488d3586010000e85cad80024885c074264489f980c930884dd166c745d20a00488d7dd14889c64989c4e845ad80024c89e7e8fbac800244883d43859802e982000000c6053685980201488d3ddf000000488d3533010000e80bad80024989c431c04d85e474354c89e7c745d400000000e8daac80024189c54c89e7e8b1ac8002418d45cf4180c5d083f803410fb6c58b4dd40f42c8894dd48b45d48805df8498024183ff020f8d13ffffff488d05bd84980241803c0600750b0fb60dc084980241880c06488d05a4849802450fb624064889df4c89e6e82fae7c02b8010000004883c4085b415c415d415e415f5dc36363325f76697465737365000000000000004042000090420000404200009042000074420000b6420000104300001043000010430000000000000000000000002f55736572732f74686f6d617373616e63656e6f742f4c6962726172792f4170706c69636174696f6e20537570706f72742f4361727269657220436f6d6d616e6420322f766974657373655f657363616472696c6c652e7478740072007700"),
+    # vitesse visee des avions (mode 0) : bornes [48|72, 144] -> plancher selon le mode -> jmp _vit_plancher (0x10005d000)
+    ("imm", 0x1001c2b4b, "f30f10030f28c8f30f5f0d966f6a02f30f5d0dca6f6a02f3410f118dc80200004183bd900000000a7519f30f5f05b36f6a02f30f5d05a76f6a02f3410f1185c8020000", "e9b0a4e9ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"),
+    # base_funcs : { "dofile", luaB_dofile } -> { "cc2_vitesse", vit_lua }
+    ("imm", 0x1029dd310, "0e979702010000008caa830201000000", "00d205000100000080d0050001000000"),
+]

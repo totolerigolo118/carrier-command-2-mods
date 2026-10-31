@@ -1,0 +1,8 @@
+ETUDES (en français) : à lire comme un JOURNAL DE BORD, pas comme l'état final.
+
+Ces études ont été écrites au fil de trois jours. Certaines recommandations y ont été ABANDONNÉES ensuite. L'état final des décisions est dans ../PASSATION_windows.md (section 2) :
+  - RESULTATS_etude.md recommande « A1 » (hélicos posés sur l'ascenseur) : essayé le 24/10, deux hélicos se sont percutés, abandonné. Les hélicos ont reçu à la place « approche x2 + toucher près de l'ascenseur » (-36 %).
+  - piste_et_pont.md parle d'un roulage ×3 : c'est le roulage ×2 (constante 15,0) qui a été choisi et installé.
+  - ETUDE_helicos_2e_ascenseur.md est la fiche de préparation de l'étude, pas un résultat.
+  - DEMARRER_cc2_patchs_ETAT_MAC.md est la fiche d'état complète du travail sur le Mac (utile pour les détails historiques ; sa section 7 renvoie à ce dossier).
+Les chemins de fichiers cités (outil/, sauvegarde/, mods/cc2-patchs/...) sont ceux du Mac.
