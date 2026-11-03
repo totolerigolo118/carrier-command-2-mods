@@ -19,6 +19,7 @@ ORIGINAL = SAUV / 'carrier_command_1.5.18_original.exe'
 NOM = 'carrier_command_ancien_8E7FCBB6.exe'
 DIST = TRAVAIL / 'dist'
 SDK2 = Path(r'C:\Users\UTILISATEUR\Documents\cc2-port-travail\sdk\dist')          # la DLL du SDK a deux profils (E1DE25D5...)
+V13 = Path(r'C:\Users\UTILISATEUR\Documents\cc2-sdk-travail-v15\dist')            # 02/11 : le frein epingle (v15), compile a part
 pass_, fail = 0, 0
 
 
@@ -52,7 +53,7 @@ def faux(nom, sous=''):
 
 def dll(jeu):
     shutil.copyfile(SDK2 / 'dinput8.dll', jeu / 'dinput8.dll')
-    shutil.copyfile(DIST / 'cc2x_frein.dll', jeu / 'cc2x_frein.dll')
+    shutil.copyfile(V13 / 'cc2x_frein.dll', jeu / 'cc2x_frein.dll')
 
 
 def lancer(cmd, jeu, *extra, ouvert=False, steam=True):
@@ -127,7 +128,7 @@ def main():
     check(c == 1 and 'dinput8.dll' in o, 'une autre dinput8.dll est refusee' + chr(10) + o)
     dll(jeu)
     c, o = lancer('etat', jeu)
-    check(c == 0 and o.count('version attendue') == 2, 'etat : le SDK a deux profils et la v12 sont les versions attendues' + chr(10) + o)
+    check(c == 0 and o.count('version attendue') == 2, 'etat : le SDK a deux profils et la v15 sont les versions attendues' + chr(10) + o)
     with open(jeu / NOM, 'ab') as f:
         f.write(b'\0')
     c, o = lancer('lancer', jeu, '--a-blanc')

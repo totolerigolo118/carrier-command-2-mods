@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data name="Aide approche CC2" author="Yolo" description="Aide a l atterrissage a la main. Quand tu pilotes un avion ou un helico a moins de 1500 m de ton porte-avions, le HUD affiche des portes rectangulaires le long de la pente d approche derriere le navire. La prochaine porte est VERTE (dans l axe, bonne hauteur, vitesse relative 30 m/s ou moins), ORANGE (hors tolerance, le texte en haut dit quoi) ou ROUGE (trop vite). Emplacement library_custom_2.lua. Ne change rien au jeu : il ne fait que lire des positions et dessiner (aucun fichier, aucun reseau, pas besoin de CC2X). Pour le retirer : enlever la ligne aide_approche de mods.xml.">
+</data>

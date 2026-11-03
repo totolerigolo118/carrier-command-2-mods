@@ -57,9 +57,9 @@ def faux(nom, sous='', exe=NEUF):
 
 
 def dll(jeu):
-    """31/10 : les versions epinglees : le SDK a DEUX profils (E1DE25D5...) et le frein v12 (941DFFB9...)."""
+    """31/10 : les versions epinglees : le SDK a DEUX profils (E1DE25D5...) et le frein v15 (238B0456...)."""
     shutil.copyfile(TRAVAIL / 'sdk' / 'dist' / 'dinput8.dll', jeu / 'dinput8.dll')
-    shutil.copyfile(SDK_TRAVAIL / 'dist' / 'cc2x_frein.dll', jeu / 'cc2x_frein.dll')
+    shutil.copyfile(SDK_TRAVAIL.parent / 'cc2-sdk-travail-v15' / 'dist' / 'cc2x_frein.dll', jeu / 'cc2x_frein.dll')
 
 
 def cli(cmd, jeu, *extra, ouvert=False, steam=True):
@@ -164,7 +164,7 @@ def main():
     c, o = cli('lancer', jeu, '--a-blanc')
     check(c == 1 and 'dinput8.dll' in o and 'poser_sdk.py' in o, 'le SDK a un profil (resterait inactif) est refuse\n' + o)
     dll(jeu)
-    shutil.copyfile(SDK_TRAVAIL / 'dist_v10' / 'cc2x_frein.dll', jeu / 'cc2x_frein.dll')            # 31/10 : seule la v12 connait ce build
+    shutil.copyfile(SDK_TRAVAIL / 'dist_v10' / 'cc2x_frein.dll', jeu / 'cc2x_frein.dll')            # 31/10 : seules les v12 a v15 connaissent ce build
     c, o = cli('lancer', jeu, '--a-blanc')
     check(c == 1 and 'cc2x_frein.dll' in o, 'le frein v10 (ne connait pas ce build) est refuse\n' + o)
     dll(jeu)
@@ -203,7 +203,7 @@ def main():
         '11:00:00.020 [cc2x] info: 5 enabled mod folder(s) checked for plugins',
         '11:00:00.030 [frein] info: recall_force=1: hooks H1 (0x7019de), H2 (0x701b4d), H3 (0x6ff20b, read only), 4 commit-gate probes (read only), '
         'H5 (0x6fe580, sends the aircraft to the touch test 0x6ff31a) and the take-over probe (0x6ff489, read only) installed, inactive until an aircraft is flagged',
-        '11:00:00.030 [frein] info: loaded (frein v12, build 1.5.18-win32-6ae228f3, exe 0x6ae228f3); ini x; brake off unless brake_enabled=1',
+        '11:00:00.030 [frein] info: loaded (frein v15, build 1.5.18-win32-6ae228f3, exe 0x6ae228f3); ini x; brake off unless brake_enabled=1',
         '11:00:00.030 [cc2x] info: plugin cc2x_frein.dll loaded (the game folder)', ''])
     journal = [BON]
 
@@ -229,7 +229,7 @@ def main():
                                                   '11:00:00.040 [cc2x] info: plugin cc2x_frein.dll loaded'), 'unexpected original bytes'),
                 ('crochets du frein refuses', BON.replace('installed, inactive until', 'X') + '11:00:00.050 [frein] error: recall_force=1 but the hooks could NOT be installed\r\n', 'could NOT'),
                 ('Hold absent', BON.replace('plugin cc2x_hold.dll loaded', 'plugin autre'), 'plugin Hold charge'),
-                ('frein de l\'ancien build', BON.replace('build 1.5.18-win32-6ae228f3, exe 0x6ae228f3', 'build 1.5.18-win32, exe 0x6a36c177'), 'frein v12 sur le nouvel exe'),
+                ('frein de l\'ancien build', BON.replace('build 1.5.18-win32-6ae228f3, exe 0x6ae228f3', 'build 1.5.18-win32, exe 0x6a36c177'), 'frein v15 sur le nouvel exe'),
                 ('synchronisation du Hold absente', BON.replace('synchronisation posee en 0x7061f0', 'synchronisation NON installee (le code du jeu differe en 0x007061f0)'), 'synchronisation NON installee'),
                 ('Lua absent', BON.replace('1.5.18-win32-6ae228f3\r\n', '1.5.18-win32-6ae228f3 (no Lua bridge)\r\n', 1), 'no Lua bridge')):
             journal[0] = texte

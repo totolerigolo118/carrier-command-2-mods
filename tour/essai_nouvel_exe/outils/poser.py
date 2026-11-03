@@ -11,6 +11,9 @@ Aucun dossier par defaut : --jeu est toujours donne. Python standard seulement, 
 31/10 : COPIE pour l'essai du nouvel exe (tour/essai_nouvel_exe/outils), faite depuis la worktree manual-landings (v12). Seuls changements :
 le SDK epingle est la DLL a deux profils E1DE25D5... (184B144D... devient notre compilation precedente), les deux builds sont
 reconnus (PE_RECONNUS), le plugin du bouton Hold (EE9043DA...) est connu dans son mod. La pose du SDK lui-meme : poser_sdk.py.
+31/10 (session « helicos + retour au hangar », worktree gifted-moore) : le frein epingle est la v15 (238B0456..., helicos tenus au sol, source cc2-sdk-travail-v15\\dist) ; la v14 (50D0464A...,
+retour automatique, posee le 02/11, cc2-sdk-travail-v14\\dist), la v13 (22D04FE3..., posee le 31/10, source cc2-sdk-travail-v13\\dist) et la v12 (941DFFB9...,
+cc2-sdk-travail\\dist et dist_v12) sont nos versions PRECEDENTES.
 
 Securites (meme esprit que patch_exe.py) :
   - les deux DLL doivent avoir EXACTEMENT les sha256 epingles ci-dessous (ceux du rapport de compilation) ;
@@ -39,13 +42,13 @@ ICI = Path(__file__).resolve().parent
 TRAVAIL = Path(r'C:\Users\UTILISATEUR\Documents\cc2-sdk-travail')
 SOURCE_DEFAUT = TRAVAIL / 'dist'
 SOURCES_DEFAUT = {'dinput8.dll': Path(r'C:\Users\UTILISATEUR\Documents\cc2-port-travail\sdk\dist'),     # la DLL a deux profils (E1DE25D5...)
-                  'cc2x_frein.dll': SOURCE_DEFAUT}
+                  'cc2x_frein.dll': Path(r'C:\Users\UTILISATEUR\Documents\cc2-sdk-travail-v15\dist')}      # 02/11 : la v15 (compilee a part ; v14, v13 et v12 restent dans leurs dossiers)
 EXEMPLE_INI = ICI / 'frein.ini.example'
 # 31/10 (copie de l'essai du nouvel exe, tour/essai_nouvel_exe) : le SDK epingle est la DLL A DEUX PROFILS (ancien exe + build de Steam
 # du 28/10), relue par une autre conversation (tour/revue_sdk_deux_profils/VERDICT.md, worktree quirky-wright) ; posee par poser_sdk.py.
 # L'ancienne DLL a un profil (184B144D...) reste reconnue comme notre compilation PRECEDENTE (retour arriere).
 SHA = {'dinput8.dll': 'E1DE25D53A5588BDA62269D6D93335ACB9F32EA555AC9274FE7973C19D6225D7',
-       'cc2x_frein.dll': '941DFFB9F1671CB351A69B826B14E62AB9978390C888257DA699E8584ADC59B3'}     # v12 : H5 (0x6fe470) envoie l'avion pose au test de toucher du jeu (chemin des helicos), sonde de prise en charge, suivi, table par build
+       'cc2x_frein.dll': '238B0456807AF87FE303F7033899C5CC7DC0F3659054DCDDF44C49FAD0FDE907'}     # v15 : v14 + helico tenu au sol quand son pilote le quitte (heli_recall=1, hold_idle=1)
 # nos compilations PRECEDENTES, reconnues par `retirer` et remplacables par `maj` (jamais d'autre fichier)
 SHA_ANCIENNES = {'dinput8.dll': {'184B144D6E2BB868FFEB7D45ECD463F8919E64732E3B5681A16165363EBA0982'},       # SDK 0.5.0 a un profil (pose le 27/10 ; copie dans cc2-sdk-travail\dist\)
                  'cc2x_frein.dll': {'E50634F4E6A39B647E586124DBBC2B7F9E329CD91802DA3D25BE22622D521D40',     # v1 (posee a 09:21)
@@ -58,7 +61,10 @@ SHA_ANCIENNES = {'dinput8.dll': {'184B144D6E2BB868FFEB7D45ECD463F8919E64732E3B56
                                     '0C8D68ADCD6794C8B73610FB6EA759A04626D8F97FEC088EDA7C6F628B1B731E',    # v8 (posee a 08:00 le 30/10, essai)
                                     'DEA9295AF0E08C19042B1C9DE5C61D7CB64E7915999C4E52BE35A3187F20DDDA',    # v9 (posee a 08:30 le 30/10, essai)
                                     '66731A35ED5C7148019A8B6E31D234A3C0844AE7FF014C7E65320D06B9E60A25',    # v10 (posee a 09:25 le 30/10, grand essai ; sauvegardee dans cc2-sdk-travail\dist_v10\)
-                                    '3CD7225D1BCE332B4DBDFFCC292C4834E2CB30D2552E9799194DD8A70C0F210F'}}    # v11 (jamais posee, abandonnee le 31/10 ; sauvegardee dans cc2-sdk-travail\dist_v11\)
+                                    '3CD7225D1BCE332B4DBDFFCC292C4834E2CB30D2552E9799194DD8A70C0F210F',    # v11 (jamais posee, abandonnee le 31/10 ; sauvegardee dans cc2-sdk-travail\dist_v11\)
+                                    '941DFFB9F1671CB351A69B826B14E62AB9978390C888257DA699E8584ADC59B3',    # v12 (posee le 31/10, 3 prises en charge sur 3 + Manta ; copies dans cc2-sdk-travail\dist et dist_v12)
+                                    '22D04FE3F28D087403534732217779EE315A36EF33A547CD9F47253D03349113',    # v13 (helicos ; posee le 31/10, cc2-sdk-travail-v13\dist)
+                                    '50D0464A052792BAA611D4EDE3990F7387046CB9A4EFD69D3DC2427F9A0C9404'}}    # v14 (retour automatique ; posee le 02/11, cc2-sdk-travail-v14\dist)
 # 28/10 : plugin d'observation de la session « modes carburant », pose dans son mod avec l'accord du moddeur (il lit les gaz, n'ecrit rien dans le jeu).
 # Reconnu par son sha256 exact pour `maj` SEULEMENT (nous ne l'avons pas relu) ; tout autre fichier dans un dossier cc2x de mod reste un refus.
 MODS_PLUGINS_CONNUS = {'cc2x_modes.dll': {'AB2D5343C983C97784616A3965CA26BD1072B99DE82E92A474F9814A993A46E4',     # v1 (28/10)

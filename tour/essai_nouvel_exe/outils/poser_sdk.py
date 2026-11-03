@@ -70,7 +70,7 @@ def ce_que_le_sdk_chargera(jeu, appdata):
     for f in sorted(jeu.glob('cc2x_*.dll')):
         s = P.sha(f.read_bytes())
         if f.name.lower() == 'cc2x_frein.dll' and s in ({P.SHA['cc2x_frein.dll']} | P.SHA_ANCIENNES['cc2x_frein.dll']):
-            plugins.append(f"{f} ({s[:8]}...{', v12' if s == P.SHA['cc2x_frein.dll'] else ', une version precedente'})")
+            plugins.append(f"{f} ({s[:8]}...{', v15' if s == P.SHA['cc2x_frein.dll'] else ', une version precedente'})")
         else:
             problemes.append(f'{f} : pas une de nos compilations connues ({s[:8]}...)')
     if (jeu / 'cc2x' / 'plugins').exists():

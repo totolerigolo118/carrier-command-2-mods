@@ -1,10 +1,12 @@
 # Rapport de compilation (etape 3) — genere par `construire.py`
 
-Commit du SDK : `7ab05c79357e0cdb5bfaa2866bd3a81a101a09da`. Compilateur : Zig 0.15.2. Dossier de travail (hors depot, hors jeu) : `C:\Users\UTILISATEUR\Documents\cc2-sdk-travail`. Options = celles de `build.py` du SDK. **Rien n'a ete charge ni lance (les deux DLL), rien copie dans le jeu.**
+Commit du SDK : `7ab05c79357e0cdb5bfaa2866bd3a81a101a09da`. Compilateur : Zig 0.15.2. Dossier de travail (hors depot, hors jeu) : `C:\Users\UTILISATEUR\Documents\cc2-sdk-travail-v15`. Options = celles de `build.py` du SDK. **Rien n'a ete charge ni lance (les deux DLL), rien copie dans le jeu.**
+
+**Dossier de travail separe** : le `dinput8.dll` ci-dessous (SDK a UN profil, recompile pour verifier les sources) n'est PAS celui du jeu (le jeu a le SDK a deux profils `E1DE25D5...`) et ne doit pas etre pose ; seul `cc2x_frein.dll` sert.
 
 ## dinput8.dll
 
-- taille 267264 octets, sha256 `184B144D6E2BB868FFEB7D45ECD463F8919E64732E3B5681A16165363EBA0982`
+- taille 267264 octets, sha256 `B4040F8D78BB460F6F291735D5AD7B90407C776B28C173EFC1B9106FBBC928A8`
 - deuxieme compilation identique, hors horodatage PE et identifiant de build (20 octets) : oui
 - PE32 i386 DLL : True ; TLS : present, callbacks identiques a ceux d une DLL vide (code du compilateur) ; imports retardes : absents; exports : DirectInput8Create, DllCanUnloadNow, DllGetClassObject, DllRegisterServer, DllUnregisterServer
 - chaines suspectes : aucune
@@ -23,7 +25,7 @@ Commit du SDK : `7ab05c79357e0cdb5bfaa2866bd3a81a101a09da`. Compilateur : Zig 0.
 
 ## cc2x_frein.dll
 
-- taille 240640 octets, sha256 `941DFFB9F1671CB351A69B826B14E62AB9978390C888257DA699E8584ADC59B3`
+- taille 253952 octets, sha256 `238B0456807AF87FE303F7033899C5CC7DC0F3659054DCDDF44C49FAD0FDE907`
 - deuxieme compilation identique, hors horodatage PE et identifiant de build (20 octets) : oui
 - PE32 i386 DLL : True ; TLS : present, callbacks identiques a ceux d une DLL vide (code du compilateur) ; imports retardes : absents; exports : cc2x_plugin_load
 - chaines suspectes : aucune

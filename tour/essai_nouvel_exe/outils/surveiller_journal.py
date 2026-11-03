@@ -34,10 +34,10 @@ RE_TRY = re.compile(r'HOOK H2 .*try (\d+)')
 
 def processus_vivant(nom):
     try:
-        out = subprocess.run(['tasklist', '/FI', f'IMAGENAME eq {nom}', '/NH'], capture_output=True, text=True, timeout=30).stdout
+        out = subprocess.run(['tasklist', '/FI', f'IMAGENAME eq {nom}', '/FO', 'CSV', '/NH'], capture_output=True, text=True, timeout=30).stdout
     except Exception:
         return True                                         # dans le doute : on continue a copier
-    return nom.lower() in out.lower()
+    return f'"{nom.lower()}"' in out.lower()               # CSV : nom complet (le tableau le coupe a 25 caracteres, 31/10)
 
 
 def copier(args):

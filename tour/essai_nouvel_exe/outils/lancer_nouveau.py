@@ -20,9 +20,9 @@ Securites :
   - carrier_command.exe (celui de Steam) n'est JAMAIS ouvert en ecriture ni supprime ; il doit etre exactement 461E1262... ;
   - rien n'est copie ni supprime ni lance si un processus carrier_command* tourne depuis ce dossier (ou si on ne sait pas) ;
   - `lancer` refuse si Steam n'est pas ouvert, si steam_appid.txt manque, si dinput8.dll ou cc2x_frein.dll n'ont pas
-    EXACTEMENT les sha256 epingles par poser.py (31/10 : le SDK A DEUX PROFILS E1DE25D5... et le frein v12 941DFFB9...), ou si la
+    EXACTEMENT les sha256 epingles par poser.py (31/10 : le SDK A DEUX PROFILS E1DE25D5... et le frein v15 238B0456...), ou si la
     copie a ete changee ; il lance l'exe directement (pas par Steam), puis lit cc2x.log (bilan_journal) : le SDK doit etre ACTIF
-    (« ready for ... 1.5.18-win32-6ae228f3 ») et charger modes, Hold et frein v12 avec ses 9 crochets du nouvel exe ;
+    (« ready for ... 1.5.18-win32-6ae228f3 ») et charger modes, Hold et frein v15 avec ses 9 crochets du nouvel exe (10 avec heli_recall=1) ;
   - `retirer` ne supprime la copie que si son sha256 est exactement le bon ;
   - sur un chemin « steamapps » il faut --cest-le-vrai-jeu. Python standard seulement, aucun reseau. Aucune DLL n'est posee ici.
 """
@@ -52,7 +52,7 @@ def _charger(nom, chemin):
     return m
 
 
-P = _charger('poser', ICI / 'poser.py')                                       # copie du 31/10 : SDK a deux profils E1DE25D5..., frein v12
+P = _charger('poser', ICI / 'poser.py')                                       # copie du 31/10 : SDK a deux profils E1DE25D5..., frein v15
 PE = _charger('patch_exe', TOUR / 'outils' / 'patch_exe.py')                  # profils, modules, coherence : une seule source de verite
 
 
@@ -78,7 +78,7 @@ def source_ok():
         P.refus(f'copie patchee introuvable : {SOURCE}')
     octets = SOURCE.read_bytes()
     if P.sha(octets) != SHA_COPIE:
-        P.refus('la copie patchee ne porte pas le sha256 attendu (5AF41B4D...) : on ne copie pas')
+        P.refus(f'la copie patchee ne porte pas le sha256 attendu ({SHA_COPIE[:8]}...) : on ne copie pas')
     if P.pe_de(SOURCE) != PE_NOUVEAU:
         P.refus("la copie patchee n'a pas l'horodatage PE du build de Steam (0x6ae228f3)")
     composition_ok(octets)
@@ -207,11 +207,18 @@ def cmd_lancer(args):
     exe_steam_ok(jeu)
     for nom, attendu in P.SHA.items():
         f = jeu / nom
-        if not f.is_file() or P.sha(f.read_bytes()) != attendu:       # 31/10 : EXACTEMENT le SDK a deux profils et le frein v12 (les seuls qui
+        if not f.is_file() or P.sha(f.read_bytes()) != attendu:       # 31/10 : EXACTEMENT le SDK a deux profils et le frein v15 (les seuls qui
             P.refus(f"{nom} absent ou pas la version epinglee par poser.py ({attendu[:8]}...) : rien n'est lance"   # connaissent ce build)
                     + (" (le SDK a un profil resterait inactif : poser_sdk.py poser d'abord)" if nom == 'dinput8.dll' else ''))
     if not (jeu / 'steam_appid.txt').is_file():
         P.refus('steam_appid.txt absent : un lancement direct echouerait')
+    # 02/11 : le SDK charge toute DLL cc2x du jeu et des mods actifs ; on ne lance que si ce sont exactement nos plugins connus
+    appdata = os.environ.get('APPDATA')
+    etrangers = [str(f) for f in jeu.glob('cc2x_*.dll') if f.name.lower() != 'cc2x_frein.dll']
+    etrangers += [str(p) for p in (jeu / 'cc2x' / 'plugins', jeu / 'cc2x.ini') if p.exists()]
+    etrangers += P.mods_cc2x_inconnus(P.mods_avec_cc2x(appdata)) if appdata else ['%APPDATA% introuvable : mods non verifies']
+    if etrangers:
+        P.refus('le SDK chargerait du code que nous ne connaissons pas : ' + ' ; '.join(etrangers) + " : rien n'est lance")
     jeu_ferme(jeu)
     if not steam_tourne(jeu):
         P.refus("Steam ne semble pas ouvert (ou on ne sait pas) : l'ouvrir d'abord")
@@ -246,7 +253,7 @@ def cmd_lancer(args):
     for m in mauvais:
         print('  PROBLEME:', m)
     if ok:
-        print('OK : SDK actif sur le nouvel exe ; modes, Hold et frein v12 (9 crochets) charges ; aucune ligne de refus.')
+        print('OK : SDK actif sur le nouvel exe ; modes, Hold et frein v15 (9 crochets, + H6 si heli_recall=1) charges ; aucune ligne de refus.')
     else:
         print("PAS OK : relire cc2x.log avant tout essai (ne pas jouer tant que ce n'est pas compris).")
 
@@ -260,7 +267,7 @@ ATTENDUES = (
     ('plugin Hold charge', 'plugin cc2x_hold.dll loaded'),
     ('frein : 9 crochets du nouvel exe', 'recall_force=1: hooks H1 (0x7019de), H2 (0x701b4d), H3 (0x6ff20b, read only), 4 commit-gate probes '
      '(read only), H5 (0x6fe580, sends the aircraft to the touch test 0x6ff31a) and the take-over probe (0x6ff489, read only) installed'),
-    ('frein v12 sur le nouvel exe', 'loaded (frein v12, build 1.5.18-win32-6ae228f3, exe 0x6ae228f3)'),
+    ('frein v15 sur le nouvel exe', 'loaded (frein v15, build 1.5.18-win32-6ae228f3, exe 0x6ae228f3)'),
     ('plugin frein charge', 'plugin cc2x_frein.dll loaded'),
 )
 # Tout ce qui dit « refus » ou « erreur » au demarrage (SDK : cc2x.c ; frein ; Hold).

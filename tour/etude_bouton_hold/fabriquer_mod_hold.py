@@ -6,7 +6,9 @@ Le bouton d'origine (`vehicle_control_air_hold`, type 18, panneau 0 = console de
 là où il est. Le mod en ajoute :
   - copie A : sur le panneau 8 (moteur), au milieu du trou entre « Démarrer » et « Arrêter » ;
   - copie B : sur le panneau 7 (direction et feux), au milieu du trou entre « Maintien de cap »
-    et « Feux de navigation ».
+    et « Feux de navigation » ;
+  - copie C : la copie B (meme nom) deplacee sur l'avant du plateau, devant le voyant des feux de
+    navigation (02/11, encadre rouge du moddeur). B et C s'excluent.
 Les coordonnées (tx, tz) sont celles du fichier du jeu, relatives au panneau. Le contour des
 panneaux n'est PAS connu : l'emplacement est choisi au milieu d'un trou entre deux boutons qui
 existent déjà (donc sûrement sur le panneau). `ty` (hauteur au-dessus du panneau) = celui des
@@ -53,7 +55,14 @@ COPIES = {
           "tx": 0.0, "ty": 0.0015, "tz": 0.117},
     "B": {"nom": BOUTON_ORIGINAL + "_copie_feux", "panneau": 7,
           "tx": -0.117, "ty": 0.0011, "tz": 0.036},
+    # C = la copie B deplacee (demande du moddeur, 02/11) : sur le plateau, devant le voyant des feux de navigation (encadre
+    # rouge de sa capture). LU dans meshes/.../aircraft_carrier_bridge.mesh : le plateau est plat a y = 29,7607 (= le
+    # panneau 7) de x -27,458 a -26,939 jusqu'a z -23,417 (tz -0,278), puis un rebord vertical de 8 cm. INFERE (camera de la
+    # capture recalee sur 8 reperes, erreur 2 px) : centre de l'encadre vers tx -0,03, tz -0,24. Choisi : 5,8 cm du rebord.
+    "C": {"nom": BOUTON_ORIGINAL + "_copie_feux", "panneau": 7,
+          "tx": -0.025, "ty": 0.0011, "tz": -0.220},
 }
+EXCLUSIVES = ("B", "C")          # meme nom : une seule des deux
 
 DESCRIPTION = (
     "Copie le bouton rouge Hold On Deck (vehicle_control_air_hold) sur le panneau moteur (copie A) "
@@ -103,6 +112,8 @@ def fabriquer_bloc(bloc, cle):
 
 
 def assembler(texte, options):
+    if all(c in options for c in EXCLUSIVES):
+        raise ErreurMod("les copies %s portent le meme nom : une seule des deux" % " et ".join(EXCLUSIVES))
     m = trouver_bloc(texte)
     ajout = "".join(fabriquer_bloc(m.group(0), cle) for cle in options)
     return texte[:m.end()] + ajout + texte[m.end():]
@@ -258,7 +269,7 @@ def autotest():
         return False
 
     base = _xml_synthetique()
-    for options in ("A", "B", "AB"):
+    for options in ("A", "B", "AB", "C", "AC"):
         nouveau = assembler(base, options)
         verif("options %s : controle passe" % options, bool(controler(base, nouveau, options)))
         fin = trouver_bloc(base).end()
@@ -276,6 +287,12 @@ def autotest():
     verif("sortie dans %APPDATA%\\Carrier Command 2 : refusee", leve(verifier_sortie, r"C:\Users\x\AppData\Roaming\Carrier Command 2\mods\y"))
     verif("copie A au bon endroit (panneau 8, type 18)", 'button_panel_index="8" button_cover_index="4294967295" type="18"' in assembler(base, "A"))
     verif("copie B au bon endroit (panneau 7, type 18)", 'button_panel_index="7" button_cover_index="4294967295" type="18"' in assembler(base, "B"))
+    verif("copies B et C ensemble (meme nom) : refuse", leve(assembler, base, "BC"))
+    ab, ac = assembler(base, "AB"), assembler(base, "AC")
+    diff = [op for op in difflib.SequenceMatcher(None, ab.splitlines(True), ac.splitlines(True), autojunk=False).get_opcodes() if op[0] != "equal"]
+    verif("C = B deplacee : une seule ligne differe, la position (transform) de la copie aux feux",
+          len(diff) == 1 and diff[0][0] == "replace" and diff[0][2] - diff[0][1] == 1 and diff[0][4] - diff[0][3] == 1
+          and 'tz="-2.20000000e-01"' in ac.splitlines(True)[diff[0][3]] and "<transform " in ac.splitlines(True)[diff[0][3]])
     verif("vignette PNG valide (signature)", png_vignette()[:8] == b"\x89PNG\r\n\x1a\n")
     print("%d echec(s)" % len(echecs))
     return 0 if not echecs else 1
@@ -289,7 +306,8 @@ def main(argv=None):
     f = sp.add_parser("fabriquer", help="fabrique le mod dans un dossier neuf (ne pose rien)")
     f.add_argument("--jeu", required=True, help="dossier du jeu (lecture seule)")
     f.add_argument("--sortie", required=True, help="dossier NEUF, hors du jeu")
-    f.add_argument("--options", default="AB", choices=["A", "B", "AB"], help="copies a ajouter (defaut AB)")
+    f.add_argument("--options", default="AB", choices=["A", "B", "AB", "C", "AC"],
+                   help="copies a ajouter (defaut AB ; C = la copie aux feux deplacee sur l'avant du plateau)")
     sp.add_parser("autotest", help="controles sur un fichier synthetique")
     a = p.parse_args(argv)
     if a.cmd == "autotest":

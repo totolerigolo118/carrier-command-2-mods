@@ -106,20 +106,23 @@ static int f_setf(void *o, int f, int i, double val) {
     return 1;
 }
 static int n_patch_begin, n_patch_mid, n_patch_commit, n_patch_abort, patch_mid_fail, patch_commit_fail;
-static uint32_t pm_site[10], pm_len[10];
-static uint8_t pm_exp[10][16];
-static cc2x_mid_fn pm_fn[10];
-static void *pm_user[10];
+static uint32_t pm_site[12], pm_len[12];
+static uint8_t pm_exp[12][16];
+static cc2x_mid_fn pm_fn[12];
+static void *pm_user[12];
 static void f_patch_begin(const char *who) { n_patch_begin++; (void)who; }
 static int f_patch_mid(uint32_t site, uint32_t len, const uint8_t *expected, cc2x_mid_fn fn, void *user) {
-    if (patch_mid_fail || n_patch_mid >= 10) return 0;
+    if (patch_mid_fail || n_patch_mid >= 12) return 0;
     pm_site[n_patch_mid] = site; pm_len[n_patch_mid] = len; memcpy(pm_exp[n_patch_mid], expected, len); pm_fn[n_patch_mid] = fn; pm_user[n_patch_mid] = user;
     n_patch_mid++;
     return 1;
 }
 static int f_patch_commit(void) { n_patch_commit++; return !patch_commit_fail; }
 static void f_patch_abort(void) { n_patch_abort++; }
-static uintptr_t f_va(uint32_t image_va) { return (uintptr_t)image_va + 0x10000u; }
+/* v14: the carrier's table of virtual functions (its two image addresses map to this fake table) and a fake server; the dock call itself is faked (fake_dock). */
+static uint8_t t_vtable[0x100] __attribute__((aligned(16))), t_server[0x400] __attribute__((aligned(16)));
+static void *t_srv_ptr = t_server;      /* what step() passes as the server */
+static uintptr_t f_va(uint32_t image_va) { return image_va == 0xd596ccu || image_va == 0xd596ecu ? (uintptr_t)t_vtable : (uintptr_t)image_va + 0x10000u; }
 static uint8_t t_mgr[0x100] __attribute__((aligned(16))), t_frame[0x400] __attribute__((aligned(16)));
 static cc2x_cpu t_cpu;
 static int t_untouched, t_zone = 1;
@@ -236,6 +239,27 @@ static void run_cap(const void *plane_ptr, int32_t bay) {
     t_untouched = game_mem_changed() == 0 && t_cpu.eax == (uint32_t)bay && t_cpu.edi == (uint32_t)(uintptr_t)t_mgr && t_cpu.esi == (uint32_t)(uintptr_t)t_ship &&
                   t_cpu.ecx == 0x5678 && t_cpu.edx == 0x9abc && t_cpu.ebx == 0x2222 && t_cpu.eflags == 0 && t_cpu.jump_to == 0 && t_cpu.ebp == (uint32_t)(uintptr_t)ebp;
 }
+/* v13, H6 at index 9 (installed only with heli_recall=1 at start-up). The game's frame at H6: the helicopter at [ebp-0x270], its place in the queue at [ebp-0x278],
+ * the manager in edi and at [ebp-0x204] ([+0] mode, [+0x5c] runway owner), the carrier at [ebp-0x200]. t_untouched = every register but jump_to as before. */
+static int t_h6_changed;
+static void prep_h6(const void *heli_ptr, uint32_t edi, int32_t mode, int32_t owner) {
+    uint8_t *ebp = t_frame + 0x300;
+    memset(&t_cpu, 0, sizeof(t_cpu));
+    *(uint32_t *)(ebp - 0x270) = (uint32_t)(uintptr_t)heli_ptr;
+    *(int32_t *)(ebp - 0x278) = 0;
+    *(uint32_t *)(ebp - 0x204) = (uint32_t)(t_h5_mgr ? t_h5_mgr : (uintptr_t)t_mgr);
+    *(uint32_t *)(ebp - 0x200) = (uint32_t)(t_h5_ship ? t_h5_ship : (uintptr_t)t_ship);
+    *(int32_t *)t_mgr = mode; *(int32_t *)(t_mgr + 0x5c) = owner;
+    t_cpu.ebp = (uint32_t)(uintptr_t)ebp; t_cpu.edi = edi; t_cpu.eax = 0x1234; t_cpu.ecx = 0x5678; t_cpu.edx = 0x9abc; t_cpu.esi = 0x1111; t_cpu.ebx = 0x2222;
+}
+static void run_h6(const void *heli_ptr, uint32_t edi, int32_t mode, int32_t owner) {
+    prep_h6(heli_ptr, edi, mode, owner);
+    game_mem(t_snap);
+    pm_fn[9](&t_cpu, pm_user[9]);
+    t_h6_changed = game_mem_changed();
+    t_untouched = t_cpu.eax == 0x1234 && t_cpu.ecx == 0x5678 && t_cpu.edx == 0x9abc && t_cpu.ebx == 0x2222 && t_cpu.esi == 0x1111 && t_cpu.edi == edi &&
+                  t_cpu.eflags == 0 && t_cpu.ebp == (uint32_t)(uintptr_t)(t_frame + 0x300);
+}
 static uint32_t t_stamp = 0x6a36c177u;  /* the PE timestamp the plugin reads (g_exe_stamp points here in the test) */
 static uint32_t fake_stamp(void) { return t_stamp; }
 static void clobber_xmm4(cc2x_cpu *cpu, void *user) { (void)cpu; (void)user; __asm__ volatile("xorps %%xmm4, %%xmm4" ::: "xmm4"); }
@@ -282,7 +306,18 @@ static FV *add(uint32_t id, uint32_t def, uint32_t team) {
 }
 static FV *carrier(void) { FV *c = add(1, 0, 1); c->pos[1] = 10; return c; }
 static FV *plane(uint32_t id) { FV *p = add(id, 8, 1); p->pos[0] = -30; p->pos[1] = 12; return p; }
-static void step(int n) { for (int i = 0; i < n; ++i) tick_fn(NULL, NULL); }
+static FV *heli(uint32_t id) { FV *h = add(id, 9, 1); h->is_rotor = 1; h->nw = 3; h->flight = 1; h->pos[0] = -5; h->pos[1] = 12; h->pos[2] = -20; return h; }
+static void step(int n) { for (int i = 0; i < n; ++i) tick_fn(t_srv_ptr, NULL); }
+/* v14: the fake of the carrier's dock request: records the call; if t_dock_accept, does what the game's function does to the aircraft (dock state 5) */
+static int n_dock, t_dock_accept = 1;
+static uintptr_t d_fn;
+static void *d_carrier, *d_world;
+static uint32_t d_id;
+static void fake_dock(uintptr_t fn, void *carrier, void *world, uint32_t id) {
+    FV *v = f_find(CC2X_WORLD_VEHICLES, id);
+    n_dock++; d_fn = fn; d_carrier = carrier; d_world = world; d_id = id;
+    if (t_dock_accept && v) { v->dock = 5; v->mode = 3; }
+}
 static void wheels(FV *p, float c0, float c1, float c2) { p->contact[0] = c0; p->contact[1] = c1; p->contact[2] = c2; }
 static void air(FV *p, int ticks) { wheels(p, 0, 0, 0); p->flight = 2; step(ticks); }
 static void ground(FV *p) { wheels(p, 1, 1, 1); p->flight = 1; }
@@ -302,6 +337,7 @@ int main(int argc, char **argv) {
     api.setf = f_setf; api.body_get = f_body_get; api.patch_begin = f_patch_begin; api.patch_mid = f_patch_mid; api.patch_commit = f_patch_commit;
     api.patch_abort = f_patch_abort; api.va = f_va; api.vehicle_brakes = f_brakes; api.on_server_tick = f_on_tick; api.on_session = f_on_session;
     g_exe_stamp = fake_stamp;
+    g_dock_call = fake_dock;
 
     puts("load checks");
     api.game_build = "1.5.19-win32"; CHECK(cc2x_plugin_load(&api) == 0, "wrong build must be refused");
@@ -315,7 +351,7 @@ int main(int argc, char **argv) {
     CHECK(cc2x_plugin_load(&api) == 0 && has("expected 0x6ae228f3"), "v12: the new build name on the 1.5.18 exe is refused");
     api.game_build = NULL; CHECK(cc2x_plugin_load(&api) == 0, "v12: no build name: refused");
     api.game_build = "1.5.18-win32"; logbuf[0] = 0;
-    CHECK(cc2x_plugin_load(&api) == 1 && S == &k_builds[0] && has("loaded (frein v12, build 1.5.18-win32, exe 0x6a36c177)"), "v12: good load again, table of the 1.5.18 exe");
+    CHECK(cc2x_plugin_load(&api) == 1 && S == &k_builds[0] && has("loaded (frein v15, build 1.5.18-win32, exe 0x6a36c177)"), "v12: good load again, table of the 1.5.18 exe");
 
     puts("T1 no ini: observation only, never brakes");
     begin(NULL); carrier(); FV *p = plane(10);
@@ -1236,7 +1272,7 @@ int main(int argc, char **argv) {
         for (int i = 0; i < 9; ++i) { ok &= pm_site[i] == want[i]; ok &= want[i] == old[i] + 0x110; same &= pm_len[i] == len_old[i] && memcmp(pm_exp[i], exp_old[i], pm_len[i]) == 0; }
         CHECK(ok, "the nine sites are those of the new exe (the 1.5.18 sites + 0x110, checked by outils/verifier_sites_v12.py)");
         CHECK(same, "same lengths and same expected bytes as on the 1.5.18 exe");
-        CHECK(has("loaded (frein v12, build 1.5.18-win32-6ae228f3, exe 0x6ae228f3)") &&
+        CHECK(has("loaded (frein v15, build 1.5.18-win32-6ae228f3, exe 0x6ae228f3)") &&
               has("H5 (0x6fe580, sends the aircraft to the touch test 0x6ff31a) and the take-over probe (0x6ff489, read only) installed"), "logged with the new build and addresses");
         FLAGGED5("");
         run_h1(el); run_h2();
@@ -1246,6 +1282,407 @@ int main(int argc, char **argv) {
         api.game_build = "1.5.18-win32"; t_stamp = 0x6a36c177u;
         write_ini(NULL);
         CHECK(cc2x_plugin_load(&api) == 1 && S == &k_builds[0], "back to the 1.5.18 table");
+    }
+
+    puts("T33 v13: helicopters (heli_recall=1): H6 gives the runway at once to a recalled helicopter standing on the deck; nothing else is written");
+#define HELI_INI ON FORCED "heli_recall=1\n"
+#define HELI_RECALLED(opts) do { memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1; \
+                                 begin(HELI_INI opts); carrier(); h = heli(30); ground(h); h->vel[2] = 0; h->mode = 0; step(5); \
+                                 h->dock = 5; h->mode = 3; step(1); fake_carrier(12, 2); t_h5_mgr = t_h5_ship = 0; } while (0)
+    {
+        FV *h, *hp;
+        int overlap = 0;
+        uint32_t el[3] = {30, 0, 0};
+
+        /* without heli_recall at start-up: the nine v12 hooks, no H6, and no helicopter is ever looked at */
+        write_ini(ON FORCED); n_patch_begin = n_patch_mid = n_patch_commit = n_patch_abort = 0; logbuf[0] = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 1 && g_h6_ok == 0 && n_patch_mid == 9 && !has("H6"), "recall_force=1 alone: nine hooks, no H6 (%d)", n_patch_mid);
+        begin(ON FORCED); carrier(); h = heli(30); ground(h); step(5); h->dock = 5; h->mode = 3; step(60);
+        CHECK(!has("heli 30") && !has("HELI") && g_force_id == 0 && track_of(30)->hwin == 0, "heli_recall=0: the helicopter is not even logged, never flagged");
+        write_ini(ON FORCED "heli_recall=1\n"); step(100);
+        CHECK(has("heli 30") && has("heli_recall=1 heli_hook=0") && g_force_id == 0 && !has("HELI window"), "heli_recall=1 later in the ini: logged only (H6 exists only from start-up)");
+
+        /* with heli_recall=1 at start-up: ten hooks in ONE transaction, H6 last, its site, bytes and target */
+        write_ini(HELI_INI); n_patch_begin = n_patch_mid = n_patch_commit = n_patch_abort = 0; logbuf[0] = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 1 && g_h6_ok == 1 && n_patch_mid == 10 && n_patch_begin == 1 && n_patch_commit == 1 && n_patch_abort == 0,
+              "heli_recall=1 at start-up: ten hooks, one transaction (%d)", n_patch_mid);
+        CHECK(pm_site[9] == 0x6fdcdd && pm_len[9] == 8 && memcmp(pm_exp[9], "\xf3\x0f\x59\xd2\xf3\x0f\x59\xdb", 8) == 0 && pm_user[9] == NULL,
+              "H6: site 0x6fdcdd, 8 bytes, expected 'mulss xmm2,xmm2 ; mulss xmm3,xmm3'");
+        CHECK(pm_site[0] == 0x7018ce && pm_site[7] == 0x6fe470 && pm_site[8] == 0x6ff379, "the nine v12 hooks come first, unchanged");
+        for (int i = 0; i < 10; ++i) for (int j = i + 1; j < 10; ++j) if (!(pm_site[i] + pm_len[i] <= pm_site[j] || pm_site[j] + pm_len[j] <= pm_site[i])) overlap++;
+        CHECK(overlap == 0, "no two of the ten patched ranges overlap (%d)", overlap);
+        CHECK(has("heli_recall=1: hook H6 (0x6fdcdd, gives the runway to the flagged helicopter: continues at 0x6fdcf2) installed too"), "H6 installation logged");
+        write_ini(ON FORCED "heli_recall=1\n"); patch_mid_fail = 1; n_patch_abort = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 0 && g_h6_ok == 0 && n_patch_abort == 1, "patch refused: no hook at all, H6 off too"); patch_mid_fail = 0;
+        write_ini(HELI_INI); n_patch_mid = 0; CHECK(cc2x_plugin_load(&api) == 1 && g_h6_ok == 1 && n_patch_mid == 10, "reload with H6");
+
+        /* standing on the deck, pilot gone, NOT recalled: nothing; recalled (dock 5): the window opens at the first tick (no 1 s wait: it is not held by a brake) */
+        memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1;
+        begin(HELI_INI); carrier(); h = heli(30); ground(h); h->mode = 0; step(90);
+        CHECK(g_force_id == 0 && !has("HELI window") && has("heli 30 t=") && has("deck x=-5.0 z=-20.0 standing=1"), "standing, pilot gone, not recalled: logged with its deck position, not flagged");
+        h->dock = 5; h->mode = 3; step(1);
+        CHECK(g_force_id == 30 && g_h6_budget == 1 && has("HELI window open (recalled helicopter standing on the deck: rel 0.00 m/s, 3/3 wheels, deck x -5.0 z -20.0): H6 armed, one grant at most, 10 s"),
+              "recalled: flagged at once, budget 1 (%u, %d)", (unsigned)g_force_id, g_h6_budget);
+
+        /* H6 for the flagged helicopter: continues at the grant, nothing written, no register changed but jump_to */
+        fake_carrier(12, 2);
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(t_cpu.jump_to == 0x6fdcf2 + 0x10000, "H6 continues at the grant 0x6fdcf2 (%#x)", t_cpu.jump_to);
+        CHECK(t_h6_changed == 0 && t_untouched, "NOTHING of the game's memory changed (%d bytes) and every register is as it was", t_h6_changed);
+        CHECK(g_h6_count == 1 && g_h6_reached == 1 && g_h6_budget == 0 && g_h6_free == 12 && g_h6_index == 0 && g_mgr == (uintptr_t)t_mgr, "counted: one grant, budget 0, 12 free bays, manager kept");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(t_cpu.jump_to == 0 && t_h6_changed == 0 && t_untouched && g_h6_count == 1 && g_h6_why == 5, "second pass: refused, budget used up (why %d): ONE grant per window", (int)g_h6_why);
+        run_h1(el); run_h2();
+        CHECK(t_cpu.jump_to == 0 && g_h1_ours == 0 && g_h2_count == 0, "the planes' H1/H2 stay inert for the helicopter (their budget is 0)");
+        step(1);
+        CHECK(has("HOOK H6 skipped the helicopters' 100 m test: the game gives the runway itself (queue place 0, free bays 12)"), "the grant is logged");
+
+        /* the game's own path then: dock 1, touch test, take-over block in the same tick; on_tick sees dock 6 / flight 1 / runway state 5 */
+        run_cap(h, 5);
+        CHECK(t_untouched && g_cap_count == 1 && g_cap_bay == 5, "the take-over probe records the helicopter (bay 5)");
+        *(int32_t *)(t_mgr + 0x1c) = 5; h->dock = 6; h->flight = 1; h->attached = 1; h->fuel = 300; step(1);
+        CHECK(has("PROBE take-over block entered: the touch test PASSED, the game got bay 5 (limit 12)") && has("HELI balance (take-over): H6 visits 2, GRANTS 1, ABORTS 0, TAKE-OVER block 1"),
+              "probe and balance logged");
+        CHECK(has("HELI VERDICT: runway given, touch test PASSED, the game ran its take-over block (bay 5) - see the FOLLOW lines") && g_force_id == 0 && g_h6_budget == 0,
+              "verdict: take-over, hook off");
+        CHECK(g_follow_id == 30 && has("id 30: TAKEN OVER: dock 6, flight 1, runway state 5"), "the FOLLOW starts and says TAKEN OVER");
+        *(int32_t *)(t_mgr + 0x1c) = 0; h->dock = 4; h->flight = 0; step(1);
+        CHECK(has("id 30: HANGAR: dock 4 (stowed)"), "stowed: HANGAR line");
+        CHECK(nb(30) == 0 && nr(30) == 0 && nset == 0, "the helicopter never got a brake call nor an engine write (%d, %d, %d)", nb(30), nr(30), nset);
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(t_cpu.jump_to == 0 && t_h6_changed == 0, "H6 inert afterwards");
+
+        /* refusals: each changes nothing (the game's own 100 m test then runs) */
+        HELI_RECALLED("");
+        CHECK(g_force_id == 30, "flagged");
+        hp = plane(10);
+        { uint32_t r0 = g_h6_reached;
+          run_h6(hp, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+          CHECK(t_cpu.jump_to == 0 && t_h6_changed == 0 && t_untouched && g_h6_reached == r0, "another vehicle in the frame: ignored, not even counted");
+          run_h6(NULL, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+          CHECK(t_cpu.jump_to == 0 && t_untouched && g_h6_reached == r0, "no vehicle pointer: ignored"); }
+#define H6REF(why_, what) CHECK(t_cpu.jump_to == 0 && t_h6_changed == 0 && t_untouched && g_h6_count == 0 && g_h6_why == (why_), what " (why %d)", (int)g_h6_why)
+        run_h6(h, 0x5555, 1, -1); H6REF(1, "edi is not the frame's manager: refused");
+        t_h5_mgr = 0x10; run_h6(h, 0x10, 1, -1); H6REF(2, "unreadable manager: refused"); t_h5_mgr = 0;
+        t_h5_ship = 0x10; run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1); H6REF(2, "unreadable carrier: refused"); t_h5_ship = 0;
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 0, -1); H6REF(3, "carrier not in docking mode: refused");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, 11); H6REF(3, "runway taken by another aircraft: refused");
+        for (int i = 0; i < 12; ++i) bay_set(i, 100 + (uint32_t)i, 1);
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1); H6REF(6, "every bay occupied: refused");
+        for (int i = 0; i < 12; ++i) bay_set(i, 0, 2);
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1); H6REF(6, "free bays of another class only: refused");
+#undef H6REF
+        CHECK(g_h6_reached == 7, "the seven refused visits are counted (%u)", (unsigned)g_h6_reached);
+        h->mode = 1; step(1);
+        CHECK(has("HELI balance (pilot back): H6 visits 7, GRANTS 0") && has("HELI VERDICT: H6 saw the helicopter 7 time(s) but did not act: no free bay of class 1 on the carrier") && g_force_id == 0,
+              "pilot back: closed, the verdict gives the last refusal");
+
+        /* the game aborts after the grant (H3): closed at once, the helicopter flies its own approach */
+        HELI_RECALLED("");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1); h->dock = 1; step(1);
+        run_h3(h, 8, 1, 30.0f, 3, 1); h->dock = 5; wheels(h, 0, 0, 0); step(1);
+        CHECK(has("HOOK H3 the game ABORTS the helicopter's landing (1 so far): bay=8 fail=1 counter=1 runway_state=3") && has("HELI balance (the game aborted): H6 visits 1, GRANTS 1, ABORTS 1"),
+              "abort: logged and closed");
+        CHECK(has("HELI VERDICT: runway given, then the game ABORTED the landing (H3 line): the helicopter flies its own approach, as without us") && g_force_id == 0, "verdict: aborted");
+        step(300);
+        CHECK(count("HELI window open") == 1 && g_force_id == 0, "still dock 5, flying: no second window for that recall");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(t_cpu.jump_to == 0 && t_h6_changed == 0, "H6 inert");
+        h->dock = 0; ground(h); h->vel[2] = 0; step(2); h->dock = 5; step(1);
+        CHECK(count("HELI window open") == 2 && g_force_id == 30 && g_h6_budget == 1, "a new recall later: its own window, budget 1 again");
+
+        /* nothing at all in 10 s: SILENT, then closed */
+        HELI_RECALLED("");
+        step(10 * 30);
+        CHECK(has("HELI balance (timeout): H6 visits 0, GRANTS 0") && has("HELI VERDICT: SILENT - the game never looked at this helicopter for the runway") && g_force_id == 0, "timeout: SILENT");
+        /* granted, but no take-over (touch test not passed) within 10 s */
+        HELI_RECALLED("");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1); h->dock = 1; wheels(h, 0, 0, 0); step(10 * 30);
+        CHECK(has("HELI balance (timeout): H6 visits 1, GRANTS 1, ABORTS 0, TAKE-OVER block 0") && has("HELI VERDICT: runway given, no take-over in the window"), "granted, no take-over: said");
+
+        /* never flagged: moving, in the air, the pilot in, attached, not all wheels down */
+        { const char *what[5] = {"moving at 2 m/s", "in the air", "pilot in the seat", "attached to the carrier", "two wheels of three"};
+          for (int k = 0; k < 5; ++k) {
+              memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1;
+              begin(HELI_INI); carrier(); h = heli(30); ground(h); h->mode = 0; step(5);
+              if (k == 0) h->vel[2] = 2; if (k == 1) wheels(h, 0, 0, 0); if (k == 2) h->mode = 1; if (k == 3) h->attached = 1; if (k == 4) wheels(h, 1, 1, 0);
+              h->dock = 5; if (k != 2) h->mode = 3; step(30);
+              CHECK(g_force_id == 0 && !has("HELI window"), "%s: never flagged", what[k]);
+          } }
+        /* the helicopter lifts off before any grant: closed */
+        HELI_RECALLED("");
+        wheels(h, 0, 0, 0); step(1);
+        CHECK(has("HELI balance (no longer standing on the deck)") && g_force_id == 0, "lifted off before the grant: closed");
+        /* gone while the window is open */
+        HELI_RECALLED("");
+        h->alive = 0; h->is_rotor = 0; step(1);
+        CHECK(has("HELI balance (helicopter gone or no longer watched)") && g_force_id == 0, "gone: closed, hook off");
+        /* switched off in the ini: H6 inert at once */
+        HELI_RECALLED("");
+        write_ini(ON FORCED "heli_recall=0\n"); step(100);
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(t_cpu.jump_to == 0 && g_h6_count == 0 && g_force_id == 0, "heli_recall=0 in the ini: closed and H6 inert");
+        HELI_RECALLED("");
+        write_ini(ON "brake=0.1\nhold_brake=0.8\nhold_idle=1\nrecall_hold=1\nrecall_force=0\nheli_recall=1\n"); step(100);
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(t_cpu.jump_to == 0 && g_h6_count == 0 && g_force_id == 0, "recall_force=0 in the ini: closed and H6 inert");
+
+        /* one aircraft at a time: a plane's window keeps the helicopter waiting, and a helicopter's window keeps a plane waiting */
+        memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1;
+        begin(HELI_INI); carrier(); p = plane(10); p->power = 1.0; h = heli(30); air(p, 60); ground(p); p->vel[2] = 0; ground(h); h->mode = 0; step(5);
+        p->dock = 5; p->mode = 3; step(40);
+        CHECK(g_force_id == 10, "the plane is flagged");
+        h->dock = 5; h->mode = 3; step(5);
+        CHECK(g_force_id == 10 && !has("HELI window"), "the helicopter waits while the plane's window is open");
+        memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1;
+        begin(HELI_INI); carrier(); p = plane(10); p->power = 1.0; h = heli(30); air(p, 60); ground(p); p->vel[2] = 0; ground(h); h->mode = 0; step(5);
+        h->dock = 5; h->mode = 3; step(1);
+        CHECK(g_force_id == 30, "the helicopter is flagged");
+        p->dock = 5; p->mode = 3; step(40);
+        CHECK(g_force_id == 30 && !has("FORCE start"), "the plane waits while the helicopter's window is open");
+
+        /* xmm0-xmm7 exact around H6, when it acts and when it does not */
+        HELI_RECALLED("");
+        prep_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(xmm_survives(pm_fn[9], &t_cpu, pm_user[9]) && t_cpu.jump_to == 0x6fdcf2 + 0x10000 && g_h6_count == 1, "H6 (acts) keeps xmm0-7 and still redirects");
+        prep_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(xmm_survives(pm_fn[9], &t_cpu, pm_user[9]) && t_cpu.jump_to == 0, "H6 (refuses: budget) keeps xmm0-7");
+
+        /* the new exe: H6 at 0x6fdded -> 0x6fde02 (the 1.5.18 sites + 0x110, checked by outils/verifier_sites_v13.py) */
+        api.game_build = "1.5.18-win32-6ae228f3"; t_stamp = 0x6ae228f3u;
+        write_ini(HELI_INI); n_patch_mid = 0; logbuf[0] = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_h6_ok == 1 && n_patch_mid == 10 && pm_site[9] == 0x6fdded && pm_site[9] == 0x6fdcdd + 0x110 && S == &k_builds[1],
+              "new exe: H6 at 0x6fdded (%#x)", pm_site[9]);
+        CHECK(has("hook H6 (0x6fdded, gives the runway to the flagged helicopter: continues at 0x6fde02)"), "logged with the new addresses");
+        HELI_RECALLED("");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1);
+        CHECK(t_cpu.jump_to == 0x6fde02 + 0x10000 && S->h6_goto == 0x6fdcf2 + 0x110, "H6 continues at 0x6fde02 (%#x)", t_cpu.jump_to);
+        api.game_build = "1.5.18-win32"; t_stamp = 0x6a36c177u;
+        write_ini(NULL);
+        CHECK(cc2x_plugin_load(&api) == 1 && S == &k_builds[0] && g_h6_ok == 0 && g_hooks_ok == 0, "back to the 1.5.18 table, nothing patched");
+    }
+
+    puts("T34 v14: automatic recall (auto_recall=1): ONE call of the carrier's own dock request, 5 s after the pilot left a held, stopped aircraft");
+#define AUTO_INI ON FORCED "auto_recall=1\n"
+    /* a carrier whose first dword is the fake table (FV starts with its id), the table's entry +0x7c = the dock function of the build; a plane landed, held, stopped, pilot IN */
+#define PARKED(ini, fnva) do { memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1; n_dock = 0; t_dock_accept = 1; t_srv_ptr = t_server; \
+                               begin(ini); c = carrier(); c->id = (uint32_t)(uintptr_t)t_vtable; *(uint32_t *)(t_vtable + 0x7c) = (fnva) + 0x10000u; \
+                               p = plane(10); p->power = 1.0; p->mode = 1; air(p, 60); ground(p); p->vel[2] = 0; step(60); } while (0)
+    {
+        FV *c, *h;
+
+        write_ini(ON FORCED); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 1 && n_patch_mid == 9, "load with the nine hooks (auto_recall adds no hook)");
+        CHECK(S->carrier_vt == 0xd596cc && S->dock_fn == 0x707330, "1.5.18 table: carrier table 0xd596cc, dock request 0x707330");
+
+        /* default auto_recall=0: never called, whatever the time */
+        PARKED(ON FORCED, 0x707330);
+        p->mode = 0; step(20 * 30);
+        CHECK(n_dock == 0 && !has("AUTO RECALL") && has("auto_recall=0 auto_recall_s=5"), "auto_recall=0 (default): never called, settings say so");
+
+        /* auto_recall=1: the pilot in the seat: nothing; pilot gone: armed, called after exactly 5 s, with the build's function, the carrier, server + 0x344, the id */
+        PARKED(AUTO_INI, 0x707330);
+        CHECK(n_dock == 0 && !has("AUTO RECALL") && track_of(10)->holding && track_of(10)->stopped, "held and stopped, pilot in: nothing");
+        p->mode = 0; step(1);
+        CHECK(has("id 10: AUTO RECALL armed (held and stopped, pilot gone): the carrier is asked in 5 s unless the pilot comes back"), "pilot gone: armed");
+        step(148);
+        CHECK(n_dock == 0, "not before 5 s (%d)", n_dock);
+        step(1);
+        CHECK(n_dock == 1 && d_fn == 0x707330 + 0x10000u && d_carrier == (void *)c && d_world == (void *)(t_server + 0x344) && d_id == 10,
+              "after 5 s: ONE call, function 0x707330 of the carrier, world = server + 0x344, aircraft 10 (%d, %#x, %u)", n_dock, (unsigned)d_fn, (unsigned)d_id);
+        CHECK(has("id 10: AUTO RECALL: held and stopped, pilot gone 5 s: asked the carrier's own dock request (as for the map's recall order) -> dock 5 (queued: the usual recall follows)"),
+              "the call and its result are logged");
+        step(40);
+        CHECK(has("RECALL start (dock 5") && has("FORCE start") && g_force_id == 10 && nr(10) == 0 && p->power == 0.0, "then the usual recall: held, window opened, hooks armed");
+        step(600);
+        CHECK(n_dock == 1, "and never called again (%d)", n_dock);
+
+        /* the pilot comes back before 5 s: cancelled, and a new countdown when he leaves again */
+        PARKED(AUTO_INI, 0x707330);
+        p->mode = 0; step(100); p->mode = 1; step(1);
+        CHECK(n_dock == 0 && has("AUTO RECALL cancelled (pilot back)"), "pilot back after 3.3 s: cancelled");
+        p->mode = 0; step(149);
+        CHECK(n_dock == 0, "leaves again: a fresh 5 s (%d)", n_dock);
+        step(1);
+        CHECK(n_dock == 1, "then called (%d)", n_dock);
+
+        /* the guards: wrong table, wrong entry, no server: nothing called, said once, not tried again */
+        PARKED(AUTO_INI, 0x707330);
+        c->id = 1; p->mode = 0; step(150 + 300);
+        CHECK(n_dock == 0 && count("AUTO RECALL not asked: the carrier's table 0x1 (entry +0x7c 0x0) is not the one read for this build") == 1, "the carrier's table is not the known one: not called, said once");
+        PARKED(AUTO_INI, 0x707440);
+        p->mode = 0; step(150 + 300);
+        CHECK(n_dock == 0 && count("AUTO RECALL not asked") == 1 && has("(entry +0x7c 0x717440)"), "entry +0x7c is not the build's dock request (the other build's): not called");
+        PARKED(AUTO_INI, 0x707330);
+        t_srv_ptr = NULL; p->mode = 0; step(150 + 30); t_srv_ptr = t_server;
+        CHECK(n_dock == 0 && has("AUTO RECALL not asked: the carrier or the server is not readable"), "no server: not called");
+
+        /* the game does not queue it: said, not asked again; a NEW landing may be asked once more */
+        PARKED(AUTO_INI, 0x707330);
+        t_dock_accept = 0; p->mode = 0; step(150 + 300);
+        CHECK(n_dock == 1 && p->dock == 0 && has("-> dock 0 (the game did not queue it; not asked again)"), "refused by the game: one call, said");
+        t_dock_accept = 1; p->mode = 1; air(p, 60); ground(p); p->vel[2] = 0; step(60); p->mode = 0; step(150);
+        CHECK(n_dock == 2 && p->dock == 5, "after a new landing: asked once more (%d)", n_dock);
+
+        /* never called: no hooks, no recall_hold, moving, recalled already, another aircraft flagged, only_id for another one, switched off */
+        write_ini(ON "brake=0.1\nhold_brake=0.8\nhold_idle=1\nrecall_hold=1\nauto_recall=1\n"); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 0, "reload without recall_force: no hooks");
+        PARKED(ON "brake=0.1\nhold_brake=0.8\nhold_idle=1\nrecall_hold=1\nauto_recall=1\n", 0x707330);
+        p->mode = 0; step(300);
+        CHECK(n_dock == 0 && !has("AUTO RECALL"), "no hooks (recall_force=0 at start-up): never called (the game would treat it as a flying aircraft)");
+        write_ini(ON FORCED); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 1, "reload with the hooks");
+        PARKED(ON "brake=0.1\nhold_brake=0.8\nhold_idle=1\nrecall_force=1\nauto_recall=1\n", 0x707330);
+        p->mode = 0; step(300);
+        CHECK(n_dock == 0, "recall_hold=0: never called (the aircraft would be let go at the recall)");
+        PARKED(AUTO_INI, 0x707330);
+        p->mode = 0; p->vel[2] = 1.5; step(300);
+        CHECK(n_dock == 0, "moving at 1.5 m/s on the deck: never called");
+        PARKED(AUTO_INI, 0x707330);
+        p->mode = 0; step(60); p->dock = 5; p->mode = 3; step(1);
+        CHECK(n_dock == 0 && has("AUTO RECALL cancelled (recalled already, or docking)"), "recalled from the map during the countdown: cancelled");
+        step(300);
+        CHECK(n_dock == 0, "and never called");
+        PARKED(AUTO_INI, 0x707330);
+        g_force_id = 99; p->mode = 0; step(300);
+        CHECK(n_dock == 0, "another aircraft flagged: waits");
+        g_force_id = 0; step(150);
+        CHECK(n_dock == 1, "then called once it is free (%d)", n_dock);
+        PARKED(AUTO_INI "only_id=77\n", 0x707330);
+        p->mode = 0; step(300);
+        CHECK(n_dock == 0, "only_id=77: aircraft 10 never called");
+        PARKED(AUTO_INI, 0x707330);
+        p->mode = 0; step(60); write_ini(ON FORCED "auto_recall=0\n"); step(100);
+        CHECK(has("AUTO RECALL cancelled (auto_recall=0)"), "switched off in the ini: cancelled within 3 s");
+        step(300);
+        CHECK(n_dock == 0, "and never called");
+
+        /* the new exe: its own table and function */
+        api.game_build = "1.5.18-win32-6ae228f3"; t_stamp = 0x6ae228f3u;
+        write_ini(ON FORCED); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && S == &k_builds[1] && S->carrier_vt == 0xd596ec && S->dock_fn == 0x707440, "new exe: carrier table 0xd596ec, dock request 0x707440");
+        PARKED(AUTO_INI, 0x707440);
+        p->mode = 0; step(150);
+        CHECK(n_dock == 1 && d_fn == 0x707440 + 0x10000u, "new exe: called with 0x707440 (%#x)", (unsigned)d_fn);
+        PARKED(AUTO_INI, 0x707330);
+        p->mode = 0; step(150);
+        CHECK(n_dock == 0 && has("AUTO RECALL not asked"), "new exe with the 1.5.18 entry: not called");
+        api.game_build = "1.5.18-win32"; t_stamp = 0x6a36c177u;
+
+        /* a helicopter (heli_recall=1 with H6): standing, pilot gone 5 s: called, then the v13 window opens */
+        write_ini(HELI_INI "auto_recall=1\n"); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_h6_ok == 1 && n_patch_mid == 10, "reload with H6");
+        memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1; n_dock = 0; t_dock_accept = 1;
+        begin(HELI_INI "auto_recall=1\n"); c = carrier(); c->id = (uint32_t)(uintptr_t)t_vtable; *(uint32_t *)(t_vtable + 0x7c) = 0x707330 + 0x10000u;
+        h = heli(30); ground(h); h->mode = 1; step(60);
+        CHECK(n_dock == 0, "helicopter, pilot in: nothing");
+        h->mode = 0; step(149);
+        CHECK(n_dock == 0 && has("id 30: AUTO RECALL armed (standing on the deck, pilot gone)"), "helicopter: armed, not before 5 s");
+        step(1);
+        CHECK(n_dock == 1 && d_id == 30 && h->dock == 5, "helicopter: called after 5 s (%d, %u)", n_dock, (unsigned)d_id);
+        step(1);
+        CHECK(has("id 30: HELI window open") && g_force_id == 30 && g_h6_budget == 1, "then the v13 window opens at once");
+        CHECK(nb(30) > 0 && nr(30) == 0 && h->power == 0.0 && has("id 30: HELI HOLD (pilot gone, standing on the deck)"),
+              "v15: the helicopter left by its pilot is held (brake, engine 0) through the countdown and the window (%d, %.2f)", nb(30), h->power);
+        write_ini(NULL);
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 0, "reload plain");
+    }
+
+    puts("T35 v15: a helicopter left by its pilot on the deck is held (engine 0, hold brake) until the take-over, the pilot's return or the end of its recall");
+    {
+        FV *h, *c, *q;
+        uint32_t el[3] = {31, 0, 0};
+#define HELI_LANDED(ini) do { memset(t_mgr, 0, sizeof(t_mgr)); *(int32_t *)t_mgr = 1; *(int32_t *)(t_mgr + 0x5c) = -1; n_dock = 0; t_dock_accept = 1; t_srv_ptr = t_server; \
+                              begin(ini); c = carrier(); c->id = (uint32_t)(uintptr_t)t_vtable; *(uint32_t *)(t_vtable + 0x7c) = 0x707330 + 0x10000u; \
+                              h = heli(30); h->power = 1.0; ground(h); h->mode = 1; step(60); fake_carrier(12, 2); } while (0)
+        write_ini(HELI_INI); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_h6_ok == 1 && n_patch_mid == 10, "load with H6");
+
+        /* the pilot leaves: held at the first tick, engine 0 and the hold brake (0.8) every tick, logged; checks after 1 s and 10 s */
+        HELI_LANDED(HELI_INI);
+        CHECK(nb(30) == 0 && nset == 0 && !has("HELI HOLD"), "pilot in the seat: nothing written");
+        h->mode = 0; step(1);
+        CHECK(has("id 30: HELI HOLD (pilot gone, standing on the deck): engine power 1.00 -> 0, brake 0.80, until the take-over or the pilot's return") && h->power == 0.0 &&
+              nb(30) == 1 && calls[ncalls - 1].b == 0.8f && calls[ncalls - 1].g == 1.0f, "pilot gone: held at once (engine 0, brake 0.80 / grip 1.00)");
+        for (int i = 0; i < 30; ++i) { h->power = 1.0; step(1); }      /* the game's AI wants the engine at each tick: written back to 0 at each tick */
+        CHECK(h->power == 0.0 && nb(30) == 31 && has("HELI HOLD check after 1 s: power read 1.00 before our write"), "engine kept at 0, brake every tick, check after 1 s");
+        /* the pilot comes back: brake released (0 / 1.0), engine given back */
+        h->mode = 1; step(1);
+        CHECK(has("HELI HOLD ended (pilot back)") && has("engine power back") && h->power == 1.0 && nr(30) == 1, "pilot back: released, engine back to 1.00");
+        { int b0 = nb(30); step(60); CHECK(nb(30) == b0, "and nothing more is written (%d)", nb(30) - b0); }
+
+        /* R in the seat (control mode 0, pilot still there) is the same as leaving */
+        h->mode = 0; step(1);
+        CHECK(count("HELI HOLD (pilot gone") == 2 && h->power == 0.0, "R (control mode 0): held again");
+
+        /* never held: a helicopter never piloted, not standing (in the air, moving, 2 wheels of 3), attached, docking, heli_recall / hold_idle / brake off, no H6 */
+        { const char *what[6] = {"never piloted", "in the air", "moving at 2 m/s", "two wheels of three", "attached", "recalled before the pilot left (dock 5)"};
+          for (int k = 0; k < 6; ++k) {
+              HELI_LANDED(HELI_INI);
+              if (k == 0) { begin(HELI_INI); c = carrier(); h = heli(30); h->power = 1.0; ground(h); h->mode = 0; step(60); }
+              if (k == 1) wheels(h, 0, 0, 0); if (k == 2) h->vel[2] = 2; if (k == 3) wheels(h, 1, 1, 0); if (k == 4) h->attached = 1; if (k == 5) h->dock = 5;
+              h->mode = 0; step(30);
+              CHECK(!has("HELI HOLD") && h->power != 0.0 && nb(30) == 0, "%s: never held", what[k]);
+          } }
+        { const char *ini[3] = {ON "brake=0.1\nhold_brake=0.8\nhold_idle=0\nrecall_hold=1\nrecall_force=1\nheli_recall=1\n", "[frein]\nbrake_enabled=0\nbrake=0.1\nhold_brake=0.8\nhold_idle=1\nrecall_hold=1\nrecall_force=1\nheli_recall=1\n",
+                                ON FORCED "heli_recall=0\n"};
+          const char *what[3] = {"hold_idle=0", "brake_enabled=0", "heli_recall=0"};
+          for (int k = 0; k < 3; ++k) {
+              HELI_LANDED(ini[k]); h->mode = 0; step(30);
+              CHECK(!has("HELI HOLD") && h->power == 1.0 && nb(30) == 0, "%s: never held", what[k]);
+          } }
+        write_ini(ON FORCED); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_h6_ok == 0, "load without H6");
+        HELI_LANDED(ON FORCED "heli_recall=1\n"); h->mode = 0; step(30);
+        CHECK(!has("HELI HOLD") && h->power == 1.0, "no H6 (heli_recall=1 only later): never held (the game must be able to fly it)");
+        write_ini(HELI_INI); n_patch_mid = 0;
+        CHECK(cc2x_plugin_load(&api) == 1 && g_h6_ok == 1, "reload with H6");
+
+        /* the whole chain: held, automatic recall after 5 s, window, H6 grant, take-over: released, engine left to the game */
+        HELI_LANDED(HELI_INI "auto_recall=1\n");
+        h->mode = 0; step(150);
+        CHECK(n_dock == 1 && h->dock == 5 && h->power == 0.0, "held, then the automatic recall after 5 s (%d)", n_dock);
+        step(1);
+        CHECK(has("id 30: HELI window open") && g_force_id == 30, "window open");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1); h->dock = 1; step(1);
+        CHECK(t_cpu.jump_to == 0x6fdcf2 + 0x10000 && h->power == 0.0 && !has("HELI HOLD ended"), "H6 grants; still held at dock 1");
+        run_cap(h, 5); *(int32_t *)(t_mgr + 0x1c) = 5; h->dock = 6; h->flight = 1; h->attached = 1; h->power = 0.0; step(1);
+        CHECK(has("HELI HOLD ended (the game takes it over)") && has("engine left to the game") && has("TAKEN OVER") && h->power == 0.0 && nr(30) == 1,
+              "take-over: released once (0 / 1.0), engine left to the game");
+        { int b0 = ncalls; step(60); CHECK(ncalls == b0 && nset == nset, "nothing written during the follow"); }
+
+        /* the recall window ends without a take-over (the game aborts): released, engine back, the game flies it */
+        HELI_LANDED(HELI_INI);
+        h->mode = 0; step(5); h->dock = 5; h->mode = 3; step(1);
+        CHECK(has("HELI window open") && h->power == 0.0, "held, recalled from the map, window open");
+        run_h6(h, (uint32_t)(uintptr_t)t_mgr, 1, -1); h->dock = 1; step(1);
+        run_h3(h, 8, 1, 30.0f, 3, 1); h->dock = 5; step(1);
+        CHECK(has("HELI balance (the game aborted)"), "the game aborted");
+        step(1);
+        CHECK(has("HELI HOLD ended (recall window over without a take-over: the game flies it)") && h->power == 1.0, "released, engine back: the game flies its own approach");
+
+        /* leaves the zone / switched off in the ini / no longer watched / session end: released, engine back */
+        HELI_LANDED(HELI_INI); h->mode = 0; step(5);
+        h->pos[0] = 400; step(1);
+        CHECK(has("HELI HOLD ended (left the zone)") && h->power == 1.0, "left the zone: released, engine back");
+        HELI_LANDED(HELI_INI); h->mode = 0; step(5);
+        write_ini(ON FORCED "heli_recall=0\n"); step(100);
+        CHECK(has("HELI HOLD ended (helicopter gone or no longer watched)") && h->power == 1.0, "heli_recall=0 in the ini: released, engine back");
+        HELI_LANDED(HELI_INI); h->mode = 0; step(5);
+        write_ini(ON "brake=0.1\nhold_brake=0.8\nhold_idle=0\nrecall_hold=1\nrecall_force=1\nheli_recall=1\n"); step(100);
+        CHECK(has("HELI HOLD ended (settings)") && h->power == 1.0, "hold_idle=0 in the ini: released, engine back");
+        HELI_LANDED(HELI_INI); h->mode = 0; step(5);
+        sess_fn(NULL, 0, NULL);
+        CHECK(has("HELI HOLD ended (session ended)") && h->power == 1.0, "session end: engine back");
+
+        /* planes are untouched by the helicopter code: the v14 automatic recall of a plane next to a held helicopter */
+        HELI_LANDED(HELI_INI "auto_recall=1\n");
+        h->mode = 0; step(1);
+        q = plane(31); q->power = 1.0; q->mode = 1; air(q, 60); ground(q); q->vel[2] = 0; step(60);
+        CHECK(track_of(31)->holding && track_of(31)->braking, "a plane lands next to it and is held by the plane code");
+        (void)el;
+        write_ini(NULL);
+        CHECK(cc2x_plugin_load(&api) == 1 && g_hooks_ok == 0, "reload plain");
     }
 
     write_ini(NULL);

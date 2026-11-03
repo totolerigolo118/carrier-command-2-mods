@@ -3,6 +3,8 @@
 
     python -I construire.py                  compile + controle des DLL + compile le test
     python -I construire.py --lancer-tests   ... et lance le test (programme 32 bits ecrit par nous, sans le jeu)
+    python -I construire.py --travail DOSSIER [--lancer-tests]   (31/10, v13) compile dans un AUTRE dossier de travail, pour ne pas
+        ecraser cc2-sdk-travail/dist (la v12 posee et le dinput8.dll a un profil 184B144D... qui sert de retour arriere)
 
 N'ecrit RIEN dans le dossier du jeu, ni dans le clone du SDK, ni dans le depot (hors le rapport texte).
 Ne charge ni ne lance aucune des deux DLL. Le compilateur est Zig 0.15.2 (pip install ziglang==0.15.2).
@@ -19,6 +21,7 @@ FREIN = Path(__file__).resolve().parent
 DEPOT = FREIN.parents[2]
 CLONE = Path(r'C:\Users\UTILISATEUR\Documents\cc2-sdk-tiers\Carrier-Command-2-extender')
 TRAVAIL = Path(r'C:\Users\UTILISATEUR\Documents\cc2-sdk-travail')
+TRAVAIL_PRINCIPAL = TRAVAIL                  # 31/10 : sa dist contient la v12 posee et le SDK a un profil de retour arriere ; --travail en choisit un autre
 COMMIT = '7ab05c79357e0cdb5bfaa2866bd3a81a101a09da'
 EMPREINTES = FREIN.parent / 'SDK_empreintes_7ab05c7.txt'
 RAPPORT = FREIN / 'RAPPORT_compilation.md'
@@ -248,6 +251,9 @@ def rapport(res, flags_zig):
     L = ['# Rapport de compilation (etape 3) — genere par `construire.py`', '',
          f'Commit du SDK : `{COMMIT}`. Compilateur : Zig {flags_zig}. Dossier de travail (hors depot, hors jeu) : `{TRAVAIL}`. '
          'Options = celles de `build.py` du SDK. **Rien n\'a ete charge ni lance (les deux DLL), rien copie dans le jeu.**', '']
+    if TRAVAIL.resolve() != TRAVAIL_PRINCIPAL.resolve():
+        L += ['**Dossier de travail separe** : le `dinput8.dll` ci-dessous (SDK a UN profil, recompile pour verifier les sources) n\'est PAS celui '
+              'du jeu (le jeu a le SDK a deux profils `E1DE25D5...`) et ne doit pas etre pose ; seul `cc2x_frein.dll` sert.', '']
     for nom, (a, s, ok, deterministe) in res.items():
         L += [f'## {nom}', '', f'- taille {a["taille"]} octets, sha256 `{a["sha"].upper()}`',
               f'- deuxieme compilation identique, hors horodatage PE et identifiant de build (20 octets) : {"oui" if deterministe else "NON"}',
@@ -259,12 +265,20 @@ def rapport(res, flags_zig):
         for dll, fns in a['imports'].items():
             L.append(f'| {dll} | {", ".join(fns)} |')
         L.append('')
-    RAPPORT.write_text('\n'.join(L), encoding='utf-8')
+    RAPPORT.write_text('\n'.join(L), encoding='utf-8', newline='\n')      # fins de ligne LF, comme le reste du depot
     print('\nrapport ecrit :', RAPPORT)
 
 
 def main():
+    global TRAVAIL
     lancer = '--lancer-tests' in sys.argv
+    if '--travail' in sys.argv:
+        k = sys.argv.index('--travail')
+        if k + 1 >= len(sys.argv):
+            arret('--travail sans dossier')
+        TRAVAIL = Path(sys.argv[k + 1])
+        if TRAVAIL.resolve() == TRAVAIL_PRINCIPAL.resolve():
+            arret('--travail doit etre un AUTRE dossier que cc2-sdk-travail (sa dist contient la v12 posee et le SDK de retour arriere)')
     verifier_entrees()
     for sous in ('sources', 'dist', 'dist_verif', 'test', 'cache', 'cache_local', 'reglages', 'control'):
         (TRAVAIL / sous).mkdir(parents=True, exist_ok=True)

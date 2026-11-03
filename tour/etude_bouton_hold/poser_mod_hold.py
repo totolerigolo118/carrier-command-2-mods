@@ -5,8 +5,13 @@ dans mods.xml (sauvegarde d'abord, jamais d'ecrasement). N'ecrit JAMAIS dans le 
 
   python -I -B poser_mod_hold.py etat    --mod DOSSIER_DU_MOD --jeu DOSSIER_DU_JEU
   python -I -B poser_mod_hold.py poser   --mod DOSSIER_DU_MOD --jeu DOSSIER_DU_JEU [--a-blanc]
+  python -I -B poser_mod_hold.py deplacer --mod DOSSIER_DU_MOD --jeu DOSSIER_DU_JEU [--a-blanc]
   python -I -B poser_mod_hold.py retirer --mod DOSSIER_DU_MOD --jeu DOSSIER_DU_JEU [--a-blanc]
   python -I -B poser_mod_hold.py autotest
+
+`deplacer` (02/11) : le mod deja pose recoit SEULEMENT le fichier XML de DOSSIER_DU_MOD, si les deux ne different que par des
+copies du bouton Hold (position changee, copie retiree ou remise en entier ; au moins une copie reste) ; mod.xml, la vignette, le
+plugin cc2x_hold.dll et mods.xml restent. A blanc, il peut tourner pendant que le jeu tourne (il ne fait que lire).
 
 Refus (rien n'est ecrit) : un processus carrier_command* tourne ; le dossier du mod n'a pas exactement les 3 fichiers attendus ;
 le fichier XML du mod ne differe plus du fichier du jeu QUE par l'ajout de blocs « copie du bouton Hold » (mise a jour du jeu :
@@ -29,6 +34,7 @@ import xml.etree.ElementTree as ET
 NOM_MOD = "cc2_hold_copies"
 XML_RELATIF = os.path.join("content", "game_objects", "vehicle_chassis_carrier.xml")
 FICHIERS_ATTENDUS = {"mod.xml", "thumbnail.png", XML_RELATIF}
+DLL_PLUGIN = os.path.join("content", "cc2x", "cc2x_hold.dll")   # pose a part par poser_plugin_hold.py ; jamais touche ici
 XML_JEU = os.path.join("rom_0", "game_objects", "vehicle_chassis_carrier.xml")
 PREFIXE = "vehicle_control_air_hold_copie_"
 JEU_OUVERT_FORCE = None          # reserve aux tests
@@ -193,6 +199,86 @@ def cmd_poser(a):
     print("Retrait : python -I -B poser_mod_hold.py retirer --mod ... --jeu ...  (ou restaurer la sauvegarde, jeu ferme).")
 
 
+def blocs_copies(texte):
+    """(lignes sans les blocs « copie du bouton Hold », {nom: (ligne <button>, ligne <transform>)}) ; un bloc = 3 lignes."""
+    lignes = texte.decode("utf-8").splitlines(keepends=True)
+    reste, copies, i = [], {}, 0
+    while i < len(lignes):
+        tete = re.fullmatch(r'[ \t]*<button name="(' + re.escape(PREFIXE) + r'[a-z_]+)" [^>\r\n]*type="18"[^>\r\n]*>\r?\n', lignes[i])
+        if (tete and i + 2 < len(lignes) and re.fullmatch(r'[ \t]*<transform [^>\r\n]*/>\r?\n', lignes[i + 1])
+                and re.fullmatch(r'[ \t]*</button>\r?\n', lignes[i + 2])):
+            if tete.group(1) in copies:
+                raise Refus("copie %s en double" % tete.group(1))
+            copies[tete.group(1)] = (lignes[i], lignes[i + 1])
+            i += 3
+            continue
+        reste.append(lignes[i])
+        i += 1
+    return reste, copies
+
+
+def changements_copies(ancien, nouveau):
+    """Ce qui change entre le XML pose et le nouveau : (copies deplacees, retirees, ajoutees). Refus si quoi que ce soit
+    d'autre change : une ligne hors des blocs de copies, l'en-tete d'une copie gardee (nom, panneau, type), plus de copie.
+    (Que le nouveau XML = celui du jeu + 1 ou 2 copies et rien d'autre, controler_mod_contre_jeu le verifie a part.)"""
+    reste_a, cop_a = blocs_copies(ancien)
+    reste_b, cop_b = blocs_copies(nouveau)
+    if reste_a != reste_b:
+        raise Refus("les deux fichiers different en dehors des blocs « copie du bouton Hold »")
+    if not cop_b:
+        raise Refus("plus aucune copie : retirer le mod plutot")
+    gardees = set(cop_a) & set(cop_b)
+    if any(cop_b[n][0] != cop_a[n][0] for n in gardees):
+        raise Refus("l'en-tete d'une copie change (nom, panneau ou type) : seule la position peut changer")
+    deplacees = sorted(n for n in gardees if cop_b[n][1] != cop_a[n][1])
+    retirees, ajoutees = sorted(set(cop_a) - set(cop_b)), sorted(set(cop_b) - set(cop_a))
+    if not deplacees and not retirees and not ajoutees:
+        raise Refus("le mod pose a deja exactement ce fichier : rien a changer")
+    return deplacees, retirees, ajoutees
+
+
+def cmd_deplacer(a):
+    """Remplace SEULEMENT le fichier XML du mod deja pose par celui de --mod, quand les deux ne different que par la position
+    (ligne <transform>) de copies du bouton Hold ou par des copies retirees ou remises en entier. mod.xml, la vignette, le plugin
+    cc2x_hold.dll et mods.xml ne sont pas touches. A blanc, le jeu peut tourner (rien n'est ecrit) : on le signale seulement."""
+    appdata, mods_xml, cible = contexte(a)
+    if jeu_ouvert():
+        if not a.a_blanc:
+            raise Refus("un processus carrier_command* tourne : le fermer d'abord")
+        print("Le jeu tourne : A BLANC seulement (la vraie commande sera refusee tant qu'il tourne).")
+    fichiers = lire_mod(a.mod)
+    controler_mod_contre_jeu(fichiers, a.jeu)
+    with open(mods_xml, "rb") as f:
+        actifs = chemins_actifs(f.read().decode("utf-8"))
+    if not os.path.isdir(cible) or not any(meme_chemin(p, cible) for p in actifs):
+        raise Refus("le mod %s n'est pas pose et actif : utiliser poser" % NOM_MOD)
+    pose = {}
+    for dossier, _, noms in os.walk(cible):
+        for n in noms:
+            p = os.path.join(dossier, n)
+            with open(p, "rb") as f:
+                pose[os.path.relpath(p, cible)] = f.read()
+    if set(pose) - {DLL_PLUGIN} != FICHIERS_ATTENDUS:
+        raise Refus("le mod pose doit contenir exactement %s (et le plugin) ; trouve %s" % (sorted(FICHIERS_ATTENDUS), sorted(pose)))
+    for n in ("mod.xml", "thumbnail.png"):
+        if pose[n] != fichiers[n]:
+            raise Refus("le %s du mod pose differe de celui de --mod : ce n'est pas le meme mod" % n)
+    ancien, nouveau = pose[XML_RELATIF], fichiers[XML_RELATIF]
+    deplacees, retirees, ajoutees = changements_copies(ancien, nouveau)
+    print("Plan : dans %s, remplacer %s (%s -> %s) ; position changee : %s ; copie retiree : %s ; copie remise : %s. "
+          "Rien d'autre n'est ecrit." % (cible, XML_RELATIF, sha(ancien)[:8], sha(nouveau)[:8], ", ".join(deplacees) or "aucune",
+                                         ", ".join(retirees) or "aucune", ", ".join(ajoutees) or "aucune"))
+    if a.a_blanc:
+        print("A BLANC : rien ecrit.")
+        return
+    ecrire_verifie(os.path.join(cible, XML_RELATIF), nouveau)
+    with open(os.path.join(cible, XML_RELATIF), "rb") as f:
+        if f.read() != nouveau:
+            raise Refus("relecture differente apres ecriture")
+    print("DEPLACE : %s = %s (relu). Retour : la meme commande avec --mod = le dossier du mod d'avant (fichier %s)."
+          % (XML_RELATIF, sha(nouveau)[:8], sha(ancien)[:8]))
+
+
 def cmd_retirer(a):
     appdata, mods_xml, cible = contexte(a)
     if jeu_ouvert():
@@ -227,9 +313,9 @@ def _xml(blocs=""):
     return '<?xml version="1.0" encoding="UTF-8"?>\r\n<vehicle>\r\n\t<buttons>\r\n' + hold + blocs + '\t</buttons>\r\n</vehicle>\r\n'
 
 
-def _copie(nom, panneau):
+def _copie(nom, panneau, pos='tx="1" ty="1" tz="1"'):
     return ('\t\t<button name="%s%s" display_name_loc="1527" button_panel_index="%d" type="18" help_tag="x">\r\n'
-            '\t\t\t<transform m00="1" tx="1" ty="1" tz="1"/>\r\n\t\t</button>\r\n' % (PREFIXE, nom, panneau))
+            '\t\t\t<transform m00="1" %s/>\r\n\t\t</button>\r\n' % (PREFIXE, nom, panneau, pos))
 
 
 def _monde(racine, nl="\r\n"):
@@ -328,6 +414,78 @@ def autotest():
         with open(os.path.join(mod, XML_RELATIF), "wb") as f:
             f.write(_xml(_copie("moteur", 8)).replace("<buttons>", "<buttons><x/>").encode())
         verif("mod qui change autre chose qu'une copie du bouton : pose refusee", refuse(cmd_poser, a))
+
+    # deplacer : le mod pose (avec le plugin) recoit un XML ou seule la position de la copie aux feux change
+    with tempfile.TemporaryDirectory() as t:
+        jeu, appdata, mod = _monde(t)
+        a = A(jeu, appdata, mod)
+        cible = os.path.join(appdata, "mods", NOM_MOD)
+        mx = os.path.join(appdata, "mods.xml")
+        verif("deplacer avant la pose : refuse", refuse(cmd_deplacer, a))
+        cmd_poser(a)
+        ecrire_verifie(os.path.join(cible, DLL_PLUGIN), b"MZ plugin")
+        mod2 = os.path.join(t, "mod2")
+        shutil.copytree(mod, mod2)
+        avec_feux_deplacee = _xml(_copie("moteur", 8) + _copie("feux", 7, 'tx="-0.025" ty="1" tz="-0.22"')).encode()
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(avec_feux_deplacee)
+
+        def instantane():
+            r = {}
+            for d, _, ns in os.walk(appdata):
+                for n in ns:
+                    r[os.path.relpath(os.path.join(d, n), appdata)] = open(os.path.join(d, n), "rb").read()
+            return r
+        avant = instantane()
+        a2 = A(jeu, appdata, mod2)
+        a2.a_blanc = True
+        cmd_deplacer(a2)
+        verif("deplacer a blanc : rien ecrit", instantane() == avant)
+        JEU_OUVERT_FORCE = True
+        cmd_deplacer(a2)
+        verif("deplacer a blanc jeu ouvert : controles faits, rien ecrit", instantane() == avant)
+        a2.a_blanc = False
+        verif("deplacer jeu ouvert : refuse", refuse(cmd_deplacer, a2) and instantane() == avant)
+        JEU_OUVERT_FORCE = False
+        cmd_deplacer(a2)
+        apres = instantane()
+        changes = [k for k in avant if avant[k] != apres.get(k)]
+        verif("deplacer : seul le XML du mod change, il vaut celui de mod2", changes == [os.path.join("mods", NOM_MOD, XML_RELATIF)]
+              and apres[changes[0]] == avec_feux_deplacee and set(apres) == set(avant))
+        verif("deplacer : plugin et mods.xml intacts", apres[os.path.join("mods", NOM_MOD, DLL_PLUGIN)] == b"MZ plugin"
+              and apres["mods.xml"] == avant["mods.xml"])
+        verif("deplacer deux fois : refuse (deja a cette position)", refuse(cmd_deplacer, a2))
+        cmd_deplacer(a)
+        verif("retour : la meme commande avec le mod d'avant remet tout comme avant", instantane() == avant)
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(_xml(_copie("moteur", 8) + _copie("feux", 6, 'tx="-0.025" ty="1" tz="-0.22"')).encode())
+        verif("deplacer qui change aussi le panneau : refuse", refuse(cmd_deplacer, a2) and instantane() == avant)
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(_xml(_copie("moteur", 8) + _copie("feux", 7, 'tx="-0.025" ty="1" tz="-0.22"')
+                                                               + _copie("trois", 7)).encode())
+        verif("deplacer qui ajoute un bouton : refuse", refuse(cmd_deplacer, a2) and instantane() == avant)
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(avec_feux_deplacee)
+        open(os.path.join(mod2, "mod.xml"), "wb").write(b"autre")
+        verif("deplacer depuis un autre mod (mod.xml different) : refuse", refuse(cmd_deplacer, a2) and instantane() == avant)
+        open(os.path.join(mod2, "mod.xml"), "wb").write(b"x")
+        # retirer une copie entiere (la copie moteur), garder l'autre deplacee
+        sans_moteur = _xml(_copie("feux", 7, 'tx="-0.025" ty="1" tz="-0.22"')).encode()
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(sans_moteur)
+        cmd_deplacer(a2)
+        apres = instantane()
+        verif("retirer la copie moteur : seul le XML change, il vaut le nouveau ; plugin et mods.xml intacts",
+              [k for k in avant if avant[k] != apres.get(k)] == [os.path.join("mods", NOM_MOD, XML_RELATIF)]
+              and apres[os.path.join("mods", NOM_MOD, XML_RELATIF)] == sans_moteur
+              and apres[os.path.join("mods", NOM_MOD, DLL_PLUGIN)] == b"MZ plugin" and apres["mods.xml"] == avant["mods.xml"])
+        cmd_deplacer(a)
+        verif("retour avec la copie moteur : tout comme avant", instantane() == avant)
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(_xml().encode())
+        verif("retirer toutes les copies : refuse", refuse(cmd_deplacer, a2) and instantane() == avant)
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(_xml(_copie("moteur", 8) + _copie("feux", 7)).replace(
+            '<button name="vehicle_control_air_hold" ', '<button name="vehicle_control_air_holdX" ').encode())
+        verif("changer une ligne hors des copies : refuse", refuse(cmd_deplacer, a2) and instantane() == avant)
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(sans_moteur.replace(b"\t\t</button>\r\n\t</buttons>", b"\t</buttons>"))
+        verif("retirer seulement une partie d'un bloc : refuse", refuse(cmd_deplacer, a2) and instantane() == avant)
+        open(os.path.join(cible, "intrus.txt"), "wb").write(b"x")
+        open(os.path.join(mod2, XML_RELATIF), "wb").write(sans_moteur)
+        verif("deplacer avec un fichier en trop dans le mod pose : refuse", refuse(cmd_deplacer, a2))
     JEU_OUVERT_FORCE = None
     print("%d echec(s)" % len(echecs))
     return 0 if not echecs else 1
@@ -337,7 +495,7 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(errors="replace")
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0], allow_abbrev=False)
-    p.add_argument("commande", choices=("etat", "poser", "retirer", "autotest"))
+    p.add_argument("commande", choices=("etat", "poser", "deplacer", "retirer", "autotest"))
     p.add_argument("--mod")
     p.add_argument("--jeu")
     p.add_argument("--appdata", help="reserve aux essais : par defaut %%APPDATA%%\\Carrier Command 2")
@@ -348,7 +506,7 @@ def main():
     if not a.mod or not a.jeu:
         p.error("--mod et --jeu sont obligatoires")
     try:
-        {"etat": cmd_etat, "poser": cmd_poser, "retirer": cmd_retirer}[a.commande](a)
+        {"etat": cmd_etat, "poser": cmd_poser, "deplacer": cmd_deplacer, "retirer": cmd_retirer}[a.commande](a)
     except (Refus, OSError) as e:
         print("REFUSE : %s" % e)
         return 2

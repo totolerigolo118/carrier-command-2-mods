@@ -79,4 +79,86 @@ Ce que le moddeur a vu (son message de ~14:00) : « la simulation est à 1.33 »
 - multijoueur : inconnu (`temps_x2` change la vitesse du serveur pour tous : jamais en multijoueur) ;
 - « l'interface en anglais » citée par le moddeur : aucun travail trouvé dans les fiches lues ; la langue est un réglage du jeu (`settings.xml`), pas de l'exe.
 
-**État laissé** : `dinput8.dll` = `E1DE25D5…` (deux profils) ; `carrier_command_nouveau_5AF41B4D.exe` dans le dossier du jeu ; `carrier_command.exe` de Steam intact (`461E1262…`) ; `frein.ini` au réglage d'essai (`recall_force=1`, `max_speed=35`), **gardé** pour la démo du moddeur ; Hold v2.1 dans son mod. Retours arrière : `RETOURS_ARRIERE.md`. Rien n'est commité.
+## Suite : approche des hélicos ×2 (préparée hors du jeu, ~14:20)
+
+Demande du moddeur relayée par la conversation de coordination. Copie à 4 réglages (3 + `helicos_approche_x2`) fabriquée dans `cc2-port-travail` (`2C9F8E47…`), vérifiée (2 octets de différence, 50,0 → 100,0, aucun chevauchement avec les crochets), lanceur `outils/lancer_nouveau_helicos.py` (16 contrôles, 0 échec ; copie « à blanc » sur le vrai dossier : OK, rien écrit). Procédure : `PROCEDURE_essai_helicos.md`. **Rien copié dans le jeu, rien lancé.**
+
+## Frein v13 posé par une autre session (17:24)
+
+La session « hélicos à la main et retour auto au hangar » a posé `cc2x_frein.dll` v13 (`22D04FE3…`, avec l'accord du moddeur dans sa conversation). Ce que j'ai vérifié dans le dossier du jeu (MESURÉ) :
+- c'est bien la DLL de `cc2-sdk-travail-v13\dist` ;
+- `frein.ini` est inchangé (`D7828C32…`, sans `heli_recall`), donc la v13 fait la v12 (LU dans sa source) ;
+- le jeu était fermé.
+
+Ce que j'ai changé dans ma worktree :
+- mes outils sont ré-épinglés sur la v13 avec **exactement** le diff de cette session (mêmes fichiers de départ) ; les testeurs passent ;
+- mes lanceurs hélicos et multijoueur **refusent** si `heli_recall` est activé ;
+- le vérificateur hélicos tient compte de H6 (`0x6fdded`).
+
+**Défaut trouvé et corrigé** : le copieur du journal de 13:52 ne s'était jamais arrêté. `tasklist` coupe les noms de processus à 25 caractères, il ne voyait donc jamais `carrier_command_nouveau_5AF41B4D.exe`. Il recopiait le même journal toutes les 20 s, et il aurait écrasé la copie de 13:52 à la partie suivante. Je l'ai arrêté à ~17:35, après avoir vérifié que la copie était identique au journal de la partie (`81A6B9D1…`). `surveiller_journal.py` lit maintenant `tasklist` en CSV, qui donne le nom complet ; testé sur un nom de 33 caractères.
+
+## Multijoueur sans temps ×2 (préparé hors du jeu, ~17:40)
+
+Demande du moddeur relayée par la conversation de coordination : une copie avec tout sauf le temps ×2, pour jouer avec un ami qui a le jeu normal. Deux copies fabriquées et vérifiées (MESURÉ, `verifier_copies_multi.py` : TOUT EST BON) :
+- **prudente** `795CD61D…` : ascenseur + retour pont + approche hélicos ;
+- **complète** `FCB3CDE1…` : la prudente + cercle + créneau.
+
+Lanceurs `lancer_multi_3.py` / `lancer_multi_5.py` : 44 contrôles, 0 échec. Procédure : `PROCEDURE_multijoueur.md`. Je conseille la **prudente** : le cercle et le créneau n'ont jamais tourné sur ce build, ni avec le frein. **Rien copié dans le jeu, rien lancé.** L'essai hélicos seul (copie `2C9F8E47…`) reste prêt hors du jeu.
+
+### Copie à 5 réglages posée (02/11, 13:56)
+
+Le moddeur a choisi « les 5 réglages », en réponse à ma proposition de copier la prudente. Avant la copie, l'état était bien celui attendu (MESURÉ) :
+- jeu fermé ;
+- `dinput8.dll` `E1DE25D5…`, frein v13 `22D04FE3…`, `frein.ini` `D7828C32…` sans `heli_recall` ni `auto_recall` ;
+- Hold `4837B1B9…` et modes `4B2EBC04…` dans leurs mods ;
+- `mods.xml` a changé à cause du mod `aide_approche` d'une autre session, qui n'a pas de dossier `cc2x`.
+
+`lancer_multi_5.py copier` → `carrier_command_nouveau_FCB3CDE1.exe` (sha vérifié avant et après). `etat` : bonne copie, `temps_x2` d'origine. Lancement « à blanc » : OK, rien lancé. L'exe de Steam (`461E1262…`) et la copie de 13:52 (`5AF41B4D…`) sont intacts. **Pas encore lancé.**
+
+La partie multijoueur est **reportée** : le moddeur continue ses tests en solo (02/11, 15:24). Règle du moddeur (02/11) : les tests solo se font à ×1,33 avec `5AF41B4D` ; la copie multijoueur à ×1 est l'exception pour la partie avec son ami.
+
+### Avis de risque : seulement le cyber (02/11)
+
+Le moddeur veut que le niveau 🟢/🟡/🔴 juge **seulement** le risque cyber ; un plantage tient en une demi-ligne. J'ai donc vérifié ce que nos 4 DLL importent (MESURÉ, lecture de leur table d'imports) :
+- `dinput8.dll`, `cc2x_frein.dll`, `cc2x_hold.dll` et `cc2x_modes.dll` n'importent que `KERNEL32` et la bibliothèque C de Windows ;
+- aucune n'importe de fonction réseau (`ws2_32`, `wininet`, `winhttp`, `urlmon`), de lancement de programme (`CreateProcess`, `ShellExecute`) ni d'écriture dans un autre processus ;
+- seul le chargeur `dinput8.dll` importe `LoadLibraryW/ExW` : c'est son rôle, il charge les plugins `cc2x`.
+
+**Trou fermé** : le chargeur exécuterait aussi une DLL `cc2x` inconnue, posée dans le dossier du jeu ou dans un mod actif (par exemple un mod téléchargé). Jusqu'ici, ce point n'était vérifié qu'à la pose du SDK. Désormais, `lancer_nouveau.py lancer` (donc aussi les lanceurs hélicos et multijoueur) **refuse de lancer** dans ces cas :
+- une `cc2x_*.dll` autre que le frein dans le dossier du jeu ;
+- un `cc2x\plugins` ou un `cc2x.ini` ;
+- un fichier inconnu dans le dossier `cc2x` d'un mod actif.
+
+Contrôles : `tester_lancer_multi.py` 54/0, `tester_lancer_nouveau.py` 52/0, `tester_lancer_nouveau_helicos.py` 22/0.
+
+### Frein v14 posé par la session hélicos (02/11, 15:36)
+
+Constaté à 15:38 (MESURÉ) :
+- `cc2x_frein.dll` = v14 `50D0464A…`, et `frein.ini` contient maintenant `auto_recall=1` ;
+- la copie `5AF41B4D` tourne (partie solo du moddeur, lancée par cette session).
+
+La v14 a été posée par la session de coordination, avec l'accord du moddeur ; son `frein.ini` d'avant est `frein.ini.avant_v14` (`D7828C32…`). La partie solo tourne depuis 15:36:49 (PID 5312), suivie par la session hélicos.
+
+**Ré-épinglé sur la v14 (02/11, ~15:50, hors jeu)** :
+- mes outils ont repris les changements v14 de la session hélicos (worktree gifted-moore) ; la v13 et la v12 deviennent des versions « précédentes » ;
+- j'ai gardé mes ajouts : refus du code inconnu, copieur en CSV, refus de `heli_recall` ;
+- les lanceurs hélicos et multijoueur refusent maintenant **aussi** `auto_recall=1` ; les lignes « auto_recall=1 » et « AUTO RECALL » du journal comptent comme un problème. Le but reste une seule nouveauté par essai.
+
+Les testeurs n'utilisent plus le vrai `%APPDATA%` : son `frein.ini` a `auto_recall=1` et faisait échouer 11 contrôles. Résultats : `tester_poser` 36/0, `tester_lancer` 32/0, `tester_poser_sdk` 33/0, `tester_lancer_nouveau` 52/0, `tester_lancer_nouveau_helicos` 27/0, `tester_lancer_multi` 56/0 ; les deux vérificateurs : TOUT EST BON. À blanc sur le vrai dossier, `lancer_multi_5.py lancer` **refuse** pour l'instant, à cause de `auto_recall=1` dans `frein.ini`.
+
+**Pour la partie à deux**, il faudra donc, avec l'accord du moddeur, soit remettre `auto_recall=0`, soit qu'il choisisse de garder le retour automatique ; dans ce cas, j'enlève ce refus.
+
+### Frein v15 : les réglages normaux du moddeur (02/11, 16:12)
+
+La session de coordination l'annonce : la v15 est posée (`238B0456…`, posée à 16:12, MESURÉ). `frein.ini` est `6DBA8107…`, avec `auto_recall=1` et `heli_recall=1`. Le moddeur garde ces réglages pour ses parties : « j'aime comme c'est actuellement ».
+
+D'après `RISQUES_v15.md` de la session hélicos (LU), la v15 ajoute qu'un hélico posé, que son pilote quitte, est tenu au sol ; elle n'ajoute aucun crochet. Ses imports sont les mêmes que ceux de la v12 (MESURÉ par mon script) : KERNEL32 et la bibliothèque C, aucun réseau.
+
+**Ré-épinglé sur la v15 (~16:20, hors jeu)**, avec la même méthode que pour la v14 : changements v15 de la session hélicos, plus mes ajouts. Résultats :
+- testeurs : 36/32/33/52/27/56, 0 échec ; vérificateurs : TOUT EST BON ;
+- à blanc sur le vrai dossier, la copie solo `5AF41B4D` (`lancer_nouveau.py`) est **acceptée** avec les réglages du moddeur ;
+- la copie multijoueur (`lancer_multi_5.py`) **refuse** à cause de `heli_recall=1` et `auto_recall=1`, comme demandé.
+
+La question « garder ou éteindre ces options pendant la partie à deux » sera posée au moddeur quand il voudra jouer avec son ami.
+
+**État laissé** : `carrier_command_nouveau_FCB3CDE1.exe` (multijoueur à 5 réglages) dans le dossier du jeu depuis le 02/11 ; `dinput8.dll` = `E1DE25D5…` (deux profils) ; `cc2x_frein.dll` = v15 `238B0456…` depuis 16:12 (posé par la session de coordination ; avant : v14 `50D0464A…`, v13 `22D04FE3…`) ; `carrier_command_nouveau_5AF41B4D.exe` dans le dossier du jeu ; `carrier_command.exe` de Steam intact (`461E1262…`) ; `frein.ini` au réglage d'essai (`recall_force=1`, `max_speed=35`), **gardé** pour la démo du moddeur, maintenant `6DBA8107…` avec `auto_recall=1` et `heli_recall=1` (réglages normaux du moddeur depuis le 02/11) ; Hold v2.1 dans son mod. Retours arrière : `RETOURS_ARRIERE.md`. Rien n'est commité depuis `a239907`.

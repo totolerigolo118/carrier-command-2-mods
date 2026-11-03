@@ -1,0 +1,72 @@
+====================================================================================================
+C:/Users/UTILISATEUR/Documents/cc2-patchs/tour/sauvegardes/carrier_command_1.5.18_original.exe : horodatage PE 0x6a36c177 -> ancien exe 1.5.18-win32
+  H1                                            0x7018ce  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H2                                            0x701a3d  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H3 (lecture seule)                            0x6ff0fb  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde A/B (lecture seule)                     0x6febda  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C/D (lecture seule)                     0x6febe7  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde E (lecture seule)                       0x6febc0  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C passee (lecture seule)                0x6fe788  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H5                                            0x6fe470  7 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde de la prise en charge (lecture seule)   0x6ff379  9 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H6 (v13, helicopteres)                        0x6fdcdd  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  cible de H2                                   0x701a8a  push dword ptr [ebp - 0x204]  -> OK
+  cible de H5 (test de toucher)                 0x6ff20a  movss xmm2, dword ptr [ebp - 0x2e4]  -> OK
+  cible de H6 (don de la piste a l'helico)      0x6fdcf2  mov ecx, dword ptr [ebp - 0x278]  -> OK
+  registres vivants a la cible de H5 (0x6ff20a) : ebx, edi, esi
+    -> H5 fournit edi (gestionnaire) et esi (navire) ; ebx = pile d'origine de la fonction, constant ; autres : aucun
+  pushes en attente juste avant H5 : 0 (0 = meme profondeur de pile que la cible)
+  H6 : 5 instructions entre le site et la cible : mulss xmm2, xmm2, mulss xmm3, xmm3, addss xmm3, xmm2, comiss xmm0, xmm3, jbe 0x6fdd90 ; seulement SSE de registres + la comparaison : oui ; sortie du test : 0x6fdd90 -> OK
+  registres vivants a la cible de H6 (0x6fdcf2) : ebx, edi, esi, xmm1 ; parmi xmm2/xmm3 (ecrits entre site et cible) : aucun -> OK
+  [ebp-0x270] = helico trouve (0x6fdbf2), [ebp-0x278] = place dans la file (0x6fdbbe, 0x6fdc10) -> OK
+  helico file : test helico (vtable+0x4c)                                       0x7016d6  mov eax, dword ptr [eax + 0x4c] -> OK
+  helico file : helico -> point d'attente, element suivant (jmp 0x701c38, sans H1) 0x70186c  jmp 0x701c38 -> OK
+  helico don helico : x du point d'attente                                      0x6fdcac  movss xmm2, dword ptr [0xdb7e30]  (= -100) -> OK
+  helico don helico : z du point d'attente                                      0x6fdcb4  movss xmm3, dword ptr [0xdb7e40]  (= -240) -> OK
+  helico don helico : 100 m au carre                                            0x6fdcd1  movss xmm0, dword ptr [0xdb7b04]  (= 10000) -> OK
+  helico don helico : comparaison                                               0x6fdce9  comiss xmm0, xmm3 -> OK
+  helico don helico : ecrit le proprietaire de la piste                         0x6fdd17  mov dword ptr [edi + 0x5c], eax -> OK
+  helico don helico : etat de piste 3                                           0x6fdd1a  mov dword ptr [edi + 0x1c], 3 -> OK
+  helico don helico : DOCK_STATE = 1                                            0x6fdd42  mov dword ptr [eax + 0x174], 1 -> OK
+  helico etat 3 : test helico                                                   0x6fe18b  mov eax, dword ptr [eax + 0x4c] -> OK
+  helico branche helico : proche si distance au milieu < 20 m                   0x6fe3e7  movss xmm0, dword ptr [0xdb7960]  (= 20) -> OK
+  helico branche helico : ecart lateral <= 30 m                                 0x6fe422  comiss xmm0, dword ptr [0xdb798c]  (= 30) -> OK
+  helico tronc : saute le cone pour un helico (vtable+0x4c)                     0x6fef79  mov eax, dword ptr [eax + 0x4c] -> OK
+  helico toucher : vitesse relative <= 10 m/s                                   0x6ff263  comiss xmm0, dword ptr [0xdb78ec]  (= 10) -> OK
+  BILAN ancien exe 1.5.18-win32 : TOUT EST SUR
+====================================================================================================
+C:/Program Files (x86)/Steam/steamapps/common/Carrier Command 2/carrier_command.exe : horodatage PE 0x6ae228f3 -> nouvel exe 1.5.18-win32-6ae228f3
+  H1                                            0x7019de  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H2                                            0x701b4d  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H3 (lecture seule)                            0x6ff20b  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde A/B (lecture seule)                     0x6fecea  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C/D (lecture seule)                     0x6fecf7  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde E (lecture seule)                       0x6fecd0  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde C passee (lecture seule)                0x6fe898  6 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H5                                            0x6fe580  7 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  sonde de la prise en charge (lecture seule)   0x6ff489  9 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  H6 (v13, helicopteres)                        0x6fdded  8 octets  octets OK  relocations: aucune  sauts vers l'interieur: aucun  -> SUR
+  cible de H2                                   0x701b9a  push dword ptr [ebp - 0x204]  -> OK
+  cible de H5 (test de toucher)                 0x6ff31a  movss xmm2, dword ptr [ebp - 0x2e4]  -> OK
+  cible de H6 (don de la piste a l'helico)      0x6fde02  mov ecx, dword ptr [ebp - 0x278]  -> OK
+  registres vivants a la cible de H5 (0x6ff31a) : ebx, edi, esi
+    -> H5 fournit edi (gestionnaire) et esi (navire) ; ebx = pile d'origine de la fonction, constant ; autres : aucun
+  pushes en attente juste avant H5 : 0 (0 = meme profondeur de pile que la cible)
+  H6 : 5 instructions entre le site et la cible : mulss xmm2, xmm2, mulss xmm3, xmm3, addss xmm3, xmm2, comiss xmm0, xmm3, jbe 0x6fdea0 ; seulement SSE de registres + la comparaison : oui ; sortie du test : 0x6fdea0 -> OK
+  registres vivants a la cible de H6 (0x6fde02) : ebx, edi, esi, xmm1 ; parmi xmm2/xmm3 (ecrits entre site et cible) : aucun -> OK
+  [ebp-0x270] = helico trouve (0x6fdd02), [ebp-0x278] = place dans la file (0x6fdcce, 0x6fdd20) -> OK
+  helico file : test helico (vtable+0x4c)                                       0x7017e6  mov eax, dword ptr [eax + 0x4c] -> OK
+  helico file : helico -> point d'attente, element suivant (jmp 0x701c38, sans H1) 0x70197c  jmp 0x701d48 -> OK
+  helico don helico : x du point d'attente                                      0x6fddbc  movss xmm2, dword ptr [0xdb7e68]  (= -100) -> OK
+  helico don helico : z du point d'attente                                      0x6fddc4  movss xmm3, dword ptr [0xdb7e78]  (= -240) -> OK
+  helico don helico : 100 m au carre                                            0x6fdde1  movss xmm0, dword ptr [0xdb7b3c]  (= 10000) -> OK
+  helico don helico : comparaison                                               0x6fddf9  comiss xmm0, xmm3 -> OK
+  helico don helico : ecrit le proprietaire de la piste                         0x6fde27  mov dword ptr [edi + 0x5c], eax -> OK
+  helico don helico : etat de piste 3                                           0x6fde2a  mov dword ptr [edi + 0x1c], 3 -> OK
+  helico don helico : DOCK_STATE = 1                                            0x6fde52  mov dword ptr [eax + 0x174], 1 -> OK
+  helico etat 3 : test helico                                                   0x6fe29b  mov eax, dword ptr [eax + 0x4c] -> OK
+  helico branche helico : proche si distance au milieu < 20 m                   0x6fe4f7  movss xmm0, dword ptr [0xdb7998]  (= 20) -> OK
+  helico branche helico : ecart lateral <= 30 m                                 0x6fe532  comiss xmm0, dword ptr [0xdb79c4]  (= 30) -> OK
+  helico tronc : saute le cone pour un helico (vtable+0x4c)                     0x6ff089  mov eax, dword ptr [eax + 0x4c] -> OK
+  helico toucher : vitesse relative <= 10 m/s                                   0x6ff373  comiss xmm0, dword ptr [0xdb7924]  (= 10) -> OK
+  BILAN nouvel exe 1.5.18-win32-6ae228f3 : TOUT EST SUR

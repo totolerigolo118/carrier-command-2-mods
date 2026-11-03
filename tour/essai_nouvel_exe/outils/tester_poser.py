@@ -18,6 +18,7 @@ POSER = ICI / 'poser.py'
 ORIGINAL = Path(r'C:\Users\UTILISATEUR\Documents\cc2-patchs\tour\sauvegardes') / 'carrier_command_1.5.18_original.exe'   # 31/10 copie : exe hors depot
 SDK2 = Path(r'C:\Users\UTILISATEUR\Documents\cc2-port-travail\sdk\dist')          # la DLL du SDK a deux profils (E1DE25D5...)
 SHA_SDK2 = 'E1DE25D53A5588BDA62269D6D93335ACB9F32EA555AC9274FE7973C19D6225D7'
+V13 = Path(r'C:\Users\UTILISATEUR\Documents\cc2-sdk-travail-v15\dist')            # 02/11 : le frein epingle (v15), compile a part
 pass_, fail = 0, 0
 
 
@@ -66,7 +67,7 @@ def main():
     check(c == 0 and 'POSE TERMINEE' in o, 'pose\n' + o)
     exe_avant = sha(jeu / 'carrier_command.exe')
     check(sha(jeu / 'dinput8.dll') == SHA_SDK2, 'sha dinput8')
-    check(sha(jeu / 'cc2x_frein.dll') == '941DFFB9F1671CB351A69B826B14E62AB9978390C888257DA699E8584ADC59B3', 'sha plugin')
+    check(sha(jeu / 'cc2x_frein.dll') == '238B0456807AF87FE303F7033899C5CC7DC0F3659054DCDDF44C49FAD0FDE907', 'sha plugin')
     check((ad / ini_rel).read_bytes() == (ICI / 'frein.ini.example').read_bytes() and b'brake_enabled=0' in (ad / ini_rel).read_bytes(),
           'frein.ini = exemple, tout eteint')
     check(sorted(p.name for p in jeu.iterdir()) == ['carrier_command.exe', 'cc2x_frein.dll', 'dinput8.dll'], 'seuls 2 fichiers ajoutes dans le jeu')
@@ -129,7 +130,7 @@ def main():
     jeu, ad = faux('faux_10')
     src = TRAVAIL / 'faux_10' / 'dist'; src.mkdir()
     shutil.copyfile(SDK2 / 'dinput8.dll', src / 'dinput8.dll')
-    shutil.copyfile(TRAVAIL / 'dist' / 'cc2x_frein.dll', src / 'cc2x_frein.dll')
+    shutil.copyfile(V13 / 'cc2x_frein.dll', src / 'cc2x_frein.dll')
     with open(src / 'cc2x_frein.dll', 'r+b') as f:
         f.seek(200); b = f.read(1); f.seek(200); f.write(bytes([b[0] ^ 1]))
     c, o = poser('installer', jeu, ad, '--source', str(src), ouvert=False); check(c == 1 and 'sha256' in o and not (jeu / 'dinput8.dll').exists(), 'source alteree\n' + o)
@@ -146,7 +147,7 @@ def main():
         c, o = poser('maj', jeu, ad, '--a-blanc', ouvert=False); check(c == 0 and sha(jeu / 'cc2x_frein.dll') == SHA_V1, 'maj a blanc ne change rien\n' + o)
         c, o = poser('maj', jeu, ad, ouvert=True); check(c == 1 and sha(jeu / 'cc2x_frein.dll') == SHA_V1, 'maj refusee jeu ouvert\n' + o)
         c, o = poser('maj', jeu, ad, ouvert=False)
-        check(c == 0 and 'MISE A JOUR TERMINEE' in o and sha(jeu / 'cc2x_frein.dll') == '941DFFB9F1671CB351A69B826B14E62AB9978390C888257DA699E8584ADC59B3'
+        check(c == 0 and 'MISE A JOUR TERMINEE' in o and sha(jeu / 'cc2x_frein.dll') == '238B0456807AF87FE303F7033899C5CC7DC0F3659054DCDDF44C49FAD0FDE907'
               and sha(jeu / 'dinput8.dll') == din and sha(jeu / 'carrier_command.exe') == exe_avant, 'maj v1 -> v2\n' + o)
         check(not list(jeu.glob('*.cc2_tmp')), 'pas de fichier temporaire apres maj')
         shutil.copyfile(v1, jeu / 'cc2x_frein.dll')
@@ -169,7 +170,7 @@ def main():
         shutil.copyfile(ORIGINAL.parent / 'carrier_command_1.5.18_patche_8E7FCBB6.exe', jeu / 'carrier_command_ancien_8E7FCBB6.exe')
         c, o = poser('maj', jeu, ad, '--a-blanc', ouvert=False); check(c == 0 and sha(jeu / 'cc2x_frein.dll') == SHA_V1, 'maj a blanc avec la copie de l ancien exe\n' + o)
         c, o = poser('maj', jeu, ad, ouvert=False)
-        check(c == 0 and 'MISE A JOUR TERMINEE' in o and sha(jeu / 'cc2x_frein.dll') == '941DFFB9F1671CB351A69B826B14E62AB9978390C888257DA699E8584ADC59B3', 'maj avec la copie exacte de l ancien exe\n' + o)
+        check(c == 0 and 'MISE A JOUR TERMINEE' in o and sha(jeu / 'cc2x_frein.dll') == '238B0456807AF87FE303F7033899C5CC7DC0F3659054DCDDF44C49FAD0FDE907', 'maj avec la copie exacte de l ancien exe\n' + o)
         with open(jeu / 'carrier_command_ancien_8E7FCBB6.exe', 'ab') as f:
             f.write(b'\0')
         shutil.copyfile(v1, jeu / 'cc2x_frein.dll')
@@ -189,7 +190,7 @@ def main():
     v10 = TRAVAIL / 'dist_v10' / 'cc2x_frein.dll'
     shutil.copyfile(v10, jeu / 'cc2x_frein.dll')
     c, o = poser('maj', jeu, ad, ouvert=False)
-    check(c == 0 and sha(jeu / 'cc2x_frein.dll') == '941DFFB9F1671CB351A69B826B14E62AB9978390C888257DA699E8584ADC59B3', 'maj v10 -> v12 sur le nouveau build' + chr(10) + o)
+    check(c == 0 and sha(jeu / 'cc2x_frein.dll') == '238B0456807AF87FE303F7033899C5CC7DC0F3659054DCDDF44C49FAD0FDE907', 'maj v10 -> v15 sur le nouveau build' + chr(10) + o)
     shutil.copyfile(v10, jeu / 'cc2x_frein.dll')
     hold = Path(ad) / 'mods' / 'cc2_hold_copies'; (hold / 'content' / 'cc2x').mkdir(parents=True)
     vrai_hold = Path(r'C:\Users\UTILISATEUR\AppData\Roaming\Carrier Command 2\mods\cc2_hold_copies\content\cc2x\cc2x_hold.dll')   # lecture seule

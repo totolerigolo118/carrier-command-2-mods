@@ -63,3 +63,18 @@ recall_force=0
 force_tries=3
 ; duree maximale de la fenetre d'essai en secondes (5 a 120) ; ensuite l'avion reste tenu comme en v7
 force_timeout_s=20
+; v13 - HELICOPTERES (Razorbill, Petrel) poses a la main (0 = non, defaut ; 1 = oui). Il faut AUSSI recall_force=1, et les deux A 1 AU
+; DEMARRAGE DU JEU : le crochet H6 ne se pose qu'au demarrage. Avec heli_recall=1, un helico de l'equipe humaine pose sur le pont
+; (toutes ses roues au contact, < 1 m/s, pilote parti) qu'on rappelle sur la carte recoit TOUT DE SUITE la piste du jeu (au lieu
+; d'aller d'abord a son point d'attente, 260 m derriere le navire) ; le jeu fait alors lui-meme son toucher et sa prise en charge
+; (ascenseur, hangar). Aucun frein ni moteur ecrit pour un helico. Pour couper en cours de partie : heli_recall=0 (relu en 3 s).
+; Voir RISQUES_v13.md et PROCEDURE_partie_v13_helicos.md.
+heli_recall=0
+; v14 - RETOUR AUTOMATIQUE au hangar (0 = non, defaut ; 1 = oui). Il faut AUSSI recall_force=1 au demarrage (crochets poses), recall_hold=1
+; et brake_enabled=1. Quand un avion pose a la main est tenu par le frein, arrete, et que le pilote l'a quitte depuis auto_recall_s
+; secondes, le plugin demande UNE fois au porte-avions son retour (la meme fonction que l'ordre donne sur la carte) ; la suite est celle
+; de la v12 (prise en charge, ascenseur, hangar). Avec heli_recall=1, pareil pour un helico pose. Remonter avant le delai annule.
+; Pour couper en cours de partie : auto_recall=0 (relu en 3 s). Voir RISQUES_v14.md et PROCEDURE_partie_v14_retour_auto.md.
+auto_recall=0
+; delai entre le depart du pilote et la demande, en secondes (2 a 60)
+auto_recall_s=5

@@ -12,6 +12,19 @@
 - **MESURÉ** : `diff` indépendant jeu / mod = exactement 6 lignes ajoutées (2 × 3), 0 modifiée, 0 supprimée ; XML bien formé ; 218 boutons, noms uniques. Fichier du jeu et `mods.xml` inchangés (sommes relues après coup). `autotest` : 17 contrôles, 0 échec.
 - **Outil** : `fabriquer_mod_hold.py` (Python standard, `python -I`, aucun réseau, aucun sous-processus ; refuse un dossier de sortie dans le jeu ou dans `%APPDATA%\Carrier Command 2`, ou non vide).
 
+## Déplacement de la copie aux feux (02/11/2026, demande du moddeur : « l'encadré rouge »)
+- **LU** (`meshes/aircraft_carrier/aircraft_carrier_shell/aircraft_carrier_bridge.mesh`, placé tel quel dans le porte-avions) : sous les leviers des feux de navigation et des phares, le plateau du pupitre est plat à la hauteur du panneau 7 (y = 29,7607), de x −27,458 à −26,939, jusqu'à 27,8 cm devant le panneau (tz −0,278) ; puis un rebord vertical de 8 cm.
+- **INFÉRÉ** : la caméra de la capture du moddeur, recalée sur 8 repères (erreur moyenne 2 px), met le centre de l'encadré rouge vers tx −0,03, tz −0,24.
+- **Copie C** = la copie aux feux (même nom) à tx = −0,025, ty = 0,0011, tz = −0,220 : sur le plateau, devant le voyant des feux de navigation, à 5,8 cm du rebord. Mod `C:\Users\UTILISATEUR\Documents\cc2-hold-travail\mod_AC\cc2_hold_copies\` (copies A et C), XML `2AC3E98B…` : **une seule ligne** diffère du XML posé `BFC52038…` (la position de la copie aux feux).
+- Pose = `poser_mod_hold.py deplacer` (remplace seulement ce fichier dans le mod posé ; le plugin et `mods.xml` restent), jeu fermé, avec le « oui » du moddeur. Retour : la même commande avec `--mod C:\Users\UTILISATEUR\Documents\cc2-hold-travail\mod_AB\cc2_hold_copies`.
+- **FAIT le 02/11 à 15 h 34** (« Oui, déplace »), jeu fermé. Mod posé relu : XML `2AC3E98B…`, plugin `4837B1B9…` (v2.1) inchangé, `mod.xml` et vignette inchangés, 4 fichiers. `mods.xml` non touché (dernière modification à 13 h 53, par une autre session). Autotest de `poser_mod_hold.py` : 33 contrôles, 0 échec ; `fabriquer_mod_hold.py autotest` : 0 échec. **Pas encore vu en jeu** : à vérifier que le bouton est bien à plat dans l'encadré, et qu'il bouge toujours avec les deux autres.
+
+## Retrait de la copie près du moteur (02/11/2026, demande du moddeur relayée par la coordination)
+- Le moddeur : la copie aux feux (dans l'encadré) « marche tout aussi bien et est mieux placée » ; retirer `vehicle_control_air_hold_copie_moteur`.
+- Mod `C:\Users\UTILISATEUR\Documents\cc2-hold-travail\mod_C\cc2_hold_copies\` (`--options C` : la copie aux feux seule, à sa place de l'encadré), XML `84E0558A…` : par rapport au XML posé `2AC3E98B…`, seul le bloc de 3 lignes de `copie_moteur` disparaît.
+- `poser_mod_hold.py deplacer` accepte maintenant : position changée, copie retirée ou remise en entier (au moins une copie reste) ; à blanc, il peut tourner pendant le jeu. Autotest : 0 échec. Essai à blanc sur la vraie machine (02/11, ~15 h 55) : accepté, rien écrit.
+- **POSÉ le 02/11 par la session coordination** (« cc2 v4 », avec le « oui » du moddeur donné chez elle), jeu fermé : à blanc puis pour de vrai, « DEPLACE : … = 84E0558A (relu) ». Pas encore vu en jeu (relance prévue avec la v15 des hélicos). Plugin v2.1 inchangé (test 636/0 : « une seule copie copie_feux » couvert). Retour : `deplacer --mod …\mod_AC\cc2_hold_copies`.
+
 ## Refaire le mod (après une mise à jour du jeu : le mod contient une copie complète du fichier)
 ```bash
 python -I tour/etude_bouton_hold/fabriquer_mod_hold.py autotest
